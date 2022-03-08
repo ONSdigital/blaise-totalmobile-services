@@ -14,10 +14,10 @@ class BaseClient:
     def _get(this, path: str):
         return requests.get(
             f"{this._url}/{this._instance}/{path}",
-            headers=this._auth_header(),
+            headers=this.__auth_header(),
         )
 
-    def _get_token(this) -> str:
+    def __get_token(this) -> str:
         if this.__token_expired():
             response = requests.post(
                 f"{this._url}/{this._instance}/identity/connect/token",
@@ -33,8 +33,8 @@ class BaseClient:
             this.__expires_at = datetime.now() + timedelta(access_token["expires_in"])
         return this.__access_token
 
-    def _auth_header(this) -> dict[str, str]:
-        return {"Authorization": f"Bearer {this._get_token()}"}
+    def __auth_header(this) -> dict[str, str]:
+        return {"Authorization": f"Bearer {this.__get_token()}"}
 
     def __token_expired(this) -> bool:
         if this.__expires_at == 0:
