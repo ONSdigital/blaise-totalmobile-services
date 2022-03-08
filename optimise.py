@@ -22,5 +22,5 @@ class OptimiseClient(BaseClient):
     def get(this, path: str):
         return requests.get(
             f"{this._url}/{this._instance}/api/optimise/{path}",
-            headers={"Authorization": f"Bearer {this.get_token()}"},
+            headers=this.auth_header(),
         )
