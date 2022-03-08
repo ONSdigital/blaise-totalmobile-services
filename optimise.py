@@ -11,13 +11,13 @@ class OptimiseClient(BaseClient):
         super().__init__(this._url, this._instance, client_id, client_secret)
 
     def get_jobs(this, world_id: str):
-        return this.get(f"worlds/{world_id}/jobs").json()
+        return this._get(f"worlds/{world_id}/jobs").json()
 
     def get_worlds(this):
-        return this.get("worlds").json()
+        return this._get("worlds").json()
 
     def get_world(this, world: str):
-        return this.get(f"worlds/{world}").json()
+        return this._get(f"worlds/{world}").json()
 
-    def get(this, path: str):
-        return super().get(f"api/optimise/{path}")
+    def _get(this, path: str):
+        return super()._get(f"api/optimise/{path}")
