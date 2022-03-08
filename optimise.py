@@ -20,7 +20,4 @@ class OptimiseClient(BaseClient):
         return this.get(f"worlds/{world}").json()
 
     def get(this, path: str):
-        return requests.get(
-            f"{this._url}/{this._instance}/api/optimise/{path}",
-            headers=this.auth_header(),
-        )
+        return super().get(f"api/optimise/{path}")
