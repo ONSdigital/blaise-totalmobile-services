@@ -1,17 +1,21 @@
-import requests
 from datetime import datetime, timedelta
+from typing import Any
+
+import requests
 
 
 class BaseClient:
-    def __init__(this, url: str, instance: str, client_id, client_secret):
+    def __init__(
+        this, url: str, instance: str, client_id: str, client_secret: str
+    ) -> None:
         this._url = url
         this._instance = instance
         this._client_id = client_id
         this._client_secret = client_secret
-        this.__expires_at = 0
         this.__access_token = ""
+        this.__expires_at = datetime.now()
 
-    def _get(this, path: str):
+    def _get(this, path: str) -> Any:
         return requests.get(
             f"{this._url}/{this._instance}/{path}",
             headers=this.__auth_header(),
@@ -37,6 +41,4 @@ class BaseClient:
         return {"Authorization": f"Bearer {this.__get_token()}"}
 
     def __token_expired(this) -> bool:
-        if this.__expires_at == 0:
-            return True
         return datetime.now() >= this.__expires_at
