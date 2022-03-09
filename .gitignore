@@ -3,3 +3,5 @@ __pycache__
 .env
 .dmypy.json
 .mypy_cache
+keys.json
+sample.json

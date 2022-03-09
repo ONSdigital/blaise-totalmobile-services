@@ -52,7 +52,9 @@ class BaseClient:
             )
             access_token = response.json()
             this.__access_token = access_token["access_token"]
-            this.__expires_at = datetime.now() + timedelta(access_token["expires_in"])
+            this.__expires_at = datetime.now() + timedelta(
+                0, access_token["expires_in"]
+            )
         return this.__access_token
 
     def __auth_header(this) -> dict[str, str]:

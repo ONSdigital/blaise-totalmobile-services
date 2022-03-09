@@ -1,6 +1,7 @@
 from typing import Any, Dict, List
 
 from base import BaseClient
+import json
 
 
 class OptimiseClient(BaseClient):
