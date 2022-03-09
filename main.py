@@ -7,64 +7,48 @@ import blaise_restapi
 
 config = dotenv_values(".env")
 
-url = config["TOTALMOBILE_URL"]
-instance = config["TOTALMOBILE_INSTANCE"]
-client_id = config["TOTALMOBILE_CLIENT_ID"]
-client_secret = config["TOTALMOBILE_CLIENT_SECRET"]
+totalmobile_url = config["TOTALMOBILE_URL"]
+totalmobile_instance = config["TOTALMOBILE_INSTANCE"]
+totalmobile_client_id = config["TOTALMOBILE_CLIENT_ID"]
+totalmobile_client_secret = config["TOTALMOBILE_CLIENT_SECRET"]
+blaise_api_url = config["BLAISE_API_URL"]
+blaise_server_park = config["BLAISE_SERVER_PARK"]
 bus_url = config["BUS_URL"]
 bus_client_id = config["BUS_CLIENT_ID"]
 instrument = config["INSTRUMENT_NAME"]
 
 if (
-    url is None
-    or instance is None
-    or client_id is None
-    or client_secret is None
+    totalmobile_url is None
+    or totalmobile_instance is None
+    or totalmobile_client_id is None
+    or totalmobile_client_secret is None
+    or blaise_api_url is None
+    or blaise_server_park is None
     or bus_url is None
     or bus_client_id is None
     or instrument is None
 ):
-    print(
-        "Must set: "
-        + "TOTALMOBILE_URL, TOTALMOBILE_INSTANCE, "
-        + "TOTALMOBILE_CLIENT_ID, TOTALMOBILE_CLIENT_SECRET, "
-        + "BUS_URL, BUS_CLIENT_ID, INSTRUMENT_NAME"
-    )
+    print("Environment variable missing")
     exit(1)
 
-optimise_client = OptimiseClient(
-    url,
-    instance,
-    client_id,
-    client_secret,
-)
-
-world = "Region 1"
-
-world_id = optimise_client.get_world(world)["id"]
-print(world_id)
-# print(optimise_client.get_resources())
-# print("TOTAL")
-# print(len(optimise_client.get_jobs(world_id)))
-# for _ in range(357):
-#     optimise_client.create_job(
-#         world_id,
-#         {
-#             "identity": {"reference": str(uuid4())},
-#             "duration": 10,
-#             "description": "test-job",
-#             "skills": [{"identity": {"reference": "interviewer"}}],
-#         },
-#     )
-# print(optimise_client.get_dispatch())
-
-restapi_client = blaise_restapi.Client("http://localhost:8081")
+restapi_client = blaise_restapi.Client(blaise_api_url)
 
 bus_client = BusClient(bus_url, bus_client_id)
+
+optimise_client = OptimiseClient(
+    totalmobile_url,
+    totalmobile_instance,
+    totalmobile_client_id,
+    totalmobile_client_secret,
+)
+
+world = "Default"
+world_id = optimise_client.get_world(world)["id"]
+
 uacs = bus_client.get_uacs_by_case_id(instrument)
 
 cases = restapi_client.get_instrument_data(
-    "gusty",
+    blaise_server_park,
     instrument,
     [
         "qDataBag.UPRN_Latitude",
@@ -83,23 +67,32 @@ cases = restapi_client.get_instrument_data(
 )
 
 for case in cases["reportingData"]:
-    if case["srvStat"] != "3" and case["hOut"] not in ["360", "390"]:
+    print(case['qiD.Serial_Number'])
+    if case["srvStat"] != "3" and case["hOut"] not in ["360", "390"]:  # tla !?
         uac_info = uacs[case["qiD.Serial_Number"]]
         optimise_client.create_job(
             world_id,
             {
                 "identity": {
-                    "reference": f"{world}-{instrument.replace('_', '-')}-{case['qiD.Serial_Number']}"
+                    "reference": f"{instrument[:3]}{case['qiD.Serial_Number']}"
                 },
-                "duration": 10,
+                "origin": "ONS",
+                "clientReference": "2",
+                "duration": 30,  # num of no contacts allowed
                 "description": "test-job",
-                "skills": [{"identity": {"reference": "interviewer"}}],
+                "workType": "KTN",
+                "skills": [{"identity": {"reference": "KTN"}}],
+                "dueDate": {
+                    "start": "",  # !?
+                    "end": "",  # !?
+                },
                 "location": {
-                    "address": f"{case['qDataBag.Prem1']}, {case['qDataBag.Prem2']}, {case['qDataBag.Prem3']}, {case['qDataBag.PostTown']}, {case['qDataBag.PostCode']}",
+                    "address": f"{case['qDataBag.Prem1']}, {case['qDataBag.Prem2']}, {case['qDataBag.PostTown']}",
+                    "reference": case['qiD.Serial_Number'],
                     "addressDetail": {
-                        "addressLine1": case["qDataBag.Prem1"],
-                        "addressLine2": case["qDataBag.Prem2"],
-                        "addressLine3": case["qDataBag.Prem3"],
+                        "name": f"{case['qDataBag.Prem1']}, {case['qDataBag.Prem2']}, {case['qDataBag.PostTown']}",
+                        "addressLine2": case["qDataBag.Prem1"],
+                        "addressLine3": case["qDataBag.Prem2"],
                         "addressLine4": case["qDataBag.PostTown"],
                         "postCode": case["qDataBag.PostCode"],
                         "coordinates": {
@@ -109,8 +102,14 @@ for case in cases["reportingData"]:
                     },
                 },
                 "contact": {
+                    "name": case["qDataBag.PostCode"],
                     "homePhone": case["qDataBag.TelNo"],
                     "mobilePhone": case["qDataBag.TelNo2"],
+                    "contactDetail": {
+                        "contactId": instrument[:3],  # survey tla
+                        "contactIdLabel": instrument[-1],  # wave - lms specific!
+                        "preferredName": instrument[4:7],  # 3 digit field period..!?
+                    },
                 },
                 "attributes": [
                     {"name": "UAC1", "value": uac_info["uac_chunks"]["uac1"]},
@@ -121,3 +120,4 @@ for case in cases["reportingData"]:
                 ],
             },
         )
+        break  # testing

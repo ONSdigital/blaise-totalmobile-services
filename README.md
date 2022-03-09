@@ -22,6 +22,10 @@ gcloud iam service-accounts keys create keys.json --iam-account ons-blaise-v2-de
 export GOOGLE_APPLICATION_CREDENTIALS=keys.json
 ```
 
+Open a tunnel to our Blaise RESTful API in your GCP project:
+
+gcloud compute start-iap-tunnel restapi-1 80 --local-host-port=localhost:90 --zone europe-west2-a
+
 ```sh
 poetry install
 poetry run python main.py
