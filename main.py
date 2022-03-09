@@ -1,3 +1,4 @@
+from uuid import uuid4
 from dotenv import dotenv_values
 
 from optimise import OptimiseClient
@@ -26,4 +27,17 @@ optimise_client = OptimiseClient(
 
 world_id = optimise_client.get_world("Region 1")["id"]
 print(world_id)
-print(optimise_client.get_jobs(world_id))
+# print(optimise_client.get_resources())
+print("TOTAL")
+print(len(optimise_client.get_jobs(world_id)))
+# for _ in range(357):
+#     optimise_client.create_job(
+#         world_id,
+#         {
+#             "identity": {"reference": str(uuid4())},
+#             "duration": 10,
+#             "description": "test-job",
+#             "skills": [{"identity": {"reference": "interviewer"}}],
+#         },
+#     )
+# print(optimise_client.get_dispatch())

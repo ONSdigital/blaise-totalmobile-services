@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, List
 
 import requests
 
@@ -15,10 +15,28 @@ class BaseClient:
         this.__access_token = ""
         this.__expires_at = datetime.now()
 
-    def _get(this, path: str) -> Any:
+    def _get(this, path: str) -> requests.Response:
         return requests.get(
             f"{this._url}/{this._instance}/{path}",
             headers=this.__auth_header(),
+        )
+
+    def _get_list(this, path: str, results: List[Any] = []) -> List[Any]:
+        response = this._get(path).json()
+        results = results + response["results"]
+        if (
+            "paging" in response
+            and "next" in response["paging"]
+            and response["paging"]["next"] is not None
+        ):
+            return this._get_list(response["paging"]["next"], results)
+        return results
+
+    def _post(this, path: str, data: Any) -> requests.Response:
+        return requests.post(
+            f"{this._url}/{this._instance}/{path}",
+            headers=this.__auth_header(),
+            json=data,
         )
 
     def __get_token(this) -> str:
