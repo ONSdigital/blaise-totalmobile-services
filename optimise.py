@@ -16,16 +16,16 @@ class OptimiseClient(BaseClient):
         return this._get_list(f"worlds/{world_id}/jobs")
 
     def get_worlds(this) -> List[Any]:
-        return this._get("worlds").json()
+        return this._get_list("worlds")
 
     def get_world(this, world: str) -> Dict[Any, Any]:
         return this._get(f"worlds/{world}").json()
 
     def get_resources(this) -> List[Any]:
-        return this._get("resources").json()
+        return this._get_list("resources")
 
     def get_dispatch(this) -> List[Any]:
-        return this._get("dispatch").json()
+        return this._get_list("dispatch")
 
     def _get(this, path: str) -> Any:
         return super()._get(f"api/optimise/{path}")
