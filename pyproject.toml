@@ -9,6 +9,8 @@ python = "^3.9"
 requests = "^2.27.1"
 blaise-restapi = {git = "https://github.com/ONSdigital/blaise-api-python-client.git", rev = "main"}
 google-auth = "^2.6.0"
+google-cloud-pubsub = "^2.11.0"
+Flask = "^2.0.3"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
@@ -18,6 +20,8 @@ isort = "^5.10.1"
 flake8 = "^4.0.1"
 mypy = "^0.931"
 types-requests = "^2.27.11"
+google-cloud-tasks = "^2.8.1"
+types-Flask = "^1.1.6"
 
 [tool.isort]
 multi_line_output = "3"

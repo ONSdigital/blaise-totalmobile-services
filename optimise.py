@@ -1,7 +1,8 @@
 from typing import Any, Dict, List
 
+import requests
+
 from base import BaseClient
-import json
 
 
 class OptimiseClient(BaseClient):
@@ -10,11 +11,11 @@ class OptimiseClient(BaseClient):
     ) -> None:
         super().__init__(url, instance, client_id, client_secret)
 
-    def create_job(this, world_id: str, job: Dict[Any, Any]) -> Dict[Any, Any]:
-        return this._post(f"worlds/{world_id}/jobs", job).json()
+    def create_job(this, world_id: str, job: Dict[Any, Any]) -> requests.Response:
+        return this._post(f"worlds/{world_id}/jobs", job)
 
     def get_jobs(this, world_id: str) -> List[Any]:
-        return this._get_list(f"worlds/{world_id}/jobs")
+        return this._get_list(f"worlds/{world_id}/jobs?pageSize=1000")
 
     def get_worlds(this) -> List[Any]:
         return this._get_list("worlds")

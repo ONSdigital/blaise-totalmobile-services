@@ -5,3 +5,6 @@ __pycache__
 .mypy_cache
 keys.json
 sample.json
+requirements.txt
+cases.json
+sam.json
