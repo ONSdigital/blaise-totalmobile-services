@@ -1,4 +1,4 @@
-from models.config_model import Config
+from config.config import Config
 
 
 def load_config(application):
