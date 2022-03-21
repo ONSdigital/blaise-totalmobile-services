@@ -1,12 +1,13 @@
-import os
-from client.optimise import OptimiseClient
 import flask
+import os
 
-totalmobile_url = os.environ["TOTALMOBILE_URL"]
-totalmobile_instance = os.environ["TOTALMOBILE_INSTANCE"]
-totalmobile_client_id = os.environ["TOTALMOBILE_CLIENT_ID"]
-totalmobile_client_secret = os.environ["TOTALMOBILE_CLIENT_SECRET"]
+from client.optimise import OptimiseClient
+from dotenv import load_dotenv
 
+
+if os.path.isfile("./.env"):
+    print("Loading environment variables from dotenv file")
+    load_dotenv()
 
 def TestTMCreateJob(request: flask.Request) -> str:
     optimise_client = OptimiseClient(
