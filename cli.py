@@ -44,7 +44,7 @@ optimise_client = OptimiseClient(
 
 world = "Region 1"
 world_id = optimise_client.get_world(world)["id"]
-
+print(world_id)
 
 # uacs = bus_client.get_uacs_by_case_id(instrument)
 
@@ -52,8 +52,8 @@ cases = restapi_client.get_instrument_data(
     blaise_server_park,
     instrument,
     [
-        "qDataBag.UPRN_Latitude",
-        "qDataBag.UPRN_Longitude",
+        # "qDataBag.UPRN_Latitude",
+        # "qDataBag.UPRN_Longitude",
         "qDataBag.Prem1",
         "qDataBag.Prem2",
         "qDataBag.Prem3",
