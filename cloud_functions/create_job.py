@@ -3,7 +3,7 @@ from config import Config
 from client import OptimiseClient
 
 
-def TestTMCreateJob(request: flask.Request) -> str:
+def create_totalmobile_job(request: flask.Request) -> str:
     config = Config.from_env()
 
     config.validate()
