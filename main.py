@@ -1,13 +1,15 @@
 import flask
 import os
 
+from app.app import load_config
 from client.optimise import OptimiseClient
 from dotenv import load_dotenv
-
 
 if os.path.isfile("./.env"):
     print("Loading environment variables from dotenv file")
     load_dotenv()
+
+load_config(app)
 
 def TestTMCreateJob(request: flask.Request) -> str:
     optimise_client = OptimiseClient(

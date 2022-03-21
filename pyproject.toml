@@ -11,6 +11,7 @@ blaise-restapi = {git = "https://github.com/ONSdigital/blaise-api-python-client.
 google-auth = "^2.6.0"
 google-cloud-pubsub = "^2.11.0"
 Flask = "^2.0.3"
+config = "^0.5.1"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
