@@ -10,3 +10,4 @@ requirements.txt
 cases.json
 sam.json
 /.idea/
+data_sources/temp.db
