@@ -1,7 +1,7 @@
 from dotenv import dotenv_values
 from bus import BusClient
 
-from optimise import OptimiseClient
+from client.optimise import OptimiseClient
 import blaise_restapi
 import json
 
@@ -44,36 +44,40 @@ optimise_client = OptimiseClient(
 
 world = "Region 1"
 world_id = optimise_client.get_world(world)["id"]
+response = optimise_client.create_job(world_id, {})
+print(response.status_code)
+print(response.text)
+print(response.json())
 
 
 # uacs = bus_client.get_uacs_by_case_id(instrument)
 
-cases = restapi_client.get_instrument_data(
-    blaise_server_park,
-    instrument,
-    [
-        "qDataBag.UPRN_Latitude",
-        "qDataBag.UPRN_Longitude",
-        "qDataBag.Prem1",
-        "qDataBag.Prem2",
-        "qDataBag.Prem3",
-        "qDataBag.PostTown",
-        "qDataBag.PostCode",
-        "qDataBag.TelNo",
-        "qDataBag.TelNo2",
-        "hOut",
-        "srvStat",
-        "qiD.Serial_Number",
-    ],
-)
+# cases = restapi_client.get_instrument_data(
+#     blaise_server_park,
+#     instrument,
+#     [
+#         "qDataBag.UPRN_Latitude",
+#         "qDataBag.UPRN_Longitude",
+#         "qDataBag.Prem1",
+#         "qDataBag.Prem2",
+#         "qDataBag.Prem3",
+#         "qDataBag.PostTown",
+#         "qDataBag.PostCode",
+#         "qDataBag.TelNo",
+#         "qDataBag.TelNo2",
+#         "hOut",
+#         "srvStat",
+#         "qiD.Serial_Number",
+#     ],
+# )
 
-output_cases = []
-for index, case in enumerate(cases["reportingData"]):
-    if case["srvStat"] != "3" and case["hOut"] not in ["360", "390"]:  # tla !?
-        output_case = {"instrument": instrument, "case": case, "world_id": world_id}
-        output_cases.append(output_case)
-    if index >= 100:
-        break
+# output_cases = []
+# for index, case in enumerate(cases["reportingData"]):
+#     if case["srvStat"] != "3" and case["hOut"] not in ["360", "390"]:  # tla !?
+#         output_case = {"instrument": instrument, "case": case, "world_id": world_id}
+#         output_cases.append(output_case)
+#     if index >= 100:
+#         break
 # uac_info = uacs[case["qiD.Serial_Number"]]
 # optimise_client.create_job(
 #     world_id,
@@ -126,4 +130,4 @@ for index, case in enumerate(cases["reportingData"]):
 #     },
 # )
 # break  # testing
-print(json.dumps(output_cases))
+# print(json.dumps(output_cases))

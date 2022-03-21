@@ -1,5 +1,5 @@
 import os
-from optimise import OptimiseClient
+from client.optimise import OptimiseClient
 import flask
 
 totalmobile_url = os.environ["TOTALMOBILE_URL"]
