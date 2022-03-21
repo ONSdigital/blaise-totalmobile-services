@@ -9,7 +9,10 @@ if os.path.isfile("./.env"):
     print("Loading environment variables from dotenv file")
     load_dotenv()
 
-load_config(app)
+    totalmobile_url = os.environ.get("TOTALMOBILE_URL"),
+    totalmobile_instance = os.environ.get("TOTALMOBILE_INSTANCE"),
+    totalmobile_client_id = os.environ.get("TOTALMOBILE_CLIENT_ID"),
+    totalmobile_client_secret = os.environ.get("TOTALMOBILE_CLIENT_SECRET"),
 
 def TestTMCreateJob(request: flask.Request) -> str:
     optimise_client = OptimiseClient(
