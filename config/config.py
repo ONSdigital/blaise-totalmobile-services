@@ -17,10 +17,10 @@ class Config:
     @classmethod
     def from_env(cls) -> "Config":
         return cls(
-            totalmobile_url=os.environ.get("TOTALMOBILE_URL", ""),
-            totalmobile_instance=os.environ.get("TOTALMOBILE_INSTANCE", ""),
-            totalmobile_client_id=os.environ.get("TOTALMOBILE_CLIENT_ID", ""),
-            totalmobile_client_secret=os.environ.get("TOTALMOBILE_CLIENT_SECRET", ""),
+            totalmobile_url=os.getenv("TOTALMOBILE_URL", ""),
+            totalmobile_instance=os.getenv("TOTALMOBILE_INSTANCE", ""),
+            totalmobile_client_id=os.getenv("TOTALMOBILE_CLIENT_ID", ""),
+            totalmobile_client_secret=os.getenv("TOTALMOBILE_CLIENT_SECRET", ""),
         )
 
     def log(self) -> None:
