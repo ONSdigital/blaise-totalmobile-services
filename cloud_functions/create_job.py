@@ -81,16 +81,6 @@ def create_job_payload(request_json: Dict) -> Dict:
 
 
 def create_totalmobile_job(request: flask.Request) -> str:
-    print("SOME DEBUG STUFF")
-    print(Config)
-    print(
-        Config(
-            totalmobile_url="",
-            totalmobile_instance="",
-            totalmobile_client_id="",
-            totalmobile_client_secret="",
-        )
-    )
     config = Config.from_env()
 
     config.validate()
