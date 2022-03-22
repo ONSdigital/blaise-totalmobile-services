@@ -1,5 +1,5 @@
 from client import OptimiseClient, AuthException
-from config import Config
+from appconfig import Config
 from unittest import mock
 from cloud_functions.create_job import (
     create_job_payload,

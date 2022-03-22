@@ -12,6 +12,7 @@ google-auth = "^2.6.0"
 google-cloud-pubsub = "^2.11.0"
 Flask = "^2.0.3"
 config = "^0.5.1"
+python-dotenv = "^0.19.2"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
@@ -24,6 +25,7 @@ types-requests = "^2.27.11"
 google-cloud-tasks = "^2.8.1"
 types-Flask = "^1.1.6"
 requests-mock = "^1.9.3"
+pytest-cov = "^3.0.0"
 
 [tool.isort]
 multi_line_output = "3"
