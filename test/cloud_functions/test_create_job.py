@@ -2,6 +2,7 @@ from client import OptimiseClient, AuthException
 from config import Config
 from unittest import mock
 from cloud_functions.create_job import (
+    create_job_payload,
     create_totalmobile_job,
     validate_case_data,
     validate_request,
@@ -56,3 +57,45 @@ def test_validate_case_data_missing_fields():
         str(err.value)
         == "Required fields missing from case data: ['qiD.Serial_Number', 'qDataBag.Prem1', 'qDataBag.Prem2', 'qDataBag.Prem3', 'qDataBag.PostTown', 'qDataBag.PostCode', 'qDataBag.TelNo', 'qDataBag.TelNo2']"
     )
+
+
+def test_create_job_payload(mock_create_job_task):
+    assert create_job_payload(mock_create_job_task) == {
+        "attributes": [
+            {"name": "study", "value": "DST2101A"},
+            {"name": "case_id", "value": "100100"},
+        ],
+        "clientReference": "2",
+        "contact": {
+            "contactDetail": {
+                "contactId": "DST",
+                "contactIdLabel": "A",
+                "preferredName": "101",
+            },
+            "homePhone": "TelNo",
+            "mobilePhone": "TelNo2",
+            "name": "PostCode",
+        },
+        "description": "test-job",
+        "dueDate": {"end": "", "start": ""},
+        "duration": 30,
+        "identity": {"reference": "DST2101A-100100"},
+        "location": {
+            "address": "prem1, prem2, PostTown",
+            "addressDetail": {
+                "addressLine2": "prem1",
+                "addressLine3": "prem2",
+                "addressLine4": "PostTown",
+                "coordinates": {
+                    "latitude": "UPRN_Latitude",
+                    "longitude": "UPRN_Longitude",
+                },
+                "name": "prem1, prem2, PostTown",
+                "postCode": "PostCode",
+            },
+            "reference": "100100",
+        },
+        "origin": "ONS",
+        "skills": [{"identity": {"reference": "KTN"}}],
+        "workType": "KTN",
+    }
