@@ -1,5 +1,4 @@
-from services.total_mobile_service import (
-    update_visit_status_request_service, submit_form_result_request_service, complete_visit_request_service)
+from services.total_mobile_service import persist_request_service
 
 
 def update_visit_status_request_handler(request):
@@ -13,7 +12,7 @@ def update_visit_status_request_handler(request):
         print(f"Failed to get reference number: {err}")
         return err, 500
 
-    return update_visit_status_request_service(reference)
+    return persist_request_service(reference, "UPDATE")
 
 
 def submit_form_result_request_handler(request):
@@ -27,7 +26,7 @@ def submit_form_result_request_handler(request):
         print(f"Failed to get reference number: {err}")
         return err, 500
 
-    return submit_form_result_request_service(reference)
+    return persist_request_service(reference, "SUBMITTED")
 
 
 def complete_visit_request_handler(request):
@@ -41,4 +40,4 @@ def complete_visit_request_handler(request):
         print(f"Failed to get reference number: {err}")
         return err, 500
 
-    return complete_visit_request_service(reference)
+    return persist_request_service(reference, "COMPLETED")

@@ -2,47 +2,39 @@ from data_sources.sqlalchemy import db
 from data_sources.sqlalchemy.models import TotalMobile
 
 
-def update_visit_status_request_service(reference):
-    try:
-        insert_record(reference, "UPDATED")
-        print(f"Successfully logged update visit status request: {select_row(reference)}")
-    except Exception as err:
-        print(f"Failed to update visit status: {err}")
-        return err, 500
-    return "", 200
+def persist_request_service(reference, status):
+    if record_exists(reference):
+        return update_record(reference, status)
+    return insert_record(reference, status)
 
 
-def submit_form_result_request_service(reference):
-    try:
-        update_record(reference, "SUBMITTED")
-        print(f"Successfully logged submit form result request: {select_row(reference)}")
-    except Exception as err:
-        print(f"Failed to submit form result: {err}")
-        return err, 500
-    return "", 200
-
-
-def complete_visit_request_service(reference):
-    try:
-        update_record(reference, "COMPLETED")
-        print(f"Successfully logged complete visit request: {select_row(reference)}")
-    except Exception as err:
-        print(f"Failed to submit form result: {err}")
-        return err, 500
-    return "", 200
+def record_exists(reference):
+    return bool(TotalMobile.query.filter_by(reference=reference).first())
 
 
 def insert_record(reference, status):
-    record = TotalMobile(reference=reference, status=status)
-    db.session.add(record)
-    db.session.commit()
+    try:
+        record = TotalMobile(reference=reference, status=status)
+        db.session.add(record)
+        db.session.commit()
+        print(f"Successfully inserted record: {record_details(reference)}")
+        return "", 200
+    except Exception as err:
+        print(f"Could not insert record {reference}: {err}")
+        return err, 500
 
 
 def update_record(reference, status):
-    record = select_row(reference)
-    record.status = status
-    db.session.commit()
+    try:
+        record = record_details(reference)
+        record.status = status
+        db.session.commit()
+        print(f"Successfully updated record: {record_details(reference)}")
+        return "", 200
+    except Exception as err:
+        print(f"Could not update record {reference}: {err}")
+        return err, 500
 
 
-def select_row(reference):
+def record_details(reference):
     return db.session.query(TotalMobile).filter(TotalMobile.reference == reference).one()
