@@ -37,18 +37,14 @@ I'm making the wild assumption this reference is the job-reference and, given th
 
 ## Running
 
-Execute test/app/test_endpoints with pytest or test/services/test_total_mobile_service.py
+Execute test/app/test_endpoints with pytest or test/app/services/test_total_mobile_service.py
 
 ## Future
 
 The following files are part of a POC and were designed to be discarded. When discarding ensure the following files are removed as necessary:
 
 * app/
-* handlers/
-* services/
 * test/app/
-* test/handlers/
-* test/services/
 
 as well as the sample payloads in conftest.py as previously mentioned.
 

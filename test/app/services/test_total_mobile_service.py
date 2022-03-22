@@ -1,6 +1,6 @@
 import pytest
 
-from services.total_mobile_service import record_exists, update_record, insert_record
+from app.services.total_mobile_service import record_exists, update_record, insert_record
 from data_sources.sqlalchemy import db
 from data_sources.sqlalchemy.models import TotalMobile
 

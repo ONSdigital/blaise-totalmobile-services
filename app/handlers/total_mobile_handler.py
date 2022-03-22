@@ -1,4 +1,4 @@
-from services.total_mobile_service import persist_request_service
+from app.services.total_mobile_service import persist_request_service
 
 
 def update_visit_status_request_handler(request):
