@@ -1,6 +1,35 @@
+from typing import Dict, List
 import flask
 from config import Config
 from client import OptimiseClient
+
+
+def validate_request(request_json: Dict) -> None:
+    REQUIRED_FIELDS = ["instrument", "case", "world_id"]
+    missing_fields = __filter_missing_fields(request_json, REQUIRED_FIELDS)
+    if len(missing_fields) >= 1:
+        raise Exception(
+            f"Required fields missing from request payload: {missing_fields}"
+        )
+    validate_case_data(request_json["case"])
+
+
+def validate_case_data(case: Dict) -> None:
+    REQUIRED_FIELDS = [
+        "qiD.Serial_Number",
+        "qDataBag.Prem1",
+        "qDataBag.Prem2",
+        "qDataBag.Prem3",
+        "qDataBag.PostTown",
+        "qDataBag.PostCode",
+        "qDataBag.UPRN_Latitude",
+        "qDataBag.UPRN_Longitude",
+        "qDataBag.TelNo",
+        "qDataBag.TelNo2",
+    ]
+    missing_fields = __filter_missing_fields(case, REQUIRED_FIELDS)
+    if len(missing_fields) >= 1:
+        raise Exception(f"Required fields missing from case data: {missing_fields}")
 
 
 def create_totalmobile_job(request: flask.Request) -> str:
@@ -19,6 +48,8 @@ def create_totalmobile_job(request: flask.Request) -> str:
 
     if request_json is None:
         raise Exception("Function was not triggered by a valid request")
+
+    validate_request(request_json)
 
     instrument = request_json["instrument"]
     case = request_json["case"]
@@ -72,3 +103,7 @@ def create_totalmobile_job(request: flask.Request) -> str:
     print(response.json())
     print(response.status_code)
     return "Done"
+
+
+def __filter_missing_fields(case, REQUIRED_FIELDS) -> List[str]:
+    return list(filter(lambda field: field not in case, REQUIRED_FIELDS))

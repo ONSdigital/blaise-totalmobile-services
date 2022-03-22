@@ -1,7 +1,11 @@
 from client import OptimiseClient, AuthException
 from config import Config
 from unittest import mock
-from cloud_functions.create_job import create_totalmobile_job
+from cloud_functions.create_job import (
+    create_totalmobile_job,
+    validate_case_data,
+    validate_request,
+)
 import flask
 import pytest
 
@@ -24,3 +28,31 @@ def test_create_totalmobile_job_error(
     mock_request = flask.Request.from_values(json=mock_create_job_task)
     with pytest.raises(AuthException):
         create_totalmobile_job(mock_request)
+
+
+def test_validate_request(mock_create_job_task):
+    validate_request(mock_create_job_task)
+
+
+def test_validate_request_missing_fields():
+    with pytest.raises(Exception) as err:
+        validate_request({"world_id": ""})
+    assert (
+        str(err.value)
+        == "Required fields missing from request payload: ['instrument', 'case']"
+    )
+
+
+def test_validate_case_data(mock_create_job_task):
+    validate_case_data(mock_create_job_task["case"])
+
+
+def test_validate_case_data_missing_fields():
+    with pytest.raises(Exception) as err:
+        validate_case_data(
+            {"qDataBag.UPRN_Latitude": "", "qDataBag.UPRN_Longitude": ""}
+        )
+    assert (
+        str(err.value)
+        == "Required fields missing from case data: ['qiD.Serial_Number', 'qDataBag.Prem1', 'qDataBag.Prem2', 'qDataBag.Prem3', 'qDataBag.PostTown', 'qDataBag.PostCode', 'qDataBag.TelNo', 'qDataBag.TelNo2']"
+    )
