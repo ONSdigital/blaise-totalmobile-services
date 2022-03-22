@@ -102,8 +102,7 @@ def create_totalmobile_job(request: flask.Request) -> str:
     response = optimise_client.create_job(
         request_json["world_id"], create_job_payload(request_json)
     )
-    print(response.json())
-    print(response.status_code)
+    print(response)
     return "Done"
 
 

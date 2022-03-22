@@ -37,11 +37,13 @@ class BaseClient:
         return results
 
     def _post(self, path: str, data: Any) -> requests.Response:
-        return requests.post(
+        response = requests.post(
             f"{self._url}/{self._instance}/{path}",
             headers=self.__auth_header(),
             json=data,
         )
+        self.__check_response(response)
+        return response
 
     def __get_token(self) -> str:
         if self.__token_expired():

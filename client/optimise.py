@@ -12,7 +12,7 @@ class OptimiseClient(BaseClient):
         super().__init__(url, instance, client_id, client_secret)
 
     def create_job(self, world_id: str, job: Dict[Any, Any]) -> requests.Response:
-        return self._post(f"worlds/{world_id}/jobs", job)
+        return self._post(f"worlds/{world_id}/jobs", job).json()
 
     def get_jobs(self, world_id: str) -> List[Any]:
         return self._get_list(f"worlds/{world_id}/jobs?pageSize=1000")
