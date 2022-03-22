@@ -1,6 +1,6 @@
 import pytest
 
-from client import AuthException, BadRequest
+from client import AuthException, BadRequest, ServerError
 
 
 def test_get_jobs(requests_mock, optimise_client, mock_auth_response, mock_jobs):
@@ -74,3 +74,13 @@ def test_get_jobs_bad_request_with_json(
         str(err.value)
         == '{"duration": ["The field Duration must be between 1 and 60000."]}'
     )
+
+
+def test_get_jobs_server_error(requests_mock, optimise_client, mock_auth_response):
+    requests_mock.post("/Test/identity/connect/token", json=mock_auth_response)
+    requests_mock.get(
+        "/Test/api/optimise/worlds/test/jobs?pageSize=1000",
+        status_code=500,
+    )
+    with pytest.raises(ServerError) as err:
+        optimise_client.get_jobs("test")

@@ -3,7 +3,7 @@ from typing import Any, List
 
 import requests
 
-from client.errors import AuthException, BadRequest
+from client.errors import AuthException, BadRequest, ServerError
 
 
 class BaseClient:
@@ -68,6 +68,8 @@ class BaseClient:
         return datetime.now() >= self.__expires_at
 
     def __check_response(self, response: requests.Response) -> None:
+        if response.status_code == 500:
+            raise ServerError
         if response.status_code in [401, 403]:
             raise AuthException
         if response.status_code == 400:
