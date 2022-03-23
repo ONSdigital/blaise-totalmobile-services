@@ -26,8 +26,8 @@ mypy = "^0.931"
 types-requests = "^2.27.11"
 google-cloud-tasks = "^2.8.1"
 types-Flask = "^1.1.6"
-requests-mock = "^1.9.3"
 pytest-cov = "^3.0.0"
+requests-mock = "^1.9.0"
 
 [tool.isort]
 multi_line_output = "3"
