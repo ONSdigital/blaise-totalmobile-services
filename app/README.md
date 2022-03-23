@@ -44,6 +44,7 @@ Execute test/app/test_endpoints with pytest or test/app/services/test_total_mobi
 The following files are part of a POC and were designed to be discarded. When discarding ensure the following files are removed as necessary:
 
 * app/
+* data_sources/
 * test/app/
 
 as well as the sample payloads in conftest.py as previously mentioned.
