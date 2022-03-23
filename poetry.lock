@@ -585,6 +585,22 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)", "win-inet-pton"]
 use_chardet_on_py3 = ["chardet (>=3.0.2,<5)"]
 
 [[package]]
+name = "requests-mock"
+version = "1.9.3"
+description = "Mock out responses from the requests package"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+requests = ">=2.3,<3"
+six = "*"
+
+[package.extras]
+fixture = ["fixtures"]
+test = ["fixtures", "mock", "purl", "pytest", "sphinx", "testrepository (>=0.0.18)", "testtools"]
+
+[[package]]
 name = "rsa"
 version = "4.8"
 description = "Pure-Python RSA implementation"
@@ -745,7 +761,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "890c692ef8056c19fd3454fcb15103143038208331d5eaf3fce3a405ec765d11"
+content-hash = "472bbece010ed1fd13bcb644a9d1888cf2222a358042f3a65258f0eec2a5e51a"
 
 [metadata.files]
 atomicwrites = [
