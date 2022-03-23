@@ -18,16 +18,10 @@ class OptimiseClient(BaseClient):
         return self._get_list(f"worlds/{world_id}/jobs?pageSize=1000")
 
     def get_worlds(self) -> List[Any]:
-        return self._get_list("worlds")
+        return self._get("worlds").json()
 
     def get_world(self, world: str) -> Dict[Any, Any]:
         return self._get(f"worlds/{world}").json()
-
-    def get_resources(self) -> List[Any]:
-        return self._get_list("resources")
-
-    def get_dispatch(self) -> List[Any]:
-        return self._get_list("dispatch")
 
     def _get(self, path: str) -> Any:
         return super()._get(f"api/optimise/{path}")

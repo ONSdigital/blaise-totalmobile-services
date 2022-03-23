@@ -333,3 +333,22 @@ def complete_visit_request_sample():
       ]
     }
     """)
+
+
+@pytest.fixture
+def mock_worlds(mock_world):
+    return [
+        mock_world
+    ]
+
+
+@pytest.fixture
+def mock_world():
+    return {
+            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "identity": {
+                "reference": "james"
+            },
+            "type": "engineer"
+        }
+
