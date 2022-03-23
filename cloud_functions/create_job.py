@@ -1,25 +1,18 @@
 import flask
-import os
+from config import Config
+from client import OptimiseClient
 
-from app.app import load_config
-from client.optimise import OptimiseClient
-from dotenv import load_dotenv
 
-if os.path.isfile("./.env"):
-    print("Loading environment variables from dotenv file")
-    load_dotenv()
+def create_totalmobile_job(request: flask.Request) -> str:
+    config = Config.from_env()
 
-    totalmobile_url = os.environ.get("TOTALMOBILE_URL"),
-    totalmobile_instance = os.environ.get("TOTALMOBILE_INSTANCE"),
-    totalmobile_client_id = os.environ.get("TOTALMOBILE_CLIENT_ID"),
-    totalmobile_client_secret = os.environ.get("TOTALMOBILE_CLIENT_SECRET"),
+    config.validate()
 
-def TestTMCreateJob(request: flask.Request) -> str:
     optimise_client = OptimiseClient(
-        totalmobile_url,
-        totalmobile_instance,
-        totalmobile_client_id,
-        totalmobile_client_secret,
+        config.totalmobile_url,
+        config.totalmobile_instance,
+        config.totalmobile_client_id,
+        config.totalmobile_client_secret,
     )
 
     request_json = request.get_json()
@@ -78,6 +71,4 @@ def TestTMCreateJob(request: flask.Request) -> str:
     )
     print(response.json())
     print(response.status_code)
-    if response.status_code != 201:
-        raise Exception(f"Error response {response.status_code}: {response.text}")
     return "Done"
