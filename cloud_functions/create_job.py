@@ -32,12 +32,16 @@ def validate_case_data(case: Dict) -> None:
         raise Exception(f"Required fields missing from case data: {missing_fields}")
 
 
+def job_reference(instrument: str, case_id: str) -> str:
+    return f"{instrument.replace('_', '-')}.{case_id}"
+
+
 def create_job_payload(request_json: Dict) -> Dict:
     instrument = request_json["instrument"]
     case = request_json["case"]
 
     return {
-        "identity": {"reference": f"{instrument}-{case['qiD.Serial_Number']}"},
+        "identity": {"reference": job_reference(instrument, case["qiD.Serial_Number"])},
         "origin": "ONS",
         "clientReference": "2",  # num of no contacts allowed
         "duration": 30,

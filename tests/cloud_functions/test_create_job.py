@@ -4,6 +4,7 @@ from unittest import mock
 from cloud_functions.create_job import (
     create_job_payload,
     create_totalmobile_job,
+    job_reference,
     validate_case_data,
     validate_request,
 )
@@ -79,7 +80,7 @@ def test_create_job_payload(mock_create_job_task):
         "description": "test-job",
         "dueDate": {"end": "", "start": ""},
         "duration": 30,
-        "identity": {"reference": "DST2101A-100100"},
+        "identity": {"reference": "DST2101A.100100"},
         "location": {
             "address": "prem1, prem2, PostTown",
             "addressDetail": {
@@ -99,3 +100,7 @@ def test_create_job_payload(mock_create_job_task):
         "skills": [{"identity": {"reference": "KTN"}}],
         "workType": "KTN",
     }
+
+
+def test_job_reference():
+    assert job_reference("LMS2201A_BB1", "100100") == "LMS2201A-BB1.100100"

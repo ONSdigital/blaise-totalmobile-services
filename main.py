@@ -9,5 +9,5 @@ if os.path.isfile("./.env"):
     load_dotenv()
 
 
-def TestTMCreateJob(request: flask.Request) -> str:
+def CreateTMJob(request: flask.Request) -> str:
     return create_totalmobile_job(request)
