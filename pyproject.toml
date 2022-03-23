@@ -24,6 +24,9 @@ mypy = "^0.931"
 types-requests = "^2.27.11"
 google-cloud-tasks = "^2.8.1"
 types-Flask = "^1.1.6"
+Flask = "^2.0.3"
+Flask-SQLAlchemy = "^2.5.1"
+SQLAlchemy = "^1.4.32"
 
 [tool.isort]
 multi_line_output = "3"
