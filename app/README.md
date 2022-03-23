@@ -37,12 +37,15 @@ I'm making the wild assumption this reference is the job-reference and, given th
 
 ## Running
 
-Execute test/app/test_endpoints with pytest or test/app/services/test_total_mobile_service.py
+Run run.py. Hook it up to Postman using the localhost address printed in the terminal. This will return a database error but plugging up the database is not in the scope of the POC. Running through postman however proves the endpoints return something.
+
+Alternatively, execute test/app/test_endpoints with pytest and/or test/app/services/test_total_mobile_service.py which does plug in the temporary database. Setting debug points and debugging the tests will help you walk through the flow of data from endpoint to handler to service to database and back again.
 
 ## Future
 
 The following files are part of a POC and were designed to be discarded. When discarding ensure the following files are removed as necessary:
 
+* run.py
 * app/
 * data_sources/
 * test/app/
@@ -53,5 +56,6 @@ If however these files will be expanded on the following work needs to be comple
 
 * Securely expose endpoints externally
 * Authorise user credentials from request
+* Plug in an appropriate datasource and remove SQLAlchemy and temp.db
 * Improve logging
 * Expand tests to include unhappy paths

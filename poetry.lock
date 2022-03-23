@@ -708,7 +708,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "df12bbd6ba3c634bf3236676f6a08a9438bb90cdb2d1b4d124c7e30af266672f"
+content-hash = "fc647740f502a739d028da6967b36efe07f37f2add664b540044ab3101e6c572"
 
 [metadata.files]
 atomicwrites = [
