@@ -18,7 +18,7 @@ INSTRUMENT_NAME=
 
 Generate a GCP creds file:
 ```sh
-gcloud iam service-accounts keys create keys.json --iam-account ons-blaise-v2-dev-sandbox123@appspot.gserviceaccount.com
+gcloud iam services-accounts keys create keys.json --iam-account ons-blaise-v2-dev-sandbox123@appspot.gserviceaccount.com
 export GOOGLE_APPLICATION_CREDENTIALS=keys.json
 ```
 
@@ -39,7 +39,7 @@ gcloud functions deploy TestTMCreateJob \
   --source=. \
   --region=europe-west2 \
   --runtime=python39 \
-  --service-account="ons-blaise-v2-dev-sandbox123@appspot.gserviceaccount.com" \
+  --services-account="ons-blaise-v2-dev-sandbox123@appspot.gserviceaccount.com" \
   --trigger-http \
   --set-env-vars='TOTALMOBILE_URL=<totalmobile_url>,TOTALMOBILE_INSTANCE=<totalmobile_instance>,TOTALMOBILE_CLIENT_ID=<totalmobile_client_id>,TOTALMOBILE_CLIENT_SECRET=<totalmobile_client_id>'
 ```
