@@ -151,20 +151,20 @@ def test_get_worlds(requests_mock, optimise_client, mock_auth_response, mock_wor
         {
             "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             "identity": {
-                "reference": "james"
+                "reference": "test"
             },
-            "type": "engineer"
+            "type": "foo"
         }
     ]
 
 
 def test_get_world(requests_mock, optimise_client, mock_auth_response, mock_world):
     requests_mock.post("/Test/identity/connect/token", json=mock_auth_response)
-    requests_mock.get("/Test/api/optimise/worlds/james", json=mock_world)
-    assert optimise_client.get_world("james") == {
+    requests_mock.get("/Test/api/optimise/worlds/test", json=mock_world)
+    assert optimise_client.get_world("test") == {
         "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "identity": {
-            "reference": "james"
+            "reference": "test"
         },
-        "type": "engineer"
+        "type": "foo"
     }
