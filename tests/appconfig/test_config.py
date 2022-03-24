@@ -1,4 +1,4 @@
-from config import Config, ConfigError
+from appconfig import Config, ConfigError
 import pytest
 
 
@@ -14,4 +14,14 @@ def test_config_validate_err():
     assert (
         str(err.value)
         == "Config fields not set: ['totalmobile_url', 'totalmobile_instance']"
+    )
+
+
+def test_config_from_env():
+    config = Config.from_env()
+    assert config == Config(
+        totalmobile_url="",
+        totalmobile_instance="",
+        totalmobile_client_id="",
+        totalmobile_client_secret="",
     )

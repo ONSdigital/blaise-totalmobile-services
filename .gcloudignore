@@ -21,3 +21,5 @@ __pycache__
 .mypy_cache
 keys.json
 *.json
+test
+tests

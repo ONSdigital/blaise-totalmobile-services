@@ -3,7 +3,7 @@ from typing import Any, List
 
 import requests
 
-from client.errors import AuthException, BadRequest
+from client.errors import AuthException, BadRequest, ServerError
 
 
 class BaseClient:
@@ -37,11 +37,13 @@ class BaseClient:
         return results
 
     def _post(self, path: str, data: Any) -> requests.Response:
-        return requests.post(
+        response = requests.post(
             f"{self._url}/{self._instance}/{path}",
             headers=self.__auth_header(),
             json=data,
         )
+        self.__check_response(response)
+        return response
 
     def __get_token(self) -> str:
         if self.__token_expired():
@@ -68,6 +70,8 @@ class BaseClient:
         return datetime.now() >= self.__expires_at
 
     def __check_response(self, response: requests.Response) -> None:
+        if response.status_code == 500:
+            raise ServerError
         if response.status_code in [401, 403]:
             raise AuthException
         if response.status_code == 400:
