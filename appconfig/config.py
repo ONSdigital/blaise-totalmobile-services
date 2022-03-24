@@ -13,6 +13,11 @@ class Config:
     totalmobile_instance: str
     totalmobile_client_id: str
     totalmobile_client_secret: str
+    totalmobile_jobs_queue_id: str
+    totalmobile_job_cloud_function: str
+    gcloud_project: str
+    region: str
+
 
     @classmethod
     def from_env(cls) -> "Config":
@@ -21,6 +26,10 @@ class Config:
             totalmobile_instance=os.getenv("TOTALMOBILE_INSTANCE", ""),
             totalmobile_client_id=os.getenv("TOTALMOBILE_CLIENT_ID", ""),
             totalmobile_client_secret=os.getenv("TOTALMOBILE_CLIENT_SECRET", ""),
+            totalmobile_jobs_queue_id=os.getenv("TOTALMOBILE_JOBS_QUEUE_ID", ""),
+            totalmobile_job_cloud_function=os.getenv("TOTALMOBILE_JOBS_CLOUD_FUNCTION", ""),
+            gcloud_project=os.getenv("GCLOUD_PROJECT", ""),
+            region=os.getenv("REGION", "")
         )
 
     def log(self) -> None:
