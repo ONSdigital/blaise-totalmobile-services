@@ -18,7 +18,6 @@ class Config:
     gcloud_project: str
     region: str
 
-
     @classmethod
     def from_env(cls) -> "Config":
         return cls(
@@ -36,9 +35,9 @@ class Config:
         print(f"Configuration - totalmobile_url: {self.totalmobile_url}")
         print(f"Configuration - totalmobile_instance: {self.totalmobile_instance}")
         print(f"Configuration - totalmobile_client_id: {self.totalmobile_client_id}")
-        print(
-            f"Configuration - totalmobile_client_secret: {self.totalmobile_client_secret}"
-        )
+        print(f"Configuration - totalmobile_client_secret: {self.totalmobile_client_secret}")
+        print(f"Configuration - gcloud_project: {self.gcloud_project}")
+        print(f"Configuration - region: {self.region}")
 
     def validate(self) -> None:
         errored_fields = []
