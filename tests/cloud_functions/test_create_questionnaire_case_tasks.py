@@ -33,7 +33,7 @@ def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_mod
 @patch.object(Config, "from_env")
 def test_prepare_tasks_returns_an_expected_number_of_tasks_when_given_a_list_of_job_models(_mock_config_from_env):
     # arrange
-    _mock_config_from_env.return_value = Config("", "", "", "", "", "", " ", "")
+    _mock_config_from_env.return_value = Config("", "", "", "", "", "", " ", "", "", "")
 
     model1 = TotalmobileJobModel({"qiD.Serial_Number": "90001"}, "OPN2101A", "world")
     model2 = TotalmobileJobModel({"qiD.Serial_Number": "90002"}, "OPN2101A", "world")
@@ -49,7 +49,7 @@ def test_prepare_tasks_returns_an_expected_number_of_tasks_when_given_a_list_of_
 @patch.object(Config, "from_env")
 def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(_mock_config_from_env):
     # arrange
-    _mock_config_from_env.return_value = Config("", "", "", "", "totalmobile_jobs_queue_id", "cloud_function", "project", "region")
+    _mock_config_from_env.return_value = Config("", "", "", "", "totalmobile_jobs_queue_id", "cloud_function", "project", "region", "rest_api_url", "gusty")
 
     model1 = TotalmobileJobModel({"qiD.Serial_Number": "90001"}, "OPN2101A", "world")
     model2 = TotalmobileJobModel({"qiD.Serial_Number": "90002"}, "OPN2101A", "world")

@@ -3,12 +3,12 @@ import pytest
 
 
 def test_config_validate():
-    config = Config("foo", "bar", "fwibble", "fish", "queue-id", "cloud-function", "blaise-sandbox", "region")
+    config = Config("foo", "bar", "fwibble", "fish", "queue-id", "cloud-function", "blaise-sandbox", "region", "rest_api_url", "gusty")
     config.validate()
 
 
 def test_config_validate_err():
-    config = Config("", "", "fwibble", "fish", "queue-id", "cloud-function", "blaise-sandbox", "region")
+    config = Config("", "", "fwibble", "fish", "queue-id", "cloud-function", "blaise-sandbox", "region", "rest_api_url", "gusty")
     with pytest.raises(ConfigError) as err:
         config.validate()
     assert (
@@ -28,4 +28,6 @@ def test_config_from_env():
         totalmobile_job_cloud_function="",
         gcloud_project="",
         region="",
+        blaise_api_url="",
+        blaise_server_park=""
     )

@@ -6,7 +6,35 @@ from uuid import uuid4
 from models.totalmobile_job_model import TotalmobileJobModel
 from google.cloud import tasks_v2
 
+import blaise_restapi
 import json
+
+
+def retrieve_case_data(questionnaire_name: str) -> list[str]:
+    config = Config.from_env()
+    restapi_client = blaise_restapi.Client(config.blaise_api_url)
+
+    cases = restapi_client.get_instrument_data(
+        config.blaise_server_park,
+        questionnaire_name,
+        [
+            "qDataBag.UPRN_Latitude",
+            "qDataBag.UPRN_Longitude",
+            "qDataBag.Prem1",
+            "qDataBag.Prem2",
+            "qDataBag.Prem3",
+            "qDataBag.PostTown",
+            "qDataBag.PostCode",
+            "qDataBag.TelNo",
+            "qDataBag.TelNo2",
+            "hOut",
+            "srvStat",
+            "qiD.Serial_Number",
+        ],
+    )
+
+
+
 
 
 def create_task_name(job_model: TotalmobileJobModel) -> str:

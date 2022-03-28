@@ -17,6 +17,8 @@ class Config:
     totalmobile_job_cloud_function: str
     gcloud_project: str
     region: str
+    blaise_api_url: str
+    blaise_server_park: str
 
     @classmethod
     def from_env(cls) -> "Config":
@@ -28,7 +30,9 @@ class Config:
             totalmobile_jobs_queue_id=os.getenv("TOTALMOBILE_JOBS_QUEUE_ID", ""),
             totalmobile_job_cloud_function=os.getenv("TOTALMOBILE_JOBS_CLOUD_FUNCTION", ""),
             gcloud_project=os.getenv("GCLOUD_PROJECT", ""),
-            region=os.getenv("REGION", "")
+            region=os.getenv("REGION", ""),
+            blaise_api_url=os.getenv("BLAISE_API_URL", ""),
+            blaise_server_park=os.getenv("BLAISE_SERVER_PARK", "")
         )
 
     def log(self) -> None:
@@ -38,6 +42,8 @@ class Config:
         print(f"Configuration - totalmobile_client_secret: {self.totalmobile_client_secret}")
         print(f"Configuration - gcloud_project: {self.gcloud_project}")
         print(f"Configuration - region: {self.region}")
+        print(f"Configuration - blaise_api_url: {self.blaise_api_url}")
+        print(f"Configuration - blaise_server_park: {self.blaise_server_park}")
 
     def validate(self) -> None:
         errored_fields = []
