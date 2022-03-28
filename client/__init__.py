@@ -1,4 +1,4 @@
 from .optimise import OptimiseClient
-from .errors import AuthException, BadRequest
+from .errors import AuthException, BadRequest, ServerError
 
-__all__ = ["OptimiseClient", "AuthException", "BadRequest"]
+__all__ = ["OptimiseClient", "AuthException", "BadRequest", "ServerError"]

@@ -6,6 +6,10 @@ class AuthException(Exception):
     pass
 
 
+class ServerError(Exception):
+    pass
+
+
 class BadRequest(Exception):
     def __init__(self, error_message: str = "", error_details: Any = None) -> None:
         super().__init__()
