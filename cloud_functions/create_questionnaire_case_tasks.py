@@ -7,9 +7,23 @@ from models.totalmobile_job_model import TotalmobileJobModel
 from google.cloud import tasks_v2
 from client.optimise import OptimiseClient
 
-
 import blaise_restapi
+import flask
 import json
+import asyncio
+
+
+def __filter_missing_fields(case, REQUIRED_FIELDS) -> List[str]:
+    return list(filter(lambda field: field not in case, REQUIRED_FIELDS))
+
+
+def validate_request(request_json: Dict) -> None:
+    REQUIRED_FIELDS = ["instrument"]
+    missing_fields = __filter_missing_fields(request_json, REQUIRED_FIELDS)
+    if len(missing_fields) >= 1:
+        raise Exception(
+            f"Required fields missing from request payload: {missing_fields}"
+        )
 
 
 def retrieve_case_data(instrument_name: str, config: Config) -> Dict[str, str]:
@@ -99,16 +113,22 @@ async def run(task_requests: List[tasks_v2.CreateTaskRequest]) -> None:
     await asyncio.gather(*create_tasks(task_requests, task_client))
 
 
-def create_case_tasks_for_instrument(instrument_name: str) -> None:
-    # TODO:
-    # filter on business logic for week 1 and week 2 criteria
-
+def create_case_tasks_for_instrument(request: flask.Request) -> str:
     config = Config.from_env()
+
+    request_json = request.get_json()
+    if request_json is None:
+        raise Exception("Function was not triggered by a valid request")
+    validate_request(request_json)
+
+    instrument_name = request_json["instrument"]
     world_id = retrieve_world_id(config)
 
     cases = retrieve_case_data(instrument_name, config)
     filtered_cases = filter_cases(cases)
+
     totalmobile_job_models = map_totalmobile_job_models(filtered_cases, world_id, instrument_name)
     task_requests = prepare_tasks(totalmobile_job_models)
 
     asyncio.get_event_loop().run_until_complete(run(task_requests))
+    return "Done"

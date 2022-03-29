@@ -1,6 +1,7 @@
 from appconfig import Config
 from cloud_functions.create_questionnaire_case_tasks import create_task_name, prepare_tasks, retrieve_case_data, \
-    retrieve_world_id, map_totalmobile_job_models, create_tasks, filter_cases
+    retrieve_world_id, map_totalmobile_job_models, create_tasks, filter_cases, create_case_tasks_for_instrument, \
+    validate_request
 from models.totalmobile_job_model import TotalmobileJobModel
 from unittest import mock
 from client.optimise import OptimiseClient
@@ -8,6 +9,8 @@ from google.cloud import tasks_v2
 
 import json
 import blaise_restapi
+import pytest
+import flask
 
 
 def test_create_task_name_returns_correct_name_when_called():
@@ -268,3 +271,53 @@ def test_filter_cases_returns_cases_where_srv_stat_is_not_3_or_hOut_is_not_360_o
             "srvStat": "2"
         }
     ]
+
+
+def test_validate_request(mock_create_job_task):
+    validate_request(mock_create_job_task)
+
+
+def test_validate_request_missing_fields():
+    with pytest.raises(Exception) as err:
+        validate_request({"world_id": ""})
+    assert (
+            str(err.value)
+            == "Required fields missing from request payload: ['instrument']"
+    )
+
+
+@mock.patch.object(Config, "from_env")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.validate_request")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_id")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.map_totalmobile_job_models")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.prepare_tasks")
+def test_create_case_tasks_for_instrument(
+        mock_prepare_tasks,
+        mock_map_totalmobile_job_models,
+        mock_filter_cases,
+        mock_retrieve_case_data,
+        mock_retrieve_world_id,
+        mock_validate_request,
+        mock_from_env
+):
+    # arrange
+    mock_request = flask.Request.from_values(json={"instrument": "OPN2101A"})
+
+    # act
+    result = create_case_tasks_for_instrument(mock_request)
+
+    # assert
+    assert result == "Done"
+
+
+@mock.patch.object(Config, "from_env")
+def test_create_case_tasks_for_instrument_error(mock_from_env):
+    # arrange
+    mock_request = flask.Request.from_values(json={"questionnaire": ""})
+
+    # assert
+    with pytest.raises(Exception) as err:
+        create_case_tasks_for_instrument(mock_request)
+    assert str(err.value) == "Required fields missing from request payload: ['instrument']"
