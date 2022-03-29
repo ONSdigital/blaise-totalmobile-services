@@ -1,6 +1,6 @@
 from appconfig import Config
 from cloud_functions.create_questionnaire_case_tasks import create_task_name, prepare_tasks, retrieve_case_data, \
-    retrieve_world_id, map_totalmobile_job_models, create_tasks
+    retrieve_world_id, map_totalmobile_job_models, create_tasks, filter_cases
 from models.totalmobile_job_model import TotalmobileJobModel
 from unittest import mock
 from client.optimise import OptimiseClient
@@ -213,3 +213,58 @@ def test_create_tasks_returns_the_correct_number_of_tasks(mock_create_task):
 
     # assert
     assert len(result) == 2
+
+
+def test_filter_cases_returns_cases_where_srv_stat_is_not_3_or_hOut_is_not_360_or_390():
+    # arrange
+    cases = [
+        {
+            # should return
+            "srvStat": "1",
+            "hOut": "210"
+        },
+        {
+            # should return
+            "srvStat": "2",
+            "hOut": "210"
+        },
+        {
+            # should not return
+            "srvStat": "3",
+            "hOut": "360"
+        },
+        {
+            # should not return
+            "srvStat": "3",
+            "hOut": "390"
+        },
+        {
+            # should not return
+            "srvStat": "3",
+            "hOut": "210"
+        },
+        {
+            # should not return
+            "srvStat": "1",
+            "hOut": "360"
+        },
+        {
+            # should not return
+            "srvStat": "2",
+            "hOut": "390"
+        },
+    ]
+    # act
+    result = filter_cases(cases)
+
+    # assert
+    assert result == [
+        {
+            "hOut": "210",
+            "srvStat": "1"
+        },
+        {
+            "hOut": "210",
+            "srvStat": "2"
+        }
+    ]

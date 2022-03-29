@@ -36,9 +36,12 @@ def retrieve_case_data(instrument_name: str, config: Config) -> Dict[str, str]:
     return instrument_data["reportingData"]
 
 
-def filter_cases(cases: Dict[str, str]) -> None:
-    return cases
-    # if case["srvStat"] != "3" and case["hOut"] not in ["360", "390"]
+def filter_cases(cases: list[Dict[str, str]]) -> list[Dict[str, str]]:
+    filtered_cases = []
+    for case in cases:
+        if case["srvStat"] != "3" and case["hOut"] not in ["360", "390"]:
+            filtered_cases.append(case)
+    return filtered_cases
 
 
 def retrieve_world_id(config: Config) -> str:
@@ -105,7 +108,7 @@ def create_case_tasks_for_instrument(instrument_name: str) -> None:
 
     cases = retrieve_case_data(instrument_name, config)
     filtered_cases = filter_cases(cases)
-    totalmobile_job_models = map_totalmobile_job_models(cases, world_id, instrument_name)
+    totalmobile_job_models = map_totalmobile_job_models(filtered_cases, world_id, instrument_name)
     task_requests = prepare_tasks(totalmobile_job_models)
 
     asyncio.get_event_loop().run_until_complete(run(task_requests))
