@@ -26,6 +26,17 @@ def validate_request(request_json: Dict) -> None:
         )
 
 
+def retrieve_world_id(config: Config) -> str:
+    optimise_client = OptimiseClient(
+        config.totalmobile_url,
+        config.totalmobile_instance,
+        config.totalmobile_client_id,
+        config.totalmobile_client_secret,
+    )
+    world = "Region 1"
+    return optimise_client.get_world(world)["id"]
+
+
 def retrieve_case_data(instrument_name: str, config: Config) -> Dict[str, str]:
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
 
@@ -58,23 +69,12 @@ def filter_cases(cases: list[Dict[str, str]]) -> list[Dict[str, str]]:
     return filtered_cases
 
 
-def retrieve_world_id(config: Config) -> str:
-    optimise_client = OptimiseClient(
-        config.totalmobile_url,
-        config.totalmobile_instance,
-        config.totalmobile_client_id,
-        config.totalmobile_client_secret,
-    )
-    world = "Region 1"
-    return optimise_client.get_world(world)["id"]
+def map_totalmobile_job_models(cases: Dict[str, str], world_id: str, instrument_name: str) -> list[TotalmobileJobModel]:
+    return [TotalmobileJobModel(instrument_name, world_id, case) for case in cases]
 
 
 def create_task_name(job_model: TotalmobileJobModel) -> str:
     return f"{job_model.instrument_name}-{job_model.case_data['qiD.Serial_Number']}-{str(uuid4())}"
-
-
-def map_totalmobile_job_models(cases: Dict[str, str], world_id: str, instrument_name: str) -> list[TotalmobileJobModel]:
-    return [TotalmobileJobModel(instrument_name, world_id, case) for case in cases]
 
 
 def prepare_tasks(*job_models: TotalmobileJobModel) -> List[tasks_v2.CreateTaskRequest]:
