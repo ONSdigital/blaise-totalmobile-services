@@ -1,5 +1,5 @@
 from datetime import timedelta
-from typing import List, Dict
+from typing import List, Dict, Coroutine, Any
 from google.protobuf.duration_pb2 import Duration
 from appconfig import Config
 from uuid import uuid4
@@ -12,12 +12,12 @@ import blaise_restapi
 import json
 
 
-def retrieve_case_data(questionnaire_name: str, config: Config) -> Dict[str, str]:
+def retrieve_case_data(instrument_name: str, config: Config) -> Dict[str, str]:
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
 
     instrument_data = restapi_client.get_instrument_data(
         config.blaise_server_park,
-        questionnaire_name,
+        instrument_name,
         [
             "qDataBag.UPRN_Latitude",
             "qDataBag.UPRN_Longitude",
@@ -36,6 +36,11 @@ def retrieve_case_data(questionnaire_name: str, config: Config) -> Dict[str, str
     return instrument_data["reportingData"]
 
 
+def filter_cases(cases: Dict[str, str]) -> None:
+    return cases
+    # if case["srvStat"] != "3" and case["hOut"] not in ["360", "390"]
+
+
 def retrieve_world_id(config: Config) -> str:
     optimise_client = OptimiseClient(
         config.totalmobile_url,
@@ -48,14 +53,11 @@ def retrieve_world_id(config: Config) -> str:
 
 
 def create_task_name(job_model: TotalmobileJobModel) -> str:
-    return f"{job_model.questionnaire_name}-{job_model.case_data['qiD.Serial_Number']}-{str(uuid4())}"
+    return f"{job_model.instrument_name}-{job_model.case_data['qiD.Serial_Number']}-{str(uuid4())}"
 
 
-def map_totalmobile_job_models(cases: Dict[str, str], world_id: str, questionnaire_name: str) -> list[TotalmobileJobModel]:
-    jobs = []
-    for case in cases:
-        jobs.append(TotalmobileJobModel(questionnaire_name, world_id, case))
-    return jobs
+def map_totalmobile_job_models(cases: Dict[str, str], world_id: str, instrument_name: str) -> list[TotalmobileJobModel]:
+    return [TotalmobileJobModel(instrument_name, world_id, case) for case in cases]
 
 
 def prepare_tasks(*job_models: TotalmobileJobModel) -> List[tasks_v2.CreateTaskRequest]:
@@ -84,16 +86,26 @@ def prepare_tasks(*job_models: TotalmobileJobModel) -> List[tasks_v2.CreateTaskR
         task_requests.append(request)
     return task_requests
 
-def create_case_tasks_for_questionnaire(questionnaire_name: str) -> None:
-    # TODO
+
+def create_tasks(task_requests: List[tasks_v2.CreateTaskRequest], task_client) -> List[Coroutine[Any, Any, tasks_v2.Task]]:
+    return [task_client.create_task(request) for request in task_requests]
+
+
+async def run(task_requests: List[tasks_v2.CreateTaskRequest]) -> None:
+    task_client = tasks_v2.CloudTasksAsyncClient()
+    await asyncio.gather(*create_tasks(task_requests, task_client))
+
+
+def create_case_tasks_for_instrument(instrument_name: str) -> None:
+    # TODO:
     # filter on business logic for week 1 and week 2 criteria
-    # push to queue
 
     config = Config.from_env()
     world_id = retrieve_world_id(config)
 
-    cases = retrieve_case_data(questionnaire_name, config)
-    filtered_cases = cases
+    cases = retrieve_case_data(instrument_name, config)
+    filtered_cases = filter_cases(cases)
+    totalmobile_job_models = map_totalmobile_job_models(cases, world_id, instrument_name)
+    task_requests = prepare_tasks(totalmobile_job_models)
 
-    totalmobile_job_models = map_totalmobile_job_models(cases, world_id, questionnaire_name)
-    total_mobile_job_tasks = prepare_tasks(totalmobile_job_models)
+    asyncio.get_event_loop().run_until_complete(run(task_requests))
