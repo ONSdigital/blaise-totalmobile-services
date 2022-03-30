@@ -289,12 +289,12 @@ def test_validate_request_missing_fields():
 
 
 @mock.patch.object(Config, "from_env")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.validate_request")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_id")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.map_totalmobile_job_models")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.prepare_tasks")
+@mock.patch("cloud_functions.create_instrument_case_tasks.validate_request")
+@mock.patch("cloud_functions.create_instrument_case_tasks.retrieve_world_id")
+@mock.patch("cloud_functions.create_instrument_case_tasks.retrieve_case_data")
+@mock.patch("cloud_functions.create_instrument_case_tasks.filter_cases")
+@mock.patch("cloud_functions.create_instrument_case_tasks.map_totalmobile_job_models")
+@mock.patch("cloud_functions.create_instrument_case_tasks.prepare_tasks")
 def test_create_case_tasks_for_instrument(
         mock_prepare_tasks,
         mock_map_totalmobile_job_models,
