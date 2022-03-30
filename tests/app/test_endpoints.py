@@ -18,13 +18,11 @@ def test_submit_form_result_request_returns_200(mock_update_case_telephone_numbe
 
 def test_update_visit_status_request_returns_200(capsys, client, upload_visit_status_request_sample):
     client.post("/ons/totalmobile-incoming/UpdateVisitStatusRequest", json=upload_visit_status_request_sample)
-    out, err = capsys.readouterr()
-    actual_messages = out.splitlines()
-    assert expected_messages == actual_messages
+    actual_messages, err = capsys.readouterr()
+    assert expected_messages == actual_messages.splitlines()
 
 
 def test_complete_visit_request_returns_200(capsys, client, complete_visit_request_sample):
     client.post("/ons/totalmobile-incoming/UpdateVisitStatusRequest", json=complete_visit_request_sample)
-    out, err = capsys.readouterr()
-    actual_messages = out.splitlines()
-    assert expected_messages == actual_messages
+    actual_messages, err = capsys.readouterr()
+    assert expected_messages == actual_messages.splitlines()
