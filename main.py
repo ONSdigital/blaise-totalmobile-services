@@ -2,7 +2,7 @@ import flask
 import os
 
 from cloud_functions.create_job import create_totalmobile_job
-from cloud_functions.create_instrument_case_tasks import
+from cloud_functions.create_instrument_case_tasks import create_case_tasks_for_instrument
 from dotenv import load_dotenv
 
 if os.path.isfile("./.env"):
