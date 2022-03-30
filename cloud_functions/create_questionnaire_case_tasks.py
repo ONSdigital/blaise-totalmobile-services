@@ -96,6 +96,7 @@ def prepare_tasks(*job_models: TotalmobileJobModel) -> List[tasks_v2.CreateTaskR
                     headers={
                         "Content-Type": "application/json",
                     },
+                    oidc_token={"service_account_email": config.cloud_function_sa},
                 ),
                 dispatch_deadline=duration,
             ),
