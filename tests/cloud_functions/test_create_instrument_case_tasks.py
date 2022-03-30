@@ -1,5 +1,5 @@
 from appconfig import Config
-from cloud_functions.create_questionnaire_case_tasks import create_task_name, prepare_tasks, retrieve_case_data, \
+from cloud_functions.create_instrument_case_tasks import create_task_name, prepare_tasks, retrieve_case_data, \
     retrieve_world_id, map_totalmobile_job_models, create_tasks, filter_cases, create_case_tasks_for_instrument, \
     validate_request
 from models.totalmobile_job_model import TotalmobileJobModel
