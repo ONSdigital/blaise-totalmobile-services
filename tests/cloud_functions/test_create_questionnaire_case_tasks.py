@@ -58,7 +58,7 @@ def test_prepare_tasks_returns_an_expected_number_of_tasks_when_given_a_list_of_
 def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(_mock_config_from_env):
     # arrange
     _mock_config_from_env.return_value = Config("", "", "", "", "totalmobile_jobs_queue_id", "cloud_function",
-                                                "project", "region", "rest_api_url", "gusty")
+                                                "project", "region", "rest_api_url", "gusty", "cloud_function_sa")
 
     model1 = TotalmobileJobModel({"qiD.Serial_Number": "90001"}, "OPN2101A", "world")
     model2 = TotalmobileJobModel({"qiD.Serial_Number": "90002"}, "OPN2101A", "world")
@@ -71,12 +71,13 @@ def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(_m
     assert result[0].task.name.startswith("totalmobile_jobs_queue_id/tasks/OPN2101A-90001-")
     assert result[0].task.http_request.url == "https://region-project.cloudfunctions.net/cloud_function"
     assert result[0].task.http_request.body == json.dumps(model1.case_data).encode()
+    assert result[0].task.http_request.oidc_token == "cloud_function_sa"
 
     assert result[1].parent == "totalmobile_jobs_queue_id"
     assert result[1].task.name.startswith("totalmobile_jobs_queue_id/tasks/OPN2101A-90002-")
     assert result[1].task.http_request.url == "https://region-project.cloudfunctions.net/cloud_function"
     assert result[1].task.http_request.body == json.dumps(model2.case_data).encode()
-
+    assert result[1].task.http_request.oidc_token == "cloud_function_sa"
 
 @mock.patch.object(blaise_restapi.Client, "get_instrument_data")
 def test_retrieve_case_data_calls_the_rest_api_client_with_the_correct_parameters(_mock_rest_api_client):

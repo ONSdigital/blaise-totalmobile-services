@@ -19,6 +19,7 @@ class Config:
     region: str
     blaise_api_url: str
     blaise_server_park: str
+    cloud_function_sa: str
 
     @classmethod
     def from_env(cls) -> "Config":
@@ -32,7 +33,8 @@ class Config:
             gcloud_project=os.getenv("GCLOUD_PROJECT", ""),
             region=os.getenv("REGION", ""),
             blaise_api_url=os.getenv("BLAISE_API_URL", ""),
-            blaise_server_park=os.getenv("BLAISE_SERVER_PARK", "")
+            blaise_server_park=os.getenv("BLAISE_SERVER_PARK", ""),
+            cloud_function_sa=os.getenv("CLOUD_FUNCTION_SA", "")
         )
 
     def log(self) -> None:
@@ -44,6 +46,7 @@ class Config:
         print(f"Configuration - region: {self.region}")
         print(f"Configuration - blaise_api_url: {self.blaise_api_url}")
         print(f"Configuration - blaise_server_park: {self.blaise_server_park}")
+        print(f"Configuration - cloud_function_sa: {self.cloud_function_sa}")
 
     def validate(self) -> None:
         errored_fields = []
