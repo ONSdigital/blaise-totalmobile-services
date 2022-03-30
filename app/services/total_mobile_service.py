@@ -1,40 +1,20 @@
-from data_sources.sqlalchemy import db
-from data_sources.sqlalchemy.models import TotalMobile
+import blaise_restapi
+
+from dotenv import dotenv_values
+
+config = dotenv_values(".env")
+blaise_api_url = config["BLAISE_API_URL"]
+server_park = config["BLAISE_SERVER_PARK"]
+if blaise_api_url is None or server_park is None:
+    print("Environment variable missing")
+    exit(1)
+restapi_client = blaise_restapi.Client(blaise_api_url)
 
 
-def persist_request_service(reference, status):
-    if record_exists(reference):
-        return update_record(reference, status)
-    return insert_record(reference, status)
+def update_case_telephone_number(instrument_name, case_id, data_fields):
+    restapi_client.patch_case_data(server_park, instrument_name, case_id, data_fields)
 
 
-def record_exists(reference):
-    return bool(TotalMobile.query.filter_by(reference=reference).first())
-
-
-def insert_record(reference, status):
-    try:
-        record = TotalMobile(reference=reference, status=status)
-        db.session.add(record)
-        db.session.commit()
-        print(f"Successfully inserted record: {record_details(reference)}")
-        return "", 200
-    except Exception as err:
-        print(f"Could not insert record {reference}: {err}")
-        return err, 500
-
-
-def update_record(reference, status):
-    try:
-        record = record_details(reference)
-        record.status = status
-        db.session.commit()
-        print(f"Successfully updated record: {record_details(reference)}")
-        return "", 200
-    except Exception as err:
-        print(f"Could not update record {reference}: {err}")
-        return err, 500
-
-
-def record_details(reference):
-    return db.session.query(TotalMobile).filter(TotalMobile.reference == reference).one()
+def do_something_service(reference):
+    print(f"The reference number is: {reference}")
+    print("There are no solid requirements for this feature. You shall not pass!")
