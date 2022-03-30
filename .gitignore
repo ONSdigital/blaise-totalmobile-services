@@ -3,8 +3,11 @@ __pycache__
 .env
 .dmypy.json
 .mypy_cache
+.pytest_cache
 keys.json
 sample.json
 requirements.txt
 cases.json
 sam.json
+/.idea/
+temp.db
