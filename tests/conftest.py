@@ -1,11 +1,14 @@
 import json
-import pytest
-
+from base64 import b64decode, b64encode
+from calendar import c
 from typing import Dict
 from unittest import mock
 
+import pytest
+from werkzeug.security import generate_password_hash
+
+from app.app import app as flask_app
 from client import OptimiseClient
-from run import app as flask_app
 
 
 @pytest.fixture
@@ -57,14 +60,32 @@ def app():
 
 
 @pytest.fixture
-def client(app):
-    app.call_history_client = mock.MagicMock()
+def test_password():
+    return "test-password"
+
+
+@pytest.fixture
+def test_username():
+    return "test-username"
+
+
+@pytest.fixture
+def client(app, test_username, test_password):
+    app.config["user"] = test_username
+    app.config["password_hash"] = generate_password_hash(test_password)
     return app.test_client()
 
 
 @pytest.fixture
+def test_auth_header(test_username, test_password):
+    credentials = b64encode(f"{test_username}:{test_password}".encode()).decode("utf-8")
+    return {"Authorization": f"Basic {credentials}"}
+
+
+@pytest.fixture
 def upload_visit_status_request_sample():
-    return json.loads("""
+    return json.loads(
+        """
     {
         "Lines": [
             -1,
@@ -114,12 +135,14 @@ def upload_visit_status_request_sample():
 
         ]
     }
-    """)
+    """
+    )
 
 
 @pytest.fixture
 def submit_form_result_request_sample():
-    return json.loads("""
+    return json.loads(
+        """
     {
       "Result": {
         "User": {
@@ -218,18 +241,20 @@ def submit_form_result_request_sample():
         "ResultGuid": "f00-ba7"
       }
     }
-    """)
+    """
+    )
 
 
 @pytest.fixture
 def complete_visit_request_sample():
-    return json.loads("""
+    return json.loads(
+        """
     {
       "SystemDate": "2022-03-15T11:20:04.307495+00:00",
       "SystemDateSpecified": true,
       "IsFullyComplete": true,
       "Lines": [
-        
+
       ],
       "Appointment": {
         "Date": "2022-03-15T10:00:00",
@@ -257,7 +282,7 @@ def complete_visit_request_sample():
           "Location": null,
           "Status": 2,
           "AdditionalProperties": [
-            
+
           ],
           "DependencyGroup": null,
           "DependencyExpression": null,
@@ -279,7 +304,7 @@ def complete_visit_request_sample():
           "Location": null,
           "Status": 2,
           "AdditionalProperties": [
-            
+
           ],
           "DependencyGroup": null,
           "DependencyExpression": null,
@@ -329,25 +354,22 @@ def complete_visit_request_sample():
       "Action": 4,
       "ActionSpecified": true,
       "Metadata": [
-        
+
       ]
     }
-    """)
+    """
+    )
 
 
 @pytest.fixture
 def mock_worlds(mock_world):
-    return [
-        mock_world
-    ]
+    return [mock_world]
 
 
 @pytest.fixture
 def mock_world():
     return {
         "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "identity": {
-            "reference": "test"
-        },
-        "type": "foo"
+        "identity": {"reference": "test"},
+        "type": "foo",
     }

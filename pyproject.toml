@@ -14,7 +14,7 @@ Flask = "^2.0.3"
 config = "^0.5.1"
 python-dotenv = "^0.19.2"
 pytest = "^7.1.1"
-Flask-SQLAlchemy = "^2.5.1"
+Flask-HTTPAuth = "^4.5.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
@@ -29,7 +29,6 @@ types-Flask = "^1.1.6"
 pytest-cov = "^3.0.0"
 requests-mock = "^1.9.0"
 Flask = "^2.0.3"
-Flask-SQLAlchemy = "^2.5.1"
 SQLAlchemy = "^1.4.32"
 
 [tool.isort]

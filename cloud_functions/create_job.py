@@ -1,5 +1,7 @@
 from typing import Dict, List
+
 import flask
+
 from appconfig import Config
 from client import OptimiseClient
 
@@ -77,7 +79,7 @@ def create_job_payload(request_json: Dict) -> Dict:
                 "preferredName": instrument[4:7],  # 3 digit field period..!?
             },
         },
-        "attributes": [
+        "additionalProperties": [
             {"name": "study", "value": instrument},
             {"name": "case_id", "value": case["qiD.Serial_Number"]},
         ],

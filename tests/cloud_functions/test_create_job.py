@@ -1,6 +1,10 @@
-from client import OptimiseClient, AuthException
-from appconfig import Config
 from unittest import mock
+
+import flask
+import pytest
+
+from appconfig import Config
+from client import AuthException, OptimiseClient
 from cloud_functions.create_job import (
     create_job_payload,
     create_totalmobile_job,
@@ -8,8 +12,6 @@ from cloud_functions.create_job import (
     validate_case_data,
     validate_request,
 )
-import flask
-import pytest
 
 
 @mock.patch.object(Config, "validate")
@@ -62,7 +64,7 @@ def test_validate_case_data_missing_fields():
 
 def test_create_job_payload(mock_create_job_task):
     assert create_job_payload(mock_create_job_task) == {
-        "attributes": [
+        "additionalProperties": [
             {"name": "study", "value": "DST2101A"},
             {"name": "case_id", "value": "100100"},
         ],
