@@ -8,6 +8,7 @@ from client import AuthException, OptimiseClient
 from cloud_functions.create_job import (
     create_job_payload,
     create_totalmobile_job,
+    description,
     job_reference,
     validate_case_data,
     validate_request,
@@ -79,7 +80,7 @@ def test_create_job_payload(mock_create_job_task):
             "mobilePhone": "TelNo2",
             "name": "PostCode",
         },
-        "description": "test-job",
+        "description": "Study: DST2101A\nCase ID: 100100\n\nIf you need to provide a UAC please contact SEL",
         "dueDate": {"end": "", "start": ""},
         "duration": 30,
         "identity": {"reference": "DST2101A.100100"},
@@ -106,3 +107,13 @@ def test_create_job_payload(mock_create_job_task):
 
 def test_job_reference():
     assert job_reference("LMS2201A_BB1", "100100") == "LMS2201A-BB1.100100"
+
+
+def test_description():
+    assert (
+        description("LMS2201A_BB1", "100100")
+        == """Study: LMS2201A_BB1
+Case ID: 100100
+
+If you need to provide a UAC please contact SEL"""
+    )
