@@ -73,7 +73,7 @@ def filter_cases(cases: List[Dict[str, str]]) -> List[Dict[str, str]]:
 def map_totalmobile_job_models(
     cases: List[Dict[str, str]], world_id: str, instrument_name: str
 ) -> List[TotalmobileJobModel]:
-    return [TotalmobileJobModel(case, instrument_name, world_id) for case in cases]
+    return [TotalmobileJobModel(instrument_name, world_id, case) for case in cases]
 
 
 def create_task_name(job_model: TotalmobileJobModel) -> str:
@@ -140,6 +140,5 @@ def create_case_tasks_for_instrument(request: flask.Request) -> str:
     )
     task_requests = prepare_tasks(totalmobile_job_models)
 
-    asyncio.new_event_loop()
-    asyncio.get_running_loop().run_until_complete(run(task_requests))
+    asyncio.run(run(task_requests))
     return "Done"
