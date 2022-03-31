@@ -101,7 +101,7 @@ def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(
         result[0].task.http_request.url
         == "https://region-project.cloudfunctions.net/cloud_function"
     )
-    assert result[0].task.http_request.body == json.dumps(model1.case_data).encode()
+    assert result[0].task.http_request.body == model1.json().encode()
     assert (
         result[0].task.http_request.oidc_token.service_account_email
         == "cloud_function_sa"
@@ -115,7 +115,7 @@ def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(
         result[1].task.http_request.url
         == "https://region-project.cloudfunctions.net/cloud_function"
     )
-    assert result[1].task.http_request.body == json.dumps(model2.case_data).encode()
+    assert result[1].task.http_request.body == model2.json().encode()
     assert (
         result[1].task.http_request.oidc_token.service_account_email
         == "cloud_function_sa"

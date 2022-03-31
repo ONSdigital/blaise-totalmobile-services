@@ -3,6 +3,7 @@ import json
 from datetime import timedelta
 from typing import Any, Coroutine, Dict, List
 from uuid import uuid4
+from dataclasses import asdict
 
 import blaise_restapi
 import flask
@@ -77,7 +78,9 @@ def map_totalmobile_job_models(
 
 
 def create_task_name(job_model: TotalmobileJobModel) -> str:
-    return f"{job_model.instrument_name}-{job_model.case_data['qiD.Serial_Number']}-{str(uuid4())}"
+    return (
+        f"{job_model.instrument}-{job_model.case['qiD.Serial_Number']}-{str(uuid4())}"
+    )
 
 
 def prepare_tasks(
@@ -97,7 +100,7 @@ def prepare_tasks(
                 http_request=tasks_v2.HttpRequest(
                     http_method="POST",
                     url=f"https://{config.region}-{config.gcloud_project}.cloudfunctions.net/{config.totalmobile_job_cloud_function}",
-                    body=json.dumps(job_model.case_data).encode(),
+                    body=job_model.json().encode(),
                     headers={
                         "Content-Type": "application/json",
                     },
