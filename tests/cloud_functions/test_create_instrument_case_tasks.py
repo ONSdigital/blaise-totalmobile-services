@@ -25,7 +25,7 @@ from models.totalmobile_job_model import TotalmobileJobModel
 def test_create_task_name_returns_correct_name_when_called():
     # arrange
     case_data_dict = {"qiD.Serial_Number": "90001"}
-    model = TotalmobileJobModel(case_data_dict, "OPN2101A", "world")
+    model = TotalmobileJobModel("OPN2101A", "world", case_data_dict)
 
     # act
     result = create_task_name(model)
@@ -37,7 +37,7 @@ def test_create_task_name_returns_correct_name_when_called():
 def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_model():
     # arrange
     case_data_dict = {"qiD.Serial_Number": "90001"}
-    model = TotalmobileJobModel(case_data_dict, "OPN2101A", "world")
+    model = TotalmobileJobModel("OPN2101A", "world", case_data_dict)
 
     # act
     result1 = create_task_name(model)
@@ -56,8 +56,8 @@ def test_prepare_tasks_returns_an_expected_number_of_tasks_when_given_a_list_of_
         "", "", "", "", "", "", " ", "", "", "", ""
     )
 
-    model1 = TotalmobileJobModel({"qiD.Serial_Number": "90001"}, "OPN2101A", "world")
-    model2 = TotalmobileJobModel({"qiD.Serial_Number": "90002"}, "OPN2101A", "world")
+    model1 = TotalmobileJobModel("OPN2101A", "world", {"qiD.Serial_Number": "90001"})
+    model2 = TotalmobileJobModel("OPN2101A", "world", {"qiD.Serial_Number": "90002"})
 
     # act
     result = prepare_tasks([model1, model2])
@@ -86,8 +86,8 @@ def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(
         "cloud_function_sa",
     )
 
-    model1 = TotalmobileJobModel({"qiD.Serial_Number": "90001"}, "OPN2101A", "world")
-    model2 = TotalmobileJobModel({"qiD.Serial_Number": "90002"}, "OPN2101A", "world")
+    model1 = TotalmobileJobModel("OPN2101A", "world", {"qiD.Serial_Number": "90001"})
+    model2 = TotalmobileJobModel("OPN2101A", "world", {"qiD.Serial_Number": "90002"})
 
     # act
     result = prepare_tasks([model1, model2])
