@@ -38,7 +38,7 @@ def retrieve_world_id(config: Config) -> str:
     return optimise_client.get_world(world)["id"]
 
 
-def retrieve_case_data(instrument_name: str, config: Config) -> Dict[str, str]:
+def retrieve_case_data(instrument_name: str, config: Config) -> List[Dict[str, str]]:
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
 
     instrument_data = restapi_client.get_instrument_data(
@@ -62,7 +62,7 @@ def retrieve_case_data(instrument_name: str, config: Config) -> Dict[str, str]:
     return instrument_data["reportingData"]
 
 
-def filter_cases(cases: list[Dict[str, str]]) -> list[Dict[str, str]]:
+def filter_cases(cases: List[Dict[str, str]]) -> List[Dict[str, str]]:
     filtered_cases = []
     for case in cases:
         if case["srvStat"] != "3" and case["hOut"] not in ["360", "390"]:
@@ -71,9 +71,9 @@ def filter_cases(cases: list[Dict[str, str]]) -> list[Dict[str, str]]:
 
 
 def map_totalmobile_job_models(
-    cases: Dict[str, str], world_id: str, instrument_name: str
+    cases: List[Dict[str, str]], world_id: str, instrument_name: str
 ) -> List[TotalmobileJobModel]:
-    return [TotalmobileJobModel(instrument_name, world_id, case) for case in cases]
+    return [TotalmobileJobModel(case, instrument_name, world_id) for case in cases]
 
 
 def create_task_name(job_model: TotalmobileJobModel) -> str:
@@ -140,5 +140,6 @@ def create_case_tasks_for_instrument(request: flask.Request) -> str:
     )
     task_requests = prepare_tasks(totalmobile_job_models)
 
-    asyncio.get_event_loop().run_until_complete(run(task_requests))
+    asyncio.new_event_loop()
+    asyncio.get_running_loop().run_until_complete(run(task_requests))
     return "Done"
