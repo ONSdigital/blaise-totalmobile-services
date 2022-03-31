@@ -1,16 +1,17 @@
+import asyncio
+import json
 from datetime import timedelta
-from typing import List, Dict, Coroutine, Any
-from google.protobuf.duration_pb2 import Duration
-from appconfig import Config
+from typing import Any, Coroutine, Dict, List
 from uuid import uuid4
-from models.totalmobile_job_model import TotalmobileJobModel
-from google.cloud import tasks_v2
-from client.optimise import OptimiseClient
 
 import blaise_restapi
 import flask
-import json
-import asyncio
+from google.cloud import tasks_v2
+from google.protobuf.duration_pb2 import Duration
+
+from appconfig import Config
+from client.optimise import OptimiseClient
+from models.totalmobile_job_model import TotalmobileJobModel
 
 
 def __filter_missing_fields(case, REQUIRED_FIELDS) -> List[str]:
@@ -69,7 +70,9 @@ def filter_cases(cases: list[Dict[str, str]]) -> list[Dict[str, str]]:
     return filtered_cases
 
 
-def map_totalmobile_job_models(cases: Dict[str, str], world_id: str, instrument_name: str) -> list[TotalmobileJobModel]:
+def map_totalmobile_job_models(
+    cases: Dict[str, str], world_id: str, instrument_name: str
+) -> List[TotalmobileJobModel]:
     return [TotalmobileJobModel(instrument_name, world_id, case) for case in cases]
 
 
@@ -77,7 +80,9 @@ def create_task_name(job_model: TotalmobileJobModel) -> str:
     return f"{job_model.instrument_name}-{job_model.case_data['qiD.Serial_Number']}-{str(uuid4())}"
 
 
-def prepare_tasks(*job_models: TotalmobileJobModel) -> List[tasks_v2.CreateTaskRequest]:
+def prepare_tasks(
+    job_models: List[TotalmobileJobModel],
+) -> List[tasks_v2.CreateTaskRequest]:
     config = Config.from_env()
 
     duration = Duration()
@@ -105,7 +110,9 @@ def prepare_tasks(*job_models: TotalmobileJobModel) -> List[tasks_v2.CreateTaskR
     return task_requests
 
 
-def create_tasks(task_requests: List[tasks_v2.CreateTaskRequest], task_client) -> List[Coroutine[Any, Any, tasks_v2.Task]]:
+def create_tasks(
+    task_requests: List[tasks_v2.CreateTaskRequest], task_client
+) -> List[Coroutine[Any, Any, tasks_v2.Task]]:
     return [task_client.create_task(request) for request in task_requests]
 
 
@@ -128,7 +135,9 @@ def create_case_tasks_for_instrument(request: flask.Request) -> str:
     cases = retrieve_case_data(instrument_name, config)
     filtered_cases = filter_cases(cases)
 
-    totalmobile_job_models = map_totalmobile_job_models(filtered_cases, world_id, instrument_name)
+    totalmobile_job_models = map_totalmobile_job_models(
+        filtered_cases, world_id, instrument_name
+    )
     task_requests = prepare_tasks(totalmobile_job_models)
 
     asyncio.get_event_loop().run_until_complete(run(task_requests))

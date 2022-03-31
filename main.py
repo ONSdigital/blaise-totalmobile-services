@@ -1,9 +1,12 @@
-import flask
 import os
 
-from cloud_functions.create_job import create_totalmobile_job
-from cloud_functions.create_instrument_case_tasks import create_case_tasks_for_instrument
+import flask
 from dotenv import load_dotenv
+
+from cloud_functions.create_instrument_case_tasks import (
+    create_case_tasks_for_instrument,
+)
+from cloud_functions.create_job import create_totalmobile_job
 
 if os.path.isfile("./.env"):
     print("Loading environment variables from dotenv file")

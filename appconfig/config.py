@@ -1,5 +1,4 @@
 import os
-
 from dataclasses import dataclass, fields
 
 
@@ -29,19 +28,23 @@ class Config:
             totalmobile_client_id=os.getenv("TOTALMOBILE_CLIENT_ID", ""),
             totalmobile_client_secret=os.getenv("TOTALMOBILE_CLIENT_SECRET", ""),
             totalmobile_jobs_queue_id=os.getenv("TOTALMOBILE_JOBS_QUEUE_ID", ""),
-            totalmobile_job_cloud_function=os.getenv("TOTALMOBILE_JOBS_CLOUD_FUNCTION", ""),
+            totalmobile_job_cloud_function=os.getenv(
+                "TOTALMOBILE_JOBS_CLOUD_FUNCTION", ""
+            ),
             gcloud_project=os.getenv("GCLOUD_PROJECT", ""),
             region=os.getenv("REGION", ""),
             blaise_api_url=os.getenv("BLAISE_API_URL", ""),
             blaise_server_park=os.getenv("BLAISE_SERVER_PARK", ""),
-            cloud_function_sa=os.getenv("CLOUD_FUNCTION_SA", "")
+            cloud_function_sa=os.getenv("CLOUD_FUNCTION_SA", ""),
         )
 
     def log(self) -> None:
         print(f"Configuration - totalmobile_url: {self.totalmobile_url}")
         print(f"Configuration - totalmobile_instance: {self.totalmobile_instance}")
         print(f"Configuration - totalmobile_client_id: {self.totalmobile_client_id}")
-        print(f"Configuration - totalmobile_client_secret: {self.totalmobile_client_secret}")
+        print(
+            f"Configuration - totalmobile_client_secret: {self.totalmobile_client_secret}"
+        )
         print(f"Configuration - gcloud_project: {self.gcloud_project}")
         print(f"Configuration - region: {self.region}")
         print(f"Configuration - blaise_api_url: {self.blaise_api_url}")

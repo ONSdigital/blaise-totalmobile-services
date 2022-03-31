@@ -1,16 +1,25 @@
-from appconfig import Config
-from cloud_functions.create_instrument_case_tasks import create_task_name, prepare_tasks, retrieve_case_data, \
-    retrieve_world_id, map_totalmobile_job_models, create_tasks, filter_cases, create_case_tasks_for_instrument, \
-    validate_request
-from models.totalmobile_job_model import TotalmobileJobModel
+import json
 from unittest import mock
-from client.optimise import OptimiseClient
+
+import blaise_restapi
+import flask
+import pytest
 from google.cloud import tasks_v2
 
-import json
-import blaise_restapi
-import pytest
-import flask
+from appconfig import Config
+from client.optimise import OptimiseClient
+from cloud_functions.create_instrument_case_tasks import (
+    create_case_tasks_for_instrument,
+    create_task_name,
+    create_tasks,
+    filter_cases,
+    map_totalmobile_job_models,
+    prepare_tasks,
+    retrieve_case_data,
+    retrieve_world_id,
+    validate_request,
+)
+from models.totalmobile_job_model import TotalmobileJobModel
 
 
 def test_create_task_name_returns_correct_name_when_called():
@@ -39,15 +48,19 @@ def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_mod
 
 
 @mock.patch.object(Config, "from_env")
-def test_prepare_tasks_returns_an_expected_number_of_tasks_when_given_a_list_of_job_models(_mock_config_from_env):
+def test_prepare_tasks_returns_an_expected_number_of_tasks_when_given_a_list_of_job_models(
+    _mock_config_from_env,
+):
     # arrange
-    _mock_config_from_env.return_value = Config("", "", "", "", "", "", " ", "", "", "", "")
+    _mock_config_from_env.return_value = Config(
+        "", "", "", "", "", "", " ", "", "", "", ""
+    )
 
     model1 = TotalmobileJobModel({"qiD.Serial_Number": "90001"}, "OPN2101A", "world")
     model2 = TotalmobileJobModel({"qiD.Serial_Number": "90002"}, "OPN2101A", "world")
 
     # act
-    result = prepare_tasks(model1, model2)
+    result = prepare_tasks([model1, model2])
 
     # assert
     assert len(result) == 2
@@ -55,37 +68,71 @@ def test_prepare_tasks_returns_an_expected_number_of_tasks_when_given_a_list_of_
 
 
 @mock.patch.object(Config, "from_env")
-def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(_mock_config_from_env):
+def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(
+    _mock_config_from_env,
+):
     # arrange
-    _mock_config_from_env.return_value = Config("", "", "", "", "totalmobile_jobs_queue_id", "cloud_function",
-                                                "project", "region", "rest_api_url", "gusty", "cloud_function_sa")
+    _mock_config_from_env.return_value = Config(
+        "",
+        "",
+        "",
+        "",
+        "totalmobile_jobs_queue_id",
+        "cloud_function",
+        "project",
+        "region",
+        "rest_api_url",
+        "gusty",
+        "cloud_function_sa",
+    )
 
     model1 = TotalmobileJobModel({"qiD.Serial_Number": "90001"}, "OPN2101A", "world")
     model2 = TotalmobileJobModel({"qiD.Serial_Number": "90002"}, "OPN2101A", "world")
 
     # act
-    result = prepare_tasks(model1, model2)
+    result = prepare_tasks([model1, model2])
 
     # assert
     assert result[0].parent == "totalmobile_jobs_queue_id"
-    assert result[0].task.name.startswith("totalmobile_jobs_queue_id/tasks/OPN2101A-90001-")
-    assert result[0].task.http_request.url == "https://region-project.cloudfunctions.net/cloud_function"
+    assert result[0].task.name.startswith(
+        "totalmobile_jobs_queue_id/tasks/OPN2101A-90001-"
+    )
+    assert (
+        result[0].task.http_request.url
+        == "https://region-project.cloudfunctions.net/cloud_function"
+    )
     assert result[0].task.http_request.body == json.dumps(model1.case_data).encode()
-    assert result[0].task.http_request.oidc_token.service_account_email == "cloud_function_sa"
+    assert (
+        result[0].task.http_request.oidc_token.service_account_email
+        == "cloud_function_sa"
+    )
 
     assert result[1].parent == "totalmobile_jobs_queue_id"
-    assert result[1].task.name.startswith("totalmobile_jobs_queue_id/tasks/OPN2101A-90002-")
-    assert result[1].task.http_request.url == "https://region-project.cloudfunctions.net/cloud_function"
+    assert result[1].task.name.startswith(
+        "totalmobile_jobs_queue_id/tasks/OPN2101A-90002-"
+    )
+    assert (
+        result[1].task.http_request.url
+        == "https://region-project.cloudfunctions.net/cloud_function"
+    )
     assert result[1].task.http_request.body == json.dumps(model2.case_data).encode()
-    assert result[1].task.http_request.oidc_token.service_account_email == "cloud_function_sa"
+    assert (
+        result[1].task.http_request.oidc_token.service_account_email
+        == "cloud_function_sa"
+    )
+
 
 @mock.patch.object(blaise_restapi.Client, "get_instrument_data")
-def test_retrieve_case_data_calls_the_rest_api_client_with_the_correct_parameters(_mock_rest_api_client):
+def test_retrieve_case_data_calls_the_rest_api_client_with_the_correct_parameters(
+    _mock_rest_api_client,
+):
     # arrange
     config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "")
-    _mock_rest_api_client.return_value = {"instrumentName": "DST2106Z",
-                                          "instrumentId": "12345-12345-12345-12345-12345",
-                                          "reportingData": ""}
+    _mock_rest_api_client.return_value = {
+        "instrumentName": "DST2106Z",
+        "instrumentId": "12345-12345-12345-12345-12345",
+        "reportingData": "",
+    }
 
     blaise_server_park = "gusty"
     instrument_name = "OPN2101A"
@@ -109,28 +156,37 @@ def test_retrieve_case_data_calls_the_rest_api_client_with_the_correct_parameter
     retrieve_case_data(instrument_name, config)
 
     # assert
-    _mock_rest_api_client.assert_called_with(blaise_server_park, instrument_name, fields)
+    _mock_rest_api_client.assert_called_with(
+        blaise_server_park, instrument_name, fields
+    )
 
 
 @mock.patch.object(blaise_restapi.Client, "get_instrument_data")
-def test_retrieve_case_data_returns_the_case_data_supplied_by_the_rest_api_client(_mock_rest_api_client):
+def test_retrieve_case_data_returns_the_case_data_supplied_by_the_rest_api_client(
+    _mock_rest_api_client,
+):
     # arrange
     config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "")
-    _mock_rest_api_client.return_value = {"instrumentName": "DST2106Z",
-                                          "instrumentId": "12345-12345-12345-12345-12345",
-                                          "reportingData": [{"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110"},
-                                                            {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "110"},
-                                                            {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "110"}
-                                                            ]}
+    _mock_rest_api_client.return_value = {
+        "instrumentName": "DST2106Z",
+        "instrumentId": "12345-12345-12345-12345-12345",
+        "reportingData": [
+            {"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110"},
+            {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "110"},
+            {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "110"},
+        ],
+    }
     instrument_name = "OPN2101A"
 
     # act
     result = retrieve_case_data(instrument_name, config)
 
     # assert
-    assert result == [{"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110"},
-                      {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "110"},
-                      {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "110"}]
+    assert result == [
+        {"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110"},
+        {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "110"},
+        {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "110"},
+    ]
 
 
 @mock.patch.object(OptimiseClient, "get_world")
@@ -147,15 +203,13 @@ def test_retrieve_world_id_returns_a_world_id(_mock_optimise_client):
         "",
         "rest_api_url",
         "gusty",
-        ""
+        "",
     )
 
     _mock_optimise_client.return_value = {
         "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "identity": {
-            "reference": "test"
-        },
-        "type": "foo"
+        "identity": {"reference": "test"},
+        "type": "foo",
     }
 
     # act
@@ -173,16 +227,22 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     case_data = [
         {"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110"},
         {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "120"},
-        {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "130"}
+        {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "130"},
     ]
     # act
     result = map_totalmobile_job_models(case_data, world_id, instrument_name)
 
     # assert
     assert result == [
-        TotalmobileJobModel("OPN2101A", "Earth", {"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110"}),
-        TotalmobileJobModel("OPN2101A", "Earth", {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "120"}),
-        TotalmobileJobModel("OPN2101A", "Earth", {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "130"})
+        TotalmobileJobModel(
+            "OPN2101A", "Earth", {"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110"}
+        ),
+        TotalmobileJobModel(
+            "OPN2101A", "Earth", {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "120"}
+        ),
+        TotalmobileJobModel(
+            "OPN2101A", "Earth", {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "130"}
+        ),
     ]
 
 
@@ -200,7 +260,9 @@ def test_create_tasks_gets_called_once_for_each_task_given_to_it(mock_create_tas
     create_tasks(task_requests, task_client)
 
     # assert
-    mock_create_task.assert_has_calls([mock.call(task_request) for task_request in task_requests])
+    mock_create_task.assert_has_calls(
+        [mock.call(task_request) for task_request in task_requests]
+    )
 
 
 @mock.patch.object(tasks_v2.CloudTasksAsyncClient, "create_task")
@@ -226,53 +288,44 @@ def test_filter_cases_returns_cases_where_srv_stat_is_not_3_or_hOut_is_not_360_o
         {
             # should return
             "srvStat": "1",
-            "hOut": "210"
+            "hOut": "210",
         },
         {
             # should return
             "srvStat": "2",
-            "hOut": "210"
+            "hOut": "210",
         },
         {
             # should not return
             "srvStat": "3",
-            "hOut": "360"
+            "hOut": "360",
         },
         {
             # should not return
             "srvStat": "3",
-            "hOut": "390"
+            "hOut": "390",
         },
         {
             # should not return
             "srvStat": "3",
-            "hOut": "210"
+            "hOut": "210",
         },
         {
             # should not return
             "srvStat": "1",
-            "hOut": "360"
+            "hOut": "360",
         },
         {
             # should not return
             "srvStat": "2",
-            "hOut": "390"
+            "hOut": "390",
         },
     ]
     # act
     result = filter_cases(cases)
 
     # assert
-    assert result == [
-        {
-            "hOut": "210",
-            "srvStat": "1"
-        },
-        {
-            "hOut": "210",
-            "srvStat": "2"
-        }
-    ]
+    assert result == [{"hOut": "210", "srvStat": "1"}, {"hOut": "210", "srvStat": "2"}]
 
 
 def test_validate_request(mock_create_job_task):
@@ -283,8 +336,7 @@ def test_validate_request_missing_fields():
     with pytest.raises(Exception) as err:
         validate_request({"world_id": ""})
     assert (
-            str(err.value)
-            == "Required fields missing from request payload: ['instrument']"
+        str(err.value) == "Required fields missing from request payload: ['instrument']"
     )
 
 
@@ -296,13 +348,13 @@ def test_validate_request_missing_fields():
 @mock.patch("cloud_functions.create_instrument_case_tasks.map_totalmobile_job_models")
 @mock.patch("cloud_functions.create_instrument_case_tasks.prepare_tasks")
 def test_create_case_tasks_for_instrument(
-        mock_prepare_tasks,
-        mock_map_totalmobile_job_models,
-        mock_filter_cases,
-        mock_retrieve_case_data,
-        mock_retrieve_world_id,
-        mock_validate_request,
-        mock_from_env
+    mock_prepare_tasks,
+    mock_map_totalmobile_job_models,
+    mock_filter_cases,
+    mock_retrieve_case_data,
+    mock_retrieve_world_id,
+    mock_validate_request,
+    mock_from_env,
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"instrument": "OPN2101A"})
@@ -322,4 +374,6 @@ def test_create_case_tasks_for_instrument_error(mock_from_env):
     # assert
     with pytest.raises(Exception) as err:
         create_case_tasks_for_instrument(mock_request)
-    assert str(err.value) == "Required fields missing from request payload: ['instrument']"
+    assert (
+        str(err.value) == "Required fields missing from request payload: ['instrument']"
+    )

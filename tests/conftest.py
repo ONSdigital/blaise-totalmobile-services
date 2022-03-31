@@ -1,8 +1,8 @@
 import json
-import pytest
-
 from typing import Dict
 from unittest import mock
+
+import pytest
 
 from client import OptimiseClient
 from run import app as flask_app
@@ -64,7 +64,8 @@ def client(app):
 
 @pytest.fixture
 def upload_visit_status_request_sample():
-    return json.loads("""
+    return json.loads(
+        """
     {
         "Lines": [
             -1,
@@ -114,12 +115,14 @@ def upload_visit_status_request_sample():
 
         ]
     }
-    """)
+    """
+    )
 
 
 @pytest.fixture
 def submit_form_result_request_sample():
-    return json.loads("""
+    return json.loads(
+        """
     {
       "Result": {
         "User": {
@@ -218,12 +221,14 @@ def submit_form_result_request_sample():
         "ResultGuid": "f00-ba7"
       }
     }
-    """)
+    """
+    )
 
 
 @pytest.fixture
 def complete_visit_request_sample():
-    return json.loads("""
+    return json.loads(
+        """
     {
       "SystemDate": "2022-03-15T11:20:04.307495+00:00",
       "SystemDateSpecified": true,
@@ -332,22 +337,19 @@ def complete_visit_request_sample():
         
       ]
     }
-    """)
+    """
+    )
 
 
 @pytest.fixture
 def mock_worlds(mock_world):
-    return [
-        mock_world
-    ]
+    return [mock_world]
 
 
 @pytest.fixture
 def mock_world():
     return {
         "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "identity": {
-            "reference": "test"
-        },
-        "type": "foo"
+        "identity": {"reference": "test"},
+        "type": "foo",
     }

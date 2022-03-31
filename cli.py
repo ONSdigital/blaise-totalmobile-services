@@ -1,9 +1,10 @@
-from dotenv import dotenv_values
-from bus import BusClient
-
-from client.optimise import OptimiseClient
-import blaise_restapi
 import json
+
+import blaise_restapi
+from dotenv import dotenv_values
+
+from bus import BusClient
+from client.optimise import OptimiseClient
 
 config = dotenv_values(".env")
 

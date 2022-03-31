@@ -1,5 +1,7 @@
 from typing import Dict, List
+
 import flask
+
 from appconfig import Config
 from client import OptimiseClient
 
