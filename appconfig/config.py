@@ -29,7 +29,7 @@ class Config:
             totalmobile_client_secret=os.getenv("TOTALMOBILE_CLIENT_SECRET", ""),
             totalmobile_jobs_queue_id=os.getenv("TOTALMOBILE_JOBS_QUEUE_ID", ""),
             totalmobile_job_cloud_function=os.getenv(
-                "TOTALMOBILE_JOBS_CLOUD_FUNCTION", ""
+                "TOTALMOBILE_JOB_CLOUD_FUNCTION", ""
             ),
             gcloud_project=os.getenv("GCLOUD_PROJECT", ""),
             region=os.getenv("REGION", ""),
