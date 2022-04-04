@@ -2,8 +2,9 @@ from typing import Dict, Any
 
 import pytest
 
-from app.utilities.parse_json import (get_case_details, get_telephone_number, __valid_top_level_responses, __valid_second_level_responses,
-                                      __valid_element_dictionary, __valid_value, __valid_telephone_number)
+from app.utilities.parse_json import (get_case_details, get_telephone_number, __valid_top_level_responses,
+                                      __valid_second_level_responses, __valid_element_dictionary,
+                                      __valid_value, __valid_telephone_number)
 
 
 def test_get_case_details_returns_instrument_name_and_case_id(submit_form_result_request_sample: Dict[str, Any]):
@@ -26,25 +27,18 @@ def test_get_case_details_returns_instrument_name_and_case_id(submit_form_result
     assert actual_case_id == '1001011'
 
 
-def test_get_telephone_number_returns_a_telphone_number(submit_form_result_request_sample: Dict[str, Any]):
+def test_get_case_details_raises_an_error():
+    with pytest.raises(Exception):
+        get_case_details({})
+
+
+def test_get_telephone_number_returns_a_telephone_number(submit_form_result_request_sample: Dict[str, Any]):
     assert get_telephone_number(submit_form_result_request_sample) == "07000000000"
 
 
-def test_demonstrate_how_to_extract_telephone_number(
-        submit_form_result_request_sample: Dict[str, Any]):
-    """Demonstrate how to extract telephone number from JSON sample"""
-    # arrange
-    sample_json = submit_form_result_request_sample
-
-    """loop through JSON sample to find an element reference of 'TelNo'"""
-    telephone_reference = sample_json['Result']['Responses'][1]['Responses'][1]['Element']['Reference']
-
-    """Extract the value of that response"""
-    telephone_value = sample_json['Result']['Responses'][1]['Responses'][1]['Value']
-
-    # assert
-    assert telephone_reference == 'TelNo'
-    assert telephone_value == '07000000000'
+def test_get_telephone_number_raises_an_error():
+    with pytest.raises(Exception):
+        get_telephone_number({})
 
 
 def test_valid_top_level_responses_is_valid(submit_form_result_request_sample: Dict[str, Any]):
@@ -129,7 +123,7 @@ def test_valid_value_dictionary_raises_key_error():
         "07123-456-789",
     ],
 )
-def test_valid_telephone_number_returns_a_valid_telphone_number(phone_number):
+def test_valid_telephone_number_returns_a_valid_telephone_number(phone_number: str):
     assert __valid_telephone_number(phone_number) == "07123456789"
 
 
@@ -146,81 +140,6 @@ def test_valid_telephone_number_returns_a_valid_telphone_number(phone_number):
         ""
     ],
 )
-def test_valid_telephone_number_raises_a_type_error(phone_number):
+def test_valid_telephone_number_raises_a_type_error(phone_number: str):
     with pytest.raises(TypeError):
         __valid_telephone_number(phone_number)
-
-
-
-    # assert __valid_telephone_number(valid_telephone_number) == valid_telephone_number
-    #
-    # assert __valid_telephone_number(telephone_number_with_space) == valid_telephone_number
-    #
-    # with pytest.raises(TypeError):
-    #     __valid_telephone_number(telephone_number_is_too_short)
-    #
-    # with pytest.raises(TypeError):
-    #     __valid_telephone_number(telephone_number_is_too_long)
-
-    # with pytest.raises(TypeError):
-    #     __valid_telephone_number(telephone_number_is_not_a_number)
-
-
-
-def test_json_result_returns_a_dict(submit_form_result_request_sample: Dict[str, Any]):
-    """Demonstrate json.Result is dictionary"""
-    # arrange
-    sample_json = submit_form_result_request_sample
-
-    # assert
-    assert type(sample_json["Result"]) == dict
-
-
-def test_json_result_responses_returns_a_list_of_dictionaries(submit_form_result_request_sample: Dict[str, Any]):
-    """Demonstrate json.Result.Responses is a list of dictionaries"""
-    # arrange
-    sample_json = submit_form_result_request_sample["Result"]["Responses"]
-
-    # assert
-    assert type(sample_json) == list
-    assert type(sample_json[0]) == dict
-
-
-def test_json_result_responses_responses_returns_another_list_of_dictionaries(submit_form_result_request_sample: Dict[str, Any]):
-    """Demonstrate json.Result.Responses.Responses is a list of dictionaries"""
-    # arrange
-    sample_json = submit_form_result_request_sample["Result"]["Responses"][0]["Responses"]
-
-    # assert
-    assert type(sample_json) == list
-    assert type(sample_json[0]) == dict
-
-
-def test_json_result_responses_responses_element_returns_a_dictionary(
-        submit_form_result_request_sample: Dict[str, Any]):
-    """Demonstrate json.Result.Responses.Responses.Element is a dictionary"""
-    # arrange
-    sample_json = submit_form_result_request_sample["Result"]["Responses"][0]["Responses"][0]["Element"]
-
-    # assert
-    assert type(sample_json) == dict
-
-
-def test_json_result_responses_responses_element_reference_is_a_key_of_the_element_dictionary(
-        submit_form_result_request_sample: Dict[str, Any]):
-    """Demonstrate json.Result.Responses.Responses.Element.Reference is a key"""
-    # arrange
-    sample_json = submit_form_result_request_sample["Result"]["Responses"][0]["Responses"][0]["Element"]
-
-    # assert
-    assert "Reference" in sample_json
-
-
-def test_whereas_json_result_responses_responses_value_is_a_key_of_the_responses_dictionary(
-        submit_form_result_request_sample: Dict[str, Any]):
-    """Demonstrate json.Result.Responses.Responses.Value is a key"""
-    # arrange
-    sample_json = submit_form_result_request_sample["Result"]["Responses"][0]["Responses"][0]
-
-    # assert
-    assert "Value" in sample_json

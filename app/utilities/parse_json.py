@@ -2,25 +2,19 @@ import phonenumbers
 
 from typing import Dict, Any
 
-# TODO: When tests are running, delete __init__s
-
-
-def fancy_print(thingy_string, thingy_value):
-    print(f"\n{thingy_string}: {thingy_value}")
-
 
 def get_case_details(input: Dict[str, Any]) -> list[str]:
     try:
-        case_details = input["Result"]["Association"]["Reference"]
-        return case_details.split("-")
+        return input["Result"]["Association"]["Reference"].split("-")
     except Exception as err:
         print(f"Failed to get case details: {err}")
         raise err
 
 
 def get_telephone_number(input: Dict[str, Any]) -> str:
-    """loop through JSON sample to find an element reference of 'TelNo'
-    and extract the telephone value of that response"""
+    """loop through JSON sample to find a specific response where
+    element reference is equal to 'TelNo'
+    and extract the telephone value of that specific response"""
     for response_list in __valid_top_level_responses(input):
         for response in __valid_second_level_responses(response_list):
             if "TelNo" in __valid_element_dictionary(response).values():

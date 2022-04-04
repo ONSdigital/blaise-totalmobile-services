@@ -7,14 +7,14 @@ from app.handlers.total_mobile_handler import (
 
 @app.route("/ons/totalmobile-incoming/UpdateVisitStatusRequest", methods=["POST"])
 def update_visit_status_request():
-    update_visit_status_request_handler(request)
+    return update_visit_status_request_handler(request)
 
 
 @app.route("/ons/totalmobile-incoming/SubmitFormResultRequest", methods=["POST"])
 def submit_form_result_request():
-    submit_form_result_request_handler(request)
+    return submit_form_result_request_handler(request)
 
 
 @app.route("/ons/totalmobile-incoming/CompleteVisitRequest", methods=["POST"])
 def complete_visit_request():
-    complete_visit_request_handler(request)
+    return complete_visit_request_handler(request)
