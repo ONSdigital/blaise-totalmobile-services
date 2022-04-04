@@ -31,6 +31,7 @@ requests-mock = "^1.9.0"
 Flask = "^2.0.3"
 Flask-SQLAlchemy = "^2.5.1"
 SQLAlchemy = "^1.4.32"
+phonenumbers = "^8.12.46"
 
 [tool.isort]
 multi_line_output = "3"

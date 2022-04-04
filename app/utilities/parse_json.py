@@ -1,22 +1,34 @@
-# TODO: typing
-# TODO: Ensure I'm getting the right TelNo for CaseNo!
+import phonenumbers
+
+from typing import Dict, Any
+
 # TODO: When tests are running, delete __init__s
 
 
-def get_telephone_number(input):
-    # Get the telephone number from
-    # json -> Result -> Responses -> Responses -> Value
-    # where
-    # json -> Result -> Responses -> Responses -> Element -> Reference
-    # is equal to "TelNo"
+def fancy_print(thingy_string, thingy_value):
+    print(f"\n{thingy_string}: {thingy_value}")
+
+
+def get_case_details(input: Dict[str, Any]) -> list[str]:
+    try:
+        case_details = input["Result"]["Association"]["Reference"]
+        return case_details.split("-")
+    except Exception as err:
+        print(f"Failed to get case details: {err}")
+        raise err
+
+
+def get_telephone_number(input: Dict[str, Any]) -> str:
+    """loop through JSON sample to find an element reference of 'TelNo'
+    and extract the telephone value of that response"""
     for response_list in __valid_top_level_responses(input):
         for response in __valid_second_level_responses(response_list):
             if "TelNo" in __valid_element_dictionary(response).values():
-                return __valid_value_dictionary(response)
+                return __valid_value(response)
     raise KeyError("Failed to get telephone number")
 
 
-def __valid_top_level_responses(input):
+def __valid_top_level_responses(input: Dict[str, Any]) -> list:
     try:
         return input["Result"]["Responses"]
     except Exception as err:
@@ -24,7 +36,7 @@ def __valid_top_level_responses(input):
         raise err
 
 
-def __valid_second_level_responses(input):
+def __valid_second_level_responses(input: Dict[str, Any]) -> list:
     try:
         return input["Responses"]
     except Exception as err:
@@ -32,13 +44,34 @@ def __valid_second_level_responses(input):
         raise err
 
 
-def __valid_element_dictionary(input):
+def __valid_element_dictionary(input: Dict[str, Any]) -> dict:
     if "Element" not in input:
         print("'Element' not an expected dictionary type in JSON.Result.Responses.Responses")
     return input["Element"]
 
 
-def __valid_value_dictionary(input):
+def __valid_value(input: Dict[str, Any]) -> str:
     if "Value" not in input:
         print("'Value' not found in JSON.Result.Responses.Responses.Element")
     return input["Value"]
+
+
+def __valid_telephone_number(input: str) -> str:
+    telephone_number = input.replace(" ", "")
+
+    try:
+        # where "GB" is the region's country code: https://countrycode.org/
+        parsed_telephone_number = phonenumbers.parse(telephone_number, "GB")
+    except phonenumbers.NumberParseException as err:
+        print(f"Could not parse {input}: {err}")
+        raise TypeError
+
+    if len(f"0{str(parsed_telephone_number.national_number)}") != 11:
+        print(f"{telephone_number} is an invalid length for a telephone number")
+        raise TypeError
+
+    if not phonenumbers.is_possible_number(parsed_telephone_number):
+        print(f"{telephone_number} is an invalid phone number")
+        raise TypeError
+
+    return f"0{parsed_telephone_number.national_number}"

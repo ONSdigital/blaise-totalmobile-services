@@ -1,5 +1,5 @@
 from app.services.total_mobile_service import do_something_service, update_case_telephone_number
-from app.utilities.parse_json import get_telephone_number
+from app.utilities.parse_json import get_case_details, get_telephone_number
 
 
 def submit_form_result_request_handler(request):
@@ -34,23 +34,6 @@ def validate_request(request):
         raise ValueError()
     print("We gots data!")
     return data
-
-
-def get_case_details(data):
-    try:
-        case_details = data["Result"]["Association"]["Reference"]
-        return case_details.split("-")
-    except Exception as err:
-        print(f"Failed to get case details: {err}")
-        raise err
-
-
-def get_telephone_number(data):
-    try:
-        return get_telephone_number(data)
-    except Exception as err:
-        print(f"Failed to get telephone number: {err}")
-        raise err
 
 
 def get_reference_number(data):
