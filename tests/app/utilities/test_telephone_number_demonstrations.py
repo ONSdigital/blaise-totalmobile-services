@@ -1,5 +1,5 @@
-"""The following module demonstrates how to extract a telephone number
- from the JSON payload that TMobile posts to Submit Form Result Request"""
+"""This module demonstrates how to extract a telephone number
+ from the JSON payload posted to Submit Form Result Request by TMobile"""
 
 from typing import Dict, Any
 
