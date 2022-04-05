@@ -1,7 +1,7 @@
-from unittest import mock
-
 import flask
 import pytest
+
+from unittest import mock
 
 from appconfig import Config
 from client import AuthException, OptimiseClient

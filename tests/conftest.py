@@ -1,8 +1,8 @@
 import json
+import pytest
+
 from typing import Dict
 from unittest import mock
-
-import pytest
 
 from client import OptimiseClient
 from run import app as flask_app

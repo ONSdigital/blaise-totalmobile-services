@@ -1,10 +1,10 @@
-import json
+import flask
+import pytest
+
+from google.cloud import tasks_v2
 from unittest import mock
 
 import blaise_restapi
-import flask
-import pytest
-from google.cloud import tasks_v2
 
 from appconfig import Config
 from client.optimise import OptimiseClient

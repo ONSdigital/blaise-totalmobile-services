@@ -1,6 +1,6 @@
-from typing import Dict, Any
-
 import pytest
+
+from typing import Dict, Any
 
 from app.utilities.parse_json import (get_case_details, get_telephone_number, __valid_top_level_responses,
                                       __valid_second_level_responses, __valid_element_dictionary,
