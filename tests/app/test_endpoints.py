@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+
 expected_messages = [
     'This is a basic placeholder per BLAIS5-3071',
     'We gots data!',
@@ -9,15 +10,12 @@ expected_messages = [
 ]
 
 
-@patch("app.services.total_mobile_service.update_case_telephone_number")
-def test_submit_form_result_request_returns_200(mock_update_case_telephone_number, client, submit_form_result_request_sample):
-    # TODO!
-    # mock_update_case_telephone_number.return_value = None
-    # response = client.post("/ons/totalmobile-incoming/SubmitFormResultRequest", json=submit_form_result_request_sample)
-    # print(f"EL! {response}")
-    # assert response.status_code == 501
-    # assert True
-    pass
+@patch("app.endpoints.submit_form_result_request_handler")
+def test_submit_form_result_request_returns_200(mock_handler, client, submit_form_result_request_sample):
+    mock_handler.return_value = 200
+    response = client.post("/ons/totalmobile-incoming/SubmitFormResultRequest", json=submit_form_result_request_sample)
+    print(f"\nresponse: {response}")
+    assert response == "foo"
 
 
 def test_update_visit_status_request_returns_200(capsys, client, upload_visit_status_request_sample):

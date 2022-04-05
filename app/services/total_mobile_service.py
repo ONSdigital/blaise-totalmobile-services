@@ -13,8 +13,7 @@ restapi_client = blaise_restapi.Client(blaise_api_url)
 
 def update_case_telephone_number(instrument_name, case_id, telephone_number):
     data_fields = {"qDataBag.TelNo": telephone_number}
-    if restapi_client.patch_case_data(server_park, instrument_name, case_id, data_fields) is None:
-        return 200
+    restapi_client.patch_case_data(server_park, instrument_name, case_id, data_fields)
 
 
 def do_something_service(reference):
