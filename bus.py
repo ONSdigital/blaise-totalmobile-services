@@ -1,7 +1,8 @@
 from typing import Any, Dict
+
+import requests
 from google.auth.transport.requests import Request
 from google.oauth2 import id_token
-import requests
 
 
 class BusClient:
