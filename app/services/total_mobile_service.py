@@ -37,4 +37,6 @@ def update_record(reference, status):
 
 
 def record_details(reference):
-    return db.session.query(TotalMobile).filter(TotalMobile.reference == reference).one()
+    return (
+        db.session.query(TotalMobile).filter(TotalMobile.reference == reference).one()
+    )
