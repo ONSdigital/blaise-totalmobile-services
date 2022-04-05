@@ -43,3 +43,14 @@ gcloud functions deploy TestTMCreateJob \
   --trigger-http \
   --set-env-vars='TOTALMOBILE_URL=<totalmobile_url>,TOTALMOBILE_INSTANCE=<totalmobile_instance>,TOTALMOBILE_CLIENT_ID=<totalmobile_client_id>,TOTALMOBILE_CLIENT_SECRET=<totalmobile_client_id>'
 ```
+
+## Poetry problems
+
+Dependencies (like the blaise-restapi) not updating properly after running ```poetry update blaise-restapi``` ???
+
+This worked for me:
+
+* cd into the folder where pyproject.toml is
+* Run ```poetry env list``` (this will show you the venv for the project)
+* Then run ```poetry env remove whatever-WhATeVs-py3.9``` to delete it (where ```whatever-WhATeVs-py3.9``` is the venv displayed from the above command) 
+* Running ```poetry install``` <i>should</i> install all the deps listed in pyproject.toml.
