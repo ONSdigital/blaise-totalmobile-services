@@ -1,5 +1,7 @@
 from typing import Dict, List
+
 import flask
+
 from appconfig import Config
 from client import OptimiseClient
 
@@ -22,8 +24,8 @@ def validate_case_data(case: Dict) -> None:
         "qDataBag.Prem3",
         "qDataBag.PostTown",
         "qDataBag.PostCode",
-        "qDataBag.UPRN_Latitude",
-        "qDataBag.UPRN_Longitude",
+        # "qDataBag.UPRN_Latitude", This field aren't strictly required but do make the world better...
+        # "qDataBag.UPRN_Longitude", This field aren't strictly required but do make the world better...
         "qDataBag.TelNo",
         "qDataBag.TelNo2",
     ]
@@ -53,24 +55,24 @@ def create_job_payload(request_json: Dict) -> Dict:
             "end": "",  # !?
         },
         "location": {
-            "address": f"{case['qDataBag.Prem1']}, {case['qDataBag.Prem2']}, {case['qDataBag.PostTown']}",
+            "address": f"{case.get('qDataBag.Prem1')}, {case.get('qDataBag.Prem2')}, {case.get('qDataBag.PostTown')}",
             "reference": case["qiD.Serial_Number"],
             "addressDetail": {
-                "name": f"{case['qDataBag.Prem1']}, {case['qDataBag.Prem2']}, {case['qDataBag.PostTown']}",
-                "addressLine2": case["qDataBag.Prem1"],
-                "addressLine3": case["qDataBag.Prem2"],
-                "addressLine4": case["qDataBag.PostTown"],
-                "postCode": case["qDataBag.PostCode"],
+                "name": f"{case.get('qDataBag.Prem1')}, {case.get('qDataBag.Prem2')}, {case.get('qDataBag.PostTown')}",
+                "addressLine2": case.get("qDataBag.Prem1"),
+                "addressLine3": case.get("qDataBag.Prem2"),
+                "addressLine4": case.get("qDataBag.PostTown"),
+                "postCode": case.get("qDataBag.PostCode"),
                 "coordinates": {
-                    "latitude": case["qDataBag.UPRN_Latitude"],
-                    "longitude": case["qDataBag.UPRN_Longitude"],
+                    "latitude": case.get("qDataBag.UPRN_Latitude"),
+                    "longitude": case.get("qDataBag.UPRN_Longitude"),
                 },
             },
         },
         "contact": {
-            "name": case["qDataBag.PostCode"],
-            "homePhone": case["qDataBag.TelNo"],
-            "mobilePhone": case["qDataBag.TelNo2"],
+            "name": case.get("qDataBag.PostCode"),
+            "homePhone": case.get("qDataBag.TelNo"),
+            "mobilePhone": case.get("qDataBag.TelNo2"),
             "contactDetail": {
                 "contactId": instrument[:3],  # survey tla
                 "contactIdLabel": instrument[-1],  # wave - lms specific!

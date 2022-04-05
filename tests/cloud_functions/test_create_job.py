@@ -1,6 +1,10 @@
-from client import OptimiseClient, AuthException
-from appconfig import Config
 from unittest import mock
+
+import flask
+import pytest
+
+from appconfig import Config
+from client import AuthException, OptimiseClient
 from cloud_functions.create_job import (
     create_job_payload,
     create_totalmobile_job,
@@ -8,8 +12,6 @@ from cloud_functions.create_job import (
     validate_case_data,
     validate_request,
 )
-import flask
-import pytest
 
 
 @mock.patch.object(Config, "validate")
