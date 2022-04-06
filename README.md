@@ -11,6 +11,8 @@ TOTALMOBILE_URL=
 TOTALMOBILE_INSTANCE=
 TOTALMOBILE_CLIENT_ID=
 TOTALMOBILE_CLIENT_SECRET=
+BLAISE_API_URL=
+BLAISE_SERVER_PARK=
 BUS_URL=
 BUS_CLIENT_ID=
 INSTRUMENT_NAME=
@@ -19,7 +21,7 @@ CLOUD_FUNCTION_SA=
 
 Generate a GCP creds file:
 ```sh
-gcloud iam services-accounts keys create keys.json --iam-account ons-blaise-v2-dev-sandbox123@appspot.gserviceaccount.com
+gcloud iam service-accounts keys create keys.json --iam-account ons-blaise-v2-dev-sandbox123@appspot.gserviceaccount.com
 export GOOGLE_APPLICATION_CREDENTIALS=keys.json
 ```
 
