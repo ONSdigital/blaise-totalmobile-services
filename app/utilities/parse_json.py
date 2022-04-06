@@ -26,6 +26,7 @@ def get_telephone_number(input: Dict[str, Any]) -> str:
 
 def validate_request(request):
     # TODO: Test dis
+    print(f"\nrequest: {request}")
     data = request.get_json()
     if not data:
         print("Ain't got no data, mate")

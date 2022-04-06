@@ -1,10 +1,11 @@
 import pytest
 
 from typing import Dict, Any
+from unittest import mock
 
 from app.utilities.parse_json import (get_case_details, get_telephone_number, __valid_top_level_responses,
                                       __valid_second_level_responses, __valid_element_dictionary,
-                                      __valid_value, __valid_telephone_number)
+                                      __valid_value, __valid_telephone_number, validate_request)
 
 
 def test_get_case_details_returns_instrument_name_and_case_id(submit_form_result_request_sample: Dict[str, Any]):
@@ -143,3 +144,14 @@ def test_valid_telephone_number_returns_a_valid_telephone_number(phone_number: s
 def test_valid_telephone_number_raises_a_type_error(phone_number: str):
     with pytest.raises(TypeError):
         __valid_telephone_number(phone_number)
+
+
+def test_data_passed_to_validate_data_is_not_empty(client, submit_form_result_request_sample: Dict[str, any]):
+    # arrange
+    request = client.post(f"/ons/totalmobile-incoming/SubmitFormResultRequest",
+                          json=submit_form_result_request_sample).request
+    # act
+    actual = validate_request(request)
+
+    # assert
+    assert validate_request(request) is not None
