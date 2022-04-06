@@ -27,6 +27,7 @@ def complete_visit_request_handler(request):
 
 
 def validate_request(request):
+    # TODO: Test dis
     data = request.get_json()
     if not data:
         print("Ain't got no data, mate")

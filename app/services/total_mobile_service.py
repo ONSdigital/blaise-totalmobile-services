@@ -4,6 +4,7 @@ from appconfig import Config
 
 
 def update_case_telephone_number(instrument_name, case_id, telephone_number):
+    print(f"Updating telephone number for {instrument_name}, {case_id}, please wait...")
     config = Config.from_env()
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
 

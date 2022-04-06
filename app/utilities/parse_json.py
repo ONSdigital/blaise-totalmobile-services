@@ -4,10 +4,11 @@ from typing import Dict, Any
 
 
 def get_case_details(input: Dict[str, Any]) -> list[str]:
+    print(f"Getting instrument name and case id, please wait...")
     try:
         return input["Result"]["Association"]["Reference"].split("-")
     except Exception as err:
-        print(f"Failed to get case details: {err}")
+        print(f"Failed to get instrument name and case id: {err}")
         raise err
 
 
@@ -15,6 +16,7 @@ def get_telephone_number(input: Dict[str, Any]) -> str:
     """loop through JSON sample to find a specific response where
     element reference is equal to 'TelNo'
     and extract the telephone value of that specific response"""
+    print(f"Getting telephone number, please wait...")
     for response_list in __valid_top_level_responses(input):
         for response in __valid_second_level_responses(response_list):
             if "TelNo" in __valid_element_dictionary(response).values():

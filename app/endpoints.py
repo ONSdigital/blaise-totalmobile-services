@@ -10,6 +10,7 @@ from app.handlers.total_mobile_handler import (
 
 @app.route("/ons/totalmobile-incoming/SubmitFormResultRequest", methods=["POST"])
 def submit_form_result_request():
+    # TODO: Postman request
     return submit_form_result_request_handler(request)
 
 
