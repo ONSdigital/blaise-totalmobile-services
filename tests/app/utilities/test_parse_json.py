@@ -3,9 +3,9 @@ import pytest
 from typing import Dict, Any
 from unittest import mock
 
-from app.utilities.parse_json import (get_case_details, get_telephone_number, __valid_top_level_responses,
+from app.utilities.parse_json import (get_case_details, get_telephone_number, __valid_top_level_responses, get_reference_number,
                                       __valid_second_level_responses, __valid_element_dictionary,
-                                      __valid_value, __valid_telephone_number, validate_request)
+                                      __valid_value, __valid_telephone_number, validate_data)
 
 
 def test_get_case_details_returns_instrument_name_and_case_id(submit_form_result_request_sample: Dict[str, Any]):
@@ -146,12 +146,30 @@ def test_valid_telephone_number_raises_a_type_error(phone_number: str):
         __valid_telephone_number(phone_number)
 
 
-def test_data_passed_to_validate_data_is_not_empty(client, submit_form_result_request_sample: Dict[str, any]):
-    # arrange
-    request = client.post(f"/ons/totalmobile-incoming/SubmitFormResultRequest",
-                          json=submit_form_result_request_sample).request
-    # act
-    actual = validate_request(request)
+def test_validata_data_returns_none_when_valid_json_is_passed_to_function(submit_form_result_request_sample):
+    assert validate_data(submit_form_result_request_sample) is None
 
-    # assert
-    assert validate_request(request) is not None
+
+def test_validate_data_raises_error_when_data_is_empty():
+    with pytest.raises(Exception):
+        validate_data({})
+
+
+@pytest.mark.parametrize(
+    "sample_json",
+    [
+        pytest.lazy_fixture("upload_visit_status_request_sample"),
+        pytest.lazy_fixture("complete_visit_request_sample"),
+    ],
+)
+def test_get_reference_number_returns_reference_number_when_valid_json_is_passed_to_function(sample_json):
+    assert get_reference_number(sample_json) == "SLC-12345-678-910"
+
+
+def test_get_reference_number_raises_error_when_data_is_empty():
+    with pytest.raises(Exception):
+        validate_data({})
+
+
+
+
