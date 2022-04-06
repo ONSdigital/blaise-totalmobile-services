@@ -24,6 +24,26 @@ def get_telephone_number(input: Dict[str, Any]) -> str:
     raise KeyError("Failed to get telephone number")
 
 
+def validate_request(request):
+    # TODO: Test dis
+    data = request.get_json()
+    if not data:
+        print("Ain't got no data, mate")
+        raise ValueError()
+    print("We gots data!")
+    return data
+
+
+def get_reference_number(data):
+    # TODO: Test dis
+    print("This is completely arbitrary data")
+    try:
+        return data["Identity"]["Reference"]
+    except Exception as err:
+        print(f"Failed to get reference number: {err}")
+        raise err
+
+
 def __valid_top_level_responses(input: Dict[str, Any]) -> list:
     try:
         return input["Result"]["Responses"]
