@@ -32,7 +32,6 @@ def validate_data(data):
 
 
 def get_reference_number(data):
-    # TODO: Test dis
     print("This is completely arbitrary data")
     try:
         return data["Identity"]["Reference"]
