@@ -1,12 +1,11 @@
 import json
+import pytest
+
 from base64 import b64decode, b64encode
 from calendar import c
 from typing import Dict
 from unittest import mock
-
-import pytest
 from werkzeug.security import generate_password_hash
-
 from app.app import app as flask_app
 from client import OptimiseClient
 
