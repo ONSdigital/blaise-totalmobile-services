@@ -11,7 +11,7 @@ def submit_form_result_request_handler(request):
     instrument_name, case_id = get_case_details(data)
     telephone_number = get_telephone_number(data)
 
-    return update_case_telephone_number(instrument_name, case_id, telephone_number)
+    update_case_telephone_number(instrument_name, case_id, telephone_number)
 
 
 def update_visit_status_request_handler(request):
