@@ -12,6 +12,13 @@ class Config:
     totalmobile_instance: str
     totalmobile_client_id: str
     totalmobile_client_secret: str
+    totalmobile_jobs_queue_id: str
+    totalmobile_job_cloud_function: str
+    gcloud_project: str
+    region: str
+    blaise_api_url: str
+    blaise_server_park: str
+    cloud_function_sa: str
 
     @classmethod
     def from_env(cls) -> "Config":
@@ -20,6 +27,15 @@ class Config:
             totalmobile_instance=os.getenv("TOTALMOBILE_INSTANCE", ""),
             totalmobile_client_id=os.getenv("TOTALMOBILE_CLIENT_ID", ""),
             totalmobile_client_secret=os.getenv("TOTALMOBILE_CLIENT_SECRET", ""),
+            totalmobile_jobs_queue_id=os.getenv("TOTALMOBILE_JOBS_QUEUE_ID", ""),
+            totalmobile_job_cloud_function=os.getenv(
+                "TOTALMOBILE_JOB_CLOUD_FUNCTION", ""
+            ),
+            gcloud_project=os.getenv("GCLOUD_PROJECT", ""),
+            region=os.getenv("REGION", ""),
+            blaise_api_url=os.getenv("BLAISE_API_URL", ""),
+            blaise_server_park=os.getenv("BLAISE_SERVER_PARK", ""),
+            cloud_function_sa=os.getenv("CLOUD_FUNCTION_SA", ""),
         )
 
     def log(self) -> None:
@@ -29,6 +45,11 @@ class Config:
         print(
             f"Configuration - totalmobile_client_secret: {self.totalmobile_client_secret}"
         )
+        print(f"Configuration - gcloud_project: {self.gcloud_project}")
+        print(f"Configuration - region: {self.region}")
+        print(f"Configuration - blaise_api_url: {self.blaise_api_url}")
+        print(f"Configuration - blaise_server_park: {self.blaise_server_park}")
+        print(f"Configuration - cloud_function_sa: {self.cloud_function_sa}")
 
     def validate(self) -> None:
         errored_fields = []
