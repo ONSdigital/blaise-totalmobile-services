@@ -1,9 +1,10 @@
-from dotenv import dotenv_values
-from bus import BusClient
-
-from client.optimise import OptimiseClient
-import blaise_restapi
 import json
+
+import blaise_restapi
+from dotenv import dotenv_values
+
+from bus import BusClient
+from client.optimise import OptimiseClient
 
 config = dotenv_values(".env")
 
@@ -31,9 +32,9 @@ if (
     print("Environment variable missing")
     exit(1)
 
-restapi_client = blaise_restapi.Client(blaise_api_url)
+# restapi_client = blaise_restapi.Client(blaise_api_url)
 
-bus_client = BusClient(bus_url, bus_client_id)
+# bus_client = BusClient(bus_url, bus_client_id)
 
 optimise_client = OptimiseClient(
     totalmobile_url,
@@ -44,10 +45,11 @@ optimise_client = OptimiseClient(
 
 world = "Region 1"
 world_id = optimise_client.get_world(world)["id"]
-response = optimise_client.create_job(world_id, {})
-print(response.status_code)
-print(response.text)
-print(response.json())
+print(json.dumps(optimise_client.get_job_properties(world_id, "LMS2202-DI1.99999")))
+# response = optimise_client.create_job(world_id, {})
+# print(response.status_code)
+# print(response.text)
+# print(response.json())
 
 
 # uacs = bus_client.get_uacs_by_case_id(instrument)

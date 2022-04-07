@@ -1,5 +1,7 @@
 from typing import Dict, List
+
 import flask
+
 from appconfig import Config
 from client import OptimiseClient
 
@@ -36,6 +38,10 @@ def job_reference(instrument: str, case_id: str) -> str:
     return f"{instrument.replace('_', '-')}.{case_id}"
 
 
+def description(instrument: str, case_id: str) -> str:
+    return f"Study: {instrument}\nCase ID: {case_id}\n\nIf you need to provide a UAC please contact SEL"
+
+
 def create_job_payload(request_json: Dict) -> Dict:
     instrument = request_json["instrument"]
     case = request_json["case"]
@@ -45,7 +51,7 @@ def create_job_payload(request_json: Dict) -> Dict:
         "origin": "ONS",
         "clientReference": "2",  # num of no contacts allowed
         "duration": 30,
-        "description": "test-job",
+        "description": description(instrument, case["qiD.Serial_Number"]),
         "workType": "KTN",
         "skills": [{"identity": {"reference": "KTN"}}],
         "dueDate": {
@@ -77,7 +83,7 @@ def create_job_payload(request_json: Dict) -> Dict:
                 "preferredName": instrument[4:7],  # 3 digit field period..!?
             },
         },
-        "attributes": [
+        "additionalProperties": [
             {"name": "study", "value": instrument},
             {"name": "case_id", "value": case["qiD.Serial_Number"]},
         ],

@@ -1,10 +1,10 @@
 # app
 
-A python POC for ingesting data from totalmobile. 
+A python POC for ingesting data from totalmobile.
 
 * Endpoints ingest JSON payloads (see test/conftest.py for samples)
 * Handlers parse data and extract the job reference
-* Services persist job reference and custom status to a temporary database (data_sources/sqlalchemy) 
+* Services persist job reference and custom status to a temporary database (data_sources/sqlalchemy)
 * Empty string or an error message, and a status code is returned
 
 ### Endpoints
@@ -59,3 +59,9 @@ If however these files will be expanded on the following work needs to be comple
 * Plug in an appropriate datasource and remove SQLAlchemy and temp.db
 * Improve logging
 * Expand tests to include unhappy paths
+
+## Generate totalmobile password hash
+
+```sh
+poetry run python -c "from werkzeug.security import generate_password_hash; print(generate_password_hash('foo'))"
+```

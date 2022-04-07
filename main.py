@@ -1,8 +1,9 @@
-import flask
 import os
 
-from cloud_functions.create_job import create_totalmobile_job
+import flask
 from dotenv import load_dotenv
+
+from cloud_functions.create_job import create_totalmobile_job
 
 if os.path.isfile("./.env"):
     print("Loading environment variables from dotenv file")

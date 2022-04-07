@@ -1,5 +1,6 @@
-from appconfig import Config, ConfigError
 import pytest
+
+from appconfig import Config, ConfigError
 
 
 def test_config_validate():

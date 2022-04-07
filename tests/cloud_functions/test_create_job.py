@@ -1,15 +1,18 @@
-from client import OptimiseClient, AuthException
-from appconfig import Config
 from unittest import mock
+
+import flask
+import pytest
+
+from appconfig import Config
+from client import AuthException, OptimiseClient
 from cloud_functions.create_job import (
     create_job_payload,
     create_totalmobile_job,
+    description,
     job_reference,
     validate_case_data,
     validate_request,
 )
-import flask
-import pytest
 
 
 @mock.patch.object(Config, "validate")
@@ -62,7 +65,7 @@ def test_validate_case_data_missing_fields():
 
 def test_create_job_payload(mock_create_job_task):
     assert create_job_payload(mock_create_job_task) == {
-        "attributes": [
+        "additionalProperties": [
             {"name": "study", "value": "DST2101A"},
             {"name": "case_id", "value": "100100"},
         ],
@@ -77,7 +80,7 @@ def test_create_job_payload(mock_create_job_task):
             "mobilePhone": "TelNo2",
             "name": "PostCode",
         },
-        "description": "test-job",
+        "description": "Study: DST2101A\nCase ID: 100100\n\nIf you need to provide a UAC please contact SEL",
         "dueDate": {"end": "", "start": ""},
         "duration": 30,
         "identity": {"reference": "DST2101A.100100"},
@@ -104,3 +107,13 @@ def test_create_job_payload(mock_create_job_task):
 
 def test_job_reference():
     assert job_reference("LMS2201A_BB1", "100100") == "LMS2201A-BB1.100100"
+
+
+def test_description():
+    assert (
+        description("LMS2201A_BB1", "100100")
+        == """Study: LMS2201A_BB1
+Case ID: 100100
+
+If you need to provide a UAC please contact SEL"""
+    )
