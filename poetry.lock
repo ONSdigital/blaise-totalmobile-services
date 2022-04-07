@@ -393,6 +393,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "mocker"
+version = "1.1.1"
+description = "Graceful platform for test doubles in Python (mocks, stubs, fakes, and dummies)."
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "mypy"
 version = "0.931"
 description = "Optional static typing for Python"
@@ -637,6 +645,35 @@ fixture = ["fixtures"]
 test = ["fixtures", "mock", "purl", "pytest", "sphinx", "testrepository (>=0.0.18)", "testtools"]
 
 [[package]]
+name = "requests-mock-flask"
+version = "2022.4.3"
+description = "'Helpers to use requests_mock and responses with a Flask test client.'"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+Werkzeug = "*"
+
+[package.extras]
+dev = ["Flask-Negotiate (==0.1.0)", "Flask (==2.1.1)", "Sphinx-Substitution-Extensions (==2022.2.16)", "autoflake (==1.4)", "black (==22.3.0)", "check-manifest (==0.48)", "doc8 (==0.11.1)", "flake8-commas (==2.1.0)", "flake8-quotes (==3.3.1)", "flake8 (==4.0.1)", "furo (==2022.3.4)", "httpretty (==1.1.4)", "isort (==5.10.1)", "mypy (==0.942)", "pip-check-reqs (==2.3.2)", "pydocstyle (==6.1.1)", "pylint (==2.13.4)", "pyroma (==3.3)", "pytest-cov (==3.0.0)", "pytest (==7.1.1)", "requests-mock (==1.9.3)", "requests (==2.27.1)", "responses (==0.20.0)", "sphinx-autodoc-typehints (==1.17.0)", "sphinx-prompt (==1.5.0)", "sphinxcontrib.spelling (==7.3.2)", "types-requests (==2.27.16)", "types-setuptools (==57.4.11)", "vulture (==2.3)"]
+
+[[package]]
+name = "responses"
+version = "0.20.0"
+description = "A utility library for mocking out the `requests` Python library."
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+requests = ">=2.0,<3.0"
+urllib3 = ">=1.25.10"
+
+[package.extras]
+tests = ["pytest (>=7.0.0)", "coverage (>=6.0.0)", "pytest-cov", "pytest-asyncio", "pytest-localserver", "flake8", "types-mock", "types-requests", "mypy"]
+
+[[package]]
 name = "rsa"
 version = "4.8"
 description = "Pure-Python RSA implementation"
@@ -809,7 +846,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "e532f82bd76b08a7fa70166a33fcdd03bc94779b4396dd961d0834ce5e219292"
+content-hash = "c7780f4f380b3989bffa44115e921e5e4c94c2249feed4d24ef543418a10bbe6"
 
 [metadata.files]
 atomicwrites = [
@@ -1135,6 +1172,9 @@ mccabe = [
     {file = "mccabe-0.6.1-py2.py3-none-any.whl", hash = "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42"},
     {file = "mccabe-0.6.1.tar.gz", hash = "sha256:dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f"},
 ]
+mocker = [
+    {file = "mocker-1.1.1.tar.bz2", hash = "sha256:2009911707c74b28bdc9959b5224717e45fcb93475b4b7bb4efad3285fcf2919"},
+]
 mypy = [
     {file = "mypy-0.931-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:3c5b42d0815e15518b1f0990cff7a705805961613e701db60387e6fb663fe78a"},
     {file = "mypy-0.931-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:c89702cac5b302f0c5d33b172d2b55b5df2bede3344a2fbed99ff96bddb2cf00"},
@@ -1280,6 +1320,14 @@ requests = [
 requests-mock = [
     {file = "requests-mock-1.9.3.tar.gz", hash = "sha256:8d72abe54546c1fc9696fa1516672f1031d72a55a1d66c85184f972a24ba0eba"},
     {file = "requests_mock-1.9.3-py2.py3-none-any.whl", hash = "sha256:0a2d38a117c08bb78939ec163522976ad59a6b7fdd82b709e23bb98004a44970"},
+]
+requests-mock-flask = [
+    {file = "requests-mock-flask-2022.4.3.tar.gz", hash = "sha256:d0d2fe012fd564cb5ca8bc8a2f875e72c08fa7f4eaacead655b5f070fdd9acd0"},
+    {file = "requests_mock_flask-2022.4.3-py3-none-any.whl", hash = "sha256:3f764979943ef6559e63ed6bc6dc1f2ab472f56fd3c1c80e313db60ba3c7eb70"},
+]
+responses = [
+    {file = "responses-0.20.0-py3-none-any.whl", hash = "sha256:18831bc2d72443b67664d98038374a6fa1f27eaaff4dd9a7d7613723416fea3c"},
+    {file = "responses-0.20.0.tar.gz", hash = "sha256:644905bc4fb8a18fa37e3882b2ac05e610fe8c2f967d327eed669e314d94a541"},
 ]
 rsa = [
     {file = "rsa-4.8-py3-none-any.whl", hash = "sha256:95c5d300c4e879ee69708c428ba566c59478fd653cc3a22243eeb8ed846950bb"},
