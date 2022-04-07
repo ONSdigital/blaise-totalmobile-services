@@ -1,3 +1,10 @@
+from app.app import app, load_config, setup_app
+
+
+load_config(app)
+setup_app(app)
+
+
 def test_update_visit_status_request_returns_200(
     client, upload_visit_status_request_sample, test_auth_header
 ):

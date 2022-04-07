@@ -1,15 +1,18 @@
 from flask import Flask
-
 from app.auth import auth
 from app.endpoints import incoming
+from app.config import Config
 
-from .config import Config
 
 app = Flask(__name__)
-config = Config.from_env()
-app.config["user"] = config.user
-app.config["password_hash"] = config.password_hash
 
-app.auth = auth
 
-app.register_blueprint(incoming)
+def load_config(application):
+    config = Config.from_env()
+    application.config["user"] = config.user
+    application.config["password_hash"] = config.password_hash
+
+
+def setup_app(application):
+    application.auth = auth
+    application.register_blueprint(incoming)
