@@ -1,6 +1,6 @@
 # Blaise Totalmobile Services
 
-We integrate with Totalmobile for field workforce management.
+We integrate with Totalmobile for field workforce management. We send case details to Totalmobile and it manages the allocation of cases to field interviewers. Field interviewers will capture some data using a Totalmobile app on their smartphones, this data will be sent back to us so we can update the Blaise data.
 
 This project contains several services for sending data to and receiving data from Totalmobile.
 
@@ -8,7 +8,7 @@ This project contains several services for sending data to and receiving data fr
 
 - Cloud Function () blah blah blah
 - Cloud Function () blah blah blah
-- Flask application blah blah blah
+- Flask application with several endpoints for receiving data updates from Totalmobile. More details can be found in the [app readme](app/README.md).
 
 ### Local Setup
 
@@ -67,6 +67,12 @@ INSTRUMENT_NAME=
 CLOUD_FUNCTION_SA=
 TOTALMOBILE_USER=
 TOTALMOBILE_PASSWORD_HASH=
+```
+
+Generate Totalmobile password hash:
+
+```sh
+poetry run python -c "from werkzeug.security import generate_password_hash; print(generate_password_hash('blah'))"
 ```
 
 Run the Flask application:
