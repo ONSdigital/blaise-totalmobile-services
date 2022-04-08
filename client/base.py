@@ -1,7 +1,7 @@
+import requests
+
 from datetime import datetime, timedelta
 from typing import Any, List
-
-import requests
 
 from client.errors import AuthException, BadRequest, ServerError
 
