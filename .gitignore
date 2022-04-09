@@ -11,3 +11,4 @@ cases.json
 sam.json
 /.idea/
 temp.db
+.DS_Store

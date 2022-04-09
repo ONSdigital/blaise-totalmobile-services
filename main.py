@@ -1,17 +1,14 @@
 import os
+
 import flask
-
-
-from app.app import app, load_config, setup_app
 from dotenv import load_dotenv
 
+from app.app import app, load_config, setup_app
 from cloud_functions.create_instrument_case_tasks import (
     create_case_tasks_for_instrument,
 )
-
-from cloud_functions.create_job import (
-    create_totalmobile_job as create_totalmobile_job_exectutor,
-)
+from cloud_functions.create_job import \
+    create_totalmobile_job as create_totalmobile_job_exectutor
 
 
 def create_totalmobile_job(request: flask.Request) -> str:

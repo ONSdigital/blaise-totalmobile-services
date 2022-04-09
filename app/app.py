@@ -1,8 +1,8 @@
 from flask import Flask
-from app.auth import auth
-from app.endpoints import incoming
-from app.config import Config
 
+from app.auth import auth
+from app.config import Config
+from app.endpoints import incoming
 
 app = Flask(__name__)
 

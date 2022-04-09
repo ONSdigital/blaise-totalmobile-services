@@ -48,19 +48,19 @@ gcloud iam service-accounts keys create keys.json --iam-account ons-blaise-v2-de
 ```
 
 Temporary set your local GOOGLE_APPLICATION_CREDENTIALS environment variable to this JSON file:
-
 ```
 Unix: export GOOGLE_APPLICATION_CREDENTIALS=keys.json
 Windows: set GOOGLE_APPLICATION_CREDENTIALS=keys.json
 ```
 
 Create an .env file in the root of the project and add the following environment variables:
-
 ```
 TOTALMOBILE_URL=
 TOTALMOBILE_INSTANCE=
 TOTALMOBILE_CLIENT_ID=
 TOTALMOBILE_CLIENT_SECRET=
+BLAISE_API_URL=
+BLAISE_SERVER_PARK=
 BUS_URL=
 BUS_CLIENT_ID=
 INSTRUMENT_NAME=
@@ -70,13 +70,11 @@ TOTALMOBILE_PASSWORD_HASH=
 ```
 
 Generate Totalmobile password hash:
-
 ```sh
 poetry run python -c "from werkzeug.security import generate_password_hash; print(generate_password_hash('blah'))"
 ```
 
 Run the Flask application:
-
 ```shell
 poetry run python main.py
 ```
@@ -86,19 +84,27 @@ You should now be able to call the Flask application endpoints via localhost:501
 blah blah blah
 
 Run the blah Cloud Function:
-
 ```shell
 poetry run python -c ""
 ```
 
 Run the CLI:
-
 ```sh
 poetry run python cli.py
 ```
 
-Run Tests
-
+Run unit tests:
 ```shell
 poetry run python -m pytest
 ```
+
+### Poetry problems
+
+Dependencies (like the blaise-restapi) not updating properly after running ```poetry update blaise-restapi``` ???
+
+This worked for me:
+
+* cd into the folder where pyproject.toml is
+* Run ```poetry env list``` (this will show you the venv for the project)
+* Then run ```poetry env remove whatever-WhATeVs-py3.9``` to delete it (where ```whatever-WhATeVs-py3.9``` is the venv displayed from the above command) 
+* Running ```poetry install``` <i>should</i> install all the deps listed in pyproject.toml.

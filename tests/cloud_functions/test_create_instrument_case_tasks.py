@@ -52,7 +52,7 @@ def test_prepare_tasks_returns_an_expected_number_of_tasks_when_given_a_list_of_
 ):
     # arrange
     _mock_config_from_env.return_value = Config(
-        "", "", "", "", "", "", " ", "", "", "", ""
+        "", "", "", "", "", "", "", "", "", "", ""
     )
 
     model1 = TotalmobileJobModel("OPN2101A", "world", {"qiD.Serial_Number": "90001"})

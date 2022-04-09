@@ -1,11 +1,12 @@
 import json
-import pytest
-
-from base64 import b64decode, b64encode
+from base64 import b64encode
 from calendar import c
 from typing import Dict
 from unittest import mock
+
+import pytest
 from werkzeug.security import generate_password_hash
+
 from app.app import app as flask_app
 from client import OptimiseClient
 
@@ -145,38 +146,23 @@ def submit_form_result_request_sample():
     {
       "Result": {
         "User": {
-          "ID": 9999,
-          "IDSpecified": true,
-          "Name": "jane.doe",
-          "DeviceID": "f00-ba7",
+          "ID": 1234,
+          "Name": "blah",
           "UserAttributes": [
             {
               "Name": "AuthNo",
-              "Value": "1111"
-            },
-            {
-              "Name": "Region",
-              "Value": "South West"
-            },
-            {
-              "Name": "Skill",
-              "Value": "Survey"
-            },
-            {
-              "Name": "Team",
-              "Value": "South West 7"
+              "Value": "1234"
             }
           ]
         },
-        "Date": "2022-03-15T11:20:04.25",
+        "Date": "2022-01-01T10:00:10.00",
         "Form": {
-          "Reference": "Interview - Full",
-          "Version": 8
+          "Reference": "Interview - Full"
         },
         "Association": {
           "WorkType": "SS",
-          "Reference": "SLC-12345-678-910",
-          "PropertyReference": "1234567 1",
+          "Reference": "DST2111Z-1001011",
+          "PropertyReference": "1001011",
           "ClientReference": ""
         },
         "Responses": [
@@ -187,8 +173,8 @@ def submit_form_result_request_sample():
                 "Value": "",
                 "Description": null,
                 "Element": {
-                  "Reference": "TEA",
-                  "Text": "This is a final call result If you complete this, you will not be able to edit it at a later date.",
+                  "Reference": "BLAH",
+                  "Text": "blah",
                   "EnrichContentSpecified": false
                 }
               }
@@ -203,7 +189,7 @@ def submit_form_result_request_sample():
             "Instance": 0,
             "Responses": [
               {
-                "Value": "2022-03-15T11:19:00.000+00:00",
+                "Value": "2022-01-01T10:10:00.000+00:00",
                 "Description": null,
                 "Element": {
                   "Reference": "InterviewDateTime",
@@ -212,16 +198,16 @@ def submit_form_result_request_sample():
                 }
               },
               {
-                "Value": "Nothing left ",
+                "Value": "07000000000",
                 "Description": null,
                 "Element": {
-                  "Reference": "WhatLeft",
-                  "Text": "What did you leave?",
+                  "Reference": "TelNo",
+                  "Text": "What is your telephone number?",
                   "EnrichContentSpecified": false
                 }
               },
               {
-                "Value": "SLC",
+                "Value": "DST",
                 "Description": null,
                 "Element": {
                   "Reference": "SurveyType",
@@ -237,7 +223,7 @@ def submit_form_result_request_sample():
             }
           }
         ],
-        "ResultGuid": "f00-ba7"
+        "ResultGuid": "1234-1234-1234-1234"
       }
     }
     """
