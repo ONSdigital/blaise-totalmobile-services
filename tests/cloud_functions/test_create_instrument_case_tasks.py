@@ -8,7 +8,7 @@ from google.cloud import tasks_v2
 from appconfig import Config
 from client.optimise import OptimiseClient
 from cloud_functions.create_instrument_case_tasks import (
-    create_case_tasks_for_instrument,
+    create_instrument_case_tasks,
     create_task_name,
     create_tasks,
     filter_cases,
@@ -359,20 +359,20 @@ def test_create_case_tasks_for_instrument(
     mock_request = flask.Request.from_values(json={"instrument": "OPN2101A"})
 
     # act
-    result = create_case_tasks_for_instrument(mock_request)
+    result = create_instrument_case_tasks(mock_request)
 
     # assert
     assert result == "Done"
 
 
 @mock.patch.object(Config, "from_env")
-def test_create_case_tasks_for_instrument_error(mock_from_env):
+def test_create_instrument_case_tasks_error(mock_from_env):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": ""})
 
     # assert
     with pytest.raises(Exception) as err:
-        create_case_tasks_for_instrument(mock_request)
+        create_instrument_case_tasks(mock_request)
     assert (
         str(err.value) == "Required fields missing from request payload: ['instrument']"
     )

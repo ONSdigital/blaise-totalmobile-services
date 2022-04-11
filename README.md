@@ -6,8 +6,8 @@ This project contains several services for sending data to and receiving data fr
 
 ### Services
 
-- Cloud Function () blah blah blah
-- Cloud Function () blah blah blah
+- Cloud Function (create_totalmobile_job) to create jobs in Totalmobile.
+- Cloud Function (create_instrument_case_tasks) to get all cases for an instrument, apply business logic to filter out cases, then send the case details to Totalmobile as "jobs" via the create_totalmobile_job Cloud Function via Cloud Tasks.
 - Flask application with several endpoints for receiving data updates from Totalmobile. More details can be found in the [app readme](app/README.md).
 
 ### Local Setup
@@ -53,25 +53,30 @@ Unix: export GOOGLE_APPLICATION_CREDENTIALS=keys.json
 Windows: set GOOGLE_APPLICATION_CREDENTIALS=keys.json
 ```
 
-Create an .env file in the root of the project and add the following environment variables:
-```
-TOTALMOBILE_URL=
-TOTALMOBILE_INSTANCE=
-TOTALMOBILE_CLIENT_ID=
-TOTALMOBILE_CLIENT_SECRET=
-BLAISE_API_URL=
-BLAISE_SERVER_PARK=
-BUS_URL=
-BUS_CLIENT_ID=
-INSTRUMENT_NAME=
-CLOUD_FUNCTION_SA=
-TOTALMOBILE_USER=
-TOTALMOBILE_PASSWORD_HASH=
-```
-
 Generate Totalmobile password hash:
 ```sh
 poetry run python -c "from werkzeug.security import generate_password_hash; print(generate_password_hash('blah'))"
+```
+
+Create an .env file in the root of the project and add the following example environment variables:
+```
+GCLOUD_PROJECT=ons-blaise-v2-dev-sandbox123
+REGION=europe-west2
+BLAISE_API_URL=http://localhost:90
+BLAISE_SERVER_PARK=gusty
+BUS_URL=https://bus.preprod-blaise.gcp.onsdigital.uk
+BUS_CLIENT_ID=170783964648-j9n6kcs1k9v1gbift5d0pbnmjl234a2t.apps.googleusercontent.com
+TOTALMOBILE_URL=https://ons-dev.totalmobile-cloud.com
+TOTALMOBILE_INSTANCE=Test
+TOTALMOBILE_CLIENT_ID=
+TOTALMOBILE_CLIENT_SECRET=
+TOTALMOBILE_INSTANCE=Test
+TOTALMOBILE_JOB_CLOUD_FUNCTION=create-totalmobile-job
+TOTALMOBILE_JOBS_QUEUE_ID=projects/ons-blaise-v2-dev-sandbox123/locations/europe-west2/queues/totalmobile-jobs
+TOTALMOBILE_USER=blah
+TOTALMOBILE_PASSWORD_HASH=pbkdf2:sha256:260000$Y1Pew7gJMYbRhfNR$9b97ee1d4a735047051c83bff275532d4d1322f1fc186739189b00fa7cc9a51b
+CLOUD_FUNCTION_SA=totalmobile-sa@ons-blaise-v2-dev-sandbox123.iam.gserviceaccount.com
+INSTRUMENT_NAME=
 ```
 
 Run the Flask application:
@@ -83,9 +88,9 @@ You should now be able to call the Flask application endpoints via localhost:501
 
 blah blah blah
 
-Run the blah Cloud Function:
+Run the "create_instrument_case_tasks" Cloud Function:
 ```shell
-poetry run python -c ""
+poetry run python -c "import flask; from main import create_instrument_case_tasks; create_instrument_case_tasks(flask.Request.from_values(json={'instrument': 'DST2111Z'}))"
 ```
 
 Run the CLI:

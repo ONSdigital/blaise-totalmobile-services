@@ -122,7 +122,7 @@ async def run(task_requests: List[tasks_v2.CreateTaskRequest]) -> None:
     await asyncio.gather(*create_tasks(task_requests, task_client))
 
 
-def create_case_tasks_for_instrument(request: flask.Request) -> str:
+def create_instrument_case_tasks(request: flask.Request) -> str:
     config = Config.from_env()
 
     request_json = request.get_json()
