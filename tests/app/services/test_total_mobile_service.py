@@ -1,51 +1,24 @@
-import pytest
+from unittest import mock
 
-from app.services.total_mobile_service import (
-    insert_record,
-    record_exists,
-    update_record,
-)
-from data_sources.sqlalchemy import db
-from data_sources.sqlalchemy.models import TotalMobile
-
-test_reference = "LMS-123-456"
+from app.services.total_mobile_service import update_case_telephone_number
+from appconfig import Config
 
 
-def setup():
-    db.create_all()
-    record = TotalMobile(reference=test_reference, status="a_status")
-    db.session.add(record)
-    db.session.commit()
+@mock.patch("blaise_restapi.Client.patch_case_data")
+@mock.patch.object(Config, "from_env")
+def test_update_case_telephone_number_passes_the_correct_parameters_to_the_restapi(
+        _mock_config_from_env, mock_blaise_restapi_patch_case_data):
+    # arrange
+    instrument_name = "DST2101Z"
+    case_id = "1110111"
+    telephone_number = "07123456789"
+    data_fields = {"qDataBag.TelNo": telephone_number}
 
+    server_park = "gusty"
+    _mock_config_from_env.return_value = Config("", "", "", "", "", "", "", "", "", server_park, "")
 
-@pytest.mark.parametrize(
-    "reference_id, expected",
-    [
-        ("foo", False),
-        (test_reference, True),
-        ("bar", False),
-    ],
-)
-def test_record_exists(reference_id, expected):
-    assert record_exists(reference_id) is expected
+    # act
+    update_case_telephone_number(instrument_name, case_id, telephone_number)
 
-
-def test_update_record_happy_path():
-    error_message, code = update_record(test_reference, "new_status")
-
-    assert record_exists(test_reference)
-    assert error_message == ""
-    assert code == 200
-
-
-def test_insert_record_happy_path():
-    new_reference = "OPN-123-456"
-    error_message, code = insert_record(new_reference, "shiny_new_status")
-
-    assert record_exists(test_reference)
-    assert error_message == ""
-    assert code == 200
-
-
-def teardown():
-    db.drop_all()
+    # assert
+    mock_blaise_restapi_patch_case_data.assert_called_with(server_park, instrument_name, case_id, data_fields)

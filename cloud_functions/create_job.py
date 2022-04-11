@@ -1,6 +1,6 @@
-from typing import Dict, List
-
 import flask
+
+from typing import Dict, List
 
 from appconfig import Config
 from client import OptimiseClient
