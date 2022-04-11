@@ -15,7 +15,6 @@ Flask = "^2.0.3"
 config = "^0.5.1"
 python-dotenv = "^0.19.2"
 pytest = "^7.1.1"
-Flask-SQLAlchemy = "^2.5.1"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
@@ -28,6 +27,14 @@ types-requests = "^2.27.11"
 types-Flask = "^1.1.6"
 pytest-cov = "^3.0.0"
 requests-mock = "^1.9.0"
+Flask = "^2.0.3"
+Flask-SQLAlchemy = "^2.5.1"
+SQLAlchemy = "^1.4.32"
+phonenumbers = "^8.12.46"
+pytest-lazy-fixture = "^0.6.3"
+mocker = "^1.1.1"
+responses = "^0.20.0"
+requests-mock-flask = "^2022.4.3"
 
 [tool.isort]
 multi_line_output = "3"

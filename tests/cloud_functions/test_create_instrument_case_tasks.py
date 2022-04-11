@@ -1,10 +1,10 @@
-import json
+import flask
+import pytest
+
+from google.cloud import tasks_v2
 from unittest import mock
 
 import blaise_restapi
-import flask
-import pytest
-from google.cloud import tasks_v2
 
 from appconfig import Config
 from client.optimise import OptimiseClient
@@ -53,7 +53,7 @@ def test_prepare_tasks_returns_an_expected_number_of_tasks_when_given_a_list_of_
 ):
     # arrange
     _mock_config_from_env.return_value = Config(
-        "", "", "", "", "", "", " ", "", "", "", ""
+        "", "", "", "", "", "", "", "", "", "", ""
     )
 
     model1 = TotalmobileJobModel("OPN2101A", "world", {"qiD.Serial_Number": "90001"})
