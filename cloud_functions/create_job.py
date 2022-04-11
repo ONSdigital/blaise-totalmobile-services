@@ -91,7 +91,7 @@ def create_job_payload(request_json: Dict) -> Dict:
 
 
 def create_totalmobile_job(request: flask.Request) -> str:
-    print(request)  # delete me
+    print(request.json)  # delete me
     config = Config.from_env()
 
     config.validate()
