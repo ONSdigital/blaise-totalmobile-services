@@ -1,5 +1,4 @@
 import json
-
 from typing import Any
 
 
@@ -18,6 +17,6 @@ class BadRequest(Exception):
         self.error_details = error_details
 
     def __str__(self) -> str:
-        if self.error_details != None:
+        if self.error_details is not None:
             return json.dumps(self.error_details)
         return self.error_message

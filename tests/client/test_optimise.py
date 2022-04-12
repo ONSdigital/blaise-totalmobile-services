@@ -164,3 +164,44 @@ def test_get_world(requests_mock, optimise_client, mock_auth_response, mock_worl
         "identity": {"reference": "test"},
         "type": "foo",
     }
+
+
+def test_get_job(requests_mock, optimise_client, mock_auth_response):
+    requests_mock.post("/Test/identity/connect/token", json=mock_auth_response)
+    requests_mock.get("/Test/api/optimise/worlds/test/jobs/test-job-reference", json={})
+    assert optimise_client.get_job("test", "test-job-reference") == {}
+
+
+def test_get_job_properties(requests_mock, optimise_client, mock_auth_response):
+    requests_mock.post("/Test/identity/connect/token", json=mock_auth_response)
+    requests_mock.get(
+        "/Test/api/optimise/worlds/test/jobs/test-job-reference/additionalProperties",
+        json=[
+            {
+                "name": "study",
+                "value": "LMS2202_DI1",
+                "instanceId": 0,
+                "additionalProperties": [],
+            },
+            {
+                "name": "case_id",
+                "value": "99999",
+                "instanceId": 0,
+                "additionalProperties": [],
+            },
+        ],
+    )
+    assert optimise_client.get_job_properties("test", "test-job-reference") == [
+        {
+            "name": "study",
+            "value": "LMS2202_DI1",
+            "instanceId": 0,
+            "additionalProperties": [],
+        },
+        {
+            "name": "case_id",
+            "value": "99999",
+            "instanceId": 0,
+            "additionalProperties": [],
+        },
+    ]
