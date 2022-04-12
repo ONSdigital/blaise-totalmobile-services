@@ -1,13 +1,12 @@
 import asyncio
-import flask
-
 from datetime import timedelta
 from typing import Any, Coroutine, Dict, List
 from uuid import uuid4
-from google.cloud import tasks_v2
-from google.protobuf.duration_pb2 import Duration
 
 import blaise_restapi
+import flask
+from google.cloud import tasks_v2
+from google.protobuf.duration_pb2 import Duration
 
 from appconfig import Config
 from client.optimise import OptimiseClient
@@ -123,7 +122,7 @@ async def run(task_requests: List[tasks_v2.CreateTaskRequest]) -> None:
     await asyncio.gather(*create_tasks(task_requests, task_client))
 
 
-def create_case_tasks_for_instrument(request: flask.Request) -> str:
+def create_instrument_case_tasks(request: flask.Request) -> str:
     config = Config.from_env()
 
     request_json = request.get_json()

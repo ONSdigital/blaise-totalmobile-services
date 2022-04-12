@@ -1,11 +1,14 @@
 import json
-import pytest
-
+from base64 import b64encode
+from calendar import c
 from typing import Dict
 from unittest import mock
 
+import pytest
+from werkzeug.security import generate_password_hash
+
+from app.app import app as flask_app
 from client import OptimiseClient
-from run import app as flask_app
 
 
 @pytest.fixture
@@ -57,9 +60,26 @@ def app():
 
 
 @pytest.fixture
-def client(app):
-    app.call_history_client = mock.MagicMock()
+def test_password():
+    return "test-password"
+
+
+@pytest.fixture
+def test_username():
+    return "test-username"
+
+
+@pytest.fixture
+def client(app, test_username, test_password):
+    app.config["user"] = test_username
+    app.config["password_hash"] = generate_password_hash(test_password)
     return app.test_client()
+
+
+@pytest.fixture
+def test_auth_header(test_username, test_password):
+    credentials = b64encode(f"{test_username}:{test_password}".encode()).decode("utf-8")
+    return {"Authorization": f"Basic {credentials}"}
 
 
 @pytest.fixture
@@ -219,7 +239,7 @@ def complete_visit_request_sample():
       "SystemDateSpecified": true,
       "IsFullyComplete": true,
       "Lines": [
-        
+
       ],
       "Appointment": {
         "Date": "2022-03-15T10:00:00",
@@ -247,7 +267,7 @@ def complete_visit_request_sample():
           "Location": null,
           "Status": 2,
           "AdditionalProperties": [
-            
+
           ],
           "DependencyGroup": null,
           "DependencyExpression": null,
@@ -269,7 +289,7 @@ def complete_visit_request_sample():
           "Location": null,
           "Status": 2,
           "AdditionalProperties": [
-            
+
           ],
           "DependencyGroup": null,
           "DependencyExpression": null,
@@ -319,7 +339,7 @@ def complete_visit_request_sample():
       "Action": 4,
       "ActionSpecified": true,
       "Metadata": [
-        
+
       ]
     }
     """

@@ -1,6 +1,6 @@
-import flask
-
 from typing import Dict, List
+
+import flask
 
 from appconfig import Config
 from client import OptimiseClient
@@ -38,18 +38,22 @@ def job_reference(instrument: str, case_id: str) -> str:
     return f"{instrument.replace('_', '-')}.{case_id}"
 
 
+def description(instrument: str, case_id: str) -> str:
+    return f"Study: {instrument}\nCase ID: {case_id}\n\nIf you need to provide a UAC please contact SEL"
+
+
 def create_job_payload(request_json: Dict) -> Dict:
     instrument = request_json["instrument"]
     case = request_json["case"]
 
     return {
-        "identity": {"reference": job_reference(instrument, case["qiD.Serial_Number"])},
+        "identity": {"reference": job_reference(instrument, case["qiD.Serial_Number"])},  # we must control this so we can link it back to blaise
         "origin": "ONS",
-        "clientReference": "2",  # num of no contacts allowed
-        "duration": 30,
-        "description": "test-job",
-        "workType": "KTN",
-        "skills": [{"identity": {"reference": "KTN"}}],
+        "clientReference": "2",  # num of non contacts allowed, misused field? appears at top of the app
+        "duration": 30,  # could this differ depending on survey and work type etc?
+        "description": description(instrument, case["qiD.Serial_Number"]),
+        "workType": "KTN",  # probably shouldn't be hardcoded, will likely support more work types in the future...
+        "skills": [{"identity": {"reference": "KTN"}}],  # probably shouldn't be hardcoded, will likely support more skills in the future...
         "dueDate": {
             "start": "",  # !?
             "end": "",  # !?
@@ -70,16 +74,16 @@ def create_job_payload(request_json: Dict) -> Dict:
             },
         },
         "contact": {
-            "name": case.get("qDataBag.PostCode"),
+            "name": case.get("qDataBag.PostCode"),  # postcode as name, misused field?
             "homePhone": case.get("qDataBag.TelNo"),
             "mobilePhone": case.get("qDataBag.TelNo2"),
-            "contactDetail": {
+            "contactDetail": {  # misused fields?
                 "contactId": instrument[:3],  # survey tla
                 "contactIdLabel": instrument[-1],  # wave - lms specific!
                 "preferredName": instrument[4:7],  # 3 digit field period..!?
             },
         },
-        "attributes": [
+        "additionalProperties": [
             {"name": "study", "value": instrument},
             {"name": "case_id", "value": case["qiD.Serial_Number"]},
         ],

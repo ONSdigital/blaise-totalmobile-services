@@ -1,6 +1,6 @@
-import requests
-
 from typing import Any, Dict, List
+
+import requests
 
 from client.base import BaseClient
 
@@ -16,6 +16,14 @@ class OptimiseClient(BaseClient):
 
     def get_jobs(self, world_id: str) -> List[Any]:
         return self._get_list(f"worlds/{world_id}/jobs?pageSize=1000")
+
+    def get_job(self, world_id: str, job_reference: str) -> Dict[Any, Any]:
+        return self._get(f"worlds/{world_id}/jobs/{job_reference}").json()
+
+    def get_job_properties(self, world_id: str, job_reference: str) -> Dict[Any, Any]:
+        return self._get(
+            f"worlds/{world_id}/jobs/{job_reference}/additionalProperties"
+        ).json()
 
     def get_worlds(self) -> List[Any]:
         return self._get("worlds").json()
