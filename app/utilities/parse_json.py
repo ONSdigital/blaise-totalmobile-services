@@ -1,6 +1,6 @@
-import phonenumbers
+from typing import Any, Dict
 
-from typing import Dict, Any
+import phonenumbers
 
 
 def get_case_details(input: Dict[str, Any]) -> list[str]:
@@ -58,7 +58,9 @@ def __valid_second_level_responses(input: Dict[str, Any]) -> list:
 
 def __valid_element_dictionary(input: Dict[str, Any]) -> dict:
     if "Element" not in input:
-        print("'Element' not an expected dictionary type in JSON.Result.Responses.Responses")
+        print(
+            "'Element' not an expected dictionary type in JSON.Result.Responses.Responses"
+        )
     return input["Element"]
 
 

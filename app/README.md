@@ -1,11 +1,4 @@
-# app
-
-A python POC for ingesting data from totalmobile. 
-
-* Endpoints ingest JSON payloads (see test/conftest.py for samples)
-* Handlers validate and extract data
-* Services currently either print an arbitrary message or call blaise-api-python-client to persist data
-* Nothing is returned
+Totalmobile provide a "dynamic HTTP adapter", essentially this allows us to setup predefined endpoints for receiving data updates from Totalmobile. We can then use these data updates to update the Blaise data. The endpoints have basic authenication, the username and password (hashed) are set as environment variables. The dynamic HTTP adapter can be configured from the Totalmobile UI.
 
 ### Endpoints
 
@@ -15,9 +8,9 @@ Endpoints can be found in app/endpoints.py and are as follows:
 * "/ons/totalmobile-incoming/UpdateVisitStatusRequest"
 * "/ons/totalmobile-incoming/CompleteVisitRequest"
 
-(Now commonly referred to as "Submit", "Update" and "Complete")
+Now commonly referred to as "Update", "Submit" and "Complete".
 
-These are the endpoints to which TotalMobile's event-driven process will post JSON payloads.
+These are the endpoints to which Totalmobile's event-driven processes will post JSON payloads.
 
 ### Payloads
 
@@ -29,25 +22,12 @@ Sample payloads can be found in test/conftest.py under:
 
 Field interviewer name has been replaced with jane.doe and some GUIDs and IDs were replaced.
 
-## Running
+### IDs
 
-Run run.py. Hook it up to Postman using the localhost address printed in the terminal. 
+The unique identifier for the endpoint payloads are as follows:
 
-Alternatively, execute test/app/test_endpoints with pytest. Setting debug points and debugging the tests will help you walk through the flow of data from endpoint to handler to service.
+* Update - ["Identity"]["Reference"]
+* Complete - ["Identity"]["Reference"]
+* Submit - ["Result"]["Association"]["Reference"]
 
-## Future
-
-The following files are part of a POC and were designed to be discarded. When discarding ensure the following files are removed as necessary:
-
-* run.py
-* app/
-* test/app/
-
-as well as the sample payloads in conftest.py as previously mentioned.
-
-If however these files will be expanded on the following work needs to be completed:
-
-* Securely expose endpoints externally
-* Authorise user credentials from request
-* Improve logging and error handling (removing duff print statements as necessary)
-* Expand tests to include unhappy paths
+These IDs are the job reference we set when sending data to Totalmobile and is should be constructed from the instrument name and case id. This is how we will link the data back to the Blaise data.
