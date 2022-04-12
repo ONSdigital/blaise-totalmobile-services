@@ -47,13 +47,13 @@ def create_job_payload(request_json: Dict) -> Dict:
     case = request_json["case"]
 
     return {
-        "identity": {"reference": job_reference(instrument, case["qiD.Serial_Number"])},
+        "identity": {"reference": job_reference(instrument, case["qiD.Serial_Number"])},  # we must control this so we can link it back to blaise
         "origin": "ONS",
-        "clientReference": "2",  # num of no contacts allowed
-        "duration": 30,
+        "clientReference": "2",  # num of non contacts allowed, misused field? appears at top of the app
+        "duration": 30,  # could this differ depending on survey and work type etc?
         "description": description(instrument, case["qiD.Serial_Number"]),
-        "workType": "KTN",
-        "skills": [{"identity": {"reference": "KTN"}}],
+        "workType": "KTN",  # probably shouldn't be hardcoded, will likely support more work types in the future...
+        "skills": [{"identity": {"reference": "KTN"}}],  # probably shouldn't be hardcoded, will likely support more skills in the future...
         "dueDate": {
             "start": "",  # !?
             "end": "",  # !?
@@ -74,10 +74,10 @@ def create_job_payload(request_json: Dict) -> Dict:
             },
         },
         "contact": {
-            "name": case.get("qDataBag.PostCode"),
+            "name": case.get("qDataBag.PostCode"),  # postcode as name, misused field?
             "homePhone": case.get("qDataBag.TelNo"),
             "mobilePhone": case.get("qDataBag.TelNo2"),
-            "contactDetail": {
+            "contactDetail": {  # misused fields?
                 "contactId": instrument[:3],  # survey tla
                 "contactIdLabel": instrument[-1],  # wave - lms specific!
                 "preferredName": instrument[4:7],  # 3 digit field period..!?
@@ -91,7 +91,6 @@ def create_job_payload(request_json: Dict) -> Dict:
 
 
 def create_totalmobile_job(request: flask.Request) -> str:
-    print(request.json)  # delete me
     config = Config.from_env()
 
     config.validate()

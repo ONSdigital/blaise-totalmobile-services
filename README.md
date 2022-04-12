@@ -58,25 +58,38 @@ Generate Totalmobile password hash:
 poetry run python -c "from werkzeug.security import generate_password_hash; print(generate_password_hash('blah'))"
 ```
 
-Create an .env file in the root of the project and add the following example environment variables:
+Create an .env file in the root of the project and add the following environment variables:
+
+| Variable | Description | Example |
+| --- | --- | --- |
+| GCLOUD_PROJECT | The GCP project the application will use. | ons-blaise-v2-dev-sandbox123 |
+| REGION | The GCP region the application will be deployed to. | europe-west2 |
+| BLAISE_API_URL | The RESTful API URL the application will use to get and update questionnaire data. | http://localhost:90 |
+| BLAISE_SERVER_PARK | The Blaise Server Park name we will be getting the Blaise data from. | gusty |
+| TOTALMOBILE_URL | The Totalmobile instance URL. | https://ons-dev.totalmobile-cloud.com |
+| TOTALMOBILE_INSTANCE | The Totalmobile instance type. | Test |
+| TOTALMOBILE_CLIENT_ID | The client ID to authenicate with Totalmobile. | blah |
+| TOTALMOBILE_CLIENT_SECRET | The client secret to authenicate with Totalmobile. | blah |
+| TOTALMOBILE_JOB_CLOUD_FUNCTION | The name of the Cloud Function for creating jobs in Totalmobile. | create-totalmobile-job |
+| TOTALMOBILE_JOBS_QUEUE_ID | The Cloud Tasks queue ID for sending jobs to Totalmobile. | projects/ons-blaise-v2-dev-sandbox123/locations/europe-west2/queues/totalmobile-jobs |
+| TOTALMOBILE_USER | The username for Totalmobile to authenicate with us. | blah |
+| TOTALMOBILE_PASSWORD_HASH | The hashed password for Totalmobile to authenicate with us. | pbkdf2:sha256:260000$Y1Pew7gJMYbRhfNR$9b97ee1d4a735047051c83bff275532d4d1322f1fc186739189b00fa7cc9a51b |
+| CLOUD_FUNCTION_SA | The GCP service account the cloud functions will use. | totalmobile-sa@ons-blaise-v2-dev-sandbox123.iam.gserviceaccount.com |
 ```
+
 GCLOUD_PROJECT=ons-blaise-v2-dev-sandbox123
 REGION=europe-west2
 BLAISE_API_URL=http://localhost:90
 BLAISE_SERVER_PARK=gusty
-BUS_URL=https://bus.preprod-blaise.gcp.onsdigital.uk
-BUS_CLIENT_ID=170783964648-j9n6kcs1k9v1gbift5d0pbnmjl234a2t.apps.googleusercontent.com
 TOTALMOBILE_URL=https://ons-dev.totalmobile-cloud.com
 TOTALMOBILE_INSTANCE=Test
-TOTALMOBILE_CLIENT_ID=
-TOTALMOBILE_CLIENT_SECRET=
-TOTALMOBILE_INSTANCE=Test
+TOTALMOBILE_CLIENT_ID=blah
+TOTALMOBILE_CLIENT_SECRET=blah
 TOTALMOBILE_JOB_CLOUD_FUNCTION=create-totalmobile-job
 TOTALMOBILE_JOBS_QUEUE_ID=projects/ons-blaise-v2-dev-sandbox123/locations/europe-west2/queues/totalmobile-jobs
 TOTALMOBILE_USER=blah
 TOTALMOBILE_PASSWORD_HASH=pbkdf2:sha256:260000$Y1Pew7gJMYbRhfNR$9b97ee1d4a735047051c83bff275532d4d1322f1fc186739189b00fa7cc9a51b
 CLOUD_FUNCTION_SA=totalmobile-sa@ons-blaise-v2-dev-sandbox123.iam.gserviceaccount.com
-INSTRUMENT_NAME=
 ```
 
 Run the Flask application:
@@ -84,18 +97,16 @@ Run the Flask application:
 poetry run python main.py
 ```
 
-You should now be able to call the Flask application endpoints via localhost:5011. Examples:
+You should now be able to call the Flask application endpoints via localhost:5011. See the [app readme](app/README.md) for more details.
 
-blah blah blah
+Run the "create_totalmobile_job" Cloud Function:
+```shell
+poetry run python -c "import flask; from main import create_totalmobile_job; create_totalmobile_job(flask.Request.from_values(json={'instrument': 'DST2111Z', 'world_id': '7e4beb99-ed79-4179-ab39-ab6600ebd65e', 'case': {'qDataBag.UPRN_Latitude': '', 'qDataBag.UPRN_Longitude': '', 'qDataBag.Prem1': '56 ONS Street', 'qDataBag.Prem2': '', 'qDataBag.Prem3': '', 'qDataBag.PostTown': ' Staines-Upon-Thames', 'qDataBag.PostCode': '', 'qDataBag.TelNo': '', 'qDataBag.TelNo2': '', 'hOut': '', 'srvStat': '', 'qiD.Serial_Number': '12345'}}))"
+```
 
 Run the "create_instrument_case_tasks" Cloud Function:
 ```shell
 poetry run python -c "import flask; from main import create_instrument_case_tasks; create_instrument_case_tasks(flask.Request.from_values(json={'instrument': 'DST2111Z'}))"
-```
-
-Run the CLI:
-```sh
-poetry run python cli.py
 ```
 
 Run unit tests:

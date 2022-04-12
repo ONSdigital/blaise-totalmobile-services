@@ -5,7 +5,7 @@ import pytest
 
 from appconfig import Config
 from client import AuthException, OptimiseClient
-from cloud_functions.create_job import (
+from cloud_functions.create_totalmobile_job import (
     create_job_payload,
     create_totalmobile_job,
     description,
