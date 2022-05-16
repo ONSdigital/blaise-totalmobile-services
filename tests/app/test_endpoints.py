@@ -11,19 +11,19 @@ setup_app(app)
     "url, expected_function_name",
     [
         (
-            "/ons/totalmobile-incoming/SubmitFormResultRequest",
+            "/bts/SubmitFormResultRequest",
             "submit_form_result_request",
         ),
         (
-            "/ons/totalmobile-incoming/UpdateVisitStatusRequest",
+            "/bts/UpdateVisitStatusRequest",
             "update_visit_status_request",
         ),
         (
-            "/ons/totalmobile-incoming/CompleteVisitRequest",
+            "/bts/CompleteVisitRequest",
             "complete_visit_request"
         ),
         (
-            "/ons/totalmobile-incoming/<version>/health",
+            "/bts/<version>/health",
             "health_check"
         ),
     ],
@@ -50,7 +50,7 @@ def test_update_visit_status_request_returns_401_without_auth(
         client, upload_visit_status_request_sample
 ):
     response = client.post(
-        "/ons/totalmobile-incoming/UpdateVisitStatusRequest",
+        "/bts/UpdateVisitStatusRequest",
         json=upload_visit_status_request_sample,
     )
     assert response.status_code == 401
@@ -60,7 +60,7 @@ def test_submit_form_result_request_returns_401_without_auth(
     client, submit_form_result_request_sample
 ):
     response = client.post(
-        "/ons/totalmobile-incoming/SubmitFormResultRequest",
+        "/bts/SubmitFormResultRequest",
         json=submit_form_result_request_sample,
     )
     assert response.status_code == 401
@@ -70,7 +70,7 @@ def test_complete_visit_request_returns_401_without_auth(
     client, complete_visit_request_sample
 ):
     response = client.post(
-        "/ons/totalmobile-incoming/CompleteVisitRequest",
+        "/bts/CompleteVisitRequest",
         json=complete_visit_request_sample,
     )
     assert response.status_code == 401
@@ -80,7 +80,7 @@ def test_health_check(
     client
 ):
     response = client.get(
-        "/ons/totalmobile-incoming/V1/health"
+        "/bts/V1/health"
     )
     assert json.loads(response.get_data(as_text=True)) == {"healthy": True}
     assert response.status_code == 200

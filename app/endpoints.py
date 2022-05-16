@@ -7,7 +7,7 @@ from app.handlers.total_mobile_handler import (
     update_visit_status_request_handler,
 )
 
-incoming = Blueprint("incoming", __name__, url_prefix="/ons/totalmobile-incoming")
+incoming = Blueprint("incoming", __name__, url_prefix="/bts")
 
 
 @incoming.route("/UpdateVisitStatusRequest", methods=["POST"])
