@@ -26,3 +26,8 @@ def submit_form_result_request():
 @auth.login_required
 def complete_visit_request():
     complete_visit_request_handler(request)
+
+
+@incoming.route("/totalmobile-service/health")
+def health_check():
+    return

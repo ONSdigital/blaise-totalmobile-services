@@ -6,29 +6,6 @@ load_config(app)
 setup_app(app)
 
 
-def test_submit_form_result_request_maps_to_the_correct_url():
-    # arrange
-    adapter = app.url_map.bind("")
-
-    # act
-    result = adapter.match(
-        "/ons/totalmobile-incoming/SubmitFormResultRequest", method="POST"
-    )
-
-    # assert
-    assert result is not None
-
-
-def test_update_visit_status_request_returns_401_without_auth(
-    client, upload_visit_status_request_sample
-):
-    response = client.post(
-        "/ons/totalmobile-incoming/UpdateVisitStatusRequest",
-        json=upload_visit_status_request_sample,
-    )
-    assert response.status_code == 401
-
-
 @pytest.mark.parametrize(
     "url, expected_function_name",
     [
@@ -40,7 +17,14 @@ def test_update_visit_status_request_returns_401_without_auth(
             "/ons/totalmobile-incoming/UpdateVisitStatusRequest",
             "update_visit_status_request",
         ),
-        ("/ons/totalmobile-incoming/CompleteVisitRequest", "complete_visit_request"),
+        (
+            "/ons/totalmobile-incoming/CompleteVisitRequest",
+            "complete_visit_request"
+        ),
+        (
+            "/totalmobile-service/health",
+            "health_check"
+        ),
     ],
 )
 def test_an_endpoint_url_maps_to_the_expected_function_name(
@@ -59,6 +43,16 @@ def test_an_endpoint_url_maps_to_the_expected_function_name(
 
     # assert
     assert result
+
+
+def test_update_visit_status_request_returns_401_without_auth(
+        client, upload_visit_status_request_sample
+):
+    response = client.post(
+        "/ons/totalmobile-incoming/UpdateVisitStatusRequest",
+        json=upload_visit_status_request_sample,
+    )
+    assert response.status_code == 401
 
 
 def test_submit_form_result_request_returns_401_without_auth(
