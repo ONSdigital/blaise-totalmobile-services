@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 
 from app.auth import auth
 from app.handlers.total_mobile_handler import (
@@ -28,6 +28,6 @@ def complete_visit_request():
     complete_visit_request_handler(request)
 
 
-@incoming.route("/totalmobile-service/health")
-def health_check():
-    return
+@incoming.route("/<version>/health", methods=["GET"])
+def health_check(version):
+    return jsonify({"healthy": True})

@@ -1,4 +1,5 @@
 import pytest
+import json
 
 from app.app import app, load_config, setup_app
 
@@ -73,3 +74,13 @@ def test_complete_visit_request_returns_401_without_auth(
         json=complete_visit_request_sample,
     )
     assert response.status_code == 401
+
+
+def test_health_check(
+    client
+):
+    response = client.get(
+        "/ons/totalmobile-incoming/V1/health"
+    )
+    assert json.loads(response.get_data(as_text=True)) == {"healthy": True}
+    assert response.status_code == 200
