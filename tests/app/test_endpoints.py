@@ -23,7 +23,7 @@ setup_app(app)
             "complete_visit_request"
         ),
         (
-            "/totalmobile-service/health",
+            "/ons/totalmobile-incoming/<version>/health",
             "health_check"
         ),
     ],
