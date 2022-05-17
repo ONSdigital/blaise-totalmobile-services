@@ -1,6 +1,6 @@
 Totalmobile provide a "dynamic HTTP adapter", essentially this allows us to setup predefined endpoints for receiving data updates from Totalmobile. We can then use these data updates to update the Blaise data. The endpoints have basic authenication, the username and password (hashed) are set as environment variables. The dynamic HTTP adapter can be configured from the Totalmobile UI.
 
-### Endpoints
+### Endpoints 
 
 Endpoints can be found in app/endpoints.py and are as follows:
 
