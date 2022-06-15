@@ -10,19 +10,19 @@ from app.handlers.total_mobile_handler import (
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
 
 
-@incoming.route("/update-visit-status-request", methods=["POST"])
+@incoming.route("/updatevisitstatusrequest", methods=["POST"])
 @auth.login_required
 def update_visit_status_request():
     update_visit_status_request_handler(request)
 
 
-@incoming.route("/submit-form-result-request", methods=["POST"])
+@incoming.route("/submitformresultrequest", methods=["POST"])
 @auth.login_required
 def submit_form_result_request():
     submit_form_result_request_handler(request)
 
 
-@incoming.route("/complete-visit-request", methods=["POST"])
+@incoming.route("/completevisitrequest", methods=["POST"])
 @auth.login_required
 def complete_visit_request():
     complete_visit_request_handler(request)
