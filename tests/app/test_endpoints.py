@@ -11,15 +11,15 @@ setup_app(app)
     "url, expected_function_name",
     [
         (
-            "/bts/SubmitFormResultRequest",
+            "/bts/submit-form-result-request",
             "submit_form_result_request",
         ),
         (
-            "/bts/UpdateVisitStatusRequest",
+            "/bts/update-visit-status-request",
             "update_visit_status_request",
         ),
         (
-            "/bts/CompleteVisitRequest",
+            "/bts/complete-visit-request",
             "complete_visit_request"
         ),
         (
@@ -50,7 +50,7 @@ def test_update_visit_status_request_returns_401_without_auth(
         client, upload_visit_status_request_sample
 ):
     response = client.post(
-        "/bts/UpdateVisitStatusRequest",
+        "/bts/update-visit-status-request",
         json=upload_visit_status_request_sample,
     )
     assert response.status_code == 401
@@ -60,7 +60,7 @@ def test_submit_form_result_request_returns_401_without_auth(
     client, submit_form_result_request_sample
 ):
     response = client.post(
-        "/bts/SubmitFormResultRequest",
+        "/bts/submit-form-result-request",
         json=submit_form_result_request_sample,
     )
     assert response.status_code == 401
@@ -70,7 +70,7 @@ def test_complete_visit_request_returns_401_without_auth(
     client, complete_visit_request_sample
 ):
     response = client.post(
-        "/bts/CompleteVisitRequest",
+        "/bts/complete-visit-request",
         json=complete_visit_request_sample,
     )
     assert response.status_code == 401
