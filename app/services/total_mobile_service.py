@@ -4,9 +4,9 @@ from appconfig import Config
 
 
 def update_case_telephone_number(
-    instrument_name: str, case_id: str, telephone_number: str
+    questionnaire_name: str, case_id: str, telephone_number: str
 ) -> None:
-    print(f"Updating telephone number for {instrument_name}, {case_id}, please wait...")
+    print(f"Updating telephone number for {questionnaire_name}, {case_id}, please wait...")
     config = Config.from_env()
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
     print(f"\nrest_api: {restapi_client}")
@@ -14,7 +14,7 @@ def update_case_telephone_number(
     data_fields = {"qDataBag.TelNo": telephone_number}
     print(f"\ndata_fields: {data_fields}")
     restapi_client.patch_case_data(
-        config.blaise_server_park, instrument_name, case_id, data_fields
+        config.blaise_server_park, questionnaire_name, case_id, data_fields
     )
 
 

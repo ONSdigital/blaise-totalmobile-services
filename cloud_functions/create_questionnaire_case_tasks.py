@@ -18,7 +18,7 @@ def __filter_missing_fields(case, REQUIRED_FIELDS) -> List[str]:
 
 
 def validate_request(request_json: Dict) -> None:
-    REQUIRED_FIELDS = ["instrument"]
+    REQUIRED_FIELDS = ["questionnaire"]
     missing_fields = __filter_missing_fields(request_json, REQUIRED_FIELDS)
     if len(missing_fields) >= 1:
         raise Exception(
@@ -37,12 +37,12 @@ def retrieve_world_id(config: Config) -> str:
     return optimise_client.get_world(world)["id"]
 
 
-def retrieve_case_data(instrument_name: str, config: Config) -> List[Dict[str, str]]:
+def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str]]:
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
 
-    instrument_data = restapi_client.get_instrument_data(
+    questionnaire_data = restapi_client.get_questionnaire_data(
         config.blaise_server_park,
-        instrument_name,
+        questionnaire_name,
         [
             "qDataBag.UPRN_Latitude",
             "qDataBag.UPRN_Longitude",
@@ -58,7 +58,7 @@ def retrieve_case_data(instrument_name: str, config: Config) -> List[Dict[str, s
             "qiD.Serial_Number",
         ],
     )
-    return instrument_data["reportingData"]
+    return questionnaire_data["reportingData"]
 
 
 def filter_cases(cases: List[Dict[str, str]]) -> List[Dict[str, str]]:
@@ -70,14 +70,14 @@ def filter_cases(cases: List[Dict[str, str]]) -> List[Dict[str, str]]:
 
 
 def map_totalmobile_job_models(
-    cases: List[Dict[str, str]], world_id: str, instrument_name: str
+    cases: List[Dict[str, str]], world_id: str, questionnaire_name: str
 ) -> List[TotalmobileJobModel]:
-    return [TotalmobileJobModel(instrument_name, world_id, case) for case in cases]
+    return [TotalmobileJobModel(questionnaire_name, world_id, case) for case in cases]
 
 
 def create_task_name(job_model: TotalmobileJobModel) -> str:
     return (
-        f"{job_model.instrument}-{job_model.case['qiD.Serial_Number']}-{str(uuid4())}"
+        f"{job_model.questionnaire}-{job_model.case['qiD.Serial_Number']}-{str(uuid4())}"
     )
 
 
@@ -122,7 +122,7 @@ async def run(task_requests: List[tasks_v2.CreateTaskRequest]) -> None:
     await asyncio.gather(*create_tasks(task_requests, task_client))
 
 
-def create_instrument_case_tasks(request: flask.Request) -> str:
+def create_questionnaire_case_tasks(request: flask.Request) -> str:
     config = Config.from_env()
 
     request_json = request.get_json()
@@ -130,14 +130,14 @@ def create_instrument_case_tasks(request: flask.Request) -> str:
         raise Exception("Function was not triggered by a valid request")
     validate_request(request_json)
 
-    instrument_name = request_json["instrument"]
+    questionnaire_name = request_json["questionnaire"]
     world_id = retrieve_world_id(config)
 
-    cases = retrieve_case_data(instrument_name, config)
+    cases = retrieve_case_data(questionnaire_name, config)
     filtered_cases = filter_cases(cases)
 
     totalmobile_job_models = map_totalmobile_job_models(
-        filtered_cases, world_id, instrument_name
+        filtered_cases, world_id, questionnaire_name
     )
     task_requests = prepare_tasks(totalmobile_job_models)
 
