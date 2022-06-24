@@ -368,7 +368,7 @@ def test_create_case_tasks_for_questionnaire(
 @mock.patch.object(Config, "from_env")
 def test_create_questionnaire_case_tasks_error(mock_from_env):
     # arrange
-    mock_request = flask.Request.from_values(json={"questionnaire": ""})
+    mock_request = flask.Request.from_values(json={"instrument": ""})
 
     # assert
     with pytest.raises(Exception) as err:
