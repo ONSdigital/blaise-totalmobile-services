@@ -44,7 +44,7 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "blaise-restapi"
-version = "0.2.0"
+version = "1.0.0"
 description = "Client for calling Blaise RestAPI"
 category = "main"
 optional = false
@@ -58,7 +58,7 @@ requests = "^2.26.0"
 type = "git"
 url = "https://github.com/ONSdigital/blaise-api-python-client.git"
 reference = "main"
-resolved_reference = "a1fcc188dcd6b763eb7c3047da04646c22dcff55"
+resolved_reference = "0b7713b1db50e805b0a33aac704dfe8b1e9a0cdc"
 
 [[package]]
 name = "cachetools"
