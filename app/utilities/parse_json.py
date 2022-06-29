@@ -4,11 +4,11 @@ import phonenumbers
 
 
 def get_case_details(input: Dict[str, Any]) -> list[str]:
-    print(f"Getting instrument name and case id, please wait...")
+    print(f"Getting instquestionnairerument name and case id, please wait...")
     try:
         return input["Result"]["Association"]["Reference"].split("-")
     except Exception as err:
-        print(f"Failed to get instrument name and case id: {err}")
+        print(f"Failed to get questionnaire name and case id: {err}")
         raise err
 
 

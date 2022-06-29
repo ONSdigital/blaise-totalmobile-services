@@ -7,7 +7,7 @@ This project contains several services for sending data to and receiving data fr
 ### Services
 
 - Cloud Function (create_totalmobile_job) to create jobs in Totalmobile.
-- Cloud Function (create_instrument_case_tasks) to get all cases for an instrument, apply business logic to filter out cases, then send the case details to Totalmobile as "jobs" via the create_totalmobile_job Cloud Function via Cloud Tasks.
+- Cloud Function (create_questionnaire_case_tasks) to get all cases for an questionnaire, apply business logic to filter out cases, then send the case details to Totalmobile as "jobs" via the create_totalmobile_job Cloud Function via Cloud Tasks.
 - Flask application with several endpoints for receiving data updates from Totalmobile. More details can be found in the [app readme](app/README.md).
 
 ### Local Setup
@@ -101,12 +101,12 @@ You should now be able to call the Flask application endpoints via localhost:501
 
 Run the "create_totalmobile_job" Cloud Function:
 ```shell
-poetry run python -c "import flask; from main import create_totalmobile_job; create_totalmobile_job(flask.Request.from_values(json={'instrument': 'DST2111Z', 'world_id': '7e4beb99-ed79-4179-ab39-ab6600ebd65e', 'case': {'qDataBag.UPRN_Latitude': '', 'qDataBag.UPRN_Longitude': '', 'qDataBag.Prem1': '56 ONS Street', 'qDataBag.Prem2': '', 'qDataBag.Prem3': '', 'qDataBag.PostTown': ' Staines-Upon-Thames', 'qDataBag.PostCode': '', 'qDataBag.TelNo': '', 'qDataBag.TelNo2': '', 'hOut': '', 'srvStat': '', 'qiD.Serial_Number': '12345'}}))"
+poetry run python -c "import flask; from main import create_totalmobile_job; create_totalmobile_job(flask.Request.from_values(json={'questionnaire': 'DST2111Z', 'world_id': '7e4beb99-ed79-4179-ab39-ab6600ebd65e', 'case': {'qDataBag.UPRN_Latitude': '', 'qDataBag.UPRN_Longitude': '', 'qDataBag.Prem1': '56 ONS Street', 'qDataBag.Prem2': '', 'qDataBag.Prem3': '', 'qDataBag.PostTown': ' Staines-Upon-Thames', 'qDataBag.PostCode': '', 'qDataBag.TelNo': '', 'qDataBag.TelNo2': '', 'hOut': '', 'srvStat': '', 'qiD.Serial_Number': '12345'}}))"
 ```
 
-Run the "create_instrument_case_tasks" Cloud Function:
+Run the "create_questionnaire_case_tasks" Cloud Function:
 ```shell
-poetry run python -c "import flask; from main import create_instrument_case_tasks; create_instrument_case_tasks(flask.Request.from_values(json={'instrument': 'DST2111Z'}))"
+poetry run python -c "import flask; from main import create_questionnaire_case_tasks; create_questionnaire_case_tasks(flask.Request.from_values(json={'questionnaire': 'DST2111Z'}))"
 ```
 
 Run unit tests:

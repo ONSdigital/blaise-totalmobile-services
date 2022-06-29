@@ -16,7 +16,7 @@ from app.utilities.parse_json import (
 )
 
 
-def test_get_case_details_returns_instrument_name_and_case_id(
+def test_get_case_details_returns_questionnaire_name_and_case_id(
     submit_form_result_request_sample: Dict[str, Any]
 ):
     # arrange
@@ -24,15 +24,15 @@ def test_get_case_details_returns_instrument_name_and_case_id(
 
     # act
     actual_result = get_case_details(sample_json)
-    actual_instrument_name = actual_result[0]
+    actual_questionnaire_name = actual_result[0]
     actual_case_id = actual_result[1]
 
     # assert
     assert type(actual_result) == list
     assert actual_result == ["DST2111Z", "1001011"]
 
-    assert type(actual_instrument_name) == str
-    assert actual_instrument_name == "DST2111Z"
+    assert type(actual_questionnaire_name) == str
+    assert actual_questionnaire_name == "DST2111Z"
 
     assert type(actual_case_id) == str
     assert actual_case_id == "1001011"

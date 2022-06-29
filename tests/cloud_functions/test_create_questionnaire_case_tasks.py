@@ -7,8 +7,8 @@ from google.cloud import tasks_v2
 
 from appconfig import Config
 from client.optimise import OptimiseClient
-from cloud_functions.create_instrument_case_tasks import (
-    create_instrument_case_tasks,
+from cloud_functions.create_questionnaire_case_tasks import (
+    create_questionnaire_case_tasks,
     create_task_name,
     create_tasks,
     filter_cases,
@@ -121,20 +121,20 @@ def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(
     )
 
 
-@mock.patch.object(blaise_restapi.Client, "get_instrument_data")
+@mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
 def test_retrieve_case_data_calls_the_rest_api_client_with_the_correct_parameters(
     _mock_rest_api_client,
 ):
     # arrange
     config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "")
     _mock_rest_api_client.return_value = {
-        "instrumentName": "DST2106Z",
-        "instrumentId": "12345-12345-12345-12345-12345",
+        "questionnaireName": "DST2106Z",
+        "questionnaireId": "12345-12345-12345-12345-12345",
         "reportingData": "",
     }
 
     blaise_server_park = "gusty"
-    instrument_name = "OPN2101A"
+    questionnaire_name = "OPN2101A"
 
     fields = [
         "qDataBag.UPRN_Latitude",
@@ -152,33 +152,33 @@ def test_retrieve_case_data_calls_the_rest_api_client_with_the_correct_parameter
     ]
 
     # act
-    retrieve_case_data(instrument_name, config)
+    retrieve_case_data(questionnaire_name, config)
 
     # assert
     _mock_rest_api_client.assert_called_with(
-        blaise_server_park, instrument_name, fields
+        blaise_server_park, questionnaire_name, fields
     )
 
 
-@mock.patch.object(blaise_restapi.Client, "get_instrument_data")
+@mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
 def test_retrieve_case_data_returns_the_case_data_supplied_by_the_rest_api_client(
     _mock_rest_api_client,
 ):
     # arrange
     config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "")
     _mock_rest_api_client.return_value = {
-        "instrumentName": "DST2106Z",
-        "instrumentId": "12345-12345-12345-12345-12345",
+        "questionnaireName": "DST2106Z",
+        "questionnaireId": "12345-12345-12345-12345-12345",
         "reportingData": [
             {"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110"},
             {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "110"},
             {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "110"},
         ],
     }
-    instrument_name = "OPN2101A"
+    questionnaire_name = "OPN2101A"
 
     # act
-    result = retrieve_case_data(instrument_name, config)
+    result = retrieve_case_data(questionnaire_name, config)
 
     # assert
     assert result == [
@@ -220,7 +220,7 @@ def test_retrieve_world_id_returns_a_world_id(_mock_optimise_client):
 
 def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     # arrange
-    instrument_name = "OPN2101A"
+    questionnaire_name = "OPN2101A"
     world_id = "Earth"
 
     case_data = [
@@ -229,7 +229,7 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
         {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "130"},
     ]
     # act
-    result = map_totalmobile_job_models(case_data, world_id, instrument_name)
+    result = map_totalmobile_job_models(case_data, world_id, questionnaire_name)
 
     # assert
     assert result == [
@@ -335,18 +335,18 @@ def test_validate_request_missing_fields():
     with pytest.raises(Exception) as err:
         validate_request({"world_id": ""})
     assert (
-        str(err.value) == "Required fields missing from request payload: ['instrument']"
+        str(err.value) == "Required fields missing from request payload: ['questionnaire']"
     )
 
 
 @mock.patch.object(Config, "from_env")
-@mock.patch("cloud_functions.create_instrument_case_tasks.validate_request")
-@mock.patch("cloud_functions.create_instrument_case_tasks.retrieve_world_id")
-@mock.patch("cloud_functions.create_instrument_case_tasks.retrieve_case_data")
-@mock.patch("cloud_functions.create_instrument_case_tasks.filter_cases")
-@mock.patch("cloud_functions.create_instrument_case_tasks.map_totalmobile_job_models")
-@mock.patch("cloud_functions.create_instrument_case_tasks.prepare_tasks")
-def test_create_case_tasks_for_instrument(
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.validate_request")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_id")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.map_totalmobile_job_models")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.prepare_tasks")
+def test_create_case_tasks_for_questionnaire(
     mock_prepare_tasks,
     mock_map_totalmobile_job_models,
     mock_filter_cases,
@@ -356,23 +356,23 @@ def test_create_case_tasks_for_instrument(
     mock_from_env,
 ):
     # arrange
-    mock_request = flask.Request.from_values(json={"instrument": "OPN2101A"})
+    mock_request = flask.Request.from_values(json={"questionnaire": "OPN2101A"})
 
     # act
-    result = create_instrument_case_tasks(mock_request)
+    result = create_questionnaire_case_tasks(mock_request)
 
     # assert
     assert result == "Done"
 
 
 @mock.patch.object(Config, "from_env")
-def test_create_instrument_case_tasks_error(mock_from_env):
+def test_create_questionnaire_case_tasks_error(mock_from_env):
     # arrange
-    mock_request = flask.Request.from_values(json={"questionnaire": ""})
+    mock_request = flask.Request.from_values(json={"instrument": ""})
 
     # assert
     with pytest.raises(Exception) as err:
-        create_instrument_case_tasks(mock_request)
+        create_questionnaire_case_tasks(mock_request)
     assert (
-        str(err.value) == "Required fields missing from request payload: ['instrument']"
+        str(err.value) == "Required fields missing from request payload: ['questionnaire']"
     )
