@@ -7,7 +7,7 @@ from client import OptimiseClient
 
 
 def validate_request(request_json: Dict) -> None:
-    REQUIRED_FIELDS = ["instrument", "case", "world_id"]
+    REQUIRED_FIELDS = ["questionnaire", "case", "world_id"]
     missing_fields = __filter_missing_fields(request_json, REQUIRED_FIELDS)
     if len(missing_fields) >= 1:
         raise Exception(
@@ -34,24 +34,24 @@ def validate_case_data(case: Dict) -> None:
         raise Exception(f"Required fields missing from case data: {missing_fields}")
 
 
-def job_reference(instrument: str, case_id: str) -> str:
-    return f"{instrument.replace('_', '-')}.{case_id}"
+def job_reference(questionnaire: str, case_id: str) -> str:
+    return f"{questionnaire.replace('_', '-')}.{case_id}"
 
 
-def description(instrument: str, case_id: str) -> str:
-    return f"Study: {instrument}\nCase ID: {case_id}\n\nIf you need to provide a UAC please contact SEL"
+def description(questionnaire: str, case_id: str) -> str:
+    return f"Study: {questionnaire}\nCase ID: {case_id}\n\nIf you need to provide a UAC please contact SEL"
 
 
 def create_job_payload(request_json: Dict) -> Dict:
-    instrument = request_json["instrument"]
+    questionnaire = request_json["questionnaire"]
     case = request_json["case"]
 
     return {
-        "identity": {"reference": job_reference(instrument, case["qiD.Serial_Number"])},  # we must control this so we can link it back to blaise
+        "identity": {"reference": job_reference(questionnaire, case["qiD.Serial_Number"])},  # we must control this so we can link it back to blaise
         "origin": "ONS",
         "clientReference": "2",  # num of non contacts allowed, misused field? appears at top of the app
         "duration": 30,  # could this differ depending on survey and work type etc?
-        "description": description(instrument, case["qiD.Serial_Number"]),
+        "description": description(questionnaire, case["qiD.Serial_Number"]),
         "workType": "KTN",  # probably shouldn't be hardcoded, will likely support more work types in the future...
         "skills": [{"identity": {"reference": "KTN"}}],  # probably shouldn't be hardcoded, will likely support more skills in the future...
         "dueDate": {
@@ -78,13 +78,13 @@ def create_job_payload(request_json: Dict) -> Dict:
             "homePhone": case.get("qDataBag.TelNo"),
             "mobilePhone": case.get("qDataBag.TelNo2"),
             "contactDetail": {  # misused fields?
-                "contactId": instrument[:3],  # survey tla
-                "contactIdLabel": instrument[-1],  # wave - lms specific!
-                "preferredName": instrument[4:7],  # 3 digit field period..!?
+                "contactId": questionnaire[:3],  # survey tla
+                "contactIdLabel": questionnaire[-1],  # wave - lms specific!
+                "preferredName": questionnaire[4:7],  # 3 digit field period..!?
             },
         },
         "additionalProperties": [
-            {"name": "study", "value": instrument},
+            {"name": "study", "value": questionnaire},
             {"name": "case_id", "value": case["qiD.Serial_Number"]},
         ],
     }

@@ -37,7 +37,7 @@ def mock_jobs_multi_page() -> Dict:
 @pytest.fixture
 def mock_create_job_task() -> Dict:
     return {
-        "instrument": "DST2101A",
+        "questionnaire": "DST2101A",
         "world_id": "test-world-id",
         "case": {
             "qiD.Serial_Number": "100100",

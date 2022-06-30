@@ -44,7 +44,7 @@ def test_validate_request_missing_fields():
         validate_request({"world_id": ""})
     assert (
         str(err.value)
-        == "Required fields missing from request payload: ['instrument', 'case']"
+        == "Required fields missing from request payload: ['questionnaire', 'case']"
     )
 
 

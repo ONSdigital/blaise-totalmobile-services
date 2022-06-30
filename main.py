@@ -7,15 +7,15 @@ from app.app import app, load_config, setup_app
 
 import cloud_functions.create_totalmobile_job
 
-import cloud_functions.create_instrument_case_tasks
+import cloud_functions.create_questionnaire_case_tasks
 
 
 def create_totalmobile_job(request: flask.Request) -> str:
     return cloud_functions.create_totalmobile_job.create_totalmobile_job(request)
 
 
-def create_instrument_case_tasks(request: flask.Request) -> str:
-    return cloud_functions.create_instrument_case_tasks.create_instrument_case_tasks(request)
+def create_questionnaire_case_tasks(request: flask.Request) -> str:
+    return cloud_functions.create_questionnaire_case_tasks.create_questionnaire_case_tasks(request)
 
 
 if os.path.isfile("./.env"):
