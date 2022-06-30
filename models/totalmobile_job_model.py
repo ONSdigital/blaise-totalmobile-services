@@ -5,7 +5,7 @@ from typing import Dict
 
 @dataclass
 class TotalmobileJobModel:
-    instrument: str
+    questionnaire: str
     world_id: str
     case: dict
 
