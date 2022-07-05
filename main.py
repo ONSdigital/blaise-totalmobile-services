@@ -6,8 +6,12 @@ from dotenv import load_dotenv
 from app.app import app, load_config, setup_app
 
 import cloud_functions.create_totalmobile_job
-
+import cloud_functions.check_questionnaire_release_date
 import cloud_functions.create_questionnaire_case_tasks
+
+
+def check_questionnaire_release_date() -> str:
+    return cloud_functions.check_questionnaire_release_date.check_questionnaire_release_date()
 
 
 def create_totalmobile_job(request: flask.Request) -> str:
