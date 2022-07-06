@@ -53,10 +53,10 @@ def test_get_questionnaires_with_todays_release_date_returns_an_empty_list_when_
     # arrange
     mock_datastore_entity = [
         entity_builder(
-            1, "LMS2111Z", datetime(2022, 12, 31)
+            1, "LMS2111Z", datetime(2021, 12, 31)
         ),
         entity_builder(
-            2, "LMS2000Z", datetime(2022, 12, 31)
+            2, "LMS2000Z", datetime(2021, 12, 31)
         )
     ]
     mock_get_datastore_records.return_value = mock_datastore_entity
