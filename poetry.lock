@@ -224,6 +224,46 @@ pyopenssl = ["pyopenssl (>=20.0.0)"]
 reauth = ["pyu2f (>=0.1.5)"]
 
 [[package]]
+name = "google-cloud"
+version = "0.34.0"
+description = "API Client library for Google Cloud"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "google-cloud-core"
+version = "2.3.1"
+description = "Google Cloud API client core library"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+google-api-core = ">=1.31.5,<2.0.0 || >2.3.0,<3.0.0dev"
+google-auth = ">=1.25.0,<3.0dev"
+
+[package.extras]
+grpc = ["grpcio (>=1.8.2,<2.0dev)"]
+
+[[package]]
+name = "google-cloud-datastore"
+version = "2.7.1"
+description = "Google Cloud Datastore API client library"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+google-api-core = {version = ">=1.31.5,<2.0.0 || >2.3.0,<3.0.0dev", extras = ["grpc"]}
+google-cloud-core = ">=1.4.0,<3.0.0dev"
+proto-plus = ">=1.15.0,<2.0.0dev"
+protobuf = ">=3.19.0,<4.0.0dev"
+
+[package.extras]
+libcst = ["libcst (>=0.2.5)"]
+
+[[package]]
 name = "google-cloud-pubsub"
 version = "2.12.0"
 description = "Google Cloud Pub/Sub API client library"
@@ -857,7 +897,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "c61ff89dd1b5c167364fd45fd01a05011d7e7a7daa2784b7e15d20132a9da5bb"
+content-hash = "ae1274f388aad1a5717671edd7eb5e2661f498d8b04fe36f7db25dc7fa742ffb"
 
 [metadata.files]
 atomicwrites = [
@@ -984,6 +1024,18 @@ google-api-core = [
 google-auth = [
     {file = "google-auth-2.6.3.tar.gz", hash = "sha256:d65bb0e3701eaaa64fd2aa85e1325580524b0bddc6dc5db3ab89c481b6a20141"},
     {file = "google_auth-2.6.3-py2.py3-none-any.whl", hash = "sha256:5e079eb4d21df1853d55cf2b6766b77ef36f7f7bdaf7d4a70434aa97c7578d60"},
+]
+google-cloud = [
+    {file = "google-cloud-0.34.0.tar.gz", hash = "sha256:01430187cf56df10a9ba775dd547393185d4b40741db0ea5889301f8e7a9d5d3"},
+    {file = "google_cloud-0.34.0-py2.py3-none-any.whl", hash = "sha256:fb1ab7b0548fe44b3d538041f0a374505b7f990d448a935ea36649c5ccab5acf"},
+]
+google-cloud-core = [
+    {file = "google-cloud-core-2.3.1.tar.gz", hash = "sha256:34334359cb04187bdc80ddcf613e462dfd7a3aabbc3fe4d118517ab4b9303d53"},
+    {file = "google_cloud_core-2.3.1-py2.py3-none-any.whl", hash = "sha256:113ba4f492467d5bd442c8d724c1a25ad7384045c3178369038840ecdd19346c"},
+]
+google-cloud-datastore = [
+    {file = "google-cloud-datastore-2.7.1.tar.gz", hash = "sha256:43474bb2d0302da99cd8308dd513303c51e4bf119e1a32e2527cab91e0289741"},
+    {file = "google_cloud_datastore-2.7.1-py2.py3-none-any.whl", hash = "sha256:e2934fff5ba7d4517c6a7bc3d588bb6e12b40356159119e9537b3d2853a39a4f"},
 ]
 google-cloud-pubsub = [
     {file = "google-cloud-pubsub-2.12.0.tar.gz", hash = "sha256:e51a08a72566ff2dbeea93789893d61db554c311fac9623fbc8b8254d254d9ac"},

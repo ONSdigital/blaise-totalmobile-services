@@ -358,3 +358,126 @@ def mock_world():
         "identity": {"reference": "test"},
         "type": "foo",
     }
+
+
+@pytest.fixture
+def mock_questionnaires_from_blaise():
+    return [
+        {
+            "name": "LMS2101_AA1",
+            "id": "05cf69af-3a4e-47df-819a-928350fdda5a",
+            "serverParkName": "gusty",
+            "installDate": "2022-07-01T09:46:24.7460966+01:00",
+            "status": "Inactive",
+            "dataRecordCount": 0,
+            "hasData": False,
+            "nodes": [
+                {
+                    "nodeName": "blaise-gusty-mgmt",
+                    "nodeStatus": "Inactive"
+                }
+            ]
+        },
+        {
+            "name": "DST2108W",
+            "id": "1336fd28-22f0-421e-ab0f-cd7b050e8ccf",
+            "serverParkName": "gusty",
+            "installDate": "2022-04-25T14:57:23.262323+01:00",
+            "status": "Active",
+            "dataRecordCount": 0,
+            "hasData": False,
+            "nodes": [
+                {
+                    "nodeName": "blaise-gusty-mgmt",
+                    "nodeStatus": "Active"
+                }
+            ]
+        },
+        {
+            "name": "LMS2111Z",
+            "id": "2052300a-39be-4dfb-99b5-a2eb0d47e141",
+            "serverParkName": "gusty",
+            "installDate": "2022-06-22T12:47:50.3668548+01:00",
+            "status": "Active",
+            "dataRecordCount": 50,
+            "hasData": False,
+            "nodes": [
+                {
+                    "nodeName": "blaise-gusty-mgmt",
+                    "nodeStatus": "Active"
+                }
+            ]
+        },
+        {
+            "name": "OPN2203H",
+            "id": "ae4e2b84-1187-48f4-bfef-3f4b2d5ec629",
+            "serverParkName": "gusty",
+            "installDate": "2022-06-22T12:45:26.2286747+01:00",
+            "status": "Active",
+            "dataRecordCount": 0,
+            "hasData": False,
+            "nodes": [
+                {
+                    "nodeName": "blaise-gusty-mgmt",
+                    "nodeStatus": "Active"
+                }
+            ]
+        },
+        {
+            "name": "NWO2204a",
+            "id": "cd4095cf-ffa4-47db-97f2-96cf1cc992b3",
+            "serverParkName": "gusty",
+            "installDate": "2022-04-27T15:24:01.316053+01:00",
+            "status": "Active",
+            "dataRecordCount": 0,
+            "hasData": False,
+            "nodes": [
+                {
+                    "nodeName": "blaise-gusty-mgmt",
+                    "nodeStatus": "Active"
+                }
+            ]
+        }
+    ]
+
+
+@pytest.fixture
+def mock_lms_only_questionnaire_from_blaise():
+    return [
+        {
+            "name": "LMS2101_AA1",
+            "id": "05cf69af-3a4e-47df-819a-928350fdda5a",
+            "serverParkName": "gusty",
+            "installDate": "2022-07-01T09:46:24.7460966+01:00",
+            "status": "Inactive",
+            "dataRecordCount": 0,
+            "hasData": False,
+            "nodes": [
+                {
+                    "nodeName": "blaise-gusty-mgmt",
+                    "nodeStatus": "Inactive"
+                }
+            ]
+        }
+    ]
+
+
+@pytest.fixture
+def mock_dst_only_questionnaire_from_blaise():
+    return [
+        {
+            "name": "DST2101_AA1",
+            "id": "05cf69af-3a4e-47df-819a-928350fdda5a",
+            "serverParkName": "gusty",
+            "installDate": "2022-07-01T09:46:24.7460966+01:00",
+            "status": "Inactive",
+            "dataRecordCount": 0,
+            "hasData": False,
+            "nodes": [
+                {
+                    "nodeName": "blaise-gusty-mgmt",
+                    "nodeStatus": "Inactive"
+                }
+            ]
+        }
+    ]
