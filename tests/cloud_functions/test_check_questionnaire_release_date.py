@@ -19,15 +19,6 @@ def entity_builder(key, questionnaire, tmreleasedate):
     return entity
 
 
-def test_check_questionnaire_release_date_raises_an_error_if_request_is_not_json():
-    # arrange
-    mock_request = flask.Request.from_values()
-
-    # act and assert
-    with pytest.raises(Exception):
-        assert check_questionnaire_release_date(mock_request)
-
-
 @mock.patch("cloud_functions.check_questionnaire_release_date.get_datastore_records")
 def test_get_questionnaires_with_todays_release_date_only_returns_questionnaires_with_todays_date(mock_get_datastore_records):
     # arrange
@@ -83,11 +74,10 @@ def test_get_questionnaires_with_todays_release_date_returns_an_empty_list_when_
 @mock.patch("cloud_functions.check_questionnaire_release_date.get_questionnaires_with_todays_release_date")
 def test_check_questionnaire_returns_when_there_are_no_questionnaire_for_release(mock_get_questionnaires_with_todays_release_date):
     # arrange
-    mock_request = flask.Request.from_values(json={})
     mock_get_questionnaires_with_todays_release_date.return_value = []
 
     # act
-    result = check_questionnaire_release_date(mock_request)
+    result = check_questionnaire_release_date()
 
     # assert
     assert result == "There are no questionnaires for release today"

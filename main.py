@@ -17,8 +17,8 @@ def create_questionnaire_case_tasks(request: flask.Request) -> str:
     return cloud_functions.create_questionnaire_case_tasks.create_questionnaire_case_tasks(request)
 
 
-def check_questionnaire_release_date(request: flask.Request) -> str:
-    return cloud_functions.check_questionnaire_release_date.check_questionnaire_release_date(request)
+def check_questionnaire_release_date(_event, _context) -> str:
+    return cloud_functions.check_questionnaire_release_date.check_questionnaire_release_date()
 
 
 if os.path.isfile("./.env"):

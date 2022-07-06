@@ -88,11 +88,7 @@ def get_datastore_records() -> list:
     return list(query.fetch())
 
 
-def check_questionnaire_release_date(request: flask.Request) -> str:
-    request_json = request.get_json()
-    if request_json is None:
-        raise Exception("Questionnaire release process function was not triggered by a valid request")
-
+def check_questionnaire_release_date() -> str:
     todays_questionnaires_for_release = get_questionnaires_with_todays_release_date()
     if todays_questionnaires_for_release == []:
         return "There are no questionnaires for release today"
