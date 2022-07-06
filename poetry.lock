@@ -235,7 +235,7 @@ python-versions = "*"
 name = "google-cloud-core"
 version = "2.3.1"
 description = "Google Cloud API client core library"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -250,7 +250,7 @@ grpc = ["grpcio (>=1.8.2,<2.0dev)"]
 name = "google-cloud-datastore"
 version = "2.7.1"
 description = "Google Cloud Datastore API client library"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -897,7 +897,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "ae1274f388aad1a5717671edd7eb5e2661f498d8b04fe36f7db25dc7fa742ffb"
+content-hash = "f8b5063c653f250a052b8cac5dc09180254d91a6cf0a4af383a368bead8c19b1"
 
 [metadata.files]
 atomicwrites = [

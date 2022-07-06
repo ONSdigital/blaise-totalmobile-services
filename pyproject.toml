@@ -17,6 +17,7 @@ python-dotenv = "^0.19.2"
 pytest = "^7.1.1"
 Flask-HTTPAuth = "^4.5.0"
 phonenumbers = "^8.12.46"
+google-cloud-datastore = "^2.7.1"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
