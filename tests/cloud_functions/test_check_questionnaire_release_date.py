@@ -36,7 +36,7 @@ def test_get_questionnaires_with_todays_release_date_only_returns_questionnaires
             1, "LMS2111Z", datetime.today()
         ),
         entity_builder(
-            2, "LMS2000Z", datetime(2022, 12, 31)
+            2, "LMS2000Z", datetime(2021, 12, 31)
         )
     ]
     mock_get_datastore_records.return_value = mock_datastore_entity
