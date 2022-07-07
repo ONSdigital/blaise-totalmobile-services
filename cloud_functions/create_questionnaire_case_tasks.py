@@ -123,18 +123,24 @@ async def run(task_requests: List[tasks_v2.CreateTaskRequest]) -> None:
 
 
 def create_questionnaire_case_tasks(request: flask.Request) -> str:
+    print("Started creating questionnaire case tasks")
     config = Config.from_env()
 
     request_json = request.get_json()
     if request_json is None:
+        print("Function was not triggered by a valid request")
         raise Exception("Function was not triggered by a valid request")
     validate_request(request_json)
 
     questionnaire_name = request_json["questionnaire"]
+    print(f"Creating case tasks for questionnaire: {questionnaire_name}")
     world_id = retrieve_world_id(config)
+    print(f"Retrieved world_id: {world_id}")
 
     cases = retrieve_case_data(questionnaire_name, config)
+    print(f"Retrieved {len(cases)} cases")
     filtered_cases = filter_cases(cases)
+    print(f"Filtered {len(filtered_cases)} cases")
 
     totalmobile_job_models = map_totalmobile_job_models(
         filtered_cases, world_id, questionnaire_name
@@ -142,4 +148,5 @@ def create_questionnaire_case_tasks(request: flask.Request) -> str:
     task_requests = prepare_tasks(totalmobile_job_models)
 
     asyncio.run(run(task_requests))
+    print("Finished creating questionnaire case tasks")
     return "Done"
