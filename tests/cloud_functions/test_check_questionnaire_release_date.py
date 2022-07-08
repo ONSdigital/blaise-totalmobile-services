@@ -1,5 +1,5 @@
 import json
-from structlog.testing import capture_logs
+import logging
 
 from datetime import datetime
 from unittest import mock
@@ -71,17 +71,16 @@ def test_get_questionnaires_with_todays_release_date_returns_an_empty_list_when_
 
 
 @mock.patch("cloud_functions.check_questionnaire_release_date.get_questionnaires_with_todays_release_date")
-def test_check_questionnaire_returns_when_there_are_no_questionnaire_for_release(mock_get_questionnaires_with_todays_release_date):
+def test_check_questionnaire_returns_when_there_are_no_questionnaire_for_release(mock_get_questionnaires_with_todays_release_date, caplog):
     # arrange
     mock_get_questionnaires_with_todays_release_date.return_value = []
 
     # act
-    with capture_logs() as cap_logs:
-        result = check_questionnaire_release_date()
+    result = check_questionnaire_release_date()
 
     # assert
     assert result == "There are no questionnaires for release today"
-    assert {'event': 'There are no questionnaires for release today', 'log_level': 'info'} in cap_logs
+    assert ('root', logging.INFO, 'There are no questionnaires for release today') in caplog.record_tuples
 
 
 def test_map_questionnaire_case_task_models_maps_the_correct_list_of_models():

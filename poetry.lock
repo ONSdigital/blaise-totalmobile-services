@@ -232,6 +232,31 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "google-cloud-appengine-logging"
+version = "1.1.2"
+description = ""
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+google-api-core = {version = ">=1.31.5,<2.0.0 || >2.3.0,<3.0.0dev", extras = ["grpc"]}
+proto-plus = ">=1.15.0,<2.0.0dev"
+protobuf = ">=3.19.0,<4.0.0dev"
+
+[[package]]
+name = "google-cloud-audit-log"
+version = "0.2.0"
+description = "Google Cloud Audit Protos"
+category = "main"
+optional = false
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
+
+[package.dependencies]
+googleapis-common-protos = ">=1.52.0"
+protobuf = ">=3.6.0"
+
+[[package]]
 name = "google-cloud-core"
 version = "2.3.1"
 description = "Google Cloud API client core library"
@@ -262,6 +287,23 @@ protobuf = ">=3.19.0,<4.0.0dev"
 
 [package.extras]
 libcst = ["libcst (>=0.2.5)"]
+
+[[package]]
+name = "google-cloud-logging"
+version = "3.1.2"
+description = "Stackdriver Logging API client library"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+google-api-core = {version = ">=1.31.5,<2.0.0 || >2.3.0,<3.0.0dev", extras = ["grpc"]}
+google-cloud-appengine-logging = ">=0.1.0,<2.0.0dev"
+google-cloud-audit-log = ">=0.1.0,<1.0.0dev"
+google-cloud-core = ">=1.4.1,<3.0.0dev"
+grpc-google-iam-v1 = ">=0.12.4,<1.0.0dev"
+proto-plus = ">=1.15.0,<2.0.0dev"
+protobuf = ">=3.19.0,<4.0.0dev"
 
 [[package]]
 name = "google-cloud-pubsub"
@@ -776,19 +818,6 @@ pymysql = ["pymysql (<1)", "pymysql"]
 sqlcipher = ["sqlcipher3-binary"]
 
 [[package]]
-name = "structlog"
-version = "21.5.0"
-description = "Structured Logging for Python"
-category = "main"
-optional = false
-python-versions = ">=3.6"
-
-[package.extras]
-dev = ["pre-commit", "rich", "cogapp", "tomli", "coverage", "freezegun (>=0.2.8)", "pretend", "pytest-asyncio", "pytest (>=6.0)", "simplejson", "furo", "sphinx", "sphinx-notfound-page", "sphinxcontrib-mermaid", "twisted"]
-docs = ["furo", "sphinx", "sphinx-notfound-page", "sphinxcontrib-mermaid", "twisted"]
-tests = ["coverage", "freezegun (>=0.2.8)", "pretend", "pytest-asyncio", "pytest (>=6.0)", "simplejson"]
-
-[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -910,7 +939,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "b5598387d0c94bed6e009add8ebfc7155200e19c81c23ec0fb179724a1336ff3"
+content-hash = "4d1825e64ad91524f122d2283c476a493f5d065728634de0b6e01c7c9fa29962"
 
 [metadata.files]
 atomicwrites = [
@@ -1036,6 +1065,14 @@ google-cloud = [
     {file = "google-cloud-0.34.0.tar.gz", hash = "sha256:01430187cf56df10a9ba775dd547393185d4b40741db0ea5889301f8e7a9d5d3"},
     {file = "google_cloud-0.34.0-py2.py3-none-any.whl", hash = "sha256:fb1ab7b0548fe44b3d538041f0a374505b7f990d448a935ea36649c5ccab5acf"},
 ]
+google-cloud-appengine-logging = [
+    {file = "google-cloud-appengine-logging-1.1.2.tar.gz", hash = "sha256:ba77615c100f07edda91656ede1b7465907012b8663aad7c4e75ef9687994237"},
+    {file = "google_cloud_appengine_logging-1.1.2-py2.py3-none-any.whl", hash = "sha256:fe930e9dc5d77e8cb9940f8386965dd8f72d4d4ae2fc782e15637acb5ab585d5"},
+]
+google-cloud-audit-log = [
+    {file = "google-cloud-audit-log-0.2.0.tar.gz", hash = "sha256:d0852f525ad65705f9fbff6288be4493e1449a7906fb5e01bd71c8d1e424d1fc"},
+    {file = "google_cloud_audit_log-0.2.0-py2.py3-none-any.whl", hash = "sha256:ecc7f5f2168ad4014331d6397fcea3750b2d41900f0ef6d1081cd78b3a6420e9"},
+]
 google-cloud-core = [
     {file = "google-cloud-core-2.3.1.tar.gz", hash = "sha256:34334359cb04187bdc80ddcf613e462dfd7a3aabbc3fe4d118517ab4b9303d53"},
     {file = "google_cloud_core-2.3.1-py2.py3-none-any.whl", hash = "sha256:113ba4f492467d5bd442c8d724c1a25ad7384045c3178369038840ecdd19346c"},
@@ -1043,6 +1080,10 @@ google-cloud-core = [
 google-cloud-datastore = [
     {file = "google-cloud-datastore-2.7.1.tar.gz", hash = "sha256:43474bb2d0302da99cd8308dd513303c51e4bf119e1a32e2527cab91e0289741"},
     {file = "google_cloud_datastore-2.7.1-py2.py3-none-any.whl", hash = "sha256:e2934fff5ba7d4517c6a7bc3d588bb6e12b40356159119e9537b3d2853a39a4f"},
+]
+google-cloud-logging = [
+    {file = "google-cloud-logging-3.1.2.tar.gz", hash = "sha256:3ed00a8bd2076fee7a1dc053880fcb3c973184807e240f8c3c0929dd748eaf7f"},
+    {file = "google_cloud_logging-3.1.2-py2.py3-none-any.whl", hash = "sha256:702b69b01c4b98c50a4e4e7cbe12309de8c6685e99ec100c0c902e1765a45e92"},
 ]
 google-cloud-pubsub = [
     {file = "google-cloud-pubsub-2.12.0.tar.gz", hash = "sha256:e51a08a72566ff2dbeea93789893d61db554c311fac9623fbc8b8254d254d9ac"},
@@ -1443,10 +1484,6 @@ sqlalchemy = [
     {file = "SQLAlchemy-1.4.35-cp39-cp39-win32.whl", hash = "sha256:ecc81336b46e31ae9c9bdfa220082079914e31a476d088d3337ecf531d861228"},
     {file = "SQLAlchemy-1.4.35-cp39-cp39-win_amd64.whl", hash = "sha256:53c7469b86a60fe2babca4f70111357e6e3d5150373bc85eb3b914356983e89a"},
     {file = "SQLAlchemy-1.4.35.tar.gz", hash = "sha256:2ffc813b01dc6473990f5e575f210ca5ac2f5465ace3908b78ffd6d20058aab5"},
-]
-structlog = [
-    {file = "structlog-21.5.0-py3-none-any.whl", hash = "sha256:fd7922e195262b337da85c2a91c84be94ccab1f8fd1957bd6986f6904e3761c8"},
-    {file = "structlog-21.5.0.tar.gz", hash = "sha256:68c4c29c003714fe86834f347cb107452847ba52414390a7ee583472bde00fc9"},
 ]
 tomli = [
     {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
