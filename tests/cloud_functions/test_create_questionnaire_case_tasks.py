@@ -137,8 +137,8 @@ def test_retrieve_case_data_calls_the_rest_api_client_with_the_correct_parameter
     questionnaire_name = "OPN2101A"
 
     fields = [
-        # "qDataBag.UPRN_Latitude",
-        # "qDataBag.UPRN_Longitude",
+        "qDataBag.UPRN_Latitude",
+        "qDataBag.UPRN_Longitude",
         "qDataBag.Prem1",
         "qDataBag.Prem2",
         "qDataBag.Prem3",
