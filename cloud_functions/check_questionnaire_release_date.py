@@ -1,6 +1,6 @@
-import flask
 import json
 import asyncio
+import structlog
 
 from google.cloud import datastore, tasks_v2
 from datetime import datetime
@@ -11,6 +11,8 @@ from datetime import timedelta
 from uuid import uuid4
 
 from appconfig import Config
+
+log = structlog.get_logger()
 
 
 @dataclass
@@ -89,10 +91,10 @@ def get_datastore_records() -> list:
 
 
 def check_questionnaire_release_date() -> str:
-    print("Started checking questionnaire release dates")
+    log.info("Started checking questionnaire release dates")
     todays_questionnaires_for_release = get_questionnaires_with_todays_release_date()
     if todays_questionnaires_for_release == []:
-        print("There are no questionnaires for release today")
+        log.info("There are no questionnaires for release today")
         return "There are no questionnaires for release today"
 
     questionnaire_case_task_models = map_questionnaire_case_task_models(
@@ -101,5 +103,5 @@ def check_questionnaire_release_date() -> str:
     questionnaire_task_requests = prepare_questionnaire_tasks(questionnaire_case_task_models)
 
     asyncio.run(run(questionnaire_task_requests))
-    print("Finished checking questionnaire release dates")
+    log.info("Finished checking questionnaire release dates")
     return "Done"

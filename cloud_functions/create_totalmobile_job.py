@@ -1,9 +1,12 @@
 from typing import Dict, List
 
 import flask
+import structlog
 
 from appconfig import Config
 from client import OptimiseClient
+
+log = structlog.get_logger()
 
 
 def validate_request(request_json: Dict) -> None:
@@ -105,7 +108,7 @@ def create_totalmobile_job(request: flask.Request) -> str:
     request_json = request.get_json()
 
     if request_json is None:
-        print("Function was not triggered by a valid request")
+        log.error("Function was not triggered by a valid request")
         raise Exception("Function was not triggered by a valid request")
 
     validate_request(request_json)
@@ -113,7 +116,7 @@ def create_totalmobile_job(request: flask.Request) -> str:
     response = optimise_client.create_job(
         request_json["world_id"], create_job_payload(request_json)
     )
-    print(f"Response: {response}")
+    log.info(f"Response: {response}")
     return "Done"
 
 

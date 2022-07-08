@@ -1,6 +1,5 @@
-import flask
-import pytest
 import json
+from structlog.testing import capture_logs
 
 from datetime import datetime
 from unittest import mock
@@ -77,10 +76,12 @@ def test_check_questionnaire_returns_when_there_are_no_questionnaire_for_release
     mock_get_questionnaires_with_todays_release_date.return_value = []
 
     # act
-    result = check_questionnaire_release_date()
+    with capture_logs() as cap_logs:
+        result = check_questionnaire_release_date()
 
     # assert
     assert result == "There are no questionnaires for release today"
+    assert {'event': 'There are no questionnaires for release today', 'log_level': 'info'} in cap_logs
 
 
 def test_map_questionnaire_case_task_models_maps_the_correct_list_of_models():

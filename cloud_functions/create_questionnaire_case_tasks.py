@@ -5,12 +5,15 @@ from uuid import uuid4
 
 import blaise_restapi
 import flask
+import structlog
 from google.cloud import tasks_v2
 from google.protobuf.duration_pb2 import Duration
 
 from appconfig import Config
 from client.optimise import OptimiseClient
 from models.totalmobile_job_model import TotalmobileJobModel
+
+log = structlog.get_logger()
 
 
 def __filter_missing_fields(case, REQUIRED_FIELDS) -> List[str]:
@@ -123,24 +126,24 @@ async def run(task_requests: List[tasks_v2.CreateTaskRequest]) -> None:
 
 
 def create_questionnaire_case_tasks(request: flask.Request) -> str:
-    print("Started creating questionnaire case tasks")
+    log.info("Started creating questionnaire case tasks")
     config = Config.from_env()
 
     request_json = request.get_json()
     if request_json is None:
-        print("Function was not triggered by a valid request")
+        log.info("Function was not triggered by a valid request")
         raise Exception("Function was not triggered by a valid request")
     validate_request(request_json)
 
     questionnaire_name = request_json["questionnaire"]
-    print(f"Creating case tasks for questionnaire: {questionnaire_name}")
+    log.debug(f"Creating case tasks for questionnaire: {questionnaire_name}")
     world_id = retrieve_world_id(config)
-    print(f"Retrieved world_id: {world_id}")
+    log.debug(f"Retrieved world_id: {world_id}")
 
     cases = retrieve_case_data(questionnaire_name, config)
-    print(f"Retrieved {len(cases)} cases")
+    log.debug(f"Retrieved {len(cases)} cases")
     filtered_cases = filter_cases(cases)
-    print(f"Filtered {len(filtered_cases)} cases")
+    log.debug(f"Filtered {len(filtered_cases)} cases")
 
     totalmobile_job_models = map_totalmobile_job_models(
         filtered_cases, world_id, questionnaire_name
@@ -148,5 +151,5 @@ def create_questionnaire_case_tasks(request: flask.Request) -> str:
     task_requests = prepare_tasks(totalmobile_job_models)
 
     asyncio.run(run(task_requests))
-    print("Finished creating questionnaire case tasks")
+    log.info("Finished creating questionnaire case tasks")
     return "Done"
