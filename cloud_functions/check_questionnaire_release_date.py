@@ -5,7 +5,10 @@ from google.cloud import datastore, tasks_v2
 from datetime import datetime
 from typing import List, Coroutine, Any
 from cloud_functions.logging import setup_logger
+from cloud_functions.functions import prepare_questionnaire_tasks
 from models.questionnaire_case_task_model import QuestionnaireCaseTaskModel
+from appconfig import Config
+
 
 setup_logger()
 
@@ -47,7 +50,15 @@ def check_questionnaire_release_date() -> str:
     questionnaire_case_task_models = map_questionnaire_case_task_models(
         todays_questionnaires_for_release)
 
-    questionnaire_task_requests = prepare_questionnaire_tasks(questionnaire_case_task_models)
+    config = Config.from_env()
+    queue_id = config.totalmobile_jobs_queue_id
+    cloud_function_name = config.totalmobile_job_cloud_function
+
+    questionnaire_task_requests = prepare_questionnaire_tasks(
+        questionnaire_case_task_models,
+        queue_id,
+        cloud_function_name
+    )
 
     asyncio.run(run(questionnaire_task_requests))
     logging.info("Finished checking questionnaire release dates")

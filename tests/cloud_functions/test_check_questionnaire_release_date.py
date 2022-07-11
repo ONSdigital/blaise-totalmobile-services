@@ -108,7 +108,11 @@ def test_prepare_case_tasks_returns_an_expected_number_of_tasks_when_given_a_lis
     model2 = QuestionnaireCaseTaskModel("LMS2112T")
 
     # act
-    result = prepare_questionnaire_tasks([model1, model2])
+    result = prepare_questionnaire_tasks(
+        [model1, model2],
+        "foo",
+        "bar"
+    )
 
     # assert
     assert len(result) == 2
@@ -138,7 +142,11 @@ def test_prepare_case_tasks_returns_expected_tasks_when_given_a_list_of_job_mode
     model2 = QuestionnaireCaseTaskModel("LMS2101A")
 
     # act
-    result = prepare_questionnaire_tasks([model1, model2])
+    result = prepare_questionnaire_tasks(
+        [model1, model2],
+        "foo",
+        "bar"
+    )
 
     # assert
     assert result[0].parent == "totalmobile_jobs_queue_id"

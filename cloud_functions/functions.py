@@ -16,6 +16,8 @@ def create_questionnaire_task_name(job_model: QuestionnaireCaseTaskModel) -> str
 
 def prepare_questionnaire_tasks(
         job_models: List[QuestionnaireCaseTaskModel],
+        queue_id,
+        cloud_function_name
 ) -> List[tasks_v2.CreateTaskRequest]:
 
     config = Config.from_env()
