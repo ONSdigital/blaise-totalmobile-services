@@ -144,8 +144,8 @@ def test_prepare_case_tasks_returns_expected_tasks_when_given_a_list_of_job_mode
     # act
     result = prepare_questionnaire_tasks(
         [model1, model2],
-        "foo",
-        "bar"
+        "totalmobile_jobs_queue_id",
+        "cloud_function_name"
     )
 
     # assert

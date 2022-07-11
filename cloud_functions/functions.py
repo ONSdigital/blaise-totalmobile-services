@@ -28,12 +28,12 @@ def prepare_questionnaire_tasks(
     task_requests = []
     for job_model in job_models:
         request = tasks_v2.CreateTaskRequest(
-            parent=config.totalmobile_jobs_queue_id,
+            parent=queue_id,
             task=tasks_v2.Task(
-                name=f"{config.totalmobile_jobs_queue_id}/tasks/{create_questionnaire_task_name(job_model)}",
+                name=f"{queue_id}/tasks/{create_questionnaire_task_name(job_model)}",
                 http_request=tasks_v2.HttpRequest(
                     http_method="POST",
-                    url=f"https://{config.region}-{config.gcloud_project}.cloudfunctions.net/{config.totalmobile_job_cloud_function}",
+                    url=f"https://{config.region}-{config.gcloud_project}.cloudfunctions.net/{cloud_function_name}",
                     body=job_model.json().encode(),
                     headers={
                         "Content-Type": "application/json",
