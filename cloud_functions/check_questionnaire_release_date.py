@@ -1,30 +1,18 @@
-import json
 import asyncio
 import logging
 
 from google.cloud import datastore, tasks_v2
 from datetime import datetime
-from dataclasses import asdict, dataclass
-from typing import Dict, List, Coroutine, Any
+from typing import List, Coroutine, Any
 from google.protobuf.duration_pb2 import Duration
 from datetime import timedelta
 from uuid import uuid4
 
 from appconfig import Config
 from cloud_functions.logging import setup_logger
+from models.questionnaire_case_task_model import QuestionnaireCaseTaskModel
 
 setup_logger()
-
-
-@dataclass
-class QuestionnaireCaseTaskModel:
-    questionnaire: str
-
-    def as_dict(self) -> Dict:
-        return asdict(self)
-
-    def json(self) -> str:
-        return json.dumps(self.as_dict())
 
 
 def create_tasks(
