@@ -109,9 +109,9 @@ def test_prepare_case_tasks_returns_an_expected_number_of_tasks_when_given_a_lis
 
     # act
     result = prepare_questionnaire_tasks(
-        [model1, model2],
-        "foo",
-        "bar"
+        job_models=[model1, model2],
+        queue_id="foo",
+        cloud_function_name="bar"
     )
 
     # assert
@@ -143,9 +143,9 @@ def test_prepare_case_tasks_returns_expected_tasks_when_given_a_list_of_job_mode
 
     # act
     result = prepare_questionnaire_tasks(
-        [model1, model2],
-        "totalmobile_jobs_queue_id",
-        "cloud_function_name"
+        job_models=[model1, model2],
+        queue_id="totalmobile_jobs_queue_id",
+        cloud_function_name="cloud_function_name"
     )
 
     # assert

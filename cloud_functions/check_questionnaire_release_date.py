@@ -51,13 +51,10 @@ def check_questionnaire_release_date() -> str:
         todays_questionnaires_for_release)
 
     config = Config.from_env()
-    queue_id = config.totalmobile_jobs_queue_id
-    cloud_function_name = config.totalmobile_job_cloud_function
-
     questionnaire_task_requests = prepare_questionnaire_tasks(
-        questionnaire_case_task_models,
-        queue_id,
-        cloud_function_name
+        job_models=questionnaire_case_task_models,
+        queue_id=config.totalmobile_jobs_queue_id,
+        cloud_function_name=config.totalmobile_job_cloud_function
     )
 
     asyncio.run(run(questionnaire_task_requests))
