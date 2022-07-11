@@ -3,7 +3,8 @@ import logging
 
 from datetime import datetime
 from unittest import mock
-from cloud_functions.check_questionnaire_release_date import check_questionnaire_release_date, get_questionnaires_with_todays_release_date, map_questionnaire_case_task_models, QuestionnaireCaseTaskModel, prepare_questionnaire_tasks, create_questionnaire_task_name
+from cloud_functions.check_questionnaire_release_date import check_questionnaire_release_date, get_questionnaires_with_todays_release_date, map_questionnaire_case_task_models, QuestionnaireCaseTaskModel
+from cloud_functions.functions import prepare_questionnaire_tasks, create_questionnaire_task_name
 from google.cloud import datastore
 
 from appconfig import Config
