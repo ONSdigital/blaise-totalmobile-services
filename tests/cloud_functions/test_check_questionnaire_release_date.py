@@ -1,5 +1,6 @@
 import json
 import logging
+import pytest
 
 from datetime import datetime
 from unittest import mock
@@ -188,3 +189,34 @@ def test_create_questionnaire_task_name_returns_unique_name_each_time_when_passe
 
     # assert
     assert result1 != result2
+
+
+# TODO
+@pytest.mark.skip(reason="causes test_create_questionnaire_case_tasks to fail")
+@mock.patch.object(Config, "from_env")
+@mock.patch("cloud_functions.check_questionnaire_release_date.get_questionnaires_with_todays_release_date")
+@mock.patch("cloud_functions.check_questionnaire_release_date.prepare_questionnaire_tasks")
+def test_prepare_questionnaire_tasks_is_called_with_some_variables(
+        mock_prepare_questionnaire_tasks,
+        mock_get_questionnaires_with_todays_release_date,
+        mock_config_from_env
+):
+    # arrange
+    mock_get_questionnaires_with_todays_release_date.return_value = ["LMS2111Z"]
+    mock_config_from_env.return_value = Config(
+        "", "", "", "",
+        "foo",
+        "bar",
+        "", "", "", "", ""
+    )
+
+    # act
+    check_questionnaire_release_date()
+
+    # assert
+    mock_prepare_questionnaire_tasks.assert_called_with(
+        job_models=[QuestionnaireCaseTaskModel(questionnaire="LMS2111Z")],
+        queue_id="foo",
+        cloud_function_name="bar"
+    )
+
