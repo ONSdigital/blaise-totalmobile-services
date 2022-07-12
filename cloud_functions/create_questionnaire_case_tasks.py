@@ -46,8 +46,8 @@ def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str
         config.blaise_server_park,
         questionnaire_name,
         [
-            "qDataBag.UPRN_Latitude", 
-            "qDataBag.UPRN_Longitude", 
+            "qDataBag.UPRN_Latitude",
+            "qDataBag.UPRN_Longitude",
             "qDataBag.Prem1",
             "qDataBag.Prem2",
             "qDataBag.Prem3",
