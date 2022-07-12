@@ -3,7 +3,7 @@ import logging
 
 from google.cloud import datastore, tasks_v2
 from datetime import datetime
-from typing import List, Coroutine, Any
+from typing import List, Coroutine, Any, Tuple
 from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks
 from models.questionnaire_case_task_model import QuestionnaireCaseTaskModel

@@ -13,11 +13,11 @@ from cloud_functions.create_questionnaire_case_tasks import (
     create_tasks,
     filter_cases,
     map_totalmobile_job_models,
-    prepare_tasks,
     retrieve_case_data,
     retrieve_world_id,
     validate_request,
 )
+from cloud_functions.functions import prepare_tasks
 from models.totalmobile_job_model import TotalmobileJobModel
 
 
