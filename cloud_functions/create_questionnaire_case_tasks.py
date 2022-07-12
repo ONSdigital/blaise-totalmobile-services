@@ -118,7 +118,18 @@ def create_questionnaire_case_tasks(request: flask.Request) -> str:
     totalmobile_job_models = map_totalmobile_job_models(
         filtered_cases, world_id, questionnaire_name
     )
-    task_requests = prepare_tasks(totalmobile_job_models)
+
+    tasks = [
+        (create_tasks(job_model), job_model.json().encode())
+        for job_model in totalmobile_job_models
+    ]
+
+    config = Config.from_env()
+    task_requests = prepare_tasks(
+        tasks=tasks,
+        queue_id=config.totalmobile_jobs_queue_id,
+        cloud_function_name=config.totalmobile_job_cloud_function
+    )
 
     asyncio.run(run(task_requests))
     logging.info("Finished creating questionnaire case tasks")
