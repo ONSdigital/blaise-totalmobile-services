@@ -1,8 +1,7 @@
 from google.cloud import tasks_v2
 from google.protobuf.duration_pb2 import Duration
 from datetime import timedelta
-from uuid import uuid4
-from typing import List
+from typing import List, Tuple
 
 from appconfig import Config
 

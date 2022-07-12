@@ -1,6 +1,5 @@
 import json
 import logging
-import pytest
 
 from datetime import datetime
 from unittest import mock

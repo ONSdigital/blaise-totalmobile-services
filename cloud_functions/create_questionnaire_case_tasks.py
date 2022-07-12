@@ -10,6 +10,7 @@ from google.cloud import tasks_v2
 from appconfig import Config
 from client.optimise import OptimiseClient
 from cloud_functions.logging import setup_logger
+from cloud_functions.functions import prepare_tasks
 from models.totalmobile_job_model import TotalmobileJobModel
 
 setup_logger()
@@ -81,36 +82,6 @@ def create_task_name(job_model: TotalmobileJobModel) -> str:
     return (
         f"{job_model.questionnaire}-{job_model.case['qiD.Serial_Number']}-{str(uuid4())}"
     )
-
-
-def prepare_tasks(
-    job_models: List[TotalmobileJobModel],
-) -> List[tasks_v2.CreateTaskRequest]:
-    config = Config.from_env()
-
-    duration = Duration()
-    duration.FromTimedelta(timedelta(minutes=30))
-
-    task_requests = []
-    for job_model in job_models:
-        request = tasks_v2.CreateTaskRequest(
-            parent=config.totalmobile_jobs_queue_id,
-            task=tasks_v2.Task(
-                name=f"{config.totalmobile_jobs_queue_id}/tasks/{create_task_name(job_model)}",
-                http_request=tasks_v2.HttpRequest(
-                    http_method="POST",
-                    url=f"https://{config.region}-{config.gcloud_project}.cloudfunctions.net/{config.totalmobile_job_cloud_function}",
-                    body=job_model.json().encode(),
-                    headers={
-                        "Content-Type": "application/json",
-                    },
-                    oidc_token={"service_account_email": config.cloud_function_sa},
-                ),
-                dispatch_deadline=duration,
-            ),
-        )
-        task_requests.append(request)
-    return task_requests
 
 
 def create_tasks(
