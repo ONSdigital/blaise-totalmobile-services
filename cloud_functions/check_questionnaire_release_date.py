@@ -19,7 +19,7 @@ def create_questionnaire_task_name(job_model: QuestionnaireCaseTaskModel) -> str
         f"{job_model.questionnaire}-{str(uuid4())}"
     )
 
-# TODO...
+
 def create_tasks(
         task_requests: List[tasks_v2.CreateTaskRequest], task_client
 ) -> List[Coroutine[Any, Any, tasks_v2.Task]]:
