@@ -66,6 +66,7 @@ Create an .env file in the root of the project and add the following environment
 | REGION | The GCP region the application will be deployed to. | europe-west2 |
 | BLAISE_API_URL | The RESTful API URL the application will use to get and update questionnaire data. | http://localhost:90 |
 | BLAISE_SERVER_PARK | The Blaise Server Park name we will be getting the Blaise data from. | gusty |
+| GOOGLE_APPLICATION_CREDENTIALS | Google application credentials to access Datastore. | keys.json |
 | TOTALMOBILE_URL | The Totalmobile instance URL. | https://ons-dev.totalmobile-cloud.com |
 | TOTALMOBILE_INSTANCE | The Totalmobile instance type. | Test |
 | TOTALMOBILE_CLIENT_ID | The client ID to authenicate with Totalmobile. | blah |
