@@ -1,13 +1,11 @@
 import asyncio
 import logging
-from datetime import timedelta
 from typing import Any, Coroutine, Dict, List
 from uuid import uuid4
 
 import blaise_restapi
 import flask
 from google.cloud import tasks_v2
-from google.protobuf.duration_pb2 import Duration
 
 from appconfig import Config
 from client.optimise import OptimiseClient

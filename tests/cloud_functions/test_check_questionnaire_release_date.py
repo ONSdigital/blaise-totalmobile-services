@@ -4,8 +4,8 @@ import pytest
 
 from datetime import datetime
 from unittest import mock
-from cloud_functions.check_questionnaire_release_date import check_questionnaire_release_date, get_questionnaires_with_todays_release_date, map_questionnaire_case_task_models, QuestionnaireCaseTaskModel
-from cloud_functions.functions import prepare_questionnaire_tasks, create_questionnaire_task_name
+from cloud_functions.check_questionnaire_release_date import check_questionnaire_release_date, get_questionnaires_with_todays_release_date, map_questionnaire_case_task_models, QuestionnaireCaseTaskModel, create_questionnaire_task_name
+from cloud_functions.functions import prepare_tasks
 from google.cloud import datastore
 
 from appconfig import Config
@@ -105,12 +105,19 @@ def test_prepare_case_tasks_returns_an_expected_number_of_tasks_when_given_a_lis
         "", "", "", "", "", "", "", "", "", "", ""
     )
 
-    model1 = QuestionnaireCaseTaskModel("LMS2111Z")
-    model2 = QuestionnaireCaseTaskModel("LMS2112T")
+    models = [
+        QuestionnaireCaseTaskModel("LMS2111Z"),
+        QuestionnaireCaseTaskModel("LMS2112T")
+    ]
+
+    tasks = [
+        (create_questionnaire_task_name(job_model), job_model.json().encode())
+        for job_model in models
+    ]
 
     # act
-    result = prepare_questionnaire_tasks(
-        job_models=[model1, model2],
+    result = prepare_tasks(
+        tasks=tasks,
         queue_id="foo",
         cloud_function_name="bar"
     )
@@ -142,9 +149,14 @@ def test_prepare_case_tasks_returns_expected_tasks_when_given_a_list_of_job_mode
     model1 = QuestionnaireCaseTaskModel("LMS2101A")
     model2 = QuestionnaireCaseTaskModel("LMS2101A")
 
+    tasks = [
+        (create_questionnaire_task_name(job_model), job_model.json().encode())
+        for job_model in [model1, model2]
+    ]
+
     # act
-    result = prepare_questionnaire_tasks(
-        job_models=[model1, model2],
+    result = prepare_tasks(
+        tasks=tasks,
         queue_id="totalmobile_jobs_queue_id",
         cloud_function_name="cloud_function_name"
     )
@@ -219,4 +231,3 @@ def test_prepare_questionnaire_tasks_is_called_with_some_variables(
         queue_id="foo",
         cloud_function_name="bar"
     )
-

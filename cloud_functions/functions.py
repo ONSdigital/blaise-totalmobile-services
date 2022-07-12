@@ -5,17 +5,10 @@ from uuid import uuid4
 from typing import List
 
 from appconfig import Config
-from models.questionnaire_case_task_model import QuestionnaireCaseTaskModel
 
 
-def create_questionnaire_task_name(job_model: QuestionnaireCaseTaskModel) -> str:
-    return (
-        f"{job_model.questionnaire}-{str(uuid4())}"
-    )
-
-
-def prepare_questionnaire_tasks(
-        job_models: List[QuestionnaireCaseTaskModel],
+def prepare_tasks(
+        tasks: List[Tuple[str, str]],
         queue_id,
         cloud_function_name
 ) -> List[tasks_v2.CreateTaskRequest]:
@@ -26,15 +19,15 @@ def prepare_questionnaire_tasks(
     duration.FromTimedelta(timedelta(minutes=30))
 
     task_requests = []
-    for job_model in job_models:
+    for task_name, task_body in tasks:
         request = tasks_v2.CreateTaskRequest(
             parent=queue_id,
             task=tasks_v2.Task(
-                name=f"{queue_id}/tasks/{create_questionnaire_task_name(job_model)}",
+                name=f"{queue_id}/tasks/{task_name}",
                 http_request=tasks_v2.HttpRequest(
                     http_method="POST",
                     url=f"https://{config.region}-{config.gcloud_project}.cloudfunctions.net/{cloud_function_name}",
-                    body=job_model.json().encode(),
+                    body=task_body,
                     headers={
                         "Content-Type": "application/json",
                     },
