@@ -12,3 +12,4 @@ sam.json
 /.idea/
 temp.db
 .DS_Store
+.app.yaml

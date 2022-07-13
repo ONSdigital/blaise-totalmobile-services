@@ -1,9 +1,13 @@
+import logging
 from typing import Dict, List
 
 import flask
 
 from appconfig import Config
 from client import OptimiseClient
+from cloud_functions.logging import setup_logger
+
+setup_logger()
 
 
 def validate_request(request_json: Dict) -> None:
@@ -105,6 +109,7 @@ def create_totalmobile_job(request: flask.Request) -> str:
     request_json = request.get_json()
 
     if request_json is None:
+        logging.error("Function was not triggered by a valid request")
         raise Exception("Function was not triggered by a valid request")
 
     validate_request(request_json)
@@ -112,7 +117,7 @@ def create_totalmobile_job(request: flask.Request) -> str:
     response = optimise_client.create_job(
         request_json["world_id"], create_job_payload(request_json)
     )
-    print(response)
+    logging.info(f"Response: {response}")
     return "Done"
 
 

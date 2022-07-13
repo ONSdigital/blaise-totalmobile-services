@@ -224,6 +224,88 @@ pyopenssl = ["pyopenssl (>=20.0.0)"]
 reauth = ["pyu2f (>=0.1.5)"]
 
 [[package]]
+name = "google-cloud"
+version = "0.34.0"
+description = "API Client library for Google Cloud"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "google-cloud-appengine-logging"
+version = "1.1.2"
+description = ""
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+google-api-core = {version = ">=1.31.5,<2.0.0 || >2.3.0,<3.0.0dev", extras = ["grpc"]}
+proto-plus = ">=1.15.0,<2.0.0dev"
+protobuf = ">=3.19.0,<4.0.0dev"
+
+[[package]]
+name = "google-cloud-audit-log"
+version = "0.2.0"
+description = "Google Cloud Audit Protos"
+category = "main"
+optional = false
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
+
+[package.dependencies]
+googleapis-common-protos = ">=1.52.0"
+protobuf = ">=3.6.0"
+
+[[package]]
+name = "google-cloud-core"
+version = "2.3.1"
+description = "Google Cloud API client core library"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+google-api-core = ">=1.31.5,<2.0.0 || >2.3.0,<3.0.0dev"
+google-auth = ">=1.25.0,<3.0dev"
+
+[package.extras]
+grpc = ["grpcio (>=1.8.2,<2.0dev)"]
+
+[[package]]
+name = "google-cloud-datastore"
+version = "2.7.1"
+description = "Google Cloud Datastore API client library"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+google-api-core = {version = ">=1.31.5,<2.0.0 || >2.3.0,<3.0.0dev", extras = ["grpc"]}
+google-cloud-core = ">=1.4.0,<3.0.0dev"
+proto-plus = ">=1.15.0,<2.0.0dev"
+protobuf = ">=3.19.0,<4.0.0dev"
+
+[package.extras]
+libcst = ["libcst (>=0.2.5)"]
+
+[[package]]
+name = "google-cloud-logging"
+version = "3.1.2"
+description = "Stackdriver Logging API client library"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+google-api-core = {version = ">=1.31.5,<2.0.0 || >2.3.0,<3.0.0dev", extras = ["grpc"]}
+google-cloud-appengine-logging = ">=0.1.0,<2.0.0dev"
+google-cloud-audit-log = ">=0.1.0,<1.0.0dev"
+google-cloud-core = ">=1.4.1,<3.0.0dev"
+grpc-google-iam-v1 = ">=0.12.4,<1.0.0dev"
+proto-plus = ">=1.15.0,<2.0.0dev"
+protobuf = ">=3.19.0,<4.0.0dev"
+
+[[package]]
 name = "google-cloud-pubsub"
 version = "2.12.0"
 description = "Google Cloud Pub/Sub API client library"
@@ -857,7 +939,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "c61ff89dd1b5c167364fd45fd01a05011d7e7a7daa2784b7e15d20132a9da5bb"
+content-hash = "4d1825e64ad91524f122d2283c476a493f5d065728634de0b6e01c7c9fa29962"
 
 [metadata.files]
 atomicwrites = [
@@ -906,10 +988,7 @@ charset-normalizer = [
     {file = "charset-normalizer-2.0.12.tar.gz", hash = "sha256:2857e29ff0d34db842cd7ca3230549d1a697f96ee6d3fb071cfa6c7393832597"},
     {file = "charset_normalizer-2.0.12-py3-none-any.whl", hash = "sha256:6881edbebdb17b39b4eaaa821b438bf6eddffb4468cf344f09f89def34a8b1df"},
 ]
-click = [
-    {file = "click-8.1.2-py3-none-any.whl", hash = "sha256:24e1a4a9ec5bf6299411369b208c1df2188d9eb8d916302fe6bf03faed227f1e"},
-    {file = "click-8.1.2.tar.gz", hash = "sha256:479707fe14d9ec9a0757618b7a100a0ae4c4e236fac5b7f80ca68028141a1a72"},
-]
+click = []
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
@@ -973,10 +1052,7 @@ flask-httpauth = [
     {file = "Flask-HTTPAuth-4.5.0.tar.gz", hash = "sha256:395040fda2854df800d15e84bc4a81a5f32f1d4a5e91eee554936f36f330aa29"},
     {file = "Flask_HTTPAuth-4.5.0-py3-none-any.whl", hash = "sha256:e16067ba3378ea366edf8de4b9d55f38c0a0cbddefcc0f777a54b3fce1d99392"},
 ]
-flask-sqlalchemy = [
-    {file = "Flask-SQLAlchemy-2.5.1.tar.gz", hash = "sha256:2bda44b43e7cacb15d4e05ff3cc1f8bc97936cc464623424102bfc2c35e95912"},
-    {file = "Flask_SQLAlchemy-2.5.1-py2.py3-none-any.whl", hash = "sha256:f12c3d4cc5cc7fdcc148b9527ea05671718c3ea45d50c7e732cceb33f574b390"},
-]
+flask-sqlalchemy = []
 google-api-core = [
     {file = "google-api-core-2.8.0.tar.gz", hash = "sha256:065bb8e11c605fd232707ae50963dc1c8af5b3c95b4568887515985e6c1156b3"},
     {file = "google_api_core-2.8.0-py3-none-any.whl", hash = "sha256:1b9f59236ce1bae9a687c1d4f22957e79a2669e53d032893f6bf0fca54f6931d"},
@@ -984,6 +1060,30 @@ google-api-core = [
 google-auth = [
     {file = "google-auth-2.6.3.tar.gz", hash = "sha256:d65bb0e3701eaaa64fd2aa85e1325580524b0bddc6dc5db3ab89c481b6a20141"},
     {file = "google_auth-2.6.3-py2.py3-none-any.whl", hash = "sha256:5e079eb4d21df1853d55cf2b6766b77ef36f7f7bdaf7d4a70434aa97c7578d60"},
+]
+google-cloud = [
+    {file = "google-cloud-0.34.0.tar.gz", hash = "sha256:01430187cf56df10a9ba775dd547393185d4b40741db0ea5889301f8e7a9d5d3"},
+    {file = "google_cloud-0.34.0-py2.py3-none-any.whl", hash = "sha256:fb1ab7b0548fe44b3d538041f0a374505b7f990d448a935ea36649c5ccab5acf"},
+]
+google-cloud-appengine-logging = [
+    {file = "google-cloud-appengine-logging-1.1.2.tar.gz", hash = "sha256:ba77615c100f07edda91656ede1b7465907012b8663aad7c4e75ef9687994237"},
+    {file = "google_cloud_appengine_logging-1.1.2-py2.py3-none-any.whl", hash = "sha256:fe930e9dc5d77e8cb9940f8386965dd8f72d4d4ae2fc782e15637acb5ab585d5"},
+]
+google-cloud-audit-log = [
+    {file = "google-cloud-audit-log-0.2.0.tar.gz", hash = "sha256:d0852f525ad65705f9fbff6288be4493e1449a7906fb5e01bd71c8d1e424d1fc"},
+    {file = "google_cloud_audit_log-0.2.0-py2.py3-none-any.whl", hash = "sha256:ecc7f5f2168ad4014331d6397fcea3750b2d41900f0ef6d1081cd78b3a6420e9"},
+]
+google-cloud-core = [
+    {file = "google-cloud-core-2.3.1.tar.gz", hash = "sha256:34334359cb04187bdc80ddcf613e462dfd7a3aabbc3fe4d118517ab4b9303d53"},
+    {file = "google_cloud_core-2.3.1-py2.py3-none-any.whl", hash = "sha256:113ba4f492467d5bd442c8d724c1a25ad7384045c3178369038840ecdd19346c"},
+]
+google-cloud-datastore = [
+    {file = "google-cloud-datastore-2.7.1.tar.gz", hash = "sha256:43474bb2d0302da99cd8308dd513303c51e4bf119e1a32e2527cab91e0289741"},
+    {file = "google_cloud_datastore-2.7.1-py2.py3-none-any.whl", hash = "sha256:e2934fff5ba7d4517c6a7bc3d588bb6e12b40356159119e9537b3d2853a39a4f"},
+]
+google-cloud-logging = [
+    {file = "google-cloud-logging-3.1.2.tar.gz", hash = "sha256:3ed00a8bd2076fee7a1dc053880fcb3c973184807e240f8c3c0929dd748eaf7f"},
+    {file = "google_cloud_logging-3.1.2-py2.py3-none-any.whl", hash = "sha256:702b69b01c4b98c50a4e4e7cbe12309de8c6685e99ec100c0c902e1765a45e92"},
 ]
 google-cloud-pubsub = [
     {file = "google-cloud-pubsub-2.12.0.tar.gz", hash = "sha256:e51a08a72566ff2dbeea93789893d61db554c311fac9623fbc8b8254d254d9ac"},
@@ -1305,10 +1405,7 @@ pycodestyle = [
     {file = "pycodestyle-2.8.0-py2.py3-none-any.whl", hash = "sha256:720f8b39dde8b293825e7ff02c475f3077124006db4f440dcbc9a20b76548a20"},
     {file = "pycodestyle-2.8.0.tar.gz", hash = "sha256:eddd5847ef438ea1c7870ca7eb78a9d47ce0cdb4851a5523949f2601d0cbbe7f"},
 ]
-pyflakes = [
-    {file = "pyflakes-2.4.0-py2.py3-none-any.whl", hash = "sha256:3bb3a3f256f4b7968c9c788781e4ff07dce46bdf12339dcda61053375426ee2e"},
-    {file = "pyflakes-2.4.0.tar.gz", hash = "sha256:05a85c2872edf37a4ed30b0cce2f6093e1d0581f8c19d7393122da7e25b2b24c"},
-]
+pyflakes = []
 pyparsing = [
     {file = "pyparsing-3.0.7-py3-none-any.whl", hash = "sha256:a6c06a88f252e6c322f65faf8f418b16213b51bdfaece0524c1c1bc30c63c484"},
     {file = "pyparsing-3.0.7.tar.gz", hash = "sha256:18ee9022775d270c55187733956460083db60b37d0d0fb357445f3094eed3eea"},
@@ -1337,10 +1434,7 @@ requests-mock = [
     {file = "requests-mock-1.9.3.tar.gz", hash = "sha256:8d72abe54546c1fc9696fa1516672f1031d72a55a1d66c85184f972a24ba0eba"},
     {file = "requests_mock-1.9.3-py2.py3-none-any.whl", hash = "sha256:0a2d38a117c08bb78939ec163522976ad59a6b7fdd82b709e23bb98004a44970"},
 ]
-requests-mock-flask = [
-    {file = "requests-mock-flask-2022.4.3.tar.gz", hash = "sha256:d0d2fe012fd564cb5ca8bc8a2f875e72c08fa7f4eaacead655b5f070fdd9acd0"},
-    {file = "requests_mock_flask-2022.4.3-py3-none-any.whl", hash = "sha256:3f764979943ef6559e63ed6bc6dc1f2ab472f56fd3c1c80e313db60ba3c7eb70"},
-]
+requests-mock-flask = []
 responses = [
     {file = "responses-0.20.0-py3-none-any.whl", hash = "sha256:18831bc2d72443b67664d98038374a6fa1f27eaaff4dd9a7d7613723416fea3c"},
     {file = "responses-0.20.0.tar.gz", hash = "sha256:644905bc4fb8a18fa37e3882b2ac05e610fe8c2f967d327eed669e314d94a541"},
@@ -1415,10 +1509,7 @@ types-requests = [
     {file = "types-requests-2.27.16.tar.gz", hash = "sha256:c8010c18b291a7efb60b1452dbe12530bc25693dd657e70c62803fcdc4bffe9b"},
     {file = "types_requests-2.27.16-py3-none-any.whl", hash = "sha256:2437a5f4d16c0c8bd7539a8126d492b7aeb41e6cda670d76b286c7f83a658d42"},
 ]
-types-urllib3 = [
-    {file = "types-urllib3-1.26.11.tar.gz", hash = "sha256:24d64e441168851eb05f1d022de18ae31558f5649c8f1117e384c2e85e31315b"},
-    {file = "types_urllib3-1.26.11-py3-none-any.whl", hash = "sha256:bd0abc01e9fb963e4fddd561a56d21cc371b988d1245662195c90379077139cd"},
-]
+types-urllib3 = []
 types-werkzeug = [
     {file = "types-Werkzeug-1.0.9.tar.gz", hash = "sha256:5cc269604c400133d452a40cee6397655f878fc460e03fde291b9e3a5eaa518c"},
     {file = "types_Werkzeug-1.0.9-py3-none-any.whl", hash = "sha256:194bd5715a13c598f05c63e8a739328657590943bce941e8a3619a6b5d4a54ec"},
