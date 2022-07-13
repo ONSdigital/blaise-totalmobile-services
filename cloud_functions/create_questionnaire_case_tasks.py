@@ -56,20 +56,31 @@ def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str
             "qDataBag.PostCode",
             "qDataBag.TelNo",
             "qDataBag.TelNo2",
+            "qDataBag.TelNoAppt",
             "hOut",
             "srvStat",
             "qiD.Serial_Number",
+            "qDataBag.Wave",
+            "qDataBag.Priority"    
         ],
     )
     return questionnaire_data["reportingData"]
 
 
 def filter_cases(cases: List[Dict[str, str]]) -> List[Dict[str, str]]:
-    filtered_cases = []
-    for case in cases:
-        if case["srvStat"] != "3" and case["hOut"] not in ["360", "390"]:
-            filtered_cases.append(case)
-    return filtered_cases
+    return [
+        case
+        for case in cases
+        if (case["qDataBag.TelNo"] == "" and case["qDataBag.TelNo2"] == "" and case["qDataBag.TelNoAppt"] == ""
+            and case["qDataBag.Wave"] == "1" and case["qDataBag.Priority"] in ["1","2","3","4","5"] 
+            and case["hOut"] in [0, 310]) 
+        ]
+
+
+def get_wave_from_questionnaire_name(questionnaire_name: str):
+    if questionnaire_name[0:3] != "LMS":
+        raise Exception(f"Invalid format for questionnaire name: {questionnaire_name}")
+    return questionnaire_name[-1]
 
 
 def map_totalmobile_job_models(
@@ -106,6 +117,11 @@ def create_questionnaire_case_tasks(request: flask.Request) -> str:
     validate_request(request_json)
 
     questionnaire_name = request_json["questionnaire"]
+    wave = get_wave_from_questionnaire_name(questionnaire_name)
+    if wave != "1":
+        logging.info("Invalid wave: currently only wave 1 supported")
+        raise Exception("Invalid wave: currently only wave 1 supported")
+
     logging.debug(f"Creating case tasks for questionnaire: {questionnaire_name}")
     world_id = retrieve_world_id(config)
     logging.debug(f"Retrieved world_id: {world_id}")
