@@ -120,7 +120,7 @@ def create_questionnaire_case_tasks(request: flask.Request) -> str:
     )
 
     tasks = [
-        (create_tasks(job_model), job_model.json().encode())
+        (create_task_name(job_model), job_model.json().encode())
         for job_model in totalmobile_job_models
     ]
 
