@@ -140,7 +140,6 @@ def create_questionnaire_case_tasks(request: flask.Request) -> str:
         for job_model in totalmobile_job_models
     ]
 
-    config = Config.from_env()
     task_requests = prepare_tasks(
         tasks=tasks,
         queue_id=config.totalmobile_jobs_queue_id,
