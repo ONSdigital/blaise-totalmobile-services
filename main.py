@@ -1,4 +1,5 @@
 import os
+from app.config import Config
 import flask
 
 from dotenv import load_dotenv
@@ -14,7 +15,8 @@ def create_totalmobile_job(request: flask.Request) -> str:
 
 
 def create_questionnaire_case_tasks(request: flask.Request) -> str:
-    return cloud_functions.create_questionnaire_case_tasks.create_questionnaire_case_tasks(request)
+    config = Config.from_env()
+    return cloud_functions.create_questionnaire_case_tasks.create_questionnaire_case_tasks(request, config)
 
 
 def check_questionnaire_release_date(_event, _context) -> str:

@@ -106,9 +106,8 @@ async def run(task_requests: List[tasks_v2.CreateTaskRequest]) -> None:
     await asyncio.gather(*create_tasks(task_requests, task_client))
 
 
-def create_questionnaire_case_tasks(request: flask.Request) -> str:
+def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> str:
     logging.info("Started creating questionnaire case tasks")
-    config = Config.from_env()
 
     request_json = request.get_json()
     if request_json is None:

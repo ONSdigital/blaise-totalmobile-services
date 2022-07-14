@@ -443,7 +443,6 @@ def test_validate_request_missing_fields():
     )
 
 
-@mock.patch.object(Config, "from_env")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_id")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
@@ -453,18 +452,16 @@ def test_create_case_tasks_for_questionnaire(
     mock_filter_cases,
     mock_retrieve_case_data,
     mock_retrieve_world_id,
-    mock_from_env,
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",)
-    mock_from_env.return_value = config
     mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"},{"qiD.Serial_Number": "10012"}]
     mock_retrieve_world_id.return_value = "1"
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
     
     # act
-    result = create_questionnaire_case_tasks(mock_request)
+    result = create_questionnaire_case_tasks(mock_request, config)
 
     # assert
     mock_retrieve_case_data.assert_called_with("LMS2101_AA1", config)
@@ -482,20 +479,18 @@ def test_create_case_tasks_for_questionnaire(
     assert result == "Done"
 
 
-@mock.patch.object(Config, "from_env")
-def test_create_questionnaire_case_tasks_error(mock_from_env):
+def test_create_questionnaire_case_tasks_error():
     # arrange
     mock_request = flask.Request.from_values(json={"instrument": ""})
-
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",)
     # assert
     with pytest.raises(Exception) as err:
-        create_questionnaire_case_tasks(mock_request)
+        create_questionnaire_case_tasks(mock_request, config)
     assert (
         str(err.value) == "Required fields missing from request payload: ['questionnaire']"
     )
 
 
-@mock.patch.object(Config, "from_env")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_id")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
@@ -505,24 +500,22 @@ def test_get_wave_from_questionnaire_name_none_LMS_error(
     mock_filter_cases,
     mock_retrieve_case_data,
     mock_retrieve_world_id,
-    mock_from_env,
 ):
     # arrange
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",)
     mock_request = flask.Request.from_values(json={"questionnaire": "OPN2101A"})
-    mock_from_env.return_value = "The config"
     mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"},{"qiD.Serial_Number": "10012"}]
     mock_retrieve_world_id.return_value = "1"
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
     
     # act
     with pytest.raises(Exception) as err:
-        create_questionnaire_case_tasks(mock_request)
+        create_questionnaire_case_tasks(mock_request, config)
 
     # assert
     assert str(err.value) == "Invalid format for questionnaire name: OPN2101A"
 
 
-@mock.patch.object(Config, "from_env")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_id")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
@@ -532,18 +525,17 @@ def test_get_wave_from_questionnaire_name_unsupported_wave_error(
     mock_filter_cases,
     mock_retrieve_case_data,
     mock_retrieve_world_id,
-    mock_from_env,
 ):
     # arrange
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",)
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA2"})
-    mock_from_env.return_value = "The config"
     mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"},{"qiD.Serial_Number": "10012"}]
     mock_retrieve_world_id.return_value = "1"
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
     
     # act
     with pytest.raises(Exception) as err:
-        create_questionnaire_case_tasks(mock_request)
+        create_questionnaire_case_tasks(mock_request, config)
 
     # assert
     assert str(err.value) == "Invalid wave: currently only wave 1 supported"
