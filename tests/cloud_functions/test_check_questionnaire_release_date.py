@@ -1,13 +1,9 @@
-import json
 import logging
 
 from datetime import datetime
 from unittest import mock
 from cloud_functions.check_questionnaire_release_date import check_questionnaire_release_date, get_questionnaires_with_todays_release_date, map_questionnaire_case_task_models, QuestionnaireCaseTaskModel, create_questionnaire_task_name
-from cloud_functions.functions import prepare_tasks
 from google.cloud import datastore
-
-from appconfig import Config
 
 
 def entity_builder(key, questionnaire, tmreleasedate):

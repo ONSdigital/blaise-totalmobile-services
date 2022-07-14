@@ -10,7 +10,7 @@ from google.cloud import tasks_v2
 from appconfig import Config
 from client.optimise import OptimiseClient
 from cloud_functions.logging import setup_logger
-from cloud_functions.functions import prepare_tasks
+from cloud_functions.functions import prepare_tasks, run
 from models.totalmobile_job_model import TotalmobileJobModel
 
 setup_logger()
@@ -94,16 +94,6 @@ def create_task_name(job_model: TotalmobileJobModel) -> str:
         f"{job_model.questionnaire}-{job_model.case['qiD.Serial_Number']}-{str(uuid4())}"
     )
 
-
-def create_tasks(
-    task_requests: List[tasks_v2.CreateTaskRequest], task_client
-) -> List[Coroutine[Any, Any, tasks_v2.Task]]:
-    return [task_client.create_task(request) for request in task_requests]
-
-
-async def run(task_requests: List[tasks_v2.CreateTaskRequest]) -> None:
-    task_client = tasks_v2.CloudTasksAsyncClient()
-    await asyncio.gather(*create_tasks(task_requests, task_client))
 
 def run_async_tasks(tasks: List[Tuple[str,str]], queue_id: str, cloud_function: str):
     task_requests = prepare_tasks(

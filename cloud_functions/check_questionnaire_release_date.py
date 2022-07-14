@@ -5,7 +5,7 @@ from google.cloud import datastore, tasks_v2
 from datetime import datetime
 from typing import List, Coroutine, Any, Tuple
 from cloud_functions.logging import setup_logger
-from cloud_functions.functions import prepare_tasks
+from cloud_functions.functions import prepare_tasks, run
 from models.questionnaire_case_task_model import QuestionnaireCaseTaskModel
 from appconfig import Config
 from uuid import uuid4
@@ -18,17 +18,6 @@ def create_questionnaire_task_name(job_model: QuestionnaireCaseTaskModel) -> str
     return (
         f"{job_model.questionnaire}-{str(uuid4())}"
     )
-
-
-def create_tasks(
-        task_requests: List[tasks_v2.CreateTaskRequest], task_client
-) -> List[Coroutine[Any, Any, tasks_v2.Task]]:
-    return [task_client.create_task(request) for request in task_requests]
-
-
-async def run(task_requests: List[tasks_v2.CreateTaskRequest]) -> None:
-    task_client = tasks_v2.CloudTasksAsyncClient()
-    await asyncio.gather(*create_tasks(task_requests, task_client))
 
 
 def map_questionnaire_case_task_models(questionnaires: List[str]) -> List[QuestionnaireCaseTaskModel]:

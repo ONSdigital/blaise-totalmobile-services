@@ -4,14 +4,12 @@ from unittest import mock
 import blaise_restapi
 import flask
 import pytest
-from google.cloud import tasks_v2
 
 from appconfig import Config
 from client.optimise import OptimiseClient
 from cloud_functions.create_questionnaire_case_tasks import (
     create_questionnaire_case_tasks,
     create_task_name,
-    create_tasks,
     filter_cases,
     get_wave_from_questionnaire_name,
     map_totalmobile_job_models,
@@ -172,42 +170,6 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
             "OPN2101A", "Earth", {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "130"}
         ),
     ]
-
-
-@mock.patch.object(tasks_v2.CloudTasksAsyncClient, "create_task")
-def test_create_tasks_gets_called_once_for_each_task_given_to_it(mock_create_task):
-    # arrange
-    task_client = tasks_v2.CloudTasksAsyncClient()
-    mock_create_task.return_value = {}
-    task_requests = [
-        tasks_v2.CreateTaskRequest(parent="qid1", task=tasks_v2.Task()),
-        tasks_v2.CreateTaskRequest(parent="qid2", task=tasks_v2.Task()),
-    ]
-
-    # act
-    create_tasks(task_requests, task_client)
-
-    # assert
-    mock_create_task.assert_has_calls(
-        [mock.call(task_request) for task_request in task_requests]
-    )
-
-
-@mock.patch.object(tasks_v2.CloudTasksAsyncClient, "create_task")
-def test_create_tasks_returns_the_correct_number_of_tasks(mock_create_task):
-    # arrange
-    task_client = tasks_v2.CloudTasksAsyncClient()
-    mock_create_task.return_value = {}
-    task_requests = [
-        tasks_v2.CreateTaskRequest(parent="qid1", task=tasks_v2.Task()),
-        tasks_v2.CreateTaskRequest(parent="qid2", task=tasks_v2.Task()),
-    ]
-
-    # act
-    result = create_tasks(task_requests, task_client)
-
-    # assert
-    assert len(result) == 2
 
 
 def test_filter_cases_returns_cases_only_where_criteria_is_met():

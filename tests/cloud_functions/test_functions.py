@@ -1,9 +1,9 @@
 from unittest import mock
 
+from google.cloud import tasks_v2
+
 from appconfig import Config
-from cloud_functions.create_questionnaire_case_tasks import create_task_name
-from cloud_functions.functions import prepare_tasks
-from models.totalmobile_job_model import TotalmobileJobModel
+from cloud_functions.functions import create_tasks, prepare_tasks
 
 
 @mock.patch.object(Config, "from_env")
@@ -59,3 +59,38 @@ def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(
         == "cloud_function_sa"
     )
 
+
+@mock.patch.object(tasks_v2.CloudTasksAsyncClient, "create_task")
+def test_create_tasks_gets_called_once_for_each_task_given_to_it(mock_create_task):
+    # arrange
+    task_client = tasks_v2.CloudTasksAsyncClient()
+    mock_create_task.return_value = {}
+    task_requests = [
+        tasks_v2.CreateTaskRequest(parent="qid1", task=tasks_v2.Task()),
+        tasks_v2.CreateTaskRequest(parent="qid2", task=tasks_v2.Task()),
+    ]
+
+    # act
+    create_tasks(task_requests, task_client)
+
+    # assert
+    mock_create_task.assert_has_calls(
+        [mock.call(task_request) for task_request in task_requests]
+    )
+
+
+@mock.patch.object(tasks_v2.CloudTasksAsyncClient, "create_task")
+def test_create_tasks_returns_the_correct_number_of_tasks(mock_create_task):
+    # arrange
+    task_client = tasks_v2.CloudTasksAsyncClient()
+    mock_create_task.return_value = {}
+    task_requests = [
+        tasks_v2.CreateTaskRequest(parent="qid1", task=tasks_v2.Task()),
+        tasks_v2.CreateTaskRequest(parent="qid2", task=tasks_v2.Task()),
+    ]
+
+    # act
+    result = create_tasks(task_requests, task_client)
+
+    # assert
+    assert len(result) == 2
