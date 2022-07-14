@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import Any, Coroutine, Dict, List
+from typing import Any, Coroutine, Dict, List, Tuple
 from uuid import uuid4
 
 import blaise_restapi
@@ -105,6 +105,15 @@ async def run(task_requests: List[tasks_v2.CreateTaskRequest]) -> None:
     task_client = tasks_v2.CloudTasksAsyncClient()
     await asyncio.gather(*create_tasks(task_requests, task_client))
 
+def run_async_tasks(tasks: List[Tuple[str,str]], queue_id: str, cloud_function: str):
+    task_requests = prepare_tasks(
+        tasks=tasks,
+        queue_id=queue_id,
+        cloud_function_name=cloud_function
+    )
+
+    asyncio.run(run(task_requests))
+
 
 def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> str:
     logging.info("Started creating questionnaire case tasks")
@@ -139,12 +148,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         for job_model in totalmobile_job_models
     ]
 
-    task_requests = prepare_tasks(
-        tasks=tasks,
-        queue_id=config.totalmobile_jobs_queue_id,
-        cloud_function_name=config.totalmobile_job_cloud_function
-    )
-
-    asyncio.run(run(task_requests))
+    run_async_tasks(tasks=tasks, queue_id=config.totalmobile_jobs_queue_id, 
+    cloud_function_name=config.totalmobile_job_cloud_function)
     logging.info("Finished creating questionnaire case tasks")
     return "Done"

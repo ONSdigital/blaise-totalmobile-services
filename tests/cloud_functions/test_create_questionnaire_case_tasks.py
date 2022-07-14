@@ -446,9 +446,9 @@ def test_validate_request_missing_fields():
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_id")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.prepare_tasks")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 def test_create_case_tasks_for_questionnaire(
-    mock_prepare_tasks,
+    mock_run_async_tasks,
     mock_filter_cases,
     mock_retrieve_case_data,
     mock_retrieve_world_id,
@@ -467,8 +467,8 @@ def test_create_case_tasks_for_questionnaire(
     mock_retrieve_case_data.assert_called_with("LMS2101_AA1", config)
     mock_retrieve_world_id.assert_called_with(config)
     mock_filter_cases.assert_called_with([{"qiD.Serial_Number": "10010"},{"qiD.Serial_Number": "10012"}])
-    mock_prepare_tasks.assert_called_once()
-    kwargs = mock_prepare_tasks.call_args.kwargs
+    mock_run_async_tasks.assert_called_once()
+    kwargs = mock_run_async_tasks.call_args.kwargs
     assert kwargs['cloud_function_name'] == "cloud-function"
     assert kwargs['queue_id'] == "queue-id"
     assert len(kwargs['tasks']) == 1
@@ -494,9 +494,7 @@ def test_create_questionnaire_case_tasks_error():
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_id")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.prepare_tasks")
 def test_get_wave_from_questionnaire_name_none_LMS_error(
-    mock_prepare_tasks,
     mock_filter_cases,
     mock_retrieve_case_data,
     mock_retrieve_world_id,
@@ -519,9 +517,7 @@ def test_get_wave_from_questionnaire_name_none_LMS_error(
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_id")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.prepare_tasks")
 def test_get_wave_from_questionnaire_name_unsupported_wave_error(
-    mock_prepare_tasks,
     mock_filter_cases,
     mock_retrieve_case_data,
     mock_retrieve_world_id,
