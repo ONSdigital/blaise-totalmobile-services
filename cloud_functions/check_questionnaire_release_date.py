@@ -1,9 +1,9 @@
 import asyncio
 import logging
 
-from google.cloud import datastore, tasks_v2
+from google.cloud import datastore
 from datetime import datetime
-from typing import List, Coroutine, Any, Tuple
+from typing import List
 from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
 from models.questionnaire_case_task_model import QuestionnaireCaseTaskModel

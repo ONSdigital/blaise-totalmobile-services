@@ -1,11 +1,10 @@
 import asyncio
 import logging
-from typing import Any, Coroutine, Dict, List, Tuple
+from typing import Dict, List, Tuple
 from uuid import uuid4
 
 import blaise_restapi
 import flask
-from google.cloud import tasks_v2
 
 from appconfig import Config
 from client.optimise import OptimiseClient
