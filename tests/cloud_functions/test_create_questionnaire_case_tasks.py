@@ -1,3 +1,4 @@
+import json
 from unittest import mock
 
 import blaise_restapi
@@ -456,19 +457,28 @@ def test_create_case_tasks_for_questionnaire(
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
-    mock_from_env.return_value = "The config"
-    mock_retrieve_case_data.return_value = ["Case 1", "Case 2"]
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",)
+    mock_from_env.return_value = config
+    mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"},{"qiD.Serial_Number": "10012"}]
     mock_retrieve_world_id.return_value = "1"
-    mock_filter_cases.return_value = ["Case 1"]
+    mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
     
     # act
     result = create_questionnaire_case_tasks(mock_request)
 
     # assert
-    mock_retrieve_case_data.assert_called_with("LMS2101_AA1", "The config")
-    mock_retrieve_world_id.assert_called_with("The config")
-    mock_filter_cases.assert_called_with(["Case 1", "Case 2"])
-    mock_prepare_tasks.assert_called_with([TotalmobileJobModel("LMS2101_AA1", "1", "Case 1")])
+    mock_retrieve_case_data.assert_called_with("LMS2101_AA1", config)
+    mock_retrieve_world_id.assert_called_with(config)
+    mock_filter_cases.assert_called_with([{"qiD.Serial_Number": "10010"},{"qiD.Serial_Number": "10012"}])
+    mock_prepare_tasks.assert_called_once()
+    kwargs = mock_prepare_tasks.call_args.kwargs
+    assert kwargs['cloud_function_name'] == "cloud-function"
+    assert kwargs['queue_id'] == "queue-id"
+    assert len(kwargs['tasks']) == 1
+    task = kwargs['tasks'][0]
+    assert task[0][0:3] == "LMS"
+    assert json.loads(task[1]) == {'case': {'qiD.Serial_Number': '10010'}, 
+                                'questionnaire': 'LMS2101_AA1', 'world_id': '1'}
     assert result == "Done"
 
 
@@ -500,9 +510,9 @@ def test_get_wave_from_questionnaire_name_none_LMS_error(
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "OPN2101A"})
     mock_from_env.return_value = "The config"
-    mock_retrieve_case_data.return_value = ["Case 1", "Case 2"]
+    mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"},{"qiD.Serial_Number": "10012"}]
     mock_retrieve_world_id.return_value = "1"
-    mock_filter_cases.return_value = ["Case 1"]
+    mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
     
     # act
     with pytest.raises(Exception) as err:
@@ -527,9 +537,9 @@ def test_get_wave_from_questionnaire_name_unsupported_wave_error(
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA2"})
     mock_from_env.return_value = "The config"
-    mock_retrieve_case_data.return_value = ["Case 1", "Case 2"]
+    mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"},{"qiD.Serial_Number": "10012"}]
     mock_retrieve_world_id.return_value = "1"
-    mock_filter_cases.return_value = ["Case 1"]
+    mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
     
     # act
     with pytest.raises(Exception) as err:
