@@ -1,16 +1,15 @@
 import asyncio
 import logging
-from typing import Any, Coroutine, Dict, List
+from typing import Dict, List, Tuple
 from uuid import uuid4
 
 import blaise_restapi
 import flask
-from google.cloud import tasks_v2
 
 from appconfig import Config
 from client.optimise import OptimiseClient
 from cloud_functions.logging import setup_logger
-from cloud_functions.functions import prepare_tasks
+from cloud_functions.functions import prepare_tasks, run
 from models.totalmobile_job_model import TotalmobileJobModel
 
 setup_logger()
@@ -95,20 +94,18 @@ def create_task_name(job_model: TotalmobileJobModel) -> str:
     )
 
 
-def create_tasks(
-    task_requests: List[tasks_v2.CreateTaskRequest], task_client
-) -> List[Coroutine[Any, Any, tasks_v2.Task]]:
-    return [task_client.create_task(request) for request in task_requests]
+def run_async_tasks(tasks: List[Tuple[str,str]], queue_id: str, cloud_function: str):
+    task_requests = prepare_tasks(
+        tasks=tasks,
+        queue_id=queue_id,
+        cloud_function_name=cloud_function
+    )
+
+    asyncio.run(run(task_requests))
 
 
-async def run(task_requests: List[tasks_v2.CreateTaskRequest]) -> None:
-    task_client = tasks_v2.CloudTasksAsyncClient()
-    await asyncio.gather(*create_tasks(task_requests, task_client))
-
-
-def create_questionnaire_case_tasks(request: flask.Request) -> str:
+def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> str:
     logging.info("Started creating questionnaire case tasks")
-    config = Config.from_env()
 
     request_json = request.get_json()
     if request_json is None:
@@ -140,13 +137,7 @@ def create_questionnaire_case_tasks(request: flask.Request) -> str:
         for job_model in totalmobile_job_models
     ]
 
-    config = Config.from_env()
-    task_requests = prepare_tasks(
-        tasks=tasks,
-        queue_id=config.totalmobile_jobs_queue_id,
-        cloud_function_name=config.totalmobile_job_cloud_function
-    )
-
-    asyncio.run(run(task_requests))
+    run_async_tasks(tasks=tasks, queue_id=config.totalmobile_jobs_queue_id, 
+    cloud_function_name=config.totalmobile_job_cloud_function)
     logging.info("Finished creating questionnaire case tasks")
     return "Done"
