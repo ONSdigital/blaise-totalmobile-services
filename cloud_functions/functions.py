@@ -1,7 +1,8 @@
+import asyncio
 from google.cloud import tasks_v2
 from google.protobuf.duration_pb2 import Duration
 from datetime import timedelta
-from typing import List, Tuple
+from typing import Any, Coroutine, List, Tuple
 
 from appconfig import Config
 
@@ -37,3 +38,14 @@ def prepare_tasks(
         )
         task_requests.append(request)
     return task_requests
+
+
+def create_tasks(
+    task_requests: List[tasks_v2.CreateTaskRequest], task_client
+) -> List[Coroutine[Any, Any, tasks_v2.Task]]:
+    return [task_client.create_task(request) for request in task_requests]
+
+
+async def run(task_requests: List[tasks_v2.CreateTaskRequest]) -> None:
+    task_client = tasks_v2.CloudTasksAsyncClient()
+    await asyncio.gather(*create_tasks(task_requests, task_client))
