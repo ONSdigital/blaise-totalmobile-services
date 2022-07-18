@@ -1,16 +1,15 @@
 import asyncio
 import logging
-from typing import Any, Coroutine, Dict, List
+from typing import Dict, List, Tuple
 from uuid import uuid4
 
 import blaise_restapi
 import flask
-from google.cloud import tasks_v2
 
 from appconfig import Config
 from client.optimise import OptimiseClient
 from cloud_functions.logging import setup_logger
-from cloud_functions.functions import prepare_tasks
+from cloud_functions.functions import prepare_tasks, run
 from models.totalmobile_job_model import TotalmobileJobModel
 
 setup_logger()
@@ -56,20 +55,31 @@ def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str
             "qDataBag.PostCode",
             "qDataBag.TelNo",
             "qDataBag.TelNo2",
+            "qDataBag.TelNoAppt",
             "hOut",
             "srvStat",
             "qiD.Serial_Number",
+            "qDataBag.Wave",
+            "qDataBag.Priority"    
         ],
     )
     return questionnaire_data["reportingData"]
 
 
 def filter_cases(cases: List[Dict[str, str]]) -> List[Dict[str, str]]:
-    filtered_cases = []
-    for case in cases:
-        if case["srvStat"] != "3" and case["hOut"] not in ["360", "390"]:
-            filtered_cases.append(case)
-    return filtered_cases
+    return [
+        case
+        for case in cases
+        if (case["qDataBag.TelNo"] == "" and case["qDataBag.TelNo2"] == "" and case["qDataBag.TelNoAppt"] == ""
+            and case["qDataBag.Wave"] == "1" and case["qDataBag.Priority"] in ["1","2","3","4","5"] 
+            and case["hOut"] in [0, 310]) 
+        ]
+
+
+def get_wave_from_questionnaire_name(questionnaire_name: str):
+    if questionnaire_name[0:3] != "LMS":
+        raise Exception(f"Invalid format for questionnaire name: {questionnaire_name}")
+    return questionnaire_name[-1]
 
 
 def map_totalmobile_job_models(
@@ -84,20 +94,18 @@ def create_task_name(job_model: TotalmobileJobModel) -> str:
     )
 
 
-def create_tasks(
-    task_requests: List[tasks_v2.CreateTaskRequest], task_client
-) -> List[Coroutine[Any, Any, tasks_v2.Task]]:
-    return [task_client.create_task(request) for request in task_requests]
+def run_async_tasks(tasks: List[Tuple[str,str]], queue_id: str, cloud_function: str):
+    task_requests = prepare_tasks(
+        tasks=tasks,
+        queue_id=queue_id,
+        cloud_function_name=cloud_function
+    )
+
+    asyncio.run(run(task_requests))
 
 
-async def run(task_requests: List[tasks_v2.CreateTaskRequest]) -> None:
-    task_client = tasks_v2.CloudTasksAsyncClient()
-    await asyncio.gather(*create_tasks(task_requests, task_client))
-
-
-def create_questionnaire_case_tasks(request: flask.Request) -> str:
+def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> str:
     logging.info("Started creating questionnaire case tasks")
-    config = Config.from_env()
 
     request_json = request.get_json()
     if request_json is None:
@@ -106,6 +114,11 @@ def create_questionnaire_case_tasks(request: flask.Request) -> str:
     validate_request(request_json)
 
     questionnaire_name = request_json["questionnaire"]
+    wave = get_wave_from_questionnaire_name(questionnaire_name)
+    if wave != "1":
+        logging.info("Invalid wave: currently only wave 1 supported")
+        raise Exception("Invalid wave: currently only wave 1 supported")
+
     logging.debug(f"Creating case tasks for questionnaire: {questionnaire_name}")
     world_id = retrieve_world_id(config)
     logging.debug(f"Retrieved world_id: {world_id}")
@@ -124,13 +137,7 @@ def create_questionnaire_case_tasks(request: flask.Request) -> str:
         for job_model in totalmobile_job_models
     ]
 
-    config = Config.from_env()
-    task_requests = prepare_tasks(
-        tasks=tasks,
-        queue_id=config.totalmobile_jobs_queue_id,
-        cloud_function_name=config.totalmobile_job_cloud_function
-    )
-
-    asyncio.run(run(task_requests))
+    run_async_tasks(tasks=tasks, queue_id=config.totalmobile_jobs_queue_id, 
+    cloud_function_name=config.totalmobile_job_cloud_function)
     logging.info("Finished creating questionnaire case tasks")
     return "Done"
