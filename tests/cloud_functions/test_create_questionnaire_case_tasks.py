@@ -74,11 +74,12 @@ def test_retrieve_case_data_calls_the_rest_api_client_with_the_correct_parameter
         "hOut",
         "qiD.Serial_Number",
         "qDataBag.Wave",
-        "qDataBag.Priority"
+        "qDataBag.Priority",
+        "qDataBag.FieldRegion"
     ]
 
     # act
-    retrieve_case_data(questionnaire_name, config)
+    foo = retrieve_case_data(questionnaire_name, config)
 
     # assert
     _mock_rest_api_client.assert_called_with(
