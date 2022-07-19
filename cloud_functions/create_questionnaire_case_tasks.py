@@ -59,7 +59,8 @@ def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str
             "hOut",
             "qiD.Serial_Number",
             "qDataBag.Wave",
-            "qDataBag.Priority"    
+            "qDataBag.Priority",
+            "QDataBag.FieldRegion"
         ],
     )
     return questionnaire_data["reportingData"]
