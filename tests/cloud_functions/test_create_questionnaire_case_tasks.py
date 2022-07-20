@@ -289,17 +289,17 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
     result = filter_cases(cases)
 
     # assert
-    assert result == [{"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "qDataBag.TelNoAppt": "", "qDataBag.Wave": "1",
+    assert result == [{"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "TelNoAppt": "", "qDataBag.Wave": "1",
                        "qDataBag.Priority": "1", "hOut": 310},
-                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "qDataBag.TelNoAppt": "", "qDataBag.Wave": "1",
+                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "TelNoAppt": "", "qDataBag.Wave": "1",
                        "qDataBag.Priority": "1", "hOut": 0},
-                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "qDataBag.TelNoAppt": "", "qDataBag.Wave": "1",
+                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "TelNoAppt": "", "qDataBag.Wave": "1",
                        "qDataBag.Priority": "2", "hOut": 0},
-                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "qDataBag.TelNoAppt": "", "qDataBag.Wave": "1",
+                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "TelNoAppt": "", "qDataBag.Wave": "1",
                        "qDataBag.Priority": "3", "hOut": 0},
-                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "qDataBag.TelNoAppt": "", "qDataBag.Wave": "1",
+                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "TelNoAppt": "", "qDataBag.Wave": "1",
                        "qDataBag.Priority": "4", "hOut": 0},
-                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "qDataBag.TelNoAppt": "", "qDataBag.Wave": "1",
+                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "TelNoAppt": "", "qDataBag.Wave": "1",
                        "qDataBag.Priority": "5", "hOut": 0}]
 
 
@@ -315,7 +315,7 @@ def test_validate_request_missing_fields():
     )
 
 
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_id")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_ids")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
@@ -323,13 +323,13 @@ def test_create_case_tasks_for_questionnaire(
         mock_run_async_tasks,
         mock_filter_cases,
         mock_retrieve_case_data,
-        mock_retrieve_world_id,
+        mock_retrieve_world_ids,
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
     mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
-    mock_retrieve_world_id.return_value = "1"
+    mock_retrieve_world_ids.return_value = "1"
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
 
     # act
@@ -337,7 +337,7 @@ def test_create_case_tasks_for_questionnaire(
 
     # assert
     mock_retrieve_case_data.assert_called_with("LMS2101_AA1", config)
-    mock_retrieve_world_id.assert_called_with(config)
+    mock_retrieve_world_ids.assert_called_with(config)
     mock_filter_cases.assert_called_with([{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}])
     mock_run_async_tasks.assert_called_once()
     kwargs = mock_run_async_tasks.call_args.kwargs
@@ -363,19 +363,19 @@ def test_create_questionnaire_case_tasks_error():
     )
 
 
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_id")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_ids")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 def test_get_wave_from_questionnaire_name_none_LMS_error(
         mock_filter_cases,
         mock_retrieve_case_data,
-        mock_retrieve_world_id,
+        mock_retrieve_world_ids,
 ):
     # arrange
     config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
     mock_request = flask.Request.from_values(json={"questionnaire": "OPN2101A"})
     mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
-    mock_retrieve_world_id.return_value = "1"
+    mock_retrieve_world_ids.return_value = "1"
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
 
     # act
@@ -386,19 +386,19 @@ def test_get_wave_from_questionnaire_name_none_LMS_error(
     assert str(err.value) == "Invalid format for questionnaire name: OPN2101A"
 
 
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_id")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_ids")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 def test_get_wave_from_questionnaire_name_unsupported_wave_error(
         mock_filter_cases,
         mock_retrieve_case_data,
-        mock_retrieve_world_id,
+        mock_retrieve_world_ids,
 ):
     # arrange
     config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA2"})
     mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
-    mock_retrieve_world_id.return_value = "1"
+    mock_retrieve_world_ids.return_value = "1"
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
 
     # act
@@ -421,7 +421,7 @@ def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error():
 
 
 @mock.patch.object(OptimiseClient, "get_worlds")
-def test_retrieve_world_id_correctly_maps_a_case_field_region_to_a_world_id(_mock_optimise_client):
+def test_retrieve_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mock_optimise_client):
     # arrange
     config = Config(
         "totalmobile_url",
