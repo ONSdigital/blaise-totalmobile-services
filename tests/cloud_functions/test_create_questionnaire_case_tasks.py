@@ -118,26 +118,31 @@ def test_retrieve_case_data_returns_the_case_data_supplied_by_the_rest_api_clien
 def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     # arrange
     questionnaire_name = "OPN2101A"
-    world_id = "Earth"
 
     case_data = [
         {"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110"},
         {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "120"},
         {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "130"},
     ]
+
+    world_ids = [
+        "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "3fa85f64-5717-4562-b3fc-2c963f66afa7",
+        "3fa85f64-5717-4562-b3fc-2c963f66afa9",
+    ]
     # act
-    result = map_totalmobile_job_models(case_data, world_id, questionnaire_name)
+    result = map_totalmobile_job_models(case_data, world_ids, questionnaire_name)
 
     # assert
     assert result == [
         TotalmobileJobModel(
-            "OPN2101A", "Earth", {"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110"}
+            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa6", {"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110"}
         ),
         TotalmobileJobModel(
-            "OPN2101A", "Earth", {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "120"}
+            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa7", {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "120"}
         ),
         TotalmobileJobModel(
-            "OPN2101A", "Earth", {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "130"}
+            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa9", {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "130"}
         ),
     ]
 
