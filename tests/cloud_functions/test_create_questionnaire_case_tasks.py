@@ -421,7 +421,7 @@ def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error():
 
 
 @mock.patch.object(OptimiseClient, "get_worlds")
-def test_retrieve_world_id_correctly_maps_world_id_to_world(_mock_optimise_client):
+def test_retrieve_world_id_correctly_maps_a_case_field_region_to_a_world_id(_mock_optimise_client):
     # arrange
     config = Config(
         "totalmobile_url",
