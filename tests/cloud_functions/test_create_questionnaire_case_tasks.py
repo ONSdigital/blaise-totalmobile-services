@@ -115,36 +115,6 @@ def test_retrieve_case_data_returns_the_case_data_supplied_by_the_rest_api_clien
     ]
 
 
-# @mock.patch.object(OptimiseClient, "get_world")
-# def test_retrieve_world_id_returns_a_world_id(_mock_optimise_client):
-#     # arrange
-#     config = Config(
-#         "totalmobile_url",
-#         "totalmobile_instance",
-#         "totalmobile_client_id",
-#         "totalmobile_client_secret",
-#         "",
-#         "",
-#         "",
-#         "",
-#         "rest_api_url",
-#         "gusty",
-#         "",
-#     )
-#
-#     _mock_optimise_client.return_value = {
-#         "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-#         "identity": {"reference": "test"},
-#         "type": "foo",
-#     }
-#
-#     # act
-#     result = retrieve_world_id(config)
-#
-#     # assert
-#     assert result == "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-
-
 def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     # arrange
     questionnaire_name = "OPN2101A"
