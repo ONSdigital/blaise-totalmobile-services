@@ -28,7 +28,7 @@ def validate_request(request_json: Dict) -> None:
         )
 
 
-def retrieve_world_id(config: Config, filtered_cases: List[Dict[str, str]]) -> List[str]:
+def retrieve_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> List[str]:
     optimise_client = OptimiseClient(
         config.totalmobile_url,
         config.totalmobile_instance,
@@ -37,6 +37,12 @@ def retrieve_world_id(config: Config, filtered_cases: List[Dict[str, str]]) -> L
     )
     worlds = optimise_client.get_worlds()
 
+    list_of_world_ids = []
+    for case in filtered_cases:
+        field_region = case["qDataBag.FieldRegion"]
+        for world in worlds:
+            if field_region == world["identity"]["reference"]:
+                list_of_world_ids.append(world["id"])
     return list_of_world_ids
 
 def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str]]:
@@ -127,7 +133,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     filtered_cases = filter_cases(cases)
     logging.debug(f"Filtered {len(filtered_cases)} cases")
 
-    world_ids = retrieve_world_id(config, filtered_cases)
+    world_ids = retrieve_world_ids(config, filtered_cases)
     logging.debug(f"Retrieved world_ids: {world_ids}")
 
     totalmobile_job_models = map_totalmobile_job_models(
