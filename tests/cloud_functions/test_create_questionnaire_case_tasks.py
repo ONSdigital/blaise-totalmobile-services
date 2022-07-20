@@ -78,9 +78,6 @@ def test_retrieve_case_data_calls_the_rest_api_client_with_the_correct_parameter
         "qDataBag.FieldRegion"
     ]
 
-    # act
-    foo = retrieve_case_data(questionnaire_name, config)
-
     # assert
     _mock_rest_api_client.assert_called_with(
         blaise_server_park, questionnaire_name, fields
