@@ -32,7 +32,6 @@ def validate_case_data(case: Dict) -> None:
         "qDataBag.UPRN_Longitude",
         "qDataBag.TelNo",
         "qDataBag.TelNo2",
-        "qDataBag.FieldRegion"
     ]
     missing_fields = __filter_missing_fields(case, REQUIRED_FIELDS)
     if len(missing_fields) >= 1:
