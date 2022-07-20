@@ -28,16 +28,16 @@ def validate_request(request_json: Dict) -> None:
         )
 
 
-def retrieve_world_id(config: Config) -> str:
+def retrieve_world_id(config: Config, filtered_cases: List[Dict[str, str]]) -> List[str]:
     optimise_client = OptimiseClient(
         config.totalmobile_url,
         config.totalmobile_instance,
         config.totalmobile_client_id,
         config.totalmobile_client_secret,
     )
-    world = "Region 1"
-    return optimise_client.get_world(world)["id"]
+    worlds = optimise_client.get_worlds()
 
+    return list_of_world_ids
 
 def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str]]:
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
@@ -73,7 +73,7 @@ def filter_cases(cases: List[Dict[str, str]]) -> List[Dict[str, str]]:
         if (case["qDataBag.TelNo"] == "" and case["qDataBag.TelNo2"] == "" and case["TelNoAppt"] == ""
             and case["qDataBag.Wave"] == "1" and case["qDataBag.Priority"] in ["1","2","3","4","5"] 
             and case["hOut"] in [0, 310]) 
-        ]
+    ]
 
 
 def get_wave_from_questionnaire_name(questionnaire_name: str):
@@ -120,16 +120,18 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         raise Exception("Invalid wave: currently only wave 1 supported")
 
     logging.debug(f"Creating case tasks for questionnaire: {questionnaire_name}")
-    world_id = retrieve_world_id(config)
-    logging.debug(f"Retrieved world_id: {world_id}")
 
     cases = retrieve_case_data(questionnaire_name, config)
     logging.debug(f"Retrieved {len(cases)} cases")
+
     filtered_cases = filter_cases(cases)
     logging.debug(f"Filtered {len(filtered_cases)} cases")
 
+    world_ids = retrieve_world_id(config, filtered_cases)
+    logging.debug(f"Retrieved world_ids: {world_ids}")
+
     totalmobile_job_models = map_totalmobile_job_models(
-        filtered_cases, world_id, questionnaire_name
+        filtered_cases, world_ids, questionnaire_name
     )
 
     tasks = [
