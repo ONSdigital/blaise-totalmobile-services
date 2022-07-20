@@ -37,13 +37,9 @@ def retrieve_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> 
     )
     worlds = optimise_client.get_worlds()
 
-    list_of_world_ids = []
-    for case in filtered_cases:
-        field_region = case["qDataBag.FieldRegion"]
-        for world in worlds:
-            if field_region == world["identity"]["reference"]:
-                list_of_world_ids.append(world["id"])
-    return list_of_world_ids
+    world_map_with_world_ids = {world["identity"]["reference"]: world["id"] for world in worlds}
+    return [world_map_with_world_ids[case["qDataBag.FieldRegion"]] for case in filtered_cases]
+
 
 def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str]]:
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
