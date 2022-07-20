@@ -25,7 +25,7 @@ class OptimiseClient(BaseClient):
             f"worlds/{world_id}/jobs/{job_reference}/additionalProperties"
         ).json()
 
-    def get_worlds(self) -> List[Any]:
+    def get_worlds(self) -> List[Dict[str, str]]:
         return self._get("worlds").json()
 
     def get_world(self, world: str) -> Dict[Any, Any]:
