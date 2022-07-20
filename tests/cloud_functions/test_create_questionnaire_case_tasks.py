@@ -14,7 +14,7 @@ from cloud_functions.create_questionnaire_case_tasks import (
     get_wave_from_questionnaire_name,
     map_totalmobile_job_models,
     retrieve_case_data,
-    retrieve_world_id,
+    retrieve_world_ids,
     validate_request,
 )
 from models.totalmobile_job_model import TotalmobileJobModel
@@ -475,7 +475,7 @@ def test_retrieve_world_id_correctly_maps_a_case_field_region_to_a_world_id(_moc
     ]
 
     # assert
-    assert retrieve_world_id(config, filtered_cases) == [
+    assert retrieve_world_ids(config, filtered_cases) == [
         "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "3fa85f64-5717-4562-b3fc-2c963f66afa7",
         "3fa85f64-5717-4562-b3fc-2c963f66afa9",
