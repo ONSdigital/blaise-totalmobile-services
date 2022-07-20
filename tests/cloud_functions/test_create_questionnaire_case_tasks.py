@@ -312,7 +312,7 @@ def test_create_case_tasks_for_questionnaire(
 
     # assert
     mock_retrieve_case_data.assert_called_with("LMS2101_AA1", config)
-    mock_retrieve_world_ids.assert_called_with(config)
+    mock_retrieve_world_ids.assert_called_with(config, [{"qiD.Serial_Number": "10010"}])
     mock_filter_cases.assert_called_with([{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}])
     mock_run_async_tasks.assert_called_once()
     kwargs = mock_run_async_tasks.call_args.kwargs
