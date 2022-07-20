@@ -55,9 +55,8 @@ def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str
             "qDataBag.PostCode",
             "qDataBag.TelNo",
             "qDataBag.TelNo2",
-            "qDataBag.TelNoAppt",
+            "TelNoAppt",
             "hOut",
-            "srvStat",
             "qiD.Serial_Number",
             "qDataBag.Wave",
             "qDataBag.Priority"    
@@ -70,7 +69,7 @@ def filter_cases(cases: List[Dict[str, str]]) -> List[Dict[str, str]]:
     return [
         case
         for case in cases
-        if (case["qDataBag.TelNo"] == "" and case["qDataBag.TelNo2"] == "" and case["qDataBag.TelNoAppt"] == ""
+        if (case["qDataBag.TelNo"] == "" and case["qDataBag.TelNo2"] == "" and case["TelNoAppt"] == ""
             and case["qDataBag.Wave"] == "1" and case["qDataBag.Priority"] in ["1","2","3","4","5"] 
             and case["hOut"] in [0, 310]) 
         ]
