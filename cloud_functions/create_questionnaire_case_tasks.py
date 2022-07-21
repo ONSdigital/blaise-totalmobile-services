@@ -28,15 +28,17 @@ def validate_request(request_json: Dict) -> None:
         )
 
 
-def retrieve_world_id(config: Config) -> str:
+def retrieve_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> List[str]:
     optimise_client = OptimiseClient(
         config.totalmobile_url,
         config.totalmobile_instance,
         config.totalmobile_client_id,
         config.totalmobile_client_secret,
     )
-    world = "Region 1"
-    return optimise_client.get_world(world)["id"]
+    worlds = optimise_client.get_worlds()
+
+    world_map_with_world_ids = {world["identity"]["reference"]: world["id"] for world in worlds}
+    return [world_map_with_world_ids[case["qDataBag.FieldRegion"]] for case in filtered_cases]
 
 
 def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str]]:
@@ -55,12 +57,12 @@ def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str
             "qDataBag.PostCode",
             "qDataBag.TelNo",
             "qDataBag.TelNo2",
-            "qDataBag.TelNoAppt",
+            "TelNoAppt",
             "hOut",
-            "srvStat",
             "qiD.Serial_Number",
             "qDataBag.Wave",
-            "qDataBag.Priority"    
+            "qDataBag.Priority",
+            "qDataBag.FieldRegion"
         ],
     )
     return questionnaire_data["reportingData"]
@@ -70,10 +72,10 @@ def filter_cases(cases: List[Dict[str, str]]) -> List[Dict[str, str]]:
     return [
         case
         for case in cases
-        if (case["qDataBag.TelNo"] == "" and case["qDataBag.TelNo2"] == "" and case["qDataBag.TelNoAppt"] == ""
+        if (case["qDataBag.TelNo"] == "" and case["qDataBag.TelNo2"] == "" and case["TelNoAppt"] == ""
             and case["qDataBag.Wave"] == "1" and case["qDataBag.Priority"] in ["1","2","3","4","5"] 
             and case["hOut"] in [0, 310]) 
-        ]
+    ]
 
 
 def get_wave_from_questionnaire_name(questionnaire_name: str):
@@ -83,9 +85,9 @@ def get_wave_from_questionnaire_name(questionnaire_name: str):
 
 
 def map_totalmobile_job_models(
-    cases: List[Dict[str, str]], world_id: str, questionnaire_name: str
+    cases: List[Dict[str, str]], world_ids: List[str], questionnaire_name: str
 ) -> List[TotalmobileJobModel]:
-    return [TotalmobileJobModel(questionnaire_name, world_id, case) for case in cases]
+    return [TotalmobileJobModel(questionnaire_name, world_id, case) for case, world_id in zip(cases, world_ids)]
 
 
 def create_task_name(job_model: TotalmobileJobModel) -> str:
@@ -120,16 +122,18 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         raise Exception("Invalid wave: currently only wave 1 supported")
 
     logging.debug(f"Creating case tasks for questionnaire: {questionnaire_name}")
-    world_id = retrieve_world_id(config)
-    logging.debug(f"Retrieved world_id: {world_id}")
 
     cases = retrieve_case_data(questionnaire_name, config)
     logging.debug(f"Retrieved {len(cases)} cases")
+
     filtered_cases = filter_cases(cases)
     logging.debug(f"Filtered {len(filtered_cases)} cases")
 
+    world_ids = retrieve_world_ids(config, filtered_cases)
+    logging.debug(f"Retrieved world_ids: {world_ids}")
+
     totalmobile_job_models = map_totalmobile_job_models(
-        filtered_cases, world_id, questionnaire_name
+        filtered_cases, world_ids, questionnaire_name
     )
 
     tasks = [
