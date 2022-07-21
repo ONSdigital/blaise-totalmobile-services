@@ -457,7 +457,7 @@ def test_retrieve_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mo
     ]
 
 @mock.patch.object(OptimiseClient, "get_worlds")
-def test_retrieve_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mock_optimise_client):
+def test_retrieve_world_ids_logs_a_console_error_when_given_an_unknown_world(_mock_optimise_client):
     # arrange
     config = Config(
         "totalmobile_url",
