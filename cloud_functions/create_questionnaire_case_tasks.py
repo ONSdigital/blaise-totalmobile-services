@@ -37,9 +37,18 @@ def retrieve_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> 
     )
     worlds = optimise_client.get_worlds()
 
-    world_map_with_world_ids = {world["identity"]["reference"]: world["id"] for world in worlds}
-    return [world_map_with_world_ids[case["qDataBag.FieldRegion"]] for case in filtered_cases]
-
+    world_map_with_world_ids = {world["identity"]["reference"]: world["id"] for world in worlds}    
+    # return [world_map_with_world_ids[case["qDataBag.FieldRegion"]] for case in filtered_cases]
+    
+    new_filtered_cases = []
+    world_ids = []
+    for case in filtered_cases:
+        if case['qDataBag.FieldRegion'] not in world_map_with_world_ids:
+            logging.warning(f"Unsupported world: {case['qDataBag.FieldRegion']}")
+        else:
+            new_filtered_cases.append(case)
+            world_ids.append(world_map_with_world_ids[case['qDataBag.FieldRegion']])
+    return world_ids, new_filtered_cases
 
 def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str]]:
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
@@ -129,7 +138,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     filtered_cases = filter_cases(cases)
     logging.debug(f"Filtered {len(filtered_cases)} cases")
 
-    world_ids = retrieve_world_ids(config, filtered_cases)
+    world_ids, new_filtered_cases = retrieve_world_ids(config, filtered_cases)
     logging.debug(f"Retrieved world_ids: {world_ids}")
 
     totalmobile_job_models = map_totalmobile_job_models(
