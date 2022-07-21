@@ -455,3 +455,41 @@ def test_retrieve_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mo
         "3fa85f64-5717-4562-b3fc-2c963f66afa7",
         "3fa85f64-5717-4562-b3fc-2c963f66afa9",
     ]
+
+@mock.patch.object(OptimiseClient, "get_worlds")
+def test_retrieve_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mock_optimise_client):
+    # arrange
+    config = Config(
+        "totalmobile_url",
+        "totalmobile_instance",
+        "totalmobile_client_id",
+        "totalmobile_client_secret",
+        "",
+        "",
+        "",
+        "",
+        "rest_api_url",
+        "gusty",
+        "",
+    )
+
+    filtered_cases = [
+        {"qDataBag.FieldRegion": "Risca"},
+    ]
+
+    _mock_optimise_client.return_value = [
+        {
+            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "identity": {
+                "reference": "Region 1"
+            },
+            "type": "foo"
+        },
+    ]
+
+    # assert
+    with pytest.raises(Exception) as err:
+        retrieve_world_ids(config, filtered_cases)
+    assert (
+            str(err.value) == "Unsupported world: Risca"
+    )
