@@ -28,8 +28,8 @@ def validate_case_data(case: Dict) -> None:
         "qDataBag.Prem3",
         "qDataBag.PostTown",
         "qDataBag.PostCode",
-        # "qDataBag.UPRN_Latitude", This field aren't strictly required but do make the world better...
-        # "qDataBag.UPRN_Longitude", This field aren't strictly required but do make the world better...
+        "qDataBag.UPRN_Latitude",
+        "qDataBag.UPRN_Longitude",
         "qDataBag.TelNo",
         "qDataBag.TelNo2",
     ]
