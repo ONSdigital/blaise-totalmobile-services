@@ -144,7 +144,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     logging.debug(f"Retrieved world_ids: {world_ids}")
 
     totalmobile_job_models = map_totalmobile_job_models(
-        filtered_cases, world_ids, questionnaire_name
+        new_filtered_cases, world_ids, questionnaire_name
     )
 
     tasks = [
