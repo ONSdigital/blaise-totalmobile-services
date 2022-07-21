@@ -43,7 +43,9 @@ def retrieve_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> 
     new_filtered_cases = []
     world_ids = []
     for case in filtered_cases:
-        if case['qDataBag.FieldRegion'] not in world_map_with_world_ids:
+        if case['qDataBag.FieldRegion'] == "":
+            logging.warning("Case rejected. Missing Field Region")
+        elif case['qDataBag.FieldRegion'] not in world_map_with_world_ids:
             logging.warning(f"Unsupported world: {case['qDataBag.FieldRegion']}")
         else:
             new_filtered_cases.append(case)
