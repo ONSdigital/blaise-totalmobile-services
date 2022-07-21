@@ -545,43 +545,81 @@ def test_retrieve_world_ids_logs_a_console_error_and_returns_data_when_given_an_
     assert new_filtered_cases == [{"qDataBag.FieldRegion": "Region 1"}]
     assert ('root', logging.WARNING, 'Unsupported world: Risca') in caplog.record_tuples
 
-# @mock.patch.object(OptimiseClient, "get_worlds")
-# def test_retrieve_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world(_mock_optimise_client, caplog):
-#     # arrange
-#     config = Config(
-#         "totalmobile_url",
-#         "totalmobile_instance",
-#         "totalmobile_client_id",
-#         "totalmobile_client_secret",
-#         "",
-#         "",
-#         "",
-#         "",
-#         "rest_api_url",
-#         "gusty",
-#         "",
-#     )
-# 
-#     filtered_cases = [
-#         {"qDataBag.FieldRegion": "Risca"},
-#         {"qDataBag.FieldRegion": "Region 1"},
-#     ]
-# 
-#     _mock_optimise_client.return_value = [
-#         {
-#             "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-#             "identity": {
-#                 "reference": "Region 1"
-#             },
-#             "type": "foo"
-#         },
-#     ]
-# 
-#     # act 
-#     world_ids, new_filtered_cases = retrieve_world_ids(config, filtered_cases)
-# 
-#     # assert
-#     assert len(world_ids) == len(new_filtered_cases)
-#     assert world_ids == ["3fa85f64-5717-4562-b3fc-2c963f66afa6"]
-#     assert new_filtered_cases == [{"qDataBag.FieldRegion": "Region 1"}]
-#     assert ('root', logging.WARNING, 'Unsupported world: Risca') in caplog.record_tuples
+@mock.patch.object(OptimiseClient, "get_worlds")
+def test_retrieve_world_ids_logs_a_console_error_when_field_region_is_missing(_mock_optimise_client, caplog):
+    # arrange
+    config = Config(
+        "totalmobile_url",
+        "totalmobile_instance",
+        "totalmobile_client_id",
+        "totalmobile_client_secret",
+        "",
+        "",
+        "",
+        "",
+        "rest_api_url",
+        "gusty",
+        "",
+    )
+
+    filtered_cases = [
+        {"qDataBag.FieldRegion": ""},
+    ]
+
+    _mock_optimise_client.return_value = [
+        {
+            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "identity": {
+                "reference": "Region 1"
+            },
+            "type": "foo"
+        },
+    ]
+
+    # act
+    retrieve_world_ids(config, filtered_cases)
+
+    # assert
+    assert ('root', logging.WARNING, 'Case rejected. Missing Field Region') in caplog.record_tuples
+
+@mock.patch.object(OptimiseClient, "get_worlds")
+def test_retrieve_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world_and_a_known_world(
+        _mock_optimise_client, caplog):
+    # arrange
+    config = Config(
+        "totalmobile_url",
+        "totalmobile_instance",
+        "totalmobile_client_id",
+        "totalmobile_client_secret",
+        "",
+        "",
+        "",
+        "",
+        "rest_api_url",
+        "gusty",
+        "",
+    )
+
+    filtered_cases = [
+        {"qDataBag.FieldRegion": ""},
+        {"qDataBag.FieldRegion": "Region 1"},
+    ]
+
+    _mock_optimise_client.return_value = [
+        {
+            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "identity": {
+                "reference": "Region 1"
+            },
+            "type": "foo"
+        },
+    ]
+
+    # act
+    world_ids, new_filtered_cases = retrieve_world_ids(config, filtered_cases)
+
+    # assert
+    assert len(world_ids) == len(new_filtered_cases)
+    assert world_ids == ["3fa85f64-5717-4562-b3fc-2c963f66afa6"]
+    assert new_filtered_cases == [{"qDataBag.FieldRegion": "Region 1"}]
+    assert ('root', logging.WARNING, 'Case rejected. Missing Field Region') in caplog.record_tuples
