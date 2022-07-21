@@ -488,8 +488,4 @@ def test_retrieve_world_ids_logs_a_console_error_when_given_an_unknown_world(_mo
     ]
 
     # assert
-    with pytest.raises(Exception) as err:
-        retrieve_world_ids(config, filtered_cases)
-    assert (
-            str(err.value) == "Unsupported world: Risca"
-    )
+    assert retrieve_world_ids(config, filtered_cases).out == "Unsupported world: Risca"
