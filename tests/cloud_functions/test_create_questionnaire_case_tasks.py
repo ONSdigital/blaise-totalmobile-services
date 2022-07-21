@@ -4,6 +4,7 @@ from unittest import mock
 import blaise_restapi
 import flask
 import pytest
+import logging
 
 from appconfig import Config
 from client.optimise import OptimiseClient
@@ -304,7 +305,7 @@ def test_create_case_tasks_for_questionnaire(
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
     mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
-    mock_retrieve_world_ids.return_value = "1"
+    mock_retrieve_world_ids.return_value = "1", [{"qiD.Serial_Number": "10010"}]
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
 
     # act
@@ -449,15 +450,23 @@ def test_retrieve_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mo
         },
     ]
 
+    world_ids, new_filtered_cases = retrieve_world_ids(config, filtered_cases)
+
     # assert
-    assert retrieve_world_ids(config, filtered_cases) == [
+    assert world_ids == [
         "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "3fa85f64-5717-4562-b3fc-2c963f66afa7",
         "3fa85f64-5717-4562-b3fc-2c963f66afa9",
     ]
+    assert new_filtered_cases == [
+        {"qDataBag.FieldRegion": "Region 1"},
+        {"qDataBag.FieldRegion": "Region 2"},
+        {"qDataBag.FieldRegion": "Region 4"},
+    ]
+
 
 @mock.patch.object(OptimiseClient, "get_worlds")
-def test_retrieve_world_ids_logs_a_console_error_when_given_an_unknown_world(_mock_optimise_client):
+def test_retrieve_world_ids_logs_a_console_error_when_given_an_unknown_world(_mock_optimise_client, caplog):
     # arrange
     config = Config(
         "totalmobile_url",
@@ -487,5 +496,92 @@ def test_retrieve_world_ids_logs_a_console_error_when_given_an_unknown_world(_mo
         },
     ]
 
+    # act 
+    retrieve_world_ids(config, filtered_cases)
+
     # assert
-    assert retrieve_world_ids(config, filtered_cases).out == "Unsupported world: Risca"
+    assert ('root', logging.WARNING, 'Unsupported world: Risca') in caplog.record_tuples
+
+
+@mock.patch.object(OptimiseClient, "get_worlds")
+def test_retrieve_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world(
+        _mock_optimise_client, caplog):
+    # arrange
+    config = Config(
+        "totalmobile_url",
+        "totalmobile_instance",
+        "totalmobile_client_id",
+        "totalmobile_client_secret",
+        "",
+        "",
+        "",
+        "",
+        "rest_api_url",
+        "gusty",
+        "",
+    )
+
+    filtered_cases = [
+        {"qDataBag.FieldRegion": "Risca"},
+        {"qDataBag.FieldRegion": "Region 1"},
+    ]
+
+    _mock_optimise_client.return_value = [
+        {
+            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "identity": {
+                "reference": "Region 1"
+            },
+            "type": "foo"
+        },
+    ]
+
+    # act 
+    world_ids, new_filtered_cases = retrieve_world_ids(config, filtered_cases)
+
+    # assert
+    assert len(world_ids) == len(new_filtered_cases)
+    assert world_ids == ["3fa85f64-5717-4562-b3fc-2c963f66afa6"]
+    assert new_filtered_cases == [{"qDataBag.FieldRegion": "Region 1"}]
+    assert ('root', logging.WARNING, 'Unsupported world: Risca') in caplog.record_tuples
+
+# @mock.patch.object(OptimiseClient, "get_worlds")
+# def test_retrieve_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world(_mock_optimise_client, caplog):
+#     # arrange
+#     config = Config(
+#         "totalmobile_url",
+#         "totalmobile_instance",
+#         "totalmobile_client_id",
+#         "totalmobile_client_secret",
+#         "",
+#         "",
+#         "",
+#         "",
+#         "rest_api_url",
+#         "gusty",
+#         "",
+#     )
+# 
+#     filtered_cases = [
+#         {"qDataBag.FieldRegion": "Risca"},
+#         {"qDataBag.FieldRegion": "Region 1"},
+#     ]
+# 
+#     _mock_optimise_client.return_value = [
+#         {
+#             "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+#             "identity": {
+#                 "reference": "Region 1"
+#             },
+#             "type": "foo"
+#         },
+#     ]
+# 
+#     # act 
+#     world_ids, new_filtered_cases = retrieve_world_ids(config, filtered_cases)
+# 
+#     # assert
+#     assert len(world_ids) == len(new_filtered_cases)
+#     assert world_ids == ["3fa85f64-5717-4562-b3fc-2c963f66afa6"]
+#     assert new_filtered_cases == [{"qDataBag.FieldRegion": "Region 1"}]
+#     assert ('root', logging.WARNING, 'Unsupported world: Risca') in caplog.record_tuples
