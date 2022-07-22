@@ -153,6 +153,6 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     ]
 
     run_async_tasks(tasks=tasks, queue_id=config.totalmobile_jobs_queue_id, 
-    cloud_function_name=config.totalmobile_job_cloud_function)
+    cloud_function=config.totalmobile_job_cloud_function)
     logging.info("Finished creating questionnaire case tasks")
     return "Done"

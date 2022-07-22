@@ -317,7 +317,7 @@ def test_create_case_tasks_for_questionnaire(
     mock_filter_cases.assert_called_with([{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}])
     mock_run_async_tasks.assert_called_once()
     kwargs = mock_run_async_tasks.call_args.kwargs
-    assert kwargs['cloud_function_name'] == "cloud-function"
+    assert kwargs['cloud_function'] == "cloud-function"
     assert kwargs['queue_id'] == "queue-id"
     assert len(kwargs['tasks']) == 1
     task = kwargs['tasks'][0]
