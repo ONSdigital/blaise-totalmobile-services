@@ -52,6 +52,7 @@ def retrieve_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> 
             world_ids.append(world_map_with_world_ids[case['qDataBag.FieldRegion']])
     return world_ids, new_filtered_cases
 
+
 def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str]]:
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
 
