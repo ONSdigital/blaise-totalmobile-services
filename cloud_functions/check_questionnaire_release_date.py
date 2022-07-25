@@ -45,6 +45,9 @@ def check_questionnaire_release_date() -> str:
         return "There are no questionnaires for release today"
     logging.info(f"There are {len(todays_questionnaires_for_release)} questionnaires for release today")
 
+    for questionnaire in todays_questionnaires_for_release:
+        logging.info(f"Found a release date for questionnaire {questionnaire}")
+
     questionnaire_case_task_models = map_questionnaire_case_task_models(
         todays_questionnaires_for_release)
 

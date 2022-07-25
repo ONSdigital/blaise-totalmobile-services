@@ -35,10 +35,22 @@ def retrieve_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> 
         config.totalmobile_client_id,
         config.totalmobile_client_secret,
     )
+    logging.info("Looking up world ids")
     worlds = optimise_client.get_worlds()
 
     world_map_with_world_ids = {world["identity"]["reference"]: world["id"] for world in worlds}
-    return [world_map_with_world_ids[case["qDataBag.FieldRegion"]] for case in filtered_cases]
+    
+    cases_with_valid_world_ids = []
+    world_ids = []
+    for case in filtered_cases:
+        if case['qDataBag.FieldRegion'] == "":
+            logging.warning("Case rejected. Missing Field Region")
+        elif case['qDataBag.FieldRegion'] not in world_map_with_world_ids:
+            logging.warning(f"Unsupported world: {case['qDataBag.FieldRegion']}")
+        else:
+            cases_with_valid_world_ids.append(case)
+            world_ids.append(world_map_with_world_ids[case['qDataBag.FieldRegion']])
+    return world_ids, cases_with_valid_world_ids
 
 
 def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str]]:
@@ -57,7 +69,7 @@ def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str
             "qDataBag.PostCode",
             "qDataBag.TelNo",
             "qDataBag.TelNo2",
-            "TelNoAppt",
+            "telNoAppt",
             "hOut",
             "qiD.Serial_Number",
             "qDataBag.Wave",
@@ -72,9 +84,9 @@ def filter_cases(cases: List[Dict[str, str]]) -> List[Dict[str, str]]:
     return [
         case
         for case in cases
-        if (case["qDataBag.TelNo"] == "" and case["qDataBag.TelNo2"] == "" and case["TelNoAppt"] == ""
+        if (case["qDataBag.TelNo"] == "" and case["qDataBag.TelNo2"] == "" and case["telNoAppt"] == ""
             and case["qDataBag.Wave"] == "1" and case["qDataBag.Priority"] in ["1","2","3","4","5"] 
-            and case["hOut"] in [0, 310]) 
+            and case["hOut"] in ["", "0", "310"])
     ]
 
 
@@ -121,27 +133,29 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         logging.info("Invalid wave: currently only wave 1 supported")
         raise Exception("Invalid wave: currently only wave 1 supported")
 
-    logging.debug(f"Creating case tasks for questionnaire: {questionnaire_name}")
+    logging.info(f"Creating case tasks for questionnaire: {questionnaire_name}")
 
     cases = retrieve_case_data(questionnaire_name, config)
-    logging.debug(f"Retrieved {len(cases)} cases")
+    logging.info(f"Retrieved {len(cases)} cases")
 
     filtered_cases = filter_cases(cases)
-    logging.debug(f"Filtered {len(filtered_cases)} cases")
+    logging.info(f"Retained {len(filtered_cases)} cases after filtering")
 
-    world_ids = retrieve_world_ids(config, filtered_cases)
-    logging.debug(f"Retrieved world_ids: {world_ids}")
+    world_ids, cases_with_valid_world_ids = retrieve_world_ids(config, filtered_cases)
+    logging.info(f"Retrieved world ids")
 
     totalmobile_job_models = map_totalmobile_job_models(
-        filtered_cases, world_ids, questionnaire_name
+        cases_with_valid_world_ids, world_ids, questionnaire_name
     )
+    logging.info(f"Finished mapping Totalmobile jobs")
 
     tasks = [
         (create_task_name(job_model), job_model.json().encode())
         for job_model in totalmobile_job_models
     ]
+    logging.info(f"Created {len(tasks)} tasks")
 
     run_async_tasks(tasks=tasks, queue_id=config.totalmobile_jobs_queue_id, 
-    cloud_function_name=config.totalmobile_job_cloud_function)
+    cloud_function=config.totalmobile_job_cloud_function)
     logging.info("Finished creating questionnaire case tasks")
     return "Done"
