@@ -158,7 +158,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "1",
-            "hOut": 310
+            "hOut": "310"
         },
         {
             # should not return
@@ -167,7 +167,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "1",
-            "hOut": 310
+            "hOut": "310"
         },
         {
             # should not return
@@ -176,7 +176,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "1",
-            "hOut": 310
+            "hOut": "310"
         },
         {
             # should not return
@@ -185,7 +185,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             "telNoAppt": "12345",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "1",
-            "hOut": 310
+            "hOut": "310"
         },
         {
             # should not return
@@ -194,7 +194,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             "telNoAppt": "",
             "qDataBag.Wave": "2",
             "qDataBag.Priority": "1",
-            "hOut": 310
+            "hOut": "310"
         },
         {
             # should not return
@@ -203,7 +203,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "6",
-            "hOut": 310
+            "hOut": "310"
         },
         {
             # should not return
@@ -212,7 +212,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "1",
-            "hOut": 410
+            "hOut": "410"
         },
         {
             # should return
@@ -221,7 +221,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "1",
-            "hOut": 0
+            "hOut": "0"
         },
         {
             # should return
@@ -230,7 +230,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "2",
-            "hOut": 0
+            "hOut": "0"
         },
         {
             # should return
@@ -239,7 +239,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "3",
-            "hOut": 0
+            "hOut": "0"
         },
         {
             # should return
@@ -248,7 +248,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "4",
-            "hOut": 0
+            "hOut": "0"
         },
         {
             # should return
@@ -257,7 +257,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "5",
-            "hOut": 0
+            "hOut": "0"
         },
     ]
 
@@ -266,17 +266,17 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
 
     # assert
     assert result == [{"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-                       "qDataBag.Priority": "1", "hOut": 310},
+                       "qDataBag.Priority": "1", "hOut": "310"},
                       {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-                       "qDataBag.Priority": "1", "hOut": 0},
+                       "qDataBag.Priority": "1", "hOut": "0"},
                       {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-                       "qDataBag.Priority": "2", "hOut": 0},
+                       "qDataBag.Priority": "2", "hOut": "0"},
                       {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-                       "qDataBag.Priority": "3", "hOut": 0},
+                       "qDataBag.Priority": "3", "hOut": "0"},
                       {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-                       "qDataBag.Priority": "4", "hOut": 0},
+                       "qDataBag.Priority": "4", "hOut": "0"},
                       {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-                       "qDataBag.Priority": "5", "hOut": 0}]
+                       "qDataBag.Priority": "5", "hOut": "0"}]
 
 
 def test_validate_request(mock_create_job_task):

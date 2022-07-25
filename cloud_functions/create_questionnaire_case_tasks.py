@@ -85,7 +85,7 @@ def filter_cases(cases: List[Dict[str, str]]) -> List[Dict[str, str]]:
         for case in cases
         if (case["qDataBag.TelNo"] == "" and case["qDataBag.TelNo2"] == "" and case["telNoAppt"] == ""
             and case["qDataBag.Wave"] == "1" and case["qDataBag.Priority"] in ["1","2","3","4","5"] 
-            and case["hOut"] in [0, 310]) 
+            and case["hOut"] in ["0", "310"])
     ]
 
 
@@ -136,7 +136,6 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
 
     cases = retrieve_case_data(questionnaire_name, config)
     logging.info(f"Retrieved {len(cases)} cases")
-
 
     filtered_cases = filter_cases(cases)
     logging.info(f"Filtered {len(filtered_cases)} cases. {len(cases)-len(filtered_cases)} will be passed to Totalmobile.")
