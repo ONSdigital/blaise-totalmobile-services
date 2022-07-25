@@ -138,7 +138,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     logging.info(f"Retrieved {len(cases)} cases")
 
     filtered_cases = filter_cases(cases)
-    logging.info(f"Filtered {len(filtered_cases)} cases. {len(cases)-len(filtered_cases)} will be passed to Totalmobile.")
+    logging.info(f"Filtered cases. {len(cases)} will be passed to Totalmobile.")
 
     world_ids, new_filtered_cases = retrieve_world_ids(config, filtered_cases)
     logging.info(f"Retrieved world_ids: {world_ids}")
