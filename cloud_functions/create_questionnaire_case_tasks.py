@@ -40,7 +40,7 @@ def retrieve_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> 
 
     world_map_with_world_ids = {world["identity"]["reference"]: world["id"] for world in worlds}
     
-    new_filtered_cases = []
+    cases_with_valid_world_ids = []
     world_ids = []
     for case in filtered_cases:
         if case['qDataBag.FieldRegion'] == "":
@@ -48,9 +48,9 @@ def retrieve_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> 
         elif case['qDataBag.FieldRegion'] not in world_map_with_world_ids:
             logging.warning(f"Unsupported world: {case['qDataBag.FieldRegion']}")
         else:
-            new_filtered_cases.append(case)
+            cases_with_valid_world_ids.append(case)
             world_ids.append(world_map_with_world_ids[case['qDataBag.FieldRegion']])
-    return world_ids, new_filtered_cases
+    return world_ids, cases_with_valid_world_ids
 
 
 def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str]]:
