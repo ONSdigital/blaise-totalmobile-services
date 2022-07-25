@@ -71,7 +71,7 @@ def test_retrieve_case_data_calls_the_rest_api_client_with_the_correct_parameter
         "qDataBag.PostCode",
         "qDataBag.TelNo",
         "qDataBag.TelNo2",
-        "TelNoAppt",
+        "telNoAppt",
         "hOut",
         "qiD.Serial_Number",
         "qDataBag.Wave",
@@ -155,7 +155,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             # should return
             "qDataBag.TelNo": "",
             "qDataBag.TelNo2": "",
-            "TelNoAppt": "",
+            "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "1",
             "hOut": 310
@@ -164,7 +164,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             # should not return
             "qDataBag.TelNo": "123435",
             "qDataBag.TelNo2": "",
-            "TelNoAppt": "",
+            "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "1",
             "hOut": 310
@@ -173,7 +173,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             # should not return
             "qDataBag.TelNo": "",
             "qDataBag.TelNo2": "12345",
-            "TelNoAppt": "",
+            "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "1",
             "hOut": 310
@@ -182,7 +182,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             # should not return
             "qDataBag.TelNo": "",
             "qDataBag.TelNo2": "",
-            "TelNoAppt": "12345",
+            "telNoAppt": "12345",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "1",
             "hOut": 310
@@ -191,7 +191,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             # should not return
             "qDataBag.TelNo": "",
             "qDataBag.TelNo2": "",
-            "TelNoAppt": "",
+            "telNoAppt": "",
             "qDataBag.Wave": "2",
             "qDataBag.Priority": "1",
             "hOut": 310
@@ -200,7 +200,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             # should not return
             "qDataBag.TelNo": "",
             "qDataBag.TelNo2": "",
-            "TelNoAppt": "",
+            "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "6",
             "hOut": 310
@@ -209,7 +209,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             # should not return
             "qDataBag.TelNo": "",
             "qDataBag.TelNo2": "",
-            "TelNoAppt": "",
+            "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "1",
             "hOut": 410
@@ -218,7 +218,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             # should return
             "qDataBag.TelNo": "",
             "qDataBag.TelNo2": "",
-            "TelNoAppt": "",
+            "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "1",
             "hOut": 0
@@ -227,7 +227,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             # should return
             "qDataBag.TelNo": "",
             "qDataBag.TelNo2": "",
-            "TelNoAppt": "",
+            "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "2",
             "hOut": 0
@@ -236,7 +236,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             # should return
             "qDataBag.TelNo": "",
             "qDataBag.TelNo2": "",
-            "TelNoAppt": "",
+            "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "3",
             "hOut": 0
@@ -245,7 +245,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             # should return
             "qDataBag.TelNo": "",
             "qDataBag.TelNo2": "",
-            "TelNoAppt": "",
+            "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "4",
             "hOut": 0
@@ -254,7 +254,7 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             # should return
             "qDataBag.TelNo": "",
             "qDataBag.TelNo2": "",
-            "TelNoAppt": "",
+            "telNoAppt": "",
             "qDataBag.Wave": "1",
             "qDataBag.Priority": "5",
             "hOut": 0
@@ -265,17 +265,17 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
     result = filter_cases(cases)
 
     # assert
-    assert result == [{"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "TelNoAppt": "", "qDataBag.Wave": "1",
+    assert result == [{"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
                        "qDataBag.Priority": "1", "hOut": 310},
-                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "TelNoAppt": "", "qDataBag.Wave": "1",
+                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
                        "qDataBag.Priority": "1", "hOut": 0},
-                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "TelNoAppt": "", "qDataBag.Wave": "1",
+                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
                        "qDataBag.Priority": "2", "hOut": 0},
-                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "TelNoAppt": "", "qDataBag.Wave": "1",
+                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
                        "qDataBag.Priority": "3", "hOut": 0},
-                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "TelNoAppt": "", "qDataBag.Wave": "1",
+                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
                        "qDataBag.Priority": "4", "hOut": 0},
-                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "TelNoAppt": "", "qDataBag.Wave": "1",
+                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
                        "qDataBag.Priority": "5", "hOut": 0}]
 
 
