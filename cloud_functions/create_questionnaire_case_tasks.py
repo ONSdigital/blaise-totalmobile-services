@@ -35,6 +35,7 @@ def retrieve_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> 
         config.totalmobile_client_id,
         config.totalmobile_client_secret,
     )
+    logging.info("Looking up world ids")
     worlds = optimise_client.get_worlds()
 
     world_map_with_world_ids = {world["identity"]["reference"]: world["id"] for world in worlds}
@@ -85,7 +86,7 @@ def filter_cases(cases: List[Dict[str, str]]) -> List[Dict[str, str]]:
         for case in cases
         if (case["qDataBag.TelNo"] == "" and case["qDataBag.TelNo2"] == "" and case["telNoAppt"] == ""
             and case["qDataBag.Wave"] == "1" and case["qDataBag.Priority"] in ["1","2","3","4","5"] 
-            and case["hOut"] in ["0", "310"])
+            and case["hOut"] in ["", "0", "310"])
     ]
 
 
@@ -138,14 +139,15 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     logging.info(f"Retrieved {len(cases)} cases")
 
     filtered_cases = filter_cases(cases)
-    logging.info(f"Filtered cases. {len(cases)} cases will be passed to Totalmobile.")
+    logging.info(f"Retained {len(filtered_cases)} cases after filtering")
 
-    world_ids, new_filtered_cases = retrieve_world_ids(config, filtered_cases)
-    logging.info(f"Retrieved world_ids: {world_ids}")
+    world_ids, cases_with_valid_world_ids = retrieve_world_ids(config, filtered_cases)
+    logging.info(f"Retrieved world ids")
 
     totalmobile_job_models = map_totalmobile_job_models(
-        new_filtered_cases, world_ids, questionnaire_name
+        cases_with_valid_world_ids, world_ids, questionnaire_name
     )
+    logging.info(f"Finished mapping Totalmobile jobs")
 
     tasks = [
         (create_task_name(job_model), job_model.json().encode())
