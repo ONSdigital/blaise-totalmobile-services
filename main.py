@@ -1,5 +1,5 @@
 import os
-from app.config import Config
+from appconfig import Config
 import flask
 
 from dotenv import load_dotenv
