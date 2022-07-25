@@ -37,8 +37,7 @@ def retrieve_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> 
     )
     worlds = optimise_client.get_worlds()
 
-    world_map_with_world_ids = {world["identity"]["reference"]: world["id"] for world in worlds}    
-    # return [world_map_with_world_ids[case["qDataBag.FieldRegion"]] for case in filtered_cases]
+    world_map_with_world_ids = {world["identity"]["reference"]: world["id"] for world in worlds}
     
     new_filtered_cases = []
     world_ids = []
@@ -138,6 +137,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     cases = retrieve_case_data(questionnaire_name, config)
     logging.debug(f"Retrieved {len(cases)} cases")
 
+
     filtered_cases = filter_cases(cases)
     logging.debug(f"Filtered {len(filtered_cases)} cases")
 
@@ -152,6 +152,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         (create_task_name(job_model), job_model.json().encode())
         for job_model in totalmobile_job_models
     ]
+    logging.info(f"Created {len(tasks)} tasks")
 
     run_async_tasks(tasks=tasks, queue_id=config.totalmobile_jobs_queue_id, 
     cloud_function=config.totalmobile_job_cloud_function)
