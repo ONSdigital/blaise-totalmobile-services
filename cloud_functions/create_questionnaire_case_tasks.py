@@ -132,17 +132,17 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         logging.info("Invalid wave: currently only wave 1 supported")
         raise Exception("Invalid wave: currently only wave 1 supported")
 
-    logging.debug(f"Creating case tasks for questionnaire: {questionnaire_name}")
+    logging.info(f"Creating case tasks for questionnaire: {questionnaire_name}")
 
     cases = retrieve_case_data(questionnaire_name, config)
-    logging.debug(f"Retrieved {len(cases)} cases")
+    logging.info(f"Retrieved {len(cases)} cases")
 
 
     filtered_cases = filter_cases(cases)
-    logging.debug(f"Filtered {len(filtered_cases)} cases")
+    logging.info(f"Filtered {len(filtered_cases)} cases")
 
     world_ids, new_filtered_cases = retrieve_world_ids(config, filtered_cases)
-    logging.debug(f"Retrieved world_ids: {world_ids}")
+    logging.info(f"Retrieved world_ids: {world_ids}")
 
     totalmobile_job_models = map_totalmobile_job_models(
         new_filtered_cases, world_ids, questionnaire_name
