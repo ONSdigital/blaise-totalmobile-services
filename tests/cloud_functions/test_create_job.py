@@ -82,7 +82,7 @@ def test_create_job_payload(mock_create_job_task):
         },
         "description": "Study: DST2101A\nCase ID: 100100\n\nIf you need to provide a UAC please contact SEL",
         "dueDate": {"end": "", "start": ""},
-        "duration": 30,
+        "duration": 15,
         "identity": {"reference": "DST2101A.100100"},
         "location": {
             "address": "prem1, prem2, PostTown",
