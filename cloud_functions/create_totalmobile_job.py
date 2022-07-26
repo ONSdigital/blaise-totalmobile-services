@@ -50,7 +50,7 @@ def create_job_payload(request_json: Dict) -> Dict:
     questionnaire = request_json["questionnaire"]
     case = request_json["case"]
 
-    return {
+    totalmobile_payload = {
         "identity": {"reference": job_reference(questionnaire, case["qiD.Serial_Number"])},  # we must control this so we can link it back to blaise
         "origin": "ONS",
         "clientReference": "2",  # num of non contacts allowed, misused field? appears at top of the app
@@ -92,7 +92,14 @@ def create_job_payload(request_json: Dict) -> Dict:
             {"name": "case_id", "value": case["qiD.Serial_Number"]},
         ],
     }
+    validate_totalmobile_payload(totalmobile_payload)
+    return totalmobile_payload
 
+def validate_totalmobile_payload(totalmobile_payload):
+    if "duration" not in totalmobile_payload:
+        logging.warning("Totalmobile payload was sent without the 'duration' field")
+    if "origin" not in totalmobile_payload:
+        logging.warning("Totalmobile payload was sent without the 'origin' field")
 
 def create_totalmobile_job(request: flask.Request) -> str:
     config = Config.from_env()
