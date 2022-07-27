@@ -52,7 +52,7 @@ def test_retrieve_case_data_calls_the_rest_api_client_with_the_correct_parameter
         _mock_rest_api_client,
 ):
     # arrange
-    config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "")
+    config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "", "", "")
     _mock_rest_api_client.return_value = {
         "questionnaireName": "DST2106Z",
         "questionnaireId": "12345-12345-12345-12345-12345",
@@ -94,7 +94,7 @@ def test_retrieve_case_data_returns_the_case_data_supplied_by_the_rest_api_clien
         _mock_rest_api_client,
 ):
     # arrange
-    config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "")
+    config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "", "", "")
     _mock_rest_api_client.return_value = {
         "questionnaireName": "DST2106Z",
         "questionnaireId": "12345-12345-12345-12345-12345",
@@ -311,7 +311,7 @@ def test_create_case_tasks_for_questionnaire(
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",  "", "")
     mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
     mock_retrieve_case_uac_data.return_value = {
@@ -363,7 +363,7 @@ def test_create_case_tasks_for_questionnaire(
 def test_create_questionnaire_case_tasks_error():
     # arrange
     mock_request = flask.Request.from_values(json={"instrument": ""})
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",  "", "")
     # assert
     with pytest.raises(Exception) as err:
         create_questionnaire_case_tasks(mock_request, config)
@@ -381,7 +381,7 @@ def test_get_wave_from_questionnaire_name_none_LMS_error(
         mock_retrieve_world_ids,
 ):
     # arrange
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",  "", "")
     mock_request = flask.Request.from_values(json={"questionnaire": "OPN2101A"})
     mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
     mock_retrieve_world_ids.return_value = "1"
@@ -404,7 +404,7 @@ def test_get_wave_from_questionnaire_name_unsupported_wave_error(
         mock_retrieve_world_ids,
 ):
     # arrange
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",  "", "")
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA2"})
     mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
     mock_retrieve_world_ids.return_value = "1"
@@ -444,6 +444,8 @@ def test_retrieve_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mo
         "rest_api_url",
         "gusty",
         "",
+        "",
+        ""
     )
 
     filtered_cases = [
@@ -513,6 +515,8 @@ def test_retrieve_world_ids_logs_a_console_error_when_given_an_unknown_world(_mo
         "rest_api_url",
         "gusty",
         "",
+        "",
+        ""
     )
 
     filtered_cases = [
@@ -552,6 +556,8 @@ def test_retrieve_world_ids_logs_a_console_error_and_returns_data_when_given_an_
         "rest_api_url",
         "gusty",
         "",
+        "",
+        ""
     )
 
     filtered_cases = [
@@ -594,6 +600,8 @@ def test_retrieve_world_ids_logs_a_console_error_when_field_region_is_missing(_m
         "rest_api_url",
         "gusty",
         "",
+        "",
+        ""
     )
 
     filtered_cases = [
@@ -633,6 +641,8 @@ def test_retrieve_world_ids_logs_a_console_error_and_returns_data_when_given_an_
         "rest_api_url",
         "gusty",
         "",
+        "",
+        ""
     )
 
     filtered_cases = [

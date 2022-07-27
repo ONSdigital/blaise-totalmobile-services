@@ -16,6 +16,8 @@ def test_config_validate():
         "rest_api_url",
         "gusty",
         "cloud_function_sa",
+        "bus_url",
+        "bus_client_id"
     )
     config.validate()
 
@@ -33,6 +35,8 @@ def test_config_validate_err():
         "rest_api_url",
         "gusty",
         "cloud_function_sa",
+        "bus_url",
+        "bus_client_id"
     )
     with pytest.raises(ConfigError) as err:
         config.validate()
@@ -56,4 +60,6 @@ def test_config_from_env():
         blaise_api_url="",
         blaise_server_park="",
         cloud_function_sa="",
+        bus_url="",
+        bus_client_id=""
     )
