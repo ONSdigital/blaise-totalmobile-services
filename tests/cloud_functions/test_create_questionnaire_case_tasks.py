@@ -749,19 +749,17 @@ def test_uacs_are_correctly_appended_to_case_data():
                       ]
 
     result = append_uacs_to_case_data(filtered_cases, case_uacs)
-    assert result == [
-        {
-            "qiD.Serial_Number": "10030",
-            "qDataBag.TelNo": "",
-            "qDataBag.TelNo2": "",
-            "telNoAppt": "",
-            "qDataBag.Wave": "1",
-            "qDataBag.Priority": "1",
-            "hOut": "310",
-            "uac_chunks": {
-                "uac1": "8176",
-                "uac2": "4726",
-                "uac3": "3993"
-            },
+    assert result == [{
+        "hOut": "310",
+        "qDataBag.Priority": "1",
+        "qDataBag.TelNo": "",
+        "qDataBag.TelNo2": "",
+        "qDataBag.Wave": "1",
+        "qiD.Serial_Number": "10030",
+        "telNoAppt": "",
+        "uac_chunks": {
+            "uac1": "8176",
+            "uac2": "4726",
+            "uac3": "3993"
         },
-    ]
+    }]
