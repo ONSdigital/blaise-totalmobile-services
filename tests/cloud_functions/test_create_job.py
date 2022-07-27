@@ -70,9 +70,9 @@ def test_create_job_payload(mock_create_job_task):
         "additionalProperties": [
             {"name": "study", "value": "DST2101A"},
             {"name": "case_id", "value": "100100"},
-            {"name": "UAC1", "value": "8176"},
-            {"name": "UAC2", "value": "4726"},
-            {"name": "UAC3", "value": "3993"},
+            {"name": "uac1", "value": "8176"},
+            {"name": "uac2", "value": "4726"},
+            {"name": "uac3", "value": "3993"},
         ],
         "clientReference": "2",
         "contact": {
