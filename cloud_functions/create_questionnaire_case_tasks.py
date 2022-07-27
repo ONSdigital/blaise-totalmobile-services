@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 from uuid import uuid4
 
 import blaise_restapi
@@ -123,6 +123,16 @@ def run_async_tasks(tasks: List[Tuple[str,str]], queue_id: str, cloud_function: 
     asyncio.run(run(task_requests))
 
 
+def append_uacs_to_case_data(filtered_cases, case_uac_data):
+    cases_with_uacs_appended = []
+    for filtered_case in filtered_cases:
+        filtered_case["uac_chunks"] = case_uac_data[filtered_case["qiD.Serial_Number"]]["uac_chunks"]
+        cases_with_uacs_appended
+    return cases_with_uacs_appended
+
+def retrieve_case_uac_data():
+    return None
+
 def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> str:
     logging.info("Started creating questionnaire case tasks")
 
@@ -154,8 +164,11 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         logging.info(f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
         return (f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
 
-    world_ids, cases_with_valid_world_ids = get_world_ids(config, filtered_cases)
-    logging.info(f"Retrieved world IDs")
+    case_uac_data = retrieve_case_uac_data()
+    cases_with_uacs_appended = append_uacs_to_case_data(filtered_cases, case_uac_data)
+
+    world_ids, cases_with_valid_world_ids = retrieve_world_ids(config, cases_with_uacs_appended)
+    logging.info(f"Retrieved world ids")
 
     totalmobile_job_models = map_totalmobile_job_models(
         cases_with_valid_world_ids, world_ids, questionnaire_name
