@@ -50,6 +50,11 @@ def mock_create_job_task() -> Dict:
             "qDataBag.UPRN_Longitude": "UPRN_Longitude",
             "qDataBag.TelNo": "TelNo",
             "qDataBag.TelNo2": "TelNo2",
+            "uac_chunks": {
+                "uac1": "8176",
+                "uac2": "4726",
+                "uac3": "3993"
+            },
         },
     }
 

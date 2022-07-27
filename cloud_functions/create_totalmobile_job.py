@@ -90,6 +90,9 @@ def create_job_payload(request_json: Dict) -> Dict:
         "additionalProperties": [
             {"name": "study", "value": questionnaire},
             {"name": "case_id", "value": case["qiD.Serial_Number"]},
+            {"name": "UAC1", "value": case["uac_chunks"]["uac1"]},
+            {"name": "UAC2", "value": case["uac_chunks"]["uac2"]},
+            {"name": "UAC3", "value": case["uac_chunks"]["uac3"]},
         ],
     }
     validate_totalmobile_payload(totalmobile_payload)

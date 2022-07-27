@@ -70,6 +70,9 @@ def test_create_job_payload(mock_create_job_task):
         "additionalProperties": [
             {"name": "study", "value": "DST2101A"},
             {"name": "case_id", "value": "100100"},
+            {"name": "UAC1", "value": "8176"},
+            {"name": "UAC2", "value": "4726"},
+            {"name": "UAC3", "value": "3993"},
         ],
         "clientReference": "2",
         "contact": {
@@ -112,6 +115,9 @@ def test_an_error_is_logged_when_the_duration_field_is_missing_from_the_totalmob
         "additionalProperties": [
             {"name": "study", "value": "DST2101A"},
             {"name": "case_id", "value": "100100"},
+            {"name": "UAC1", "value": "8176"},
+            {"name": "UAC2", "value": "4726"},
+            {"name": "UAC3", "value": "3993"},
         ],
         "clientReference": "2",
         "contact": {
@@ -157,6 +163,9 @@ def test_an_error_is_logged_when_the_origin_field_is_missing_from_the_totalmobil
         "additionalProperties": [
             {"name": "study", "value": "DST2101A"},
             {"name": "case_id", "value": "100100"},
+            {"name": "UAC1", "value": "8176"},
+            {"name": "UAC2", "value": "4726"},
+            {"name": "UAC3", "value": "3993"},
         ],
         "clientReference": "2",
         "contact": {
