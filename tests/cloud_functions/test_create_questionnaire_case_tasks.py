@@ -17,7 +17,7 @@ from cloud_functions.create_questionnaire_case_tasks import (
     get_case_data,
     get_world_ids,
     validate_request,
-    append_uacs_to_case_data
+    append_uacs_to_retained_case
 )
 from models.totalmobile_job_model import TotalmobileJobModel
 
@@ -321,26 +321,26 @@ def test_validate_request_when_missing_fields():
     )
 
 
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.append_uacs_to_case_data")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.append_uacs_to_retained_case")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_ids")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_uac_data")
+@mock.patch("client.bus.BusClient.get_uacs_by_case_id")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 def test_create_case_tasks_for_questionnaire(
         mock_run_async_tasks,
         mock_filter_cases,
-        mock_retrieve_case_uac_data,
+        mock_get_uacs_by_case_id,
         mock_retrieve_case_data,
         mock_retrieve_world_ids,
-        mock_append_uacs_to_case_data
+        mock_append_uacs_to_retained_case
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",  "", "")
     mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
-    mock_retrieve_case_uac_data.return_value = {
+    mock_get_uacs_by_case_id.return_value = {
         "10010": {
             "instrument_name": "LMS2101_AA1",
             "case_id": "10010",
@@ -352,7 +352,7 @@ def test_create_case_tasks_for_questionnaire(
             "full_uac": "817647263991"
         }
     }
-    mock_append_uacs_to_case_data.return_value = [
+    mock_append_uacs_to_retained_case.return_value = [
         {
             "qiD.Serial_Number": "10010",
             "uac_chunks": {
@@ -415,18 +415,10 @@ def test_create_questionnaire_case_tasks_when_no_cases_after_filtering(
         mock_get_case_data,
 ):
     # arrange
-<<<<<<< HEAD
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = Config("", "", "", "", "", "", "", "", "", "", "", )
     mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}]
     mock_filter_cases.return_value = []
-=======
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",  "", "")
-    mock_request = flask.Request.from_values(json={"questionnaire": "OPN2101A"})
-    mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
-    mock_retrieve_world_ids.return_value = "1"
-    mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
->>>>>>> 212537f (refactor: add bus url and client id to config)
 
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
@@ -457,17 +449,10 @@ def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire(
         mock_get_world_ids,
 ):
     # arrange
-<<<<<<< HEAD
     config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
     mock_request = flask.Request.from_values(json={"questionnaire": "OPN2101A"})
     mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
     mock_get_world_ids.return_value = "1"
-=======
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",  "", "")
-    mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA2"})
-    mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
-    mock_retrieve_world_ids.return_value = "1"
->>>>>>> 212537f (refactor: add bus url and client id to config)
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
 
     # act
@@ -769,7 +754,7 @@ def test_uacs_are_correctly_appended_to_case_data():
                        "qDataBag.Priority": "1", "hOut": "310"},
                       ]
 
-    result = append_uacs_to_case_data(filtered_cases, case_uacs)
+    result = append_uacs_to_retained_case(filtered_cases, case_uacs)
     assert result == [{
         "hOut": "310",
         "qDataBag.Priority": "1",
@@ -784,3 +769,4 @@ def test_uacs_are_correctly_appended_to_case_data():
             "uac3": "3993"
         },
     }]
+
