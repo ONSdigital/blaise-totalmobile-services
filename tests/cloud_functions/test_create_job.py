@@ -57,139 +57,215 @@ def test_validate_case_data(mock_create_job_task):
 def test_validate_case_data_missing_fields():
     with pytest.raises(Exception) as err:
         validate_case_data(
-            {"qDataBag.UPRN_Latitude": "", "qDataBag.UPRN_Longitude": ""}
+            {
+                "qiD.Serial_Number": "100100",
+                "dataModelName": "DST2101_AA1",
+                "qDataBag.TLA": "DST",
+                "qDataBag.Wave": "1",
+                "qDataBag.Prem1": "Ye Olde Fighting Cocks",
+                "qDataBag.Prem2": "16 Abbey Mill Lane",
+                "qDataBag.Prem3": "",
+                "qDataBag.District": "",
+                "qDataBag.PostTown": "St Albans",
+                "qDataBag.PostCode": "AL3 4HE",
+                "qDataBag.TelNo": "",
+                "qDataBag.TelNo2": "",
+                "telNoAppt": "",
+                "hOut": "",
+                "qDataBag.Priority": "1",
+                "qDataBag.FieldRegion": "",
+                "qDataBag.FieldTeam": "The A Team",
+                "qDataBag.WaveComDTE": "2020-11-17",
+            }
         )
     assert (
             str(err.value)
-            == "Required fields missing from case data: ['qiD.Serial_Number', 'qDataBag.Prem1', 'qDataBag.Prem2', 'qDataBag.Prem3', 'qDataBag.PostTown', 'qDataBag.PostCode', 'qDataBag.TelNo', 'qDataBag.TelNo2']"
+            == "Required fields missing from case data: ['qDataBag.UPRN_Latitude', 'qDataBag.UPRN_Longitude']"
     )
 
 
 def test_create_job_payload(mock_create_job_task):
     assert create_job_payload(mock_create_job_task) == {
-        "additionalProperties": [
-            {"name": "study", "value": "DST2101A"},
-            {"name": "case_id", "value": "100100"},
-        ],
-        "clientReference": "2",
-        "contact": {
-            "contactDetail": {
-                "contactId": "DST",
-                "contactIdLabel": "A",
-                "preferredName": "101",
+        "identity": {
+            "reference": "DST2101-AA1.100100"
             },
-            "homePhone": "TelNo",
-            "mobilePhone": "TelNo2",
-            "name": "PostCode",
-        },
-        "description": "Study: DST2101A\nCase ID: 100100\n\nIf you need to provide a UAC please contact SEL",
-        "dueDate": {"end": "", "start": ""},
-        "duration": 15,
-        "identity": {"reference": "DST2101A.100100"},
-        "location": {
-            "address": "prem1, prem2, PostTown",
-            "addressDetail": {
-                "addressLine2": "prem1",
-                "addressLine3": "prem2",
-                "addressLine4": "PostTown",
-                "coordinates": {
-                    "latitude": "UPRN_Latitude",
-                    "longitude": "UPRN_Longitude",
-                },
-                "name": "prem1, prem2, PostTown",
-                "postCode": "PostCode",
-            },
-            "reference": "100100",
-        },
+        "description": "Study: DST2101_AA1\nCase ID: 100100",
         "origin": "ONS",
-        "skills": [{"identity": {"reference": "KTN"}}],
-        "workType": "KTN",
+        "duration": 15,
+        "workType": "DST",
+        "skills": [
+            {
+                "identity": {
+                    "reference": "DST"
+                    }
+            }
+        ],
+        "dueDate": {
+            "end": "2020-11-17",
+        },
+        "location": {
+            "addressDetail": {
+                "addressLine1": "Ye Olde Fighting Cocks",
+                "addressLine2": "16 Abbey Mill Lane",
+                "addressLine3": "",
+                "addressLine4": "",
+                "addressLine5": "St Albans",
+                "postCode": "AL3 4HE",
+                "coordinates": {
+                    "latitude": "51.748930",
+                    "longitude": "-0.346820",
+                },
+            },
+        },
+        "contact": {
+            "name": "AL3 4HE",
+        },
+        "additionalProperties": [
+            {
+                "name": "surveyName"
+                , "value": "DST2101_AA1"
+            },
+            {
+                "name": "tla",
+                "value": "DST"
+            },
+            {
+                "name": "wave",
+                "value": "1"
+            },
+            {
+                "name": "priority",
+                "value": "1"
+            },
+            {
+                "name": "fieldTeam",
+                "value": "The A Team"
+            },
+        ],
     }
 
 
 def test_an_error_is_logged_when_the_duration_field_is_missing_from_the_totalmobile_payload(caplog):
     totalmobile_payload = {
-        "additionalProperties": [
-            {"name": "study", "value": "DST2101A"},
-            {"name": "case_id", "value": "100100"},
-        ],
-        "clientReference": "2",
-        "contact": {
-            "contactDetail": {
-                "contactId": "DST",
-                "contactIdLabel": "A",
-                "preferredName": "101",
+        "identity": {
+            "reference": "DST2101-AA1.100100"
             },
-            "homePhone": "TelNo",
-            "mobilePhone": "TelNo2",
-            "name": "PostCode",
-        },
-        "description": "Study: DST2101A\nCase ID: 100100\n\nIf you need to provide a UAC please contact SEL",
-        "dueDate": {"end": "", "start": ""},
-        "identity": {"reference": "DST2101A.100100"},
-        "location": {
-            "address": "prem1, prem2, PostTown",
-            "addressDetail": {
-                "addressLine2": "prem1",
-                "addressLine3": "prem2",
-                "addressLine4": "PostTown",
-                "coordinates": {
-                    "latitude": "UPRN_Latitude",
-                    "longitude": "UPRN_Longitude",
-                },
-                "name": "prem1, prem2, PostTown",
-                "postCode": "PostCode",
-            },
-            "reference": "100100",
-        },
+        "description": "Study: DST2101_AA1\nCase ID: 100100",
         "origin": "ONS",
-        "skills": [{"identity": {"reference": "KTN"}}],
-        "workType": "KTN",
+        "workType": "DST",
+        "skills": [
+            {
+                "identity": {
+                    "reference": "DST"
+                    }
+            }
+        ],
+        "dueDate": {
+            "end": "2020-11-17",
+        },
+        "location": {
+            "addressDetail": {
+                "addressLine1": "Ye Olde Fighting Cocks",
+                "addressLine2": "16 Abbey Mill Lane",
+                "addressLine3": "",
+                "addressLine4": "",
+                "addressLine5": "St Albans",
+                "postCode": "AL3 4HE",
+                "coordinates": {
+                    "latitude": "51.748930",
+                    "longitude": "-0.346820",
+                },
+            },
+        },
+        "contact": {
+            "name": "AL3 4HE",
+        },
+        "additionalProperties": [
+            {
+                "name": "surveyName"
+                , "value": "DST2101_AA1"
+            },
+            {
+                "name": "tla",
+                "value": "DST"
+            },
+            {
+                "name": "wave",
+                "value": "1"
+            },
+            {
+                "name": "priority",
+                "value": "1"
+            },
+            {
+                "name": "fieldTeam",
+                "value": "The A Team"
+            },
+        ],
     }
 
     validate_totalmobile_payload(totalmobile_payload)
     assert (
-           'root', logging.WARNING, "Totalmobile payload was sent without the 'duration' field") in caplog.record_tuples
+        'root', logging.WARNING, "Totalmobile payload was sent without the 'duration' field") in caplog.record_tuples
 
 
 def test_an_error_is_logged_when_the_origin_field_is_missing_from_the_totalmobile_payload(caplog):
     totalmobile_payload = {
-        "additionalProperties": [
-            {"name": "study", "value": "DST2101A"},
-            {"name": "case_id", "value": "100100"},
-        ],
-        "clientReference": "2",
-        "contact": {
-            "contactDetail": {
-                "contactId": "DST",
-                "contactIdLabel": "A",
-                "preferredName": "101",
+        "identity": {
+            "reference": "DST2101-AA1.100100"
             },
-            "homePhone": "TelNo",
-            "mobilePhone": "TelNo2",
-            "name": "PostCode",
-        },
-        "description": "Study: DST2101A\nCase ID: 100100\n\nIf you need to provide a UAC please contact SEL",
-        "dueDate": {"end": "", "start": ""},
+        "description": "Study: DST2101_AA1\nCase ID: 100100",
         "duration": 15,
-        "identity": {"reference": "DST2101A.100100"},
-        "location": {
-            "address": "prem1, prem2, PostTown",
-            "addressDetail": {
-                "addressLine2": "prem1",
-                "addressLine3": "prem2",
-                "addressLine4": "PostTown",
-                "coordinates": {
-                    "latitude": "UPRN_Latitude",
-                    "longitude": "UPRN_Longitude",
-                },
-                "name": "prem1, prem2, PostTown",
-                "postCode": "PostCode",
-            },
-            "reference": "100100",
+        "workType": "DST",
+        "skills": [
+            {
+                "identity": {
+                    "reference": "DST"
+                    }
+            }
+        ],
+        "dueDate": {
+            "end": "2020-11-17",
         },
-        "skills": [{"identity": {"reference": "KTN"}}],
-        "workType": "KTN",
+        "location": {
+            "addressDetail": {
+                "addressLine1": "Ye Olde Fighting Cocks",
+                "addressLine2": "16 Abbey Mill Lane",
+                "addressLine3": "",
+                "addressLine4": "",
+                "addressLine5": "St Albans",
+                "postCode": "AL3 4HE",
+                "coordinates": {
+                    "latitude": "51.748930",
+                    "longitude": "-0.346820",
+                },
+            },
+        },
+        "contact": {
+            "name": "AL3 4HE",
+        },
+        "additionalProperties": [
+            {
+                "name": "surveyName"
+                , "value": "DST2101_AA1"
+            },
+            {
+                "name": "tla",
+                "value": "DST"
+            },
+            {
+                "name": "wave",
+                "value": "1"
+            },
+            {
+                "name": "priority",
+                "value": "1"
+            },
+            {
+                "name": "fieldTeam",
+                "value": "The A Team"
+            },
+        ],
     }
 
     validate_totalmobile_payload(totalmobile_payload)
@@ -198,57 +274,74 @@ def test_an_error_is_logged_when_the_origin_field_is_missing_from_the_totalmobil
 
 def test_an_error_is_logged_when_both_the_origin_and_duration_fields_are_missing_from_the_totalmobile_payload(caplog):
     totalmobile_payload = {
-        "additionalProperties": [
-            {"name": "study", "value": "DST2101A"},
-            {"name": "case_id", "value": "100100"},
+        "identity": {
+            "reference": "DST2101-AA1.100100"
+            },
+        "description": "Study: DST2101_AA1\nCase ID: 100100",
+        "workType": "DST",
+        "skills": [
+            {
+                "identity": {
+                    "reference": "DST"
+                    }
+            }
         ],
-        "clientReference": "2",
-        "contact": {
-            "contactDetail": {
-                "contactId": "DST",
-                "contactIdLabel": "A",
-                "preferredName": "101",
-            },
-            "homePhone": "TelNo",
-            "mobilePhone": "TelNo2",
-            "name": "PostCode",
+        "dueDate": {
+            "end": "2020-11-17",
         },
-        "description": "Study: DST2101A\nCase ID: 100100\n\nIf you need to provide a UAC please contact SEL",
-        "dueDate": {"end": "", "start": ""},
-        "identity": {"reference": "DST2101A.100100"},
         "location": {
-            "address": "prem1, prem2, PostTown",
             "addressDetail": {
-                "addressLine2": "prem1",
-                "addressLine3": "prem2",
-                "addressLine4": "PostTown",
+                "addressLine1": "Ye Olde Fighting Cocks",
+                "addressLine2": "16 Abbey Mill Lane",
+                "addressLine3": "",
+                "addressLine4": "",
+                "addressLine5": "St Albans",
+                "postCode": "AL3 4HE",
                 "coordinates": {
-                    "latitude": "UPRN_Latitude",
-                    "longitude": "UPRN_Longitude",
+                    "latitude": "51.748930",
+                    "longitude": "-0.346820",
                 },
-                "name": "prem1, prem2, PostTown",
-                "postCode": "PostCode",
             },
-            "reference": "100100",
         },
-        "skills": [{"identity": {"reference": "KTN"}}],
-        "workType": "KTN",
+        "contact": {
+            "name": "AL3 4HE",
+        },
+        "additionalProperties": [
+            {
+                "name": "surveyName"
+                , "value": "DST2101_AA1"
+            },
+            {
+                "name": "tla",
+                "value": "DST"
+            },
+            {
+                "name": "wave",
+                "value": "1"
+            },
+            {
+                "name": "priority",
+                "value": "1"
+            },
+            {
+                "name": "fieldTeam",
+                "value": "The A Team"
+            },
+        ],
     }
 
     validate_totalmobile_payload(totalmobile_payload)
     assert ('root', logging.WARNING, "Totalmobile payload was sent without the 'origin' field") in caplog.record_tuples
-    assert ('root', logging.WARNING, "Totalmobile payload was sent without the 'origin' field") in caplog.record_tuples
+    assert ('root', logging.WARNING, "Totalmobile payload was sent without the 'duration' field") in caplog.record_tuples
 
 
 def test_job_reference():
-    assert job_reference("LMS2201A_BB1", "100100") == "LMS2201A-BB1.100100"
+    assert job_reference("DST2101_AA1", "100100") == "DST2101-AA1.100100"
 
 
 def test_description():
     assert (
-            description("LMS2201A_BB1", "100100")
-            == """Study: LMS2201A_BB1
-Case ID: 100100
-
-If you need to provide a UAC please contact SEL"""
-    )
+            description("DST2101_AA1", "100100")
+            == """Study: DST2101_AA1
+Case ID: 100100"""
+            )
