@@ -23,6 +23,8 @@ def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(
         "rest_api_url",
         "gusty",
         "cloud_function_sa",
+        "",
+        ""
     )
 
     tasks = [("task1", b"task1body"),("task2",b"task2body")]

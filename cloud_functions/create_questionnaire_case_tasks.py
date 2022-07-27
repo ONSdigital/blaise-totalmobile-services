@@ -8,6 +8,7 @@ import flask
 
 from appconfig import Config
 from client.optimise import OptimiseClient
+from client.bus import BusClient
 from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
 from models.totalmobile_job_model import TotalmobileJobModel

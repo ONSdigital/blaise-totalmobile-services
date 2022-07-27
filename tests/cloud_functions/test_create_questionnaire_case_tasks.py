@@ -52,7 +52,7 @@ def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(
         _mock_rest_api_client,
 ):
     # arrange
-    config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "")
+    config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "", "", "")
     _mock_rest_api_client.return_value = {
         "questionnaireName": "DST2106Z",
         "questionnaireId": "12345-12345-12345-12345-12345",
@@ -99,7 +99,7 @@ def test_get_case_data_returns_the_case_data_supplied_by_the_rest_api_client(
         _mock_rest_api_client,
 ):
     # arrange
-    config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "")
+    config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "", "", "")
     _mock_rest_api_client.return_value = {
         "questionnaireName": "DST2106Z",
         "questionnaireId": "12345-12345-12345-12345-12345",
@@ -337,7 +337,7 @@ def test_create_case_tasks_for_questionnaire(
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",  "", "")
     mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
     mock_retrieve_case_uac_data.return_value = {
@@ -394,11 +394,12 @@ def test_create_questionnaire_case_tasks_when_no_cases(
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
-    config = Config("", "", "", "", "", "", "", "", "", "", "", )
+    config = Config("", "", "", "", "", "", "", "", "", "", "",  "", "")
     mock_get_case_data.return_value = []
 
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
+
 
     # assert
     mock_run_async_tasks.assert_not_called()
@@ -414,10 +415,18 @@ def test_create_questionnaire_case_tasks_when_no_cases_after_filtering(
         mock_get_case_data,
 ):
     # arrange
+<<<<<<< HEAD
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = Config("", "", "", "", "", "", "", "", "", "", "", )
     mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}]
     mock_filter_cases.return_value = []
+=======
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",  "", "")
+    mock_request = flask.Request.from_values(json={"questionnaire": "OPN2101A"})
+    mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
+    mock_retrieve_world_ids.return_value = "1"
+    mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
+>>>>>>> 212537f (refactor: add bus url and client id to config)
 
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
@@ -448,10 +457,17 @@ def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire(
         mock_get_world_ids,
 ):
     # arrange
+<<<<<<< HEAD
     config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
     mock_request = flask.Request.from_values(json={"questionnaire": "OPN2101A"})
     mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
     mock_get_world_ids.return_value = "1"
+=======
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",  "", "")
+    mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA2"})
+    mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
+    mock_retrieve_world_ids.return_value = "1"
+>>>>>>> 212537f (refactor: add bus url and client id to config)
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
 
     # act
@@ -488,6 +504,8 @@ def test_get_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mock_op
         "rest_api_url",
         "gusty",
         "",
+        "",
+        ""
     )
 
     filtered_cases = [
@@ -557,6 +575,8 @@ def test_get_world_ids_logs_a_console_error_when_given_an_unknown_world(_mock_op
         "rest_api_url",
         "gusty",
         "",
+        "",
+        ""
     )
 
     filtered_cases = [
@@ -596,6 +616,8 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
         "rest_api_url",
         "gusty",
         "",
+        "",
+        ""
     )
 
     filtered_cases = [
@@ -638,6 +660,8 @@ def test_get_world_ids_logs_a_console_error_when_field_region_is_missing(_mock_o
         "rest_api_url",
         "gusty",
         "",
+        "",
+        ""
     )
 
     filtered_cases = [
@@ -677,6 +701,8 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
         "rest_api_url",
         "gusty",
         "",
+        "",
+        ""
     )
 
     filtered_cases = [
