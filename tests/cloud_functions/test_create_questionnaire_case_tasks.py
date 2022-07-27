@@ -347,7 +347,7 @@ def test_create_questionnaire_case_tasks_errors_if_misssing_questionnaire():
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.get_world_ids")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.get_case_data")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
-def test_get_wave_from_questionnaire_name_none_LMS_error(
+def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire(
         mock_filter_cases,
         mock_get_case_data,
         mock_get_world_ids,

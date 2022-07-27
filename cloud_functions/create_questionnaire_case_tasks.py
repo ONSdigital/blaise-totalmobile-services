@@ -135,16 +135,16 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     questionnaire_name = request_json["questionnaire"]
     wave = get_wave_from_questionnaire_name(questionnaire_name)
     if wave != "1":
-        logging.info("Invalid wave: currently only wave 1 supported")
-        raise Exception("Invalid wave: currently only wave 1 supported")
+        logging.info(f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported")
+        raise Exception(f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported")
 
-    logging.info(f"Creating case tasks for questionnaire: {questionnaire_name}")
+    logging.info(f"Creating case tasks for questionnaire {questionnaire_name}")
 
     cases = get_case_data(questionnaire_name, config)
-    logging.info(f"Retrieved {len(cases)} cases")
+    logging.info(f"Retrieved {len(cases)} cases for questionnaire {questionnaire_name}")
 
     filtered_cases = filter_cases(cases)
-    logging.info(f"Retained {len(filtered_cases)} cases after filtering")
+    logging.info(f"Retained {len(filtered_cases)} cases after filtering for questionnaire {questionnaire_name}")
 
     world_ids, cases_with_valid_world_ids = get_world_ids(config, filtered_cases)
     logging.info(f"Retrieved world ids")
@@ -152,13 +152,13 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     totalmobile_job_models = map_totalmobile_job_models(
         cases_with_valid_world_ids, world_ids, questionnaire_name
     )
-    logging.info(f"Finished mapping Totalmobile jobs")
+    logging.info(f"Finished mapping Totalmobile jobs for questionnaire {questionnaire_name}")
 
     tasks = [
         (create_task_name(job_model), job_model.json().encode())
         for job_model in totalmobile_job_models
     ]
-    logging.info(f"Creating {len(tasks)} tasks")
+    logging.info(f"Creating {len(tasks)} cloud tasks for questionnaire {questionnaire_name}")
 
     run_async_tasks(tasks=tasks, queue_id=config.totalmobile_jobs_queue_id, 
     cloud_function=config.totalmobile_job_cloud_function)

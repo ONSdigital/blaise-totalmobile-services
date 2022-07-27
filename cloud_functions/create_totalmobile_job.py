@@ -148,6 +148,7 @@ def create_totalmobile_job(request: flask.Request) -> str:
 
     validate_request(request_json)
 
+    logging.info(f"Creating Totalmobile job for questionnaire {request_json['questionnaire']} with case ID {request_json['case']['qiD.Serial_Number']}")
     response = optimise_client.create_job(
         request_json["world_id"], create_job_payload(request_json)
     )
