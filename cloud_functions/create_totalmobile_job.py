@@ -117,15 +117,15 @@ def create_job_payload(request_json: Dict) -> Dict:
                 "value": case["qDataBag.FieldTeam"]
             },
             {
-                "name": "UAC1",
+                "name": "uac1",
                 "value": case["uac_chunks"]["uac1"]
             },
             {
-                "name": "UAC2",
+                "name": "uac2",
                 "value": case["uac_chunks"]["uac2"]
             },
             {
-                "name": "UAC3",
+                "name": "uac3",
                 "value": case["uac_chunks"]["uac3"]
             },
         ],
@@ -139,6 +139,9 @@ def validate_totalmobile_payload(totalmobile_payload):
         logging.warning("Totalmobile payload was sent without the 'duration' field")
     if "origin" not in totalmobile_payload:
         logging.warning("Totalmobile payload was sent without the 'origin' field")
+    if "uac_chunks" not in totalmobile_payload:
+        logging.warning("Totalmobile payload was sent without the 'UAC' field")
+
 
 def create_totalmobile_job(request: flask.Request) -> str:
     config = Config.from_env()
