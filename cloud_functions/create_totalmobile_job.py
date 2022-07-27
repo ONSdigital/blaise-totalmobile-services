@@ -116,6 +116,18 @@ def create_job_payload(request_json: Dict) -> Dict:
                 "name": "fieldTeam",
                 "value": case["qDataBag.FieldTeam"]
             },
+            {
+                "name": "UAC1",
+                "value": case["uac_chunks"]["uac1"]
+            },
+            {
+                "name": "UAC2",
+                "value": case["uac_chunks"]["uac2"]
+            },
+            {
+                "name": "UAC3",
+                "value": case["uac_chunks"]["uac3"]
+            },
         ],
     }
 
