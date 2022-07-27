@@ -119,7 +119,7 @@ def run_async_tasks(tasks: List[Tuple[str,str]], queue_id: str, cloud_function: 
     asyncio.run(run(task_requests))
 
 
-def append_uacs_to_case_data(filtered_cases, case_uac_data):
+def append_uacs_to_retained_case(filtered_cases, case_uac_data):
     cases_with_uacs_appended = []
     for filtered_case in filtered_cases:
         filtered_case["uac_chunks"] = case_uac_data[filtered_case["qiD.Serial_Number"]]["uac_chunks"]
@@ -127,8 +127,9 @@ def append_uacs_to_case_data(filtered_cases, case_uac_data):
     return cases_with_uacs_appended
 
 
-def retrieve_case_uac_data():
-    return None
+def retrieve_case_uac_data(config: Config, questionnaire_name: str):
+    bus_client = BusClient(config.bus_url, config.bus_client_id)
+    return bus_client.get_uacs_by_case_id(questionnaire_name)
 
 
 def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> str:
@@ -154,8 +155,8 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     retained_cases = filter_cases(cases)
     logging.info(f"Retained {len(retained_cases)} cases after filtering")
 
-    case_uac_data = retrieve_case_uac_data()
-    cases_with_uacs_appended = append_uacs_to_case_data(retained_cases, case_uac_data)
+    case_uac_data = retrieve_case_uac_data(config, questionnaire_name)
+    cases_with_uacs_appended = append_uacs_to_retained_case(retained_cases, case_uac_data)
     logging.info("Finished appending UACs to case data")
 
     world_ids, cases_with_valid_world_ids = retrieve_world_ids(config, cases_with_uacs_appended)
