@@ -727,3 +727,61 @@ def test_uacs_are_correctly_appended_to_case_data():
         },
     }]
 
+
+def test_uacs_with_blank_values_are_appended_to_case_data_when_case_id_not_found_in_bus():
+    case_uacs = {
+        "10000": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10000",
+            "uac_chunks": {
+                "uac1": "8176",
+                "uac2": "4726",
+                "uac3": "3991"
+            },
+            "full_uac": "817647263991"
+        },
+    }
+
+    filtered_cases = [{"qiD.Serial_Number": "10030", "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "",
+                       "qDataBag.Wave": "1",
+                       "qDataBag.Priority": "1", "hOut": "310"},
+                      ]
+
+    result = append_uacs_to_retained_case(filtered_cases, case_uacs)
+    assert result == [{
+        "hOut": "310",
+        "qDataBag.Priority": "1",
+        "qDataBag.TelNo": "",
+        "qDataBag.TelNo2": "",
+        "qDataBag.Wave": "1",
+        "qiD.Serial_Number": "10030",
+        "telNoAppt": "",
+        "uac_chunks": {
+            "uac1": "",
+            "uac2": "",
+            "uac3": ""
+        },
+    }]
+
+
+def test_an_error_is_logged_when_the_case_id_is_not_found_in_bus(caplog):
+    case_uacs = {
+        "10000": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10000",
+            "uac_chunks": {
+                "uac1": "8176",
+                "uac2": "4726",
+                "uac3": "3991"
+            },
+            "full_uac": "817647263991"
+        },
+    }
+
+    filtered_cases = [{"qiD.Serial_Number": "10030", "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "",
+                       "qDataBag.Wave": "1",
+                       "qDataBag.Priority": "1", "hOut": "310"},
+                      ]
+
+    result = append_uacs_to_retained_case(filtered_cases, case_uacs)
+    assert ('root', logging.WARNING, 'Serial number 10030 not found in BUS') in caplog.record_tuples

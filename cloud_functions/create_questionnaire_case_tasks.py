@@ -122,8 +122,17 @@ def run_async_tasks(tasks: List[Tuple[str, str]], queue_id: str, cloud_function:
 def append_uacs_to_retained_case(filtered_cases, case_uac_data):
     cases_with_uacs_appended = []
     for filtered_case in filtered_cases:
-        filtered_case["uac_chunks"] = case_uac_data[filtered_case["qiD.Serial_Number"]]["uac_chunks"]
-        cases_with_uacs_appended.append(filtered_case)
+        if filtered_case["qiD.Serial_Number"] not in case_uac_data:
+            logging.warning(f"Serial number {filtered_case['qiD.Serial_Number']} not found in BUS")
+            filtered_case["uac_chunks"] = {
+                "uac1": "",
+                "uac2": "",
+                "uac3": ""
+            }
+            cases_with_uacs_appended.append(filtered_case)
+        else:
+            filtered_case["uac_chunks"] = case_uac_data[filtered_case["qiD.Serial_Number"]]["uac_chunks"]
+            cases_with_uacs_appended.append(filtered_case)
     return cases_with_uacs_appended
 
 
