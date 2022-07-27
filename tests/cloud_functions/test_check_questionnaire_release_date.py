@@ -2,7 +2,7 @@ import logging
 
 from datetime import datetime
 from unittest import mock
-from cloud_functions.check_questionnaire_release_date import check_questionnaire_release_date, get_questionnaires_with_todays_release_date, map_questionnaire_case_task_models, QuestionnaireCaseTaskModel, create_questionnaire_task_name
+from cloud_functions.check_questionnaire_release_date import check_questionnaire_release_date, get_questionnaires_with_todays_release_date, map_questionnaire_case_task_models, QuestionnaireCaseTaskModel, create_questionnaire_case_task_name
 from google.cloud import datastore
 
 
@@ -91,13 +91,13 @@ def test_map_questionnaire_case_task_models_maps_the_correct_list_of_models():
     assert result == [QuestionnaireCaseTaskModel(questionnaire="LMS2111Z"), QuestionnaireCaseTaskModel(questionnaire="LMS2112T")]
 
 
-def test_create_questionnaire_task_name_returns_unique_name_each_time_when_passed_the_same_model():
+def test_create_questionnaire_case_task_name_returns_unique_name_each_time_when_passed_the_same_model():
     # arrange
     model = QuestionnaireCaseTaskModel("LMS2101A")
 
     # act
-    result1 = create_questionnaire_task_name(model)
-    result2 = create_questionnaire_task_name(model)
+    result1 = create_questionnaire_case_task_name(model)
+    result2 = create_questionnaire_case_task_name(model)
 
     # assert
     assert result1 != result2

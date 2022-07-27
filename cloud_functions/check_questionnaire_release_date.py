@@ -14,10 +14,8 @@ from uuid import uuid4
 setup_logger()
 
 
-def create_questionnaire_task_name(job_model: QuestionnaireCaseTaskModel) -> str:
-    return (
-        f"{job_model.questionnaire}-{str(uuid4())}"
-    )
+def create_questionnaire_case_task_name(job_model: QuestionnaireCaseTaskModel) -> str:
+    return (f"{job_model.questionnaire}-{str(uuid4())}")
 
 
 def map_questionnaire_case_task_models(questionnaires: List[str]) -> List[QuestionnaireCaseTaskModel]:
@@ -52,7 +50,7 @@ def check_questionnaire_release_date() -> str:
         todays_questionnaires_for_release)
 
     tasks = [
-        (create_questionnaire_task_name(job_model), job_model.json().encode())
+        (create_questionnaire_case_task_name(job_model), job_model.json().encode())
         for job_model in questionnaire_case_task_models
     ]
 

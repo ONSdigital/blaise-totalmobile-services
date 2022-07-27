@@ -28,7 +28,7 @@ def validate_request(request_json: Dict) -> None:
         )
 
 
-def retrieve_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> List[str]:
+def get_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> List[str]:
     optimise_client = OptimiseClient(
         config.totalmobile_url,
         config.totalmobile_instance,
@@ -53,7 +53,7 @@ def retrieve_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> 
     return world_ids, cases_with_valid_world_ids
 
 
-def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str]]:
+def get_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str]]:
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
 
     questionnaire_data = restapi_client.get_questionnaire_data(
@@ -140,13 +140,13 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
 
     logging.info(f"Creating case tasks for questionnaire: {questionnaire_name}")
 
-    cases = retrieve_case_data(questionnaire_name, config)
+    cases = get_case_data(questionnaire_name, config)
     logging.info(f"Retrieved {len(cases)} cases")
 
     filtered_cases = filter_cases(cases)
     logging.info(f"Retained {len(filtered_cases)} cases after filtering")
 
-    world_ids, cases_with_valid_world_ids = retrieve_world_ids(config, filtered_cases)
+    world_ids, cases_with_valid_world_ids = get_world_ids(config, filtered_cases)
     logging.info(f"Retrieved world ids")
 
     totalmobile_job_models = map_totalmobile_job_models(
@@ -158,7 +158,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         (create_task_name(job_model), job_model.json().encode())
         for job_model in totalmobile_job_models
     ]
-    logging.info(f"Created {len(tasks)} tasks")
+    logging.info(f"Creating {len(tasks)} tasks")
 
     run_async_tasks(tasks=tasks, queue_id=config.totalmobile_jobs_queue_id, 
     cloud_function=config.totalmobile_job_cloud_function)

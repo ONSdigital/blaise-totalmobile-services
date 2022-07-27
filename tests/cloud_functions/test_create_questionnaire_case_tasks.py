@@ -14,8 +14,8 @@ from cloud_functions.create_questionnaire_case_tasks import (
     filter_cases,
     get_wave_from_questionnaire_name,
     map_totalmobile_job_models,
-    retrieve_case_data,
-    retrieve_world_ids,
+    get_case_data,
+    get_world_ids,
     validate_request,
 )
 from models.totalmobile_job_model import TotalmobileJobModel
@@ -47,7 +47,7 @@ def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_mod
 
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-def test_retrieve_case_data_calls_the_rest_api_client_with_the_correct_parameters(
+def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(
         _mock_rest_api_client,
 ):
     # arrange
@@ -85,7 +85,7 @@ def test_retrieve_case_data_calls_the_rest_api_client_with_the_correct_parameter
     ]
 
     # act
-    retrieve_case_data(questionnaire_name, config)
+    get_case_data(questionnaire_name, config)
 
     # assert
     _mock_rest_api_client.assert_called_with(
@@ -94,7 +94,7 @@ def test_retrieve_case_data_calls_the_rest_api_client_with_the_correct_parameter
 
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-def test_retrieve_case_data_returns_the_case_data_supplied_by_the_rest_api_client(
+def test_get_case_data_returns_the_case_data_supplied_by_the_rest_api_client(
         _mock_rest_api_client,
 ):
     # arrange
@@ -111,7 +111,7 @@ def test_retrieve_case_data_returns_the_case_data_supplied_by_the_rest_api_clien
     questionnaire_name = "OPN2101A"
 
     # act
-    result = retrieve_case_data(questionnaire_name, config)
+    result = get_case_data(questionnaire_name, config)
 
     # assert
     assert result == [
@@ -288,7 +288,7 @@ def test_validate_request(mock_create_job_task):
     validate_request(mock_create_job_task)
 
 
-def test_validate_request_missing_fields():
+def test_validate_request_when_missing_fields():
     with pytest.raises(Exception) as err:
         validate_request({"world_id": ""})
     assert (
@@ -296,29 +296,29 @@ def test_validate_request_missing_fields():
     )
 
 
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_ids")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_world_ids")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_case_data")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
-def test_create_case_tasks_for_questionnaire(
+def test_create_questionnaire_case_tasks(
         mock_run_async_tasks,
         mock_filter_cases,
-        mock_retrieve_case_data,
-        mock_retrieve_world_ids,
+        mock_get_case_data,
+        mock_get_world_ids,
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
-    mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
-    mock_retrieve_world_ids.return_value = "1", [{"qiD.Serial_Number": "10010"}]
+    mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
+    mock_get_world_ids.return_value = "1", [{"qiD.Serial_Number": "10010"}]
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
 
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
 
     # assert
-    mock_retrieve_case_data.assert_called_with("LMS2101_AA1", config)
-    mock_retrieve_world_ids.assert_called_with(config, [{"qiD.Serial_Number": "10010"}])
+    mock_get_case_data.assert_called_with("LMS2101_AA1", config)
+    mock_get_world_ids.assert_called_with(config, [{"qiD.Serial_Number": "10010"}])
     mock_filter_cases.assert_called_with([{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}])
     mock_run_async_tasks.assert_called_once()
     kwargs = mock_run_async_tasks.call_args.kwargs
@@ -332,9 +332,9 @@ def test_create_case_tasks_for_questionnaire(
     assert result == "Done"
 
 
-def test_create_questionnaire_case_tasks_error():
+def test_create_questionnaire_case_tasks_errors_if_misssing_questionnaire():
     # arrange
-    mock_request = flask.Request.from_values(json={"instrument": ""})
+    mock_request = flask.Request.from_values(json={"blah": "blah"})
     config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
     # assert
     with pytest.raises(Exception) as err:
@@ -344,19 +344,19 @@ def test_create_questionnaire_case_tasks_error():
     )
 
 
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_ids")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_world_ids")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_case_data")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 def test_get_wave_from_questionnaire_name_none_LMS_error(
         mock_filter_cases,
-        mock_retrieve_case_data,
-        mock_retrieve_world_ids,
+        mock_get_case_data,
+        mock_get_world_ids,
 ):
     # arrange
     config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
     mock_request = flask.Request.from_values(json={"questionnaire": "OPN2101A"})
-    mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
-    mock_retrieve_world_ids.return_value = "1"
+    mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
+    mock_get_world_ids.return_value = "1"
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
 
     # act
@@ -365,29 +365,6 @@ def test_get_wave_from_questionnaire_name_none_LMS_error(
 
     # assert
     assert str(err.value) == "Invalid format for questionnaire name: OPN2101A"
-
-
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_ids")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
-def test_get_wave_from_questionnaire_name_unsupported_wave_error(
-        mock_filter_cases,
-        mock_retrieve_case_data,
-        mock_retrieve_world_ids,
-):
-    # arrange
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
-    mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA2"})
-    mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
-    mock_retrieve_world_ids.return_value = "1"
-    mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
-
-    # act
-    with pytest.raises(Exception) as err:
-        create_questionnaire_case_tasks(mock_request, config)
-
-    # assert
-    assert str(err.value) == "Invalid wave: currently only wave 1 supported"
 
 
 def test_get_wave_from_questionnaire_name():
@@ -402,7 +379,7 @@ def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error():
 
 
 @mock.patch.object(OptimiseClient, "get_worlds")
-def test_retrieve_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mock_optimise_client):
+def test_get_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mock_optimise_client):
     # arrange
     config = Config(
         "totalmobile_url",
@@ -455,7 +432,7 @@ def test_retrieve_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mo
         },
     ]
 
-    world_ids, new_filtered_cases = retrieve_world_ids(config, filtered_cases)
+    world_ids, new_filtered_cases = get_world_ids(config, filtered_cases)
 
     # assert
     assert world_ids == [
@@ -471,7 +448,7 @@ def test_retrieve_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mo
 
 
 @mock.patch.object(OptimiseClient, "get_worlds")
-def test_retrieve_world_ids_logs_a_console_error_when_given_an_unknown_world(_mock_optimise_client, caplog):
+def test_get_world_ids_logs_a_console_error_when_given_an_unknown_world(_mock_optimise_client, caplog):
     # arrange
     config = Config(
         "totalmobile_url",
@@ -502,14 +479,14 @@ def test_retrieve_world_ids_logs_a_console_error_when_given_an_unknown_world(_mo
     ]
 
     # act 
-    retrieve_world_ids(config, filtered_cases)
+    get_world_ids(config, filtered_cases)
 
     # assert
     assert ('root', logging.WARNING, 'Unsupported world: Risca') in caplog.record_tuples
 
 
 @mock.patch.object(OptimiseClient, "get_worlds")
-def test_retrieve_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world(
+def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world(
         _mock_optimise_client, caplog):
     # arrange
     config = Config(
@@ -542,7 +519,7 @@ def test_retrieve_world_ids_logs_a_console_error_and_returns_data_when_given_an_
     ]
 
     # act 
-    world_ids, new_filtered_cases = retrieve_world_ids(config, filtered_cases)
+    world_ids, new_filtered_cases = get_world_ids(config, filtered_cases)
 
     # assert
     assert len(world_ids) == len(new_filtered_cases)
@@ -551,7 +528,7 @@ def test_retrieve_world_ids_logs_a_console_error_and_returns_data_when_given_an_
     assert ('root', logging.WARNING, 'Unsupported world: Risca') in caplog.record_tuples
 
 @mock.patch.object(OptimiseClient, "get_worlds")
-def test_retrieve_world_ids_logs_a_console_error_when_field_region_is_missing(_mock_optimise_client, caplog):
+def test_get_world_ids_logs_a_console_error_when_field_region_is_missing(_mock_optimise_client, caplog):
     # arrange
     config = Config(
         "totalmobile_url",
@@ -582,13 +559,13 @@ def test_retrieve_world_ids_logs_a_console_error_when_field_region_is_missing(_m
     ]
 
     # act
-    retrieve_world_ids(config, filtered_cases)
+    get_world_ids(config, filtered_cases)
 
     # assert
     assert ('root', logging.WARNING, 'Case rejected. Missing Field Region') in caplog.record_tuples
 
 @mock.patch.object(OptimiseClient, "get_worlds")
-def test_retrieve_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world_and_a_known_world(
+def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world_and_a_known_world(
         _mock_optimise_client, caplog):
     # arrange
     config = Config(
@@ -621,7 +598,7 @@ def test_retrieve_world_ids_logs_a_console_error_and_returns_data_when_given_an_
     ]
 
     # act
-    world_ids, new_filtered_cases = retrieve_world_ids(config, filtered_cases)
+    world_ids, new_filtered_cases = get_world_ids(config, filtered_cases)
 
     # assert
     assert len(world_ids) == len(new_filtered_cases)

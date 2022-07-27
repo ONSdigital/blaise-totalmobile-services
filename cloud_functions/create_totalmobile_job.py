@@ -48,11 +48,11 @@ def validate_case_data(case: Dict) -> None:
         raise Exception(f"Required fields missing from case data: {missing_fields}")
 
 
-def job_reference(questionnaire: str, case_id: str) -> str:
+def create_job_reference(questionnaire: str, case_id: str) -> str:
     return f"{questionnaire.replace('_', '-')}.{case_id}"
 
 
-def description(questionnaire: str, case_id: str) -> str:
+def create_description(questionnaire: str, case_id: str) -> str:
     return f"Study: {questionnaire}\nCase ID: {case_id}"
 
 
@@ -62,9 +62,9 @@ def create_job_payload(request_json: Dict) -> Dict:
 
     totalmobile_payload = {
         "identity": {
-            "reference": job_reference(questionnaire, case["qiD.Serial_Number"]),
+            "reference": create_job_reference(questionnaire, case["qiD.Serial_Number"]),
             },
-        "description": description(questionnaire, case["qiD.Serial_Number"]),
+        "description": create_description(questionnaire, case["qiD.Serial_Number"]),
         "origin": "ONS",
         "duration": 15,
         "workType": case["qDataBag.TLA"],

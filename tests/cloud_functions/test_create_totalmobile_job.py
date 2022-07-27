@@ -9,8 +9,8 @@ from client import AuthException, OptimiseClient
 from cloud_functions.create_totalmobile_job import (
     create_job_payload,
     create_totalmobile_job,
-    description,
-    job_reference,
+    create_description,
+    create_job_reference,
     validate_case_data,
     validate_request,
     validate_totalmobile_payload
@@ -41,7 +41,7 @@ def test_validate_request(mock_create_job_task):
     validate_request(mock_create_job_task)
 
 
-def test_validate_request_missing_fields():
+def test_validate_request_when_missing_fields():
     with pytest.raises(Exception) as err:
         validate_request({"world_id": ""})
     assert (
@@ -54,7 +54,7 @@ def test_validate_case_data(mock_create_job_task):
     validate_case_data(mock_create_job_task["case"])
 
 
-def test_validate_case_data_missing_fields():
+def test_validate_case_data_when_missing_fields():
     with pytest.raises(Exception) as err:
         validate_case_data(
             {
@@ -335,13 +335,13 @@ def test_an_error_is_logged_when_both_the_origin_and_duration_fields_are_missing
     assert ('root', logging.WARNING, "Totalmobile payload was sent without the 'duration' field") in caplog.record_tuples
 
 
-def test_job_reference():
-    assert job_reference("DST2101_AA1", "100100") == "DST2101-AA1.100100"
+def test_create_job_reference():
+    assert create_job_reference("DST2101_AA1", "100100") == "DST2101-AA1.100100"
 
 
-def test_description():
+def test_create_description():
     assert (
-            description("DST2101_AA1", "100100")
+            create_description("DST2101_AA1", "100100")
             == """Study: DST2101_AA1
 Case ID: 100100"""
             )
