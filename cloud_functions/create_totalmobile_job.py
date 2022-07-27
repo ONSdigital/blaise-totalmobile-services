@@ -90,9 +90,9 @@ def create_job_payload(request_json: Dict) -> Dict:
         "additionalProperties": [
             {"name": "study", "value": questionnaire},
             {"name": "case_id", "value": case["qiD.Serial_Number"]},
-            {"name": "UAC1", "value": case["uac_chunks"]["uac1"]},
-            {"name": "UAC2", "value": case["uac_chunks"]["uac2"]},
-            {"name": "UAC3", "value": case["uac_chunks"]["uac3"]},
+            {"name": "uac1", "value": case["uac_chunks"]["uac1"]},
+            {"name": "uac2", "value": case["uac_chunks"]["uac2"]},
+            {"name": "uac3", "value": case["uac_chunks"]["uac3"]},
         ],
     }
     validate_totalmobile_payload(totalmobile_payload)
@@ -103,6 +103,9 @@ def validate_totalmobile_payload(totalmobile_payload):
         logging.warning("Totalmobile payload was sent without the 'duration' field")
     if "origin" not in totalmobile_payload:
         logging.warning("Totalmobile payload was sent without the 'origin' field")
+    if "uac_chunks" not in totalmobile_payload:
+        logging.warning("Totalmobile payload was sent without the 'UAC' field")
+
 
 def create_totalmobile_job(request: flask.Request) -> str:
     config = Config.from_env()
