@@ -40,7 +40,7 @@ def get_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> List[
     worlds = optimise_client.get_worlds()
 
     world_map_with_world_ids = {world["identity"]["reference"]: world["id"] for world in worlds}
-    
+
     cases_with_valid_world_ids = []
     world_ids = []
     for case in filtered_cases:
@@ -91,7 +91,7 @@ def filter_cases(cases: List[Dict[str, str]]) -> List[Dict[str, str]]:
         case
         for case in cases
         if (case["qDataBag.TelNo"] == "" and case["qDataBag.TelNo2"] == "" and case["telNoAppt"] == ""
-            and case["qDataBag.Wave"] == "1" and case["qDataBag.Priority"] in ["1","2","3","4","5"] 
+            and case["qDataBag.Wave"] == "1" and case["qDataBag.Priority"] in ["1", "2", "3", "4", "5"]
             and case["hOut"] in ["", "0", "310"])
     ]
 
@@ -103,7 +103,7 @@ def get_wave_from_questionnaire_name(questionnaire_name: str):
 
 
 def map_totalmobile_job_models(
-    cases: List[Dict[str, str]], world_ids: List[str], questionnaire_name: str
+        cases: List[Dict[str, str]], world_ids: List[str], questionnaire_name: str
 ) -> List[TotalmobileJobModel]:
     return [TotalmobileJobModel(questionnaire_name, world_id, case) for case, world_id in zip(cases, world_ids)]
 
@@ -114,7 +114,7 @@ def create_task_name(job_model: TotalmobileJobModel) -> str:
     )
 
 
-def run_async_tasks(tasks: List[Tuple[str,str]], queue_id: str, cloud_function: str):
+def run_async_tasks(tasks: List[Tuple[str, str]], queue_id: str, cloud_function: str):
     task_requests = prepare_tasks(
         tasks=tasks,
         queue_id=queue_id,
@@ -184,7 +184,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     ]
     logging.info(f"Creating {len(tasks)} cloud tasks for questionnaire {questionnaire_name}")
 
-    run_async_tasks(tasks=tasks, queue_id=config.totalmobile_jobs_queue_id, 
-    cloud_function=config.totalmobile_job_cloud_function)
+    run_async_tasks(tasks=tasks, queue_id=config.totalmobile_jobs_queue_id,
+                    cloud_function=config.totalmobile_job_cloud_function)
     logging.info("Finished creating questionnaire case tasks")
     return "Done"
