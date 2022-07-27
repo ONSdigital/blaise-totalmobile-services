@@ -153,11 +153,9 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     retained_cases = filter_cases(cases)
     logging.info(f"Retained {len(retained_cases)} cases after filtering")
 
-    ####
     case_uac_data = retrieve_case_uac_data()
     cases_with_uacs_appended = append_uacs_to_case_data(retained_cases, case_uac_data)
     logging.info("Finished appending UACs to case data")
-    ####
 
     world_ids, cases_with_valid_world_ids = retrieve_world_ids(config, cases_with_uacs_appended)
     logging.info(f"Retrieved world ids")
