@@ -122,11 +122,13 @@ def append_uacs_to_case_data(filtered_cases, case_uac_data):
     cases_with_uacs_appended = []
     for filtered_case in filtered_cases:
         filtered_case["uac_chunks"] = case_uac_data[filtered_case["qiD.Serial_Number"]]["uac_chunks"]
-        cases_with_uacs_appended
+        cases_with_uacs_appended.append(filtered_case)
     return cases_with_uacs_appended
+
 
 def retrieve_case_uac_data():
     return None
+
 
 def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> str:
     logging.info("Started creating questionnaire case tasks")
@@ -148,11 +150,14 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     cases = retrieve_case_data(questionnaire_name, config)
     logging.info(f"Retrieved {len(cases)} cases")
 
-    filtered_cases = filter_cases(cases)
-    logging.info(f"Retained {len(filtered_cases)} cases after filtering")
+    retained_cases = filter_cases(cases)
+    logging.info(f"Retained {len(retained_cases)} cases after filtering")
 
+    ####
     case_uac_data = retrieve_case_uac_data()
-    cases_with_uacs_appended = append_uacs_to_case_data(filtered_cases, case_uac_data)
+    cases_with_uacs_appended = append_uacs_to_case_data(retained_cases, case_uac_data)
+    logging.info("Finished appending UACs to case data")
+    ####
 
     world_ids, cases_with_valid_world_ids = retrieve_world_ids(config, cases_with_uacs_appended)
     logging.info(f"Retrieved world ids")
