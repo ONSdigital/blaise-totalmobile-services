@@ -321,13 +321,12 @@ def test_validate_request_when_missing_fields():
     )
 
 
-
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.append_uacs_to_case_data")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_ids")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_uac_data")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.append_uacs_to_case_data")
 def test_create_case_tasks_for_questionnaire(
         mock_run_async_tasks,
         mock_filter_cases,
@@ -340,11 +339,6 @@ def test_create_case_tasks_for_questionnaire(
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
     mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
-    mock_retrieve_world_ids.return_value = "1", [{"qiD.Serial_Number": "10010", "uac_chunks": {
-        "uac1": "8176",
-        "uac2": "4726",
-        "uac3": "3991"
-    }, }]
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
     mock_retrieve_case_uac_data.return_value = {
         "10010": {
@@ -368,6 +362,7 @@ def test_create_case_tasks_for_questionnaire(
             },
         }
     ]
+    mock_retrieve_world_ids.return_value = "1", [{"qiD.Serial_Number": "10010"}]
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
 
