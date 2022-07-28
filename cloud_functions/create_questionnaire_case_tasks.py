@@ -142,7 +142,7 @@ def append_uacs_to_retained_case(filtered_cases, case_uac_data):
 
 
 def retrieve_case_uac_data(config: Config, questionnaire_name: str):
-    bus_client = BusClient(config.bus_url, config.bus_client_id)
+    bus_client = BusClient(config.bus_api_url, config.bus_client_id)
     return bus_client.get_uacs_by_case_id(questionnaire_name)
 
 
