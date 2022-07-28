@@ -105,6 +105,9 @@ def validate_totalmobile_payload(totalmobile_payload):
         logging.warning("Totalmobile payload was sent without the 'duration' field")
     if "origin" not in totalmobile_payload:
         logging.warning("Totalmobile payload was sent without the 'origin' field")
+    for property in totalmobile_payload["additionalProperties"]:
+        if "uac" in property["name"] and property["value"] == "":
+            logging.warning(f"Totalmobile payload was sent with an empty {property['name']} field")
 
 
 def create_totalmobile_job(request: flask.Request) -> str:
