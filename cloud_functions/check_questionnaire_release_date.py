@@ -14,17 +14,15 @@ from uuid import uuid4
 setup_logger()
 
 
-def create_questionnaire_task_name(job_model: QuestionnaireCaseTaskModel) -> str:
-    return (
-        f"{job_model.questionnaire}-{str(uuid4())}"
-    )
+def create_questionnaire_case_task_name(job_model: QuestionnaireCaseTaskModel) -> str:
+    return (f"{job_model.questionnaire}-{str(uuid4())}")
 
 
 def map_questionnaire_case_task_models(questionnaires: List[str]) -> List[QuestionnaireCaseTaskModel]:
     return [QuestionnaireCaseTaskModel(questionnaire_name) for questionnaire_name in questionnaires]
 
 
-def get_questionnaires_with_todays_release_date() -> list:
+def get_questionnaires_with_release_date_of_today() -> list:
     records = get_datastore_records()
     today = datetime.today().strftime("%d/%m/%Y")
     return [record["questionnaire"] for record in records if record["tmreleasedate"].strftime("%d/%m/%Y") == today]
@@ -37,26 +35,28 @@ def get_datastore_records() -> list:
 
 
 def check_questionnaire_release_date() -> str:
-    logging.info("Started checking questionnaire release dates")
 
-    todays_questionnaires_for_release = get_questionnaires_with_todays_release_date()
-    if todays_questionnaires_for_release == []:
-        logging.info("There are no questionnaires for release today")
-        return "There are no questionnaires for release today"
-    logging.info(f"There are {len(todays_questionnaires_for_release)} questionnaires for release today")
+    logging.info("Checking for questionnaire release dates")
 
-    for questionnaire in todays_questionnaires_for_release:
-        logging.info(f"Found a release date for questionnaire {questionnaire}")
+    questionnaires_with_release_date_of_today = get_questionnaires_with_release_date_of_today()
+
+    if questionnaires_with_release_date_of_today == []:
+        logging.info("There are no questionnaires with a release date of today")
+        return "There are no questionnaires with a release date of today"
+
+    for questionnaire in questionnaires_with_release_date_of_today:
+        logging.info(f"Questionnaire {questionnaire} has a release date of today")
 
     questionnaire_case_task_models = map_questionnaire_case_task_models(
-        todays_questionnaires_for_release)
+        questionnaires_with_release_date_of_today)
 
     tasks = [
-        (create_questionnaire_task_name(job_model), job_model.json().encode())
+        (create_questionnaire_case_task_name(job_model), job_model.json().encode())
         for job_model in questionnaire_case_task_models
     ]
 
     config = Config.from_env()
+
     questionnaire_task_requests = prepare_tasks(
         tasks=tasks,
         queue_id=config.totalmobile_jobs_queue_id,
@@ -64,5 +64,5 @@ def check_questionnaire_release_date() -> str:
     )
 
     asyncio.run(run(questionnaire_task_requests))
-    logging.info("Finished checking questionnaire release dates")
+
     return "Done"
