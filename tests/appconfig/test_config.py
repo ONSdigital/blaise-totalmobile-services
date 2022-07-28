@@ -60,6 +60,6 @@ def test_config_from_env():
         blaise_api_url="",
         blaise_server_park="",
         cloud_function_sa="",
-        bus_url="",
+        bus_api_url="",
         bus_client_id=""
     )
