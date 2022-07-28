@@ -19,7 +19,7 @@ class Config:
     blaise_api_url: str
     blaise_server_park: str
     cloud_function_sa: str
-    bus_url: str
+    bus_api_url: str
     bus_client_id: str
 
     @classmethod
@@ -38,7 +38,7 @@ class Config:
             blaise_api_url=os.getenv("BLAISE_API_URL", ""),
             blaise_server_park=os.getenv("BLAISE_SERVER_PARK", ""),
             cloud_function_sa=os.getenv("CLOUD_FUNCTION_SA", ""),
-            bus_url=os.getenv("BUS_URL", ""),
+            bus_api_url=os.getenv("BUS_API_URL", ""),
             bus_client_id=os.getenv("BUS_CLIENT_ID", ""),
         )
 
@@ -54,7 +54,7 @@ class Config:
         print(f"Configuration - blaise_api_url: {self.blaise_api_url}")
         print(f"Configuration - blaise_server_park: {self.blaise_server_park}")
         print(f"Configuration - cloud_function_sa: {self.cloud_function_sa}")
-        print(f"Configuration - bus_url: {self.bus_url}")
+        print(f"Configuration - bus_api_url: {self.bus_api_url}")
         print(f"Configuration - bus_client_id: {self.bus_client_id}")
 
     def validate(self) -> None:
