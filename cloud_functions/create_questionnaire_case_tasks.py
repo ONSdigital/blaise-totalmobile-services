@@ -143,11 +143,19 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     cases = get_case_data(questionnaire_name, config)
     logging.info(f"Retrieved {len(cases)} cases for questionnaire {questionnaire_name}")
 
+    if len(cases) == 0:
+        logging.info(f"Exiting as no cases to send for questionnaire {questionnaire_name}")
+        return (f"Exiting as no cases to send for questionnaire {questionnaire_name}")
+
     filtered_cases = filter_cases(cases)
     logging.info(f"Retained {len(filtered_cases)} cases after filtering for questionnaire {questionnaire_name}")
 
+    if len(filtered_cases) == 0:
+        logging.info(f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
+        return (f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
+
     world_ids, cases_with_valid_world_ids = get_world_ids(config, filtered_cases)
-    logging.info(f"Retrieved world ids")
+    logging.info(f"Retrieved world IDs")
 
     totalmobile_job_models = map_totalmobile_job_models(
         cases_with_valid_world_ids, world_ids, questionnaire_name

@@ -264,24 +264,44 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
             "qDataBag.Priority": "5",
             "hOut": "0"
         },
+        {
+            # should return
+            "qDataBag.TelNo": "",
+            "qDataBag.TelNo2": "",
+            "telNoAppt": "",
+            "qDataBag.Wave": "1",
+            "qDataBag.Priority": "1",
+            "hOut": ""
+        },
     ]
 
     # act
     result = filter_cases(cases)
 
     # assert
-    assert result == [{"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-                       "qDataBag.Priority": "1", "hOut": "310"},
-                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-                       "qDataBag.Priority": "1", "hOut": "0"},
-                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-                       "qDataBag.Priority": "2", "hOut": "0"},
-                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-                       "qDataBag.Priority": "3", "hOut": "0"},
-                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-                       "qDataBag.Priority": "4", "hOut": "0"},
-                      {"qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-                       "qDataBag.Priority": "5", "hOut": "0"}]
+    assert result == [
+        {
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "1", "hOut": "310"
+        },
+        {
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "1", "hOut": "0"
+        },
+        {
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "2", "hOut": "0"
+        },
+        {
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "3", "hOut": "0"
+        },
+        {
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "4", "hOut": "0"
+        },
+        {
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "5", "hOut": "0"
+        },
+        {
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "1", "hOut": ""
+        },
+    ]
 
 
 def test_validate_request(mock_create_job_task):
@@ -330,6 +350,47 @@ def test_create_questionnaire_case_tasks(
     assert json.loads(task[1]) == {'case': {'qiD.Serial_Number': '10010'},
                                    'questionnaire': 'LMS2101_AA1', 'world_id': '1'}
     assert result == "Done"
+
+
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_case_data")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
+def test_create_questionnaire_case_tasks_when_no_cases(
+        mock_run_async_tasks,
+        mock_get_case_data,
+):
+    # arrange
+    mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
+    config = Config("", "", "", "", "", "", "", "", "", "", "", )
+    mock_get_case_data.return_value = []
+
+    # act
+    result = create_questionnaire_case_tasks(mock_request, config)
+
+    # assert
+    mock_run_async_tasks.assert_not_called()
+    assert result == "Exiting as no cases to send for questionnaire LMS2101_AA1"
+
+
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_case_data")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
+def test_create_questionnaire_case_tasks_when_no_cases_after_filtering(
+        mock_run_async_tasks,
+        mock_filter_cases,
+        mock_get_case_data,
+):
+    # arrange
+    mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
+    config = Config("", "", "", "", "", "", "", "", "", "", "", )
+    mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}]
+    mock_filter_cases.return_value = []
+
+    # act
+    result = create_questionnaire_case_tasks(mock_request, config)
+
+    # assert
+    mock_run_async_tasks.assert_not_called()
+    assert result == "Exiting as no cases to send after filtering for questionnaire LMS2101_AA1"
 
 
 def test_create_questionnaire_case_tasks_errors_if_misssing_questionnaire():
