@@ -141,8 +141,6 @@ def validate_totalmobile_payload(totalmobile_payload):
         logging.warning("Totalmobile payload was sent without the 'duration' field")
     if "origin" not in totalmobile_payload:
         logging.warning("Totalmobile payload was sent without the 'origin' field")
-    if "uac_chunks" not in totalmobile_payload:
-        logging.warning("Totalmobile payload was sent without the 'UAC' field")
 
 
 def create_totalmobile_job(request: flask.Request) -> str:
