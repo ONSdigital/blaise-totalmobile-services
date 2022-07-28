@@ -246,7 +246,7 @@ def test_an_error_is_logged_when_both_the_origin_and_duration_fields_are_missing
 
     validate_totalmobile_payload(totalmobile_payload)
     assert ('root', logging.WARNING, "Totalmobile payload was sent without the 'origin' field") in caplog.record_tuples
-    assert ('root', logging.WARNING, "Totalmobile payload was sent without the 'origin' field") in caplog.record_tuples
+    assert ('root', logging.WARNING, "Totalmobile payload was sent without the 'duration' field") in caplog.record_tuples
 
 
 def test_job_reference():
