@@ -42,9 +42,10 @@ class Config:
         print(f"Configuration - totalmobile_url: {self.totalmobile_url}")
         print(f"Configuration - totalmobile_instance: {self.totalmobile_instance}")
         print(f"Configuration - totalmobile_client_id: {self.totalmobile_client_id}")
-        print(
-            f"Configuration - totalmobile_client_secret: {self.totalmobile_client_secret}"
-        )
+        if self.totalmobile_client_secret is None:
+            print("Configuration - totalmobile_client_secret: None")
+        else:
+            print("Configuration - totalmobile_client_secret: Provided")
         print(f"Configuration - gcloud_project: {self.gcloud_project}")
         print(f"Configuration - region: {self.region}")
         print(f"Configuration - blaise_api_url: {self.blaise_api_url}")
