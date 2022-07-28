@@ -28,7 +28,7 @@ def validate_request(request_json: Dict) -> None:
         )
 
 
-def retrieve_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> List[str]:
+def get_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> List[str]:
     optimise_client = OptimiseClient(
         config.totalmobile_url,
         config.totalmobile_instance,
@@ -53,28 +53,33 @@ def retrieve_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> 
     return world_ids, cases_with_valid_world_ids
 
 
-def retrieve_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str]]:
+def get_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str]]:
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
 
     questionnaire_data = restapi_client.get_questionnaire_data(
         config.blaise_server_park,
         questionnaire_name,
         [
-            "qDataBag.UPRN_Latitude",
-            "qDataBag.UPRN_Longitude",
+            "qiD.Serial_Number",
+            "dataModelName",
+            "qDataBag.TLA",
+            "qDataBag.Wave",            
             "qDataBag.Prem1",
             "qDataBag.Prem2",
             "qDataBag.Prem3",
+            "qDataBag.District",
             "qDataBag.PostTown",
             "qDataBag.PostCode",
             "qDataBag.TelNo",
             "qDataBag.TelNo2",
             "telNoAppt",
             "hOut",
-            "qiD.Serial_Number",
-            "qDataBag.Wave",
+            "qDataBag.UPRN_Latitude",
+            "qDataBag.UPRN_Longitude",            
             "qDataBag.Priority",
-            "qDataBag.FieldRegion"
+            "qDataBag.FieldRegion",
+            "qDataBag.FieldTeam",
+            "qDataBag.WaveComDTE",
         ],
     )
     return questionnaire_data["reportingData"]
@@ -130,30 +135,38 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     questionnaire_name = request_json["questionnaire"]
     wave = get_wave_from_questionnaire_name(questionnaire_name)
     if wave != "1":
-        logging.info("Invalid wave: currently only wave 1 supported")
-        raise Exception("Invalid wave: currently only wave 1 supported")
+        logging.info(f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported")
+        raise Exception(f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported")
 
-    logging.info(f"Creating case tasks for questionnaire: {questionnaire_name}")
+    logging.info(f"Creating case tasks for questionnaire {questionnaire_name}")
 
-    cases = retrieve_case_data(questionnaire_name, config)
-    logging.info(f"Retrieved {len(cases)} cases")
+    cases = get_case_data(questionnaire_name, config)
+    logging.info(f"Retrieved {len(cases)} cases for questionnaire {questionnaire_name}")
+
+    if len(cases) == 0:
+        logging.info(f"Exiting as no cases to send for questionnaire {questionnaire_name}")
+        return (f"Exiting as no cases to send for questionnaire {questionnaire_name}")
 
     filtered_cases = filter_cases(cases)
-    logging.info(f"Retained {len(filtered_cases)} cases after filtering")
+    logging.info(f"Retained {len(filtered_cases)} cases after filtering for questionnaire {questionnaire_name}")
 
-    world_ids, cases_with_valid_world_ids = retrieve_world_ids(config, filtered_cases)
-    logging.info(f"Retrieved world ids")
+    if len(filtered_cases) == 0:
+        logging.info(f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
+        return (f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
+
+    world_ids, cases_with_valid_world_ids = get_world_ids(config, filtered_cases)
+    logging.info(f"Retrieved world IDs")
 
     totalmobile_job_models = map_totalmobile_job_models(
         cases_with_valid_world_ids, world_ids, questionnaire_name
     )
-    logging.info(f"Finished mapping Totalmobile jobs")
+    logging.info(f"Finished mapping Totalmobile jobs for questionnaire {questionnaire_name}")
 
     tasks = [
         (create_task_name(job_model), job_model.json().encode())
         for job_model in totalmobile_job_models
     ]
-    logging.info(f"Created {len(tasks)} tasks")
+    logging.info(f"Creating {len(tasks)} cloud tasks for questionnaire {questionnaire_name}")
 
     run_async_tasks(tasks=tasks, queue_id=config.totalmobile_jobs_queue_id, 
     cloud_function=config.totalmobile_job_cloud_function)

@@ -23,27 +23,37 @@ def validate_request(request_json: Dict) -> None:
 def validate_case_data(case: Dict) -> None:
     REQUIRED_FIELDS = [
         "qiD.Serial_Number",
-        "qDataBag.Prem1",
-        "qDataBag.Prem2",
-        "qDataBag.Prem3",
-        "qDataBag.PostTown",
-        "qDataBag.PostCode",
-        "qDataBag.UPRN_Latitude",
-        "qDataBag.UPRN_Longitude",
-        "qDataBag.TelNo",
-        "qDataBag.TelNo2",
+            "dataModelName",
+            "qDataBag.TLA",
+            "qDataBag.Wave",            
+            "qDataBag.Prem1",
+            "qDataBag.Prem2",
+            "qDataBag.Prem3",
+            "qDataBag.District",
+            "qDataBag.PostTown",
+            "qDataBag.PostCode",
+            "qDataBag.TelNo",
+            "qDataBag.TelNo2",
+            "telNoAppt",
+            "hOut",
+            "qDataBag.UPRN_Latitude",
+            "qDataBag.UPRN_Longitude",            
+            "qDataBag.Priority",
+            "qDataBag.FieldRegion",
+            "qDataBag.FieldTeam",
+            "qDataBag.WaveComDTE",
     ]
     missing_fields = __filter_missing_fields(case, REQUIRED_FIELDS)
     if len(missing_fields) >= 1:
         raise Exception(f"Required fields missing from case data: {missing_fields}")
 
 
-def job_reference(questionnaire: str, case_id: str) -> str:
+def create_job_reference(questionnaire: str, case_id: str) -> str:
     return f"{questionnaire.replace('_', '-')}.{case_id}"
 
 
-def description(questionnaire: str, case_id: str) -> str:
-    return f"Study: {questionnaire}\nCase ID: {case_id}\n\nIf you need to provide a UAC please contact SEL"
+def create_description(questionnaire: str, case_id: str) -> str:
+    return f"Study: {questionnaire}\nCase ID: {case_id}"
 
 
 def create_job_payload(request_json: Dict) -> Dict:
@@ -51,47 +61,64 @@ def create_job_payload(request_json: Dict) -> Dict:
     case = request_json["case"]
 
     totalmobile_payload = {
-        "identity": {"reference": job_reference(questionnaire, case["qiD.Serial_Number"])},  # we must control this so we can link it back to blaise
+        "identity": {
+            "reference": create_job_reference(questionnaire, case["qiD.Serial_Number"]),
+            },
+        "description": create_description(questionnaire, case["qiD.Serial_Number"]),
         "origin": "ONS",
-        "clientReference": "2",  # num of non contacts allowed, misused field? appears at top of the app
-        "duration": 15,  # could this differ depending on survey and work type etc?
-        "description": description(questionnaire, case["qiD.Serial_Number"]),
-        "workType": "KTN",  # probably shouldn't be hardcoded, will likely support more work types in the future...
-        "skills": [{"identity": {"reference": "KTN"}}],  # probably shouldn't be hardcoded, will likely support more skills in the future...
+        "duration": 15,
+        "workType": case["qDataBag.TLA"],
+        "skills": [
+            {
+                "identity": {
+                    "reference": case["qDataBag.TLA"],
+                },
+            },
+        ],
         "dueDate": {
-            "start": "",  # !?
-            "end": "",  # !?
+            "end": case["qDataBag.WaveComDTE"],
         },
         "location": {
-            "address": f"{case.get('qDataBag.Prem1')}, {case.get('qDataBag.Prem2')}, {case.get('qDataBag.PostTown')}",
-            "reference": case["qiD.Serial_Number"],
             "addressDetail": {
-                "name": f"{case.get('qDataBag.Prem1')}, {case.get('qDataBag.Prem2')}, {case.get('qDataBag.PostTown')}",
-                "addressLine2": case.get("qDataBag.Prem1"),
-                "addressLine3": case.get("qDataBag.Prem2"),
-                "addressLine4": case.get("qDataBag.PostTown"),
-                "postCode": case.get("qDataBag.PostCode"),
+                "addressLine1": case["qDataBag.Prem1"],
+                "addressLine2": case["qDataBag.Prem2"],
+                "addressLine3": case["qDataBag.Prem3"],
+                "addressLine4": case["qDataBag.District"],
+                "addressLine5": case["qDataBag.PostTown"],
+                "postCode": case["qDataBag.PostCode"],
                 "coordinates": {
-                    "latitude": case.get("qDataBag.UPRN_Latitude"),
-                    "longitude": case.get("qDataBag.UPRN_Longitude"),
+                    "latitude": case["qDataBag.UPRN_Latitude"],
+                    "longitude": case["qDataBag.UPRN_Longitude"],
                 },
             },
         },
         "contact": {
-            "name": case.get("qDataBag.PostCode"),  # postcode as name, misused field?
-            "homePhone": case.get("qDataBag.TelNo"),
-            "mobilePhone": case.get("qDataBag.TelNo2"),
-            "contactDetail": {  # misused fields?
-                "contactId": questionnaire[:3],  # survey tla
-                "contactIdLabel": questionnaire[-1],  # wave - lms specific!
-                "preferredName": questionnaire[4:7],  # 3 digit field period..!?
-            },
+            "name": case["qDataBag.PostCode"],
         },
         "additionalProperties": [
-            {"name": "study", "value": questionnaire},
-            {"name": "case_id", "value": case["qiD.Serial_Number"]},
+            {
+                "name": "surveyName",
+                "value": case["dataModelName"]
+            },
+            {
+                "name": "tla",
+                "value": case["qDataBag.TLA"]
+            },
+            {
+                "name": "wave",
+                "value": case["qDataBag.Wave"]
+            },
+            {
+                "name": "priority",
+                "value": case["qDataBag.Priority"]
+            },
+            {
+                "name": "fieldTeam",
+                "value": case["qDataBag.FieldTeam"]
+            },
         ],
     }
+
     validate_totalmobile_payload(totalmobile_payload)
     return totalmobile_payload
 
@@ -121,6 +148,7 @@ def create_totalmobile_job(request: flask.Request) -> str:
 
     validate_request(request_json)
 
+    logging.info(f"Creating Totalmobile job for questionnaire {request_json['questionnaire']} with case ID {request_json['case']['qiD.Serial_Number']}")
     response = optimise_client.create_job(
         request_json["world_id"], create_job_payload(request_json)
     )

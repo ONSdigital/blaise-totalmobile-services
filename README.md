@@ -1,4 +1,4 @@
-# Blaise Totalmobile Services
+# Blaise Totalmobile Services ![bts](.github/bts.png)
 
 We integrate with Totalmobile for field workforce management. We send case details to Totalmobile and it manages the allocation of cases to field interviewers. Field interviewers will capture some data using a Totalmobile app on their smartphones, this data will be sent back to us so we can update the Blaise data.
 
@@ -7,7 +7,8 @@ This project contains several services for sending data to and receiving data fr
 ### Services
 
 - Cloud Function (create_totalmobile_job) to create jobs in Totalmobile.
-- Cloud Function (create_questionnaire_case_tasks) to get all cases for an questionnaire, apply business logic to filter out cases, then send the case details to Totalmobile as "jobs" via the create_totalmobile_job Cloud Function via Cloud Tasks.
+- Cloud Function (create_questionnaire_case_tasks) to get all cases for a questionnaire, apply business logic to filter out cases, then send the case details to Totalmobile as "jobs" via the create_totalmobile_job Cloud Function via Cloud Tasks.
+- Cloud Function (check_questionnaire_release_date) to check if a Totalmobile release date has been set for a questionnaire in [DQS](https://github.com/ONSdigital/blaise-deploy-questionnaire-service), if the Totalmobile release date is for today it sends the questionnaire to the create_questionnaire_case_tasks Cloud Function.
 - Flask application with several endpoints for receiving data updates from Totalmobile. More details can be found in the [app readme](app/README.md).
 
 ### Local Setup
@@ -76,8 +77,8 @@ Create an .env file in the root of the project and add the following environment
 | TOTALMOBILE_USER | The username for Totalmobile to authenicate with us. | blah |
 | TOTALMOBILE_PASSWORD_HASH | The hashed password for Totalmobile to authenicate with us. | pbkdf2:sha256:260000$Y1Pew7gJMYbRhfNR$9b97ee1d4a735047051c83bff275532d4d1322f1fc186739189b00fa7cc9a51b |
 | CLOUD_FUNCTION_SA | The GCP service account the cloud functions will use. | totalmobile-sa@ons-blaise-v2-dev-sandbox123.iam.gserviceaccount.com |
-```
 
+```
 GCLOUD_PROJECT=ons-blaise-v2-dev-sandbox123
 REGION=europe-west2
 BLAISE_API_URL=http://localhost:90
@@ -102,7 +103,7 @@ You should now be able to call the Flask application endpoints via localhost:501
 
 Run the "create_totalmobile_job" Cloud Function:
 ```shell
-poetry run python -c "import flask; from main import create_totalmobile_job; create_totalmobile_job(flask.Request.from_values(json={'questionnaire': 'DST2111Z', 'world_id': '7e4beb99-ed79-4179-ab39-ab6600ebd65e', 'case': {'qDataBag.UPRN_Latitude': '', 'qDataBag.UPRN_Longitude': '', 'qDataBag.Prem1': '56 ONS Street', 'qDataBag.Prem2': '', 'qDataBag.Prem3': '', 'qDataBag.PostTown': ' Staines-Upon-Thames', 'qDataBag.PostCode': '', 'qDataBag.TelNo': '', 'qDataBag.TelNo2': '', 'hOut': '', 'srvStat': '', 'qiD.Serial_Number': '12345'}}))"
+poetry run python -c "import flask; from main import create_totalmobile_job; create_totalmobile_job(flask.Request.from_values(json={'questionnaire': 'DST2101_AA1', 'world_id': '7e4beb99-ed79-4179-ab39-ab6600ebd65e', 'case': {'qiD.Serial_Number': '100100', 'dataModelName': 'DST2101_AA1', 'qDataBag.TLA': 'DST', 'qDataBag.Wave': '1', 'qDataBag.Prem1': 'Ye Olde Fighting Cocks', 'qDataBag.Prem2': '16 Abbey Mill Lane', 'qDataBag.Prem3': '', 'qDataBag.District': '', 'qDataBag.PostTown': 'St Albans', 'qDataBag.PostCode': 'AL3 4HE', 'qDataBag.TelNo': '', 'qDataBag.TelNo2': '', 'telNoAppt': '', 'hOut': '', 'qDataBag.UPRN_Latitude': '51.748930', 'qDataBag.UPRN_Longitude': '-0.346820', 'qDataBag.Priority': '1', 'qDataBag.FieldRegion': '', 'qDataBag.FieldTeam': 'The A Team', 'qDataBag.WaveComDTE': '2020-11-17'}}))"
 ```
 
 Run the "create_questionnaire_case_tasks" Cloud Function:
@@ -110,12 +111,17 @@ Run the "create_questionnaire_case_tasks" Cloud Function:
 poetry run python -c "import flask; from main import create_questionnaire_case_tasks; create_questionnaire_case_tasks(flask.Request.from_values(json={'questionnaire': 'DST2111Z'}))"
 ```
 
+Run the "check_questionnaire_release_date" Cloud Function:
+```shell
+poetry run python -c "from main import check_questionnaire_release_date; check_questionnaire_release_date(None, None)"
+```
+
 Run unit tests:
 ```shell
 poetry run python -m pytest
 ```
 
-### Poetry problems
+### Poetry Problems
 
 Dependencies (like the blaise-restapi) not updating properly after running ```poetry update blaise-restapi``` ???
 
