@@ -181,6 +181,8 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         for job_model in totalmobile_job_models
     ]
     logging.info(f"Created {len(tasks)} tasks")
+    for task in tasks:
+        logging.info(f"Task: {task}")
 
     run_async_tasks(tasks=tasks, queue_id=config.totalmobile_jobs_queue_id,
                     cloud_function=config.totalmobile_job_cloud_function)
