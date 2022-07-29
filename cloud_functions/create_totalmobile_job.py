@@ -50,8 +50,6 @@ def create_job_payload(request_json: Dict) -> Dict:
     questionnaire = request_json["questionnaire"]
     case = request_json["case"]
 
-    logging.info(f"Questionnaire: {questionnaire}")
-    logging.info(f"Case: {case}")
     totalmobile_payload = {
         "identity": {"reference": job_reference(questionnaire, case["qiD.Serial_Number"])},  # we must control this so we can link it back to blaise
         "origin": "ONS",
