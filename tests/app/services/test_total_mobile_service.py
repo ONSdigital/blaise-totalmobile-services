@@ -17,7 +17,7 @@ def test_update_case_telephone_number_passes_the_correct_parameters_to_the_resta
 
     server_park = "gusty"
     _mock_config_from_env.return_value = Config(
-        "", "", "", "", "", "", "", "", "", server_park, ""
+        "", "", "", "", "", "", "", "", "", server_park, "", "", ""
     )
 
     # act
