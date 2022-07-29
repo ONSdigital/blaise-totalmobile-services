@@ -141,6 +141,18 @@ def test_create_job_payload(mock_create_job_task):
                 "name": "fieldTeam",
                 "value": "The A Team"
             },
+            {
+                "name": "uac1",
+                "value": "8176"
+            },
+            {
+                "name": "uac2",
+                "value": "4726"
+            },
+            {
+                "name": "uac3",
+                "value": "3993"
+            },
         ],
     }
 
@@ -345,3 +357,53 @@ def test_create_description():
             == """Study: DST2101_AA1
 Case ID: 100100"""
             )
+
+def test_an_error_is_logged_when_a_uac_value_is_empty(caplog):
+    totalmobile_payload = {
+        "additionalProperties": [
+            {"name": "study", "value": "DST2101A"},
+            {"name": "case_id", "value": "100100"},
+            {"name": "uac1", "value": ""},
+            {"name": "uac2", "value": ""},
+            {"name": "uac3", "value": ""},
+        ],
+        "clientReference": "2",
+        "contact": {
+            "contactDetail": {
+                "contactId": "DST",
+                "contactIdLabel": "A",
+                "preferredName": "101",
+            },
+            "homePhone": "TelNo",
+            "mobilePhone": "TelNo2",
+            "name": "PostCode",
+        },
+        "description": "Study: DST2101A\nCase ID: 100100\n\nIf you need to provide a UAC please contact SEL",
+        "dueDate": {"end": "", "start": ""},
+        "duration": 15,
+        "origin": "ONS",
+        "identity": {"reference": "DST2101A.100100"},
+        "location": {
+            "address": "prem1, prem2, PostTown",
+            "addressDetail": {
+                "addressLine2": "prem1",
+                "addressLine3": "prem2",
+                "addressLine4": "PostTown",
+                "coordinates": {
+                    "latitude": "UPRN_Latitude",
+                    "longitude": "UPRN_Longitude",
+                },
+                "name": "prem1, prem2, PostTown",
+                "postCode": "PostCode",
+            },
+            "reference": "100100",
+        },
+        "skills": [{"identity": {"reference": "KTN"}}],
+        "workType": "KTN",
+    }
+
+    validate_totalmobile_payload(totalmobile_payload)
+    assert ('root', logging.WARNING, "Totalmobile payload was sent with an empty 'uac1' field")
+    [('root', 30, 'Totalmobile payload was sent with an empty uac1 field'),
+     ('root', 30, 'Totalmobile payload was sent with an empty uac2 field'),
+     ('root', 30, 'Totalmobile payload was sent with an empty uac3 field')] in caplog.record_tuples

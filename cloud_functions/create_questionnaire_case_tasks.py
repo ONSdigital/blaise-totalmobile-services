@@ -179,7 +179,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     cases_with_uacs_appended = append_uacs_to_retained_case(retained_cases, questionnaire_uac_data)
     logging.info("Finished appending UACs to case data")
 
-    world_ids, cases_with_valid_world_ids = retrieve_world_ids(config, cases_with_uacs_appended)
+    world_ids, cases_with_valid_world_ids = get_world_ids(config, cases_with_uacs_appended)
     logging.info(f"Retrieved world ids")
 
     totalmobile_job_models = map_totalmobile_job_models(

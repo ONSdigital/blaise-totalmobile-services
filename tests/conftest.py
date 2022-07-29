@@ -41,7 +41,6 @@ def mock_create_job_task() -> Dict:
         "world_id": "test-world-id",
         "case": {
             "qiD.Serial_Number": "100100",
-<<<<<<< HEAD
             "dataModelName": "DST2101_AA1",
             "qDataBag.TLA": "DST",
             "qDataBag.Wave": "1",
@@ -61,22 +60,11 @@ def mock_create_job_task() -> Dict:
             "qDataBag.FieldRegion": "",
             "qDataBag.FieldTeam": "The A Team",
             "qDataBag.WaveComDTE": "2020-11-17",
-=======
-            "qDataBag.Prem1": "prem1",
-            "qDataBag.Prem2": "prem2",
-            "qDataBag.Prem3": "prem3",
-            "qDataBag.PostTown": "PostTown",
-            "qDataBag.PostCode": "PostCode",
-            "qDataBag.UPRN_Latitude": "UPRN_Latitude",
-            "qDataBag.UPRN_Longitude": "UPRN_Longitude",
-            "qDataBag.TelNo": "TelNo",
-            "qDataBag.TelNo2": "TelNo2",
             "uac_chunks": {
                 "uac1": "8176",
                 "uac2": "4726",
                 "uac3": "3993"
             },
->>>>>>> 54ab013 (feat: get uac chunks out of case data and build up payload)
         },
     }
 

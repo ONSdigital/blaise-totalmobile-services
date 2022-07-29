@@ -322,8 +322,8 @@ def test_validate_request_when_missing_fields():
 
 
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.append_uacs_to_retained_case")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_world_ids")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.retrieve_case_data")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_world_ids")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_case_data")
 @mock.patch("client.bus.BusClient.get_uacs_by_case_id")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
@@ -331,14 +331,14 @@ def test_create_case_tasks_for_questionnaire(
         mock_run_async_tasks,
         mock_filter_cases,
         mock_get_uacs_by_case_id,
-        mock_retrieve_case_data,
-        mock_retrieve_world_ids,
+        mock_get_case_data,
+        mock_get_world_ids,
         mock_append_uacs_to_retained_case
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",  "", "")
-    mock_retrieve_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
+    mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
     mock_get_uacs_by_case_id.return_value = {
         "10010": {
@@ -362,13 +362,13 @@ def test_create_case_tasks_for_questionnaire(
             },
         }
     ]
-    mock_retrieve_world_ids.return_value = "1", [{"qiD.Serial_Number": "10010"}]
+    mock_get_world_ids.return_value = "1", [{"qiD.Serial_Number": "10010"}]
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
 
     # assert
-    mock_retrieve_case_data.assert_called_with("LMS2101_AA1", config)
-    mock_retrieve_world_ids.assert_called_with(config, [{"qiD.Serial_Number": "10010", "uac_chunks": {
+    mock_get_case_data.assert_called_with("LMS2101_AA1", config)
+    mock_get_world_ids.assert_called_with(config, [{"qiD.Serial_Number": "10010", "uac_chunks": {
         "uac1": "8176",
         "uac2": "4726",
         "uac3": "3991"
@@ -416,7 +416,7 @@ def test_create_questionnaire_case_tasks_when_no_cases_after_filtering(
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
-    config = Config("", "", "", "", "", "", "", "", "", "", "", )
+    config = Config("", "", "", "", "", "", "", "", "", "", "", "", "")
     mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}]
     mock_filter_cases.return_value = []
 
@@ -431,7 +431,7 @@ def test_create_questionnaire_case_tasks_when_no_cases_after_filtering(
 def test_create_questionnaire_case_tasks_errors_if_misssing_questionnaire():
     # arrange
     mock_request = flask.Request.from_values(json={"blah": "blah"})
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", "", "")
     # assert
     with pytest.raises(Exception) as err:
         create_questionnaire_case_tasks(mock_request, config)
@@ -449,7 +449,7 @@ def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire(
         mock_get_world_ids,
 ):
     # arrange
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", "", "")
     mock_request = flask.Request.from_values(json={"questionnaire": "OPN2101A"})
     mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
     mock_get_world_ids.return_value = "1"
