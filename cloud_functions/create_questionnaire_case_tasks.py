@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 from uuid import uuid4
 
 import blaise_restapi
@@ -8,6 +8,7 @@ import flask
 
 from appconfig import Config
 from client.optimise import OptimiseClient
+from client.bus import BusClient
 from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
 from models.totalmobile_job_model import TotalmobileJobModel
@@ -39,7 +40,7 @@ def get_world_ids(config: Config, filtered_cases: List[Dict[str, str]]) -> List[
     worlds = optimise_client.get_worlds()
 
     world_map_with_world_ids = {world["identity"]["reference"]: world["id"] for world in worlds}
-    
+
     cases_with_valid_world_ids = []
     world_ids = []
     for case in filtered_cases:
@@ -63,7 +64,7 @@ def get_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str
             "qiD.Serial_Number",
             "dataModelName",
             "qDataBag.TLA",
-            "qDataBag.Wave",            
+            "qDataBag.Wave",
             "qDataBag.Prem1",
             "qDataBag.Prem2",
             "qDataBag.Prem3",
@@ -75,7 +76,7 @@ def get_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str
             "telNoAppt",
             "hOut",
             "qDataBag.UPRN_Latitude",
-            "qDataBag.UPRN_Longitude",            
+            "qDataBag.UPRN_Longitude",
             "qDataBag.Priority",
             "qDataBag.FieldRegion",
             "qDataBag.FieldTeam",
@@ -90,7 +91,7 @@ def filter_cases(cases: List[Dict[str, str]]) -> List[Dict[str, str]]:
         case
         for case in cases
         if (case["qDataBag.TelNo"] == "" and case["qDataBag.TelNo2"] == "" and case["telNoAppt"] == ""
-            and case["qDataBag.Wave"] == "1" and case["qDataBag.Priority"] in ["1","2","3","4","5"] 
+            and case["qDataBag.Wave"] == "1" and case["qDataBag.Priority"] in ["1", "2", "3", "4", "5"]
             and case["hOut"] in ["", "0", "310"])
     ]
 
@@ -102,7 +103,7 @@ def get_wave_from_questionnaire_name(questionnaire_name: str):
 
 
 def map_totalmobile_job_models(
-    cases: List[Dict[str, str]], world_ids: List[str], questionnaire_name: str
+        cases: List[Dict[str, str]], world_ids: List[str], questionnaire_name: str
 ) -> List[TotalmobileJobModel]:
     return [TotalmobileJobModel(questionnaire_name, world_id, case) for case, world_id in zip(cases, world_ids)]
 
@@ -113,7 +114,7 @@ def create_task_name(job_model: TotalmobileJobModel) -> str:
     )
 
 
-def run_async_tasks(tasks: List[Tuple[str,str]], queue_id: str, cloud_function: str):
+def run_async_tasks(tasks: List[Tuple[str, str]], queue_id: str, cloud_function: str):
     task_requests = prepare_tasks(
         tasks=tasks,
         queue_id=queue_id,
@@ -121,6 +122,28 @@ def run_async_tasks(tasks: List[Tuple[str,str]], queue_id: str, cloud_function: 
     )
 
     asyncio.run(run(task_requests))
+
+
+def append_uacs_to_retained_case(filtered_cases, case_uac_data):
+    cases_with_uacs_appended = []
+    for filtered_case in filtered_cases:
+        if filtered_case["qiD.Serial_Number"] not in case_uac_data:
+            logging.warning(f"Serial number {filtered_case['qiD.Serial_Number']} not found in BUS")
+            filtered_case["uac_chunks"] = {
+                "uac1": "",
+                "uac2": "",
+                "uac3": ""
+            }
+            cases_with_uacs_appended.append(filtered_case)
+        else:
+            filtered_case["uac_chunks"] = case_uac_data[filtered_case["qiD.Serial_Number"]]["uac_chunks"]
+            cases_with_uacs_appended.append(filtered_case)
+    return cases_with_uacs_appended
+
+
+def get_questionnaire_uacs(config: Config, questionnaire_name: str):
+    bus_client = BusClient(config.bus_api_url, config.bus_client_id)
+    return bus_client.get_uacs_by_case_id(questionnaire_name)
 
 
 def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> str:
@@ -135,8 +158,10 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     questionnaire_name = request_json["questionnaire"]
     wave = get_wave_from_questionnaire_name(questionnaire_name)
     if wave != "1":
-        logging.info(f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported")
-        raise Exception(f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported")
+        logging.info(
+            f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported")
+        raise Exception(
+            f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported")
 
     logging.info(f"Creating case tasks for questionnaire {questionnaire_name}")
 
@@ -147,15 +172,18 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         logging.info(f"Exiting as no cases to send for questionnaire {questionnaire_name}")
         return (f"Exiting as no cases to send for questionnaire {questionnaire_name}")
 
-    filtered_cases = filter_cases(cases)
-    logging.info(f"Retained {len(filtered_cases)} cases after filtering for questionnaire {questionnaire_name}")
-
-    if len(filtered_cases) == 0:
+    retained_cases = filter_cases(cases)
+    if len(retained_cases) == 0:
         logging.info(f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
         return (f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
+    logging.info(f"Retained {len(retained_cases)} cases after filtering")
 
-    world_ids, cases_with_valid_world_ids = get_world_ids(config, filtered_cases)
-    logging.info(f"Retrieved world IDs")
+    questionnaire_uac_data = get_questionnaire_uacs(config, questionnaire_name)
+    cases_with_uacs_appended = append_uacs_to_retained_case(retained_cases, questionnaire_uac_data)
+    logging.info("Finished appending UACs to case data")
+
+    world_ids, cases_with_valid_world_ids = get_world_ids(config, cases_with_uacs_appended)
+    logging.info(f"Retrieved world ids")
 
     totalmobile_job_models = map_totalmobile_job_models(
         cases_with_valid_world_ids, world_ids, questionnaire_name
@@ -168,7 +196,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     ]
     logging.info(f"Creating {len(tasks)} cloud tasks for questionnaire {questionnaire_name}")
 
-    run_async_tasks(tasks=tasks, queue_id=config.totalmobile_jobs_queue_id, 
-    cloud_function=config.totalmobile_job_cloud_function)
+    run_async_tasks(tasks=tasks, queue_id=config.totalmobile_jobs_queue_id,
+                    cloud_function=config.totalmobile_job_cloud_function)
     logging.info("Finished creating questionnaire case tasks")
     return "Done"

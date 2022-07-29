@@ -17,6 +17,7 @@ from cloud_functions.create_questionnaire_case_tasks import (
     get_case_data,
     get_world_ids,
     validate_request,
+    append_uacs_to_retained_case
 )
 from models.totalmobile_job_model import TotalmobileJobModel
 
@@ -51,7 +52,7 @@ def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(
         _mock_rest_api_client,
 ):
     # arrange
-    config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "")
+    config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "", "", "")
     _mock_rest_api_client.return_value = {
         "questionnaireName": "DST2106Z",
         "questionnaireId": "12345-12345-12345-12345-12345",
@@ -65,7 +66,7 @@ def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(
         "qiD.Serial_Number",
         "dataModelName",
         "qDataBag.TLA",
-        "qDataBag.Wave",            
+        "qDataBag.Wave",
         "qDataBag.Prem1",
         "qDataBag.Prem2",
         "qDataBag.Prem3",
@@ -77,7 +78,7 @@ def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(
         "telNoAppt",
         "hOut",
         "qDataBag.UPRN_Latitude",
-        "qDataBag.UPRN_Longitude",            
+        "qDataBag.UPRN_Longitude",
         "qDataBag.Priority",
         "qDataBag.FieldRegion",
         "qDataBag.FieldTeam",
@@ -98,7 +99,7 @@ def test_get_case_data_returns_the_case_data_supplied_by_the_rest_api_client(
         _mock_rest_api_client,
 ):
     # arrange
-    config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "")
+    config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "", "", "")
     _mock_rest_api_client.return_value = {
         "questionnaireName": "DST2106Z",
         "questionnaireId": "12345-12345-12345-12345-12345",
@@ -136,19 +137,23 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
         "3fa85f64-5717-4562-b3fc-2c963f66afa7",
         "3fa85f64-5717-4562-b3fc-2c963f66afa9",
     ]
+
     # act
     result = map_totalmobile_job_models(case_data, world_ids, questionnaire_name)
 
     # assert
     assert result == [
         TotalmobileJobModel(
-            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa6", {"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110"}
+            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa6", {"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110",
+                                                                 }
         ),
         TotalmobileJobModel(
-            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa7", {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "120"}
+            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa7", {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "120",
+                                                                 }
         ),
         TotalmobileJobModel(
-            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa9", {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "130"}
+            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa9", {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "130",
+                                                                 }
         ),
     ]
 
@@ -281,25 +286,32 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
     # assert
     assert result == [
         {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "1", "hOut": "310"
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
+            "qDataBag.Priority": "1", "hOut": "310"
         },
         {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "1", "hOut": "0"
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
+            "qDataBag.Priority": "1", "hOut": "0"
         },
         {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "2", "hOut": "0"
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
+            "qDataBag.Priority": "2", "hOut": "0"
         },
         {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "3", "hOut": "0"
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
+            "qDataBag.Priority": "3", "hOut": "0"
         },
         {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "4", "hOut": "0"
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
+            "qDataBag.Priority": "4", "hOut": "0"
         },
         {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "5", "hOut": "0"
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
+            "qDataBag.Priority": "5", "hOut": "0"
         },
         {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "1", "hOut": ""
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
+            "qDataBag.Priority": "1", "hOut": ""
         },
     ]
 
@@ -316,29 +328,58 @@ def test_validate_request_when_missing_fields():
     )
 
 
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.append_uacs_to_retained_case")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.get_world_ids")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.get_case_data")
+@mock.patch("client.bus.BusClient.get_uacs_by_case_id")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
-def test_create_questionnaire_case_tasks(
+def test_create_case_tasks_for_questionnaire(
         mock_run_async_tasks,
         mock_filter_cases,
+        mock_get_uacs_by_case_id,
         mock_get_case_data,
         mock_get_world_ids,
+        mock_append_uacs_to_retained_case
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", "bus_api_url", "bus_client_id")
     mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
-    mock_get_world_ids.return_value = "1", [{"qiD.Serial_Number": "10010"}]
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
-
+    mock_get_uacs_by_case_id.return_value = {
+        "10010": {
+            "instrument_name": "LMS2101_AA1",
+            "case_id": "10010",
+            "uac_chunks": {
+                "uac1": "8176",
+                "uac2": "4726",
+                "uac3": "3991"
+            },
+            "full_uac": "817647263991"
+        }
+    }
+    mock_append_uacs_to_retained_case.return_value = [
+        {
+            "qiD.Serial_Number": "10010",
+            "uac_chunks": {
+                "uac1": "8176",
+                "uac2": "4726",
+                "uac3": "3991"
+            },
+        }
+    ]
+    mock_get_world_ids.return_value = "1", [{"qiD.Serial_Number": "10010"}]
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
 
     # assert
     mock_get_case_data.assert_called_with("LMS2101_AA1", config)
-    mock_get_world_ids.assert_called_with(config, [{"qiD.Serial_Number": "10010"}])
+    mock_get_world_ids.assert_called_with(config, [{"qiD.Serial_Number": "10010", "uac_chunks": {
+        "uac1": "8176",
+        "uac2": "4726",
+        "uac3": "3991"
+    }, }])
     mock_filter_cases.assert_called_with([{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}])
     mock_run_async_tasks.assert_called_once()
     kwargs = mock_run_async_tasks.call_args.kwargs
@@ -360,7 +401,7 @@ def test_create_questionnaire_case_tasks_when_no_cases(
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
-    config = Config("", "", "", "", "", "", "", "", "", "", "", )
+    config = Config("", "", "", "", "", "", "", "", "", "", "", "", "")
     mock_get_case_data.return_value = []
 
     # act
@@ -381,10 +422,9 @@ def test_create_questionnaire_case_tasks_when_no_cases_after_filtering(
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
-    config = Config("", "", "", "", "", "", "", "", "", "", "", )
+    config = Config("", "", "", "", "", "", "", "", "", "", "", "", "")
     mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}]
     mock_filter_cases.return_value = []
-
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
 
@@ -396,7 +436,7 @@ def test_create_questionnaire_case_tasks_when_no_cases_after_filtering(
 def test_create_questionnaire_case_tasks_errors_if_misssing_questionnaire():
     # arrange
     mock_request = flask.Request.from_values(json={"blah": "blah"})
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", "", "")
     # assert
     with pytest.raises(Exception) as err:
         create_questionnaire_case_tasks(mock_request, config)
@@ -414,7 +454,7 @@ def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire(
         mock_get_world_ids,
 ):
     # arrange
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", )
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", "", "")
     mock_request = flask.Request.from_values(json={"questionnaire": "OPN2101A"})
     mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
     mock_get_world_ids.return_value = "1"
@@ -454,6 +494,8 @@ def test_get_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mock_op
         "rest_api_url",
         "gusty",
         "",
+        "",
+        ""
     )
 
     filtered_cases = [
@@ -523,6 +565,8 @@ def test_get_world_ids_logs_a_console_error_when_given_an_unknown_world(_mock_op
         "rest_api_url",
         "gusty",
         "",
+        "",
+        ""
     )
 
     filtered_cases = [
@@ -562,6 +606,8 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
         "rest_api_url",
         "gusty",
         "",
+        "",
+        ""
     )
 
     filtered_cases = [
@@ -588,6 +634,7 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
     assert new_filtered_cases == [{"qDataBag.FieldRegion": "Region 1"}]
     assert ('root', logging.WARNING, 'Unsupported world: Risca') in caplog.record_tuples
 
+
 @mock.patch.object(OptimiseClient, "get_worlds")
 def test_get_world_ids_logs_a_console_error_when_field_region_is_missing(_mock_optimise_client, caplog):
     # arrange
@@ -603,6 +650,8 @@ def test_get_world_ids_logs_a_console_error_when_field_region_is_missing(_mock_o
         "rest_api_url",
         "gusty",
         "",
+        "",
+        ""
     )
 
     filtered_cases = [
@@ -625,6 +674,7 @@ def test_get_world_ids_logs_a_console_error_when_field_region_is_missing(_mock_o
     # assert
     assert ('root', logging.WARNING, 'Case rejected. Missing Field Region') in caplog.record_tuples
 
+
 @mock.patch.object(OptimiseClient, "get_worlds")
 def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world_and_a_known_world(
         _mock_optimise_client, caplog):
@@ -641,6 +691,8 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
         "rest_api_url",
         "gusty",
         "",
+        "",
+        ""
     )
 
     filtered_cases = [
@@ -666,3 +718,118 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
     assert world_ids == ["3fa85f64-5717-4562-b3fc-2c963f66afa6"]
     assert new_filtered_cases == [{"qDataBag.FieldRegion": "Region 1"}]
     assert ('root', logging.WARNING, 'Case rejected. Missing Field Region') in caplog.record_tuples
+
+
+def test_uacs_are_correctly_appended_to_case_data():
+    case_uacs = {
+        "10010": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10010",
+            "uac_chunks": {
+                "uac1": "8176",
+                "uac2": "4726",
+                "uac3": "3991"
+            },
+            "full_uac": "817647263991"
+        },
+        "10020": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10020",
+            "uac_chunks": {
+                "uac1": "8176",
+                "uac2": "4726",
+                "uac3": "3992"
+            },
+            "full_uac": "817647263992"
+        },
+        "10030": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10030",
+            "uac_chunks": {
+                "uac1": "8176",
+                "uac2": "4726",
+                "uac3": "3993"
+            },
+            "full_uac": "817647263994"
+        },
+    }
+
+    filtered_cases = [{"qiD.Serial_Number": "10030", "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "",
+                       "qDataBag.Wave": "1",
+                       "qDataBag.Priority": "1", "hOut": "310"},
+                      ]
+
+    result = append_uacs_to_retained_case(filtered_cases, case_uacs)
+    assert result == [{
+        "hOut": "310",
+        "qDataBag.Priority": "1",
+        "qDataBag.TelNo": "",
+        "qDataBag.TelNo2": "",
+        "qDataBag.Wave": "1",
+        "qiD.Serial_Number": "10030",
+        "telNoAppt": "",
+        "uac_chunks": {
+            "uac1": "8176",
+            "uac2": "4726",
+            "uac3": "3993"
+        },
+    }]
+
+
+def test_uacs_with_blank_values_are_appended_to_case_data_when_case_id_not_found_in_bus():
+    case_uacs = {
+        "10000": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10000",
+            "uac_chunks": {
+                "uac1": "8176",
+                "uac2": "4726",
+                "uac3": "3991"
+            },
+            "full_uac": "817647263991"
+        },
+    }
+
+    filtered_cases = [{"qiD.Serial_Number": "10030", "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "",
+                       "qDataBag.Wave": "1",
+                       "qDataBag.Priority": "1", "hOut": "310"},
+                      ]
+
+    result = append_uacs_to_retained_case(filtered_cases, case_uacs)
+    assert result == [{
+        "hOut": "310",
+        "qDataBag.Priority": "1",
+        "qDataBag.TelNo": "",
+        "qDataBag.TelNo2": "",
+        "qDataBag.Wave": "1",
+        "qiD.Serial_Number": "10030",
+        "telNoAppt": "",
+        "uac_chunks": {
+            "uac1": "",
+            "uac2": "",
+            "uac3": ""
+        },
+    }]
+
+
+def test_an_error_is_logged_when_the_case_id_is_not_found_in_bus(caplog):
+    case_uacs = {
+        "10000": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10000",
+            "uac_chunks": {
+                "uac1": "8176",
+                "uac2": "4726",
+                "uac3": "3991"
+            },
+            "full_uac": "817647263991"
+        },
+    }
+
+    filtered_cases = [{"qiD.Serial_Number": "10030", "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "",
+                       "qDataBag.Wave": "1",
+                       "qDataBag.Priority": "1", "hOut": "310"},
+                      ]
+
+    result = append_uacs_to_retained_case(filtered_cases, case_uacs)
+    assert ('root', logging.WARNING, 'Serial number 10030 not found in BUS') in caplog.record_tuples
