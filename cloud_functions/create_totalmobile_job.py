@@ -23,25 +23,25 @@ def validate_request(request_json: Dict) -> None:
 def validate_case_data(case: Dict) -> None:
     REQUIRED_FIELDS = [
         "qiD.Serial_Number",
-            "dataModelName",
-            "qDataBag.TLA",
-            "qDataBag.Wave",            
-            "qDataBag.Prem1",
-            "qDataBag.Prem2",
-            "qDataBag.Prem3",
-            "qDataBag.District",
-            "qDataBag.PostTown",
-            "qDataBag.PostCode",
-            "qDataBag.TelNo",
-            "qDataBag.TelNo2",
-            "telNoAppt",
-            "hOut",
-            "qDataBag.UPRN_Latitude",
-            "qDataBag.UPRN_Longitude",            
-            "qDataBag.Priority",
-            "qDataBag.FieldRegion",
-            "qDataBag.FieldTeam",
-            "qDataBag.WaveComDTE",
+        "dataModelName",
+        "qDataBag.TLA",
+        "qDataBag.Wave",
+        "qDataBag.Prem1",
+        "qDataBag.Prem2",
+        "qDataBag.Prem3",
+        "qDataBag.District",
+        "qDataBag.PostTown",
+        "qDataBag.PostCode",
+        "qDataBag.TelNo",
+        "qDataBag.TelNo2",
+        "telNoAppt",
+        "hOut",
+        "qDataBag.UPRN_Latitude",
+        "qDataBag.UPRN_Longitude",
+        "qDataBag.Priority",
+        "qDataBag.FieldRegion",
+        "qDataBag.FieldTeam",
+        "qDataBag.WaveComDTE",
     ]
     missing_fields = __filter_missing_fields(case, REQUIRED_FIELDS)
     if len(missing_fields) >= 1:
@@ -63,7 +63,7 @@ def create_job_payload(request_json: Dict) -> Dict:
     totalmobile_payload = {
         "identity": {
             "reference": create_job_reference(questionnaire, case["qiD.Serial_Number"]),
-            },
+        },
         "description": create_description(questionnaire, case["qiD.Serial_Number"]),
         "origin": "ONS",
         "duration": 15,
@@ -134,6 +134,7 @@ def create_job_payload(request_json: Dict) -> Dict:
     validate_totalmobile_payload(totalmobile_payload)
     return totalmobile_payload
 
+
 def validate_totalmobile_payload(totalmobile_payload):
     if "duration" not in totalmobile_payload:
         logging.warning("Totalmobile payload was sent without the 'duration' field")
@@ -164,7 +165,8 @@ def create_totalmobile_job(request: flask.Request) -> str:
 
     validate_request(request_json)
 
-    logging.info(f"Creating Totalmobile job for questionnaire {request_json['questionnaire']} with case ID {request_json['case']['qiD.Serial_Number']}")
+    logging.info(
+        f"Creating Totalmobile job for questionnaire {request_json['questionnaire']} with case ID {request_json['case']['qiD.Serial_Number']}")
     response = optimise_client.create_job(
         request_json["world_id"], create_job_payload(request_json)
     )

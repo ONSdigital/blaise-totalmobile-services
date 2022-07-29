@@ -16,7 +16,7 @@ def test_config_validate():
         "rest_api_url",
         "gusty",
         "cloud_function_sa",
-        "bus_url",
+        "bus_api_url",
         "bus_client_id"
     )
     config.validate()
@@ -35,7 +35,7 @@ def test_config_validate_err():
         "rest_api_url",
         "gusty",
         "cloud_function_sa",
-        "bus_url",
+        "bus_api_url",
         "bus_client_id"
     )
     with pytest.raises(ConfigError) as err:

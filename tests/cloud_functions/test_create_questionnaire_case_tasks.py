@@ -66,7 +66,7 @@ def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(
         "qiD.Serial_Number",
         "dataModelName",
         "qDataBag.TLA",
-        "qDataBag.Wave",            
+        "qDataBag.Wave",
         "qDataBag.Prem1",
         "qDataBag.Prem2",
         "qDataBag.Prem3",
@@ -78,7 +78,7 @@ def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(
         "telNoAppt",
         "hOut",
         "qDataBag.UPRN_Latitude",
-        "qDataBag.UPRN_Longitude",            
+        "qDataBag.UPRN_Longitude",
         "qDataBag.Priority",
         "qDataBag.FieldRegion",
         "qDataBag.FieldTeam",
@@ -286,25 +286,32 @@ def test_filter_cases_returns_cases_only_where_criteria_is_met():
     # assert
     assert result == [
         {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "1", "hOut": "310"
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
+            "qDataBag.Priority": "1", "hOut": "310"
         },
         {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "1", "hOut": "0"
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
+            "qDataBag.Priority": "1", "hOut": "0"
         },
         {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "2", "hOut": "0"
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
+            "qDataBag.Priority": "2", "hOut": "0"
         },
         {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "3", "hOut": "0"
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
+            "qDataBag.Priority": "3", "hOut": "0"
         },
         {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "4", "hOut": "0"
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
+            "qDataBag.Priority": "4", "hOut": "0"
         },
         {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "5", "hOut": "0"
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
+            "qDataBag.Priority": "5", "hOut": "0"
         },
         {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1", "qDataBag.Priority": "1", "hOut": ""
+            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
+            "qDataBag.Priority": "1", "hOut": ""
         },
     ]
 
@@ -337,7 +344,7 @@ def test_create_case_tasks_for_questionnaire(
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "",  "", "")
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", "bus_api_url", "bus_client_id"),
     mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
     mock_get_uacs_by_case_id.return_value = {
@@ -394,12 +401,11 @@ def test_create_questionnaire_case_tasks_when_no_cases(
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
-    config = Config("", "", "", "", "", "", "", "", "", "", "",  "", "")
+    config = Config("", "", "", "", "", "", "", "", "", "", "", "", "")
     mock_get_case_data.return_value = []
 
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
-
 
     # assert
     mock_run_async_tasks.assert_not_called()
@@ -419,7 +425,6 @@ def test_create_questionnaire_case_tasks_when_no_cases_after_filtering(
     config = Config("", "", "", "", "", "", "", "", "", "", "", "", "")
     mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}]
     mock_filter_cases.return_value = []
-
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
 

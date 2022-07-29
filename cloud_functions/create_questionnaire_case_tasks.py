@@ -64,7 +64,7 @@ def get_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str
             "qiD.Serial_Number",
             "dataModelName",
             "qDataBag.TLA",
-            "qDataBag.Wave",            
+            "qDataBag.Wave",
             "qDataBag.Prem1",
             "qDataBag.Prem2",
             "qDataBag.Prem3",
@@ -76,7 +76,7 @@ def get_case_data(questionnaire_name: str, config: Config) -> List[Dict[str, str
             "telNoAppt",
             "hOut",
             "qDataBag.UPRN_Latitude",
-            "qDataBag.UPRN_Longitude",            
+            "qDataBag.UPRN_Longitude",
             "qDataBag.Priority",
             "qDataBag.FieldRegion",
             "qDataBag.FieldTeam",
@@ -141,7 +141,7 @@ def append_uacs_to_retained_case(filtered_cases, case_uac_data):
     return cases_with_uacs_appended
 
 
-def retrieve_case_uac_data(config: Config, questionnaire_name: str):
+def get_questionnaire_uacs(config: Config, questionnaire_name: str):
     bus_client = BusClient(config.bus_api_url, config.bus_client_id)
     return bus_client.get_uacs_by_case_id(questionnaire_name)
 
@@ -158,8 +158,10 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     questionnaire_name = request_json["questionnaire"]
     wave = get_wave_from_questionnaire_name(questionnaire_name)
     if wave != "1":
-        logging.info(f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported")
-        raise Exception(f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported")
+        logging.info(
+            f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported")
+        raise Exception(
+            f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported")
 
     logging.info(f"Creating case tasks for questionnaire {questionnaire_name}")
 
@@ -174,8 +176,9 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     if len(retained_cases) == 0:
         logging.info(f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
         return (f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
+    logging.info(f"Retained {len(retained_cases)} cases after filtering")
 
-    questionnaire_uac_data = retrieve_case_uac_data(config, questionnaire_name)
+    questionnaire_uac_data = get_questionnaire_uacs(config, questionnaire_name)
     cases_with_uacs_appended = append_uacs_to_retained_case(retained_cases, questionnaire_uac_data)
     logging.info("Finished appending UACs to case data")
 
@@ -192,7 +195,6 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         for job_model in totalmobile_job_models
     ]
     logging.info(f"Creating {len(tasks)} cloud tasks for questionnaire {questionnaire_name}")
-
 
     run_async_tasks(tasks=tasks, queue_id=config.totalmobile_jobs_queue_id,
                     cloud_function=config.totalmobile_job_cloud_function)
