@@ -344,7 +344,7 @@ def test_create_case_tasks_for_questionnaire(
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", "bus_api_url", "bus_client_id"),
+    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", "bus_api_url", "bus_client_id")
     mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
     mock_get_uacs_by_case_id.return_value = {
