@@ -60,6 +60,11 @@ def mock_create_job_task() -> Dict:
             "qDataBag.FieldRegion": "",
             "qDataBag.FieldTeam": "The A Team",
             "qDataBag.WaveComDTE": "2020-11-17",
+            "uac_chunks": {
+                "uac1": "8176",
+                "uac2": "4726",
+                "uac3": "3993"
+            },
         },
     }
 
