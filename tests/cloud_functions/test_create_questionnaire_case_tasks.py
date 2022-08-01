@@ -69,11 +69,11 @@ def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(_mo
     ]
 
     # act
-    get_case_data(questionnaire_name, config)
+    get_case_data("DST2106Z", config)
 
     # assert
     _mock_rest_api_client.assert_called_with(
-        "gusty", "OPN2101A", fields
+        "gusty", "DST2106Z", fields
     )
 
 
