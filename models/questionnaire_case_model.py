@@ -7,7 +7,7 @@ from typing import Optional
 @dataclass_json
 @dataclass
 class CaseModel:
-    serial_number: str | None = field(metadata=config(field_name="qiD.Serial_Number"))
+    serial_number: Optional[str] = field(default="", metadata=config(field_name="qiD.Serial_Number"))
     # data_model_name: str = field(metadata=config(field_name="qiD.Serial_Number"))
     # survey_type: str
     # wave: str
