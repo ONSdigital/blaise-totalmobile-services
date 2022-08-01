@@ -23,44 +23,27 @@ from models.totalmobile_job_model import TotalmobileJobModel
 
 
 def test_create_task_name_returns_correct_name_when_called():
-    # arrange
     case_data_dict = {"qiD.Serial_Number": "90001"}
     model = TotalmobileJobModel("OPN2101A", "world", case_data_dict)
 
-    # act
-    result = create_task_name(model)
-
-    # assert
-    assert result.startswith("OPN2101A-90001-")
+    assert create_task_name(model).startswith("OPN2101A-90001-")
 
 
 def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_model():
-    # arrange
     case_data_dict = {"qiD.Serial_Number": "90001"}
     model = TotalmobileJobModel("OPN2101A", "world", case_data_dict)
 
-    # act
-    result1 = create_task_name(model)
-    result2 = create_task_name(model)
-
-    # assert
-    assert result1 != result2
+    assert create_task_name(model) != create_task_name(model)
 
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(
-        _mock_rest_api_client,
-):
-    # arrange
+def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(_mock_rest_api_client,):
     config = config_helper.get_default_config()
     _mock_rest_api_client.return_value = {
         "questionnaireName": "DST2106Z",
         "questionnaireId": "12345-12345-12345-12345-12345",
         "reportingData": "",
     }
-
-    blaise_server_park = "gusty"
-    questionnaire_name = "OPN2101A"
 
     fields = [
         "qiD.Serial_Number",
@@ -90,7 +73,7 @@ def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(
 
     # assert
     _mock_rest_api_client.assert_called_with(
-        blaise_server_park, questionnaire_name, fields
+        "gusty", "OPN2101A", fields
     )
 
 
