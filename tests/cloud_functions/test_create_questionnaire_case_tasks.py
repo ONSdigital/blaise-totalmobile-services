@@ -37,13 +37,10 @@ def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_mod
 
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(_mock_rest_api_client,):
+def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(_mock_rest_api_client):
     config = config_helper.get_default_config()
-    _mock_rest_api_client.return_value = {
-        "questionnaireName": "DST2106Z",
-        "questionnaireId": "12345-12345-12345-12345-12345",
-        "reportingData": "",
-    }
+    blaise_server_park = "gusty"
+    questionnaire_name = "DST2106Z"
 
     fields = [
         "qiD.Serial_Number",
@@ -69,11 +66,11 @@ def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(_mo
     ]
 
     # act
-    get_case_data("DST2106Z", config)
+    get_case_data(questionnaire_name, config)
 
     # assert
     _mock_rest_api_client.assert_called_with(
-        "gusty", "DST2106Z", fields
+        blaise_server_park, questionnaire_name, fields
     )
 
 
