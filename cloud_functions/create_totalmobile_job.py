@@ -62,71 +62,71 @@ def create_job_payload(request_json: Dict) -> Dict:
 
     totalmobile_payload = {
         "identity": {
-            "reference": create_job_reference(questionnaire, case["qiD.Serial_Number"]),
+            "reference": create_job_reference(questionnaire, case.serial_number),
         },
-        "description": create_description(questionnaire, case["qiD.Serial_Number"]),
+        "description": create_description(questionnaire, case.serial_number),
         "origin": "ONS",
         "duration": 15,
-        "workType": case["qDataBag.TLA"],
+        "workType": case.survey_type,
         "skills": [
             {
                 "identity": {
-                    "reference": case["qDataBag.TLA"],
+                    "reference": casesurvey_type,
                 },
             },
         ],
         "dueDate": {
-            "end": case["qDataBag.WaveComDTE"],
+            "end": case.wave_com_dte,
         },
         "location": {
             "addressDetail": {
-                "addressLine1": case["qDataBag.Prem1"],
-                "addressLine2": case["qDataBag.Prem2"],
-                "addressLine3": case["qDataBag.Prem3"],
-                "addressLine4": case["qDataBag.District"],
-                "addressLine5": case["qDataBag.PostTown"],
-                "postCode": case["qDataBag.PostCode"],
+                "addressLine1": case.address_line_1,
+                "addressLine2": case.address_line_2,
+                "addressLine3": case.address_line_3,
+                "addressLine4": case.county,
+                "addressLine5": case.town,
+                "postCode": case.postcode,
                 "coordinates": {
-                    "latitude": case["qDataBag.UPRN_Latitude"],
-                    "longitude": case["qDataBag.UPRN_Longitude"],
+                    "latitude": case.latitude,
+                    "longitude": case.longitude,
                 },
             },
         },
         "contact": {
-            "name": case["qDataBag.PostCode"],
+            "name": case.postcode,
         },
         "additionalProperties": [
             {
                 "name": "surveyName",
-                "value": case["dataModelName"]
+                "value": case.data_model_name
             },
             {
                 "name": "tla",
-                "value": case["qDataBag.TLA"]
+                "value": case.survey_type
             },
             {
                 "name": "wave",
-                "value": case["qDataBag.Wave"]
+                "value": case.wave
             },
             {
                 "name": "priority",
-                "value": case["qDataBag.Priority"]
+                "value": case.priority
             },
             {
                 "name": "fieldTeam",
-                "value": case["qDataBag.FieldTeam"]
+                "value": case.field_team
             },
             {
                 "name": "uac1",
-                "value": case["uac_chunks"]["uac1"]
+                "value": case.uac_chunks.uac1
             },
             {
                 "name": "uac2",
-                "value": case["uac_chunks"]["uac2"]
+                "value": case.uac_chunks.uac2
             },
             {
                 "name": "uac3",
-                "value": case["uac_chunks"]["uac3"]
+                "value": case.uac_chunks.uac3
             },
         ],
     }
