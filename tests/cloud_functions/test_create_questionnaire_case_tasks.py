@@ -6,7 +6,7 @@ import flask
 import pytest
 import logging
 
-from appconfig import Config
+from tests.helpers import config_helper
 from client.optimise import OptimiseClient
 from cloud_functions.create_questionnaire_case_tasks import (
     create_questionnaire_case_tasks,
@@ -23,44 +23,27 @@ from models.totalmobile_job_model import TotalmobileJobModel
 
 
 def test_create_task_name_returns_correct_name_when_called():
-    # arrange
     case_data_dict = {"qiD.Serial_Number": "90001"}
     model = TotalmobileJobModel("OPN2101A", "world", case_data_dict)
 
-    # act
-    result = create_task_name(model)
-
-    # assert
-    assert result.startswith("OPN2101A-90001-")
+    assert create_task_name(model).startswith("OPN2101A-90001-")
 
 
 def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_model():
-    # arrange
     case_data_dict = {"qiD.Serial_Number": "90001"}
     model = TotalmobileJobModel("OPN2101A", "world", case_data_dict)
 
-    # act
-    result1 = create_task_name(model)
-    result2 = create_task_name(model)
-
-    # assert
-    assert result1 != result2
+    assert create_task_name(model) != create_task_name(model)
 
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(
-        _mock_rest_api_client,
-):
-    # arrange
-    config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "", "", "")
+def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(_mock_rest_api_client,):
+    config = config_helper.get_default_config()
     _mock_rest_api_client.return_value = {
         "questionnaireName": "DST2106Z",
         "questionnaireId": "12345-12345-12345-12345-12345",
         "reportingData": "",
     }
-
-    blaise_server_park = "gusty"
-    questionnaire_name = "OPN2101A"
 
     fields = [
         "qiD.Serial_Number",
@@ -86,11 +69,11 @@ def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(
     ]
 
     # act
-    get_case_data(questionnaire_name, config)
+    get_case_data("DST2106Z", config)
 
     # assert
     _mock_rest_api_client.assert_called_with(
-        blaise_server_park, questionnaire_name, fields
+        "gusty", "DST2106Z", fields
     )
 
 
@@ -99,7 +82,7 @@ def test_get_case_data_returns_the_case_data_supplied_by_the_rest_api_client(
         _mock_rest_api_client,
 ):
     # arrange
-    config = Config("", "", "", "", "", "", "", "", "rest_api_url", "gusty", "", "", "")
+    config = config_helper.get_default_config()
     _mock_rest_api_client.return_value = {
         "questionnaireName": "DST2106Z",
         "questionnaireId": "12345-12345-12345-12345-12345",
@@ -344,7 +327,7 @@ def test_create_case_tasks_for_questionnaire(
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", "bus_api_url", "bus_client_id")
+    config = config_helper.get_default_config()
     mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
     mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
     mock_get_uacs_by_case_id.return_value = {
@@ -383,8 +366,8 @@ def test_create_case_tasks_for_questionnaire(
     mock_filter_cases.assert_called_with([{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}])
     mock_run_async_tasks.assert_called_once()
     kwargs = mock_run_async_tasks.call_args.kwargs
-    assert kwargs['cloud_function'] == "cloud-function"
-    assert kwargs['queue_id'] == "queue-id"
+    assert kwargs['cloud_function'] == "totalmobile_job_cloud_function"
+    assert kwargs['queue_id'] == "totalmobile_jobs_queue_id"
     assert len(kwargs['tasks']) == 1
     task = kwargs['tasks'][0]
     assert task[0][0:3] == "LMS"
@@ -401,7 +384,7 @@ def test_create_questionnaire_case_tasks_when_no_cases(
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
-    config = Config("", "", "", "", "", "", "", "", "", "", "", "", "")
+    config = config_helper.get_default_config()
     mock_get_case_data.return_value = []
 
     # act
@@ -422,7 +405,7 @@ def test_create_questionnaire_case_tasks_when_no_cases_after_filtering(
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
-    config = Config("", "", "", "", "", "", "", "", "", "", "", "", "")
+    config = config_helper.get_default_config()
     mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}]
     mock_filter_cases.return_value = []
     # act
@@ -436,7 +419,7 @@ def test_create_questionnaire_case_tasks_when_no_cases_after_filtering(
 def test_create_questionnaire_case_tasks_errors_if_misssing_questionnaire():
     # arrange
     mock_request = flask.Request.from_values(json={"blah": "blah"})
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", "", "")
+    config = config_helper.get_default_config()
     # assert
     with pytest.raises(Exception) as err:
         create_questionnaire_case_tasks(mock_request, config)
@@ -454,7 +437,7 @@ def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire(
         mock_get_world_ids,
 ):
     # arrange
-    config = Config("", "", "", "", "queue-id", "cloud-function", "", "", "", "", "", "", "")
+    config = config_helper.get_default_config()
     mock_request = flask.Request.from_values(json={"questionnaire": "OPN2101A"})
     mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
     mock_get_world_ids.return_value = "1"
@@ -482,21 +465,7 @@ def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error():
 @mock.patch.object(OptimiseClient, "get_worlds")
 def test_get_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mock_optimise_client):
     # arrange
-    config = Config(
-        "totalmobile_url",
-        "totalmobile_instance",
-        "totalmobile_client_id",
-        "totalmobile_client_secret",
-        "",
-        "",
-        "",
-        "",
-        "rest_api_url",
-        "gusty",
-        "",
-        "",
-        ""
-    )
+    config = config_helper.get_default_config()
 
     filtered_cases = [
         {"qDataBag.FieldRegion": "Region 1"},
@@ -553,21 +522,7 @@ def test_get_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mock_op
 @mock.patch.object(OptimiseClient, "get_worlds")
 def test_get_world_ids_logs_a_console_error_when_given_an_unknown_world(_mock_optimise_client, caplog):
     # arrange
-    config = Config(
-        "totalmobile_url",
-        "totalmobile_instance",
-        "totalmobile_client_id",
-        "totalmobile_client_secret",
-        "",
-        "",
-        "",
-        "",
-        "rest_api_url",
-        "gusty",
-        "",
-        "",
-        ""
-    )
+    config = config_helper.get_default_config()
 
     filtered_cases = [
         {"qDataBag.FieldRegion": "Risca"},
@@ -594,21 +549,7 @@ def test_get_world_ids_logs_a_console_error_when_given_an_unknown_world(_mock_op
 def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world(
         _mock_optimise_client, caplog):
     # arrange
-    config = Config(
-        "totalmobile_url",
-        "totalmobile_instance",
-        "totalmobile_client_id",
-        "totalmobile_client_secret",
-        "",
-        "",
-        "",
-        "",
-        "rest_api_url",
-        "gusty",
-        "",
-        "",
-        ""
-    )
+    config = config_helper.get_default_config()
 
     filtered_cases = [
         {"qDataBag.FieldRegion": "Risca"},
@@ -638,21 +579,7 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
 @mock.patch.object(OptimiseClient, "get_worlds")
 def test_get_world_ids_logs_a_console_error_when_field_region_is_missing(_mock_optimise_client, caplog):
     # arrange
-    config = Config(
-        "totalmobile_url",
-        "totalmobile_instance",
-        "totalmobile_client_id",
-        "totalmobile_client_secret",
-        "",
-        "",
-        "",
-        "",
-        "rest_api_url",
-        "gusty",
-        "",
-        "",
-        ""
-    )
+    config = config_helper.get_default_config()
 
     filtered_cases = [
         {"qDataBag.FieldRegion": ""},
@@ -679,21 +606,7 @@ def test_get_world_ids_logs_a_console_error_when_field_region_is_missing(_mock_o
 def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world_and_a_known_world(
         _mock_optimise_client, caplog):
     # arrange
-    config = Config(
-        "totalmobile_url",
-        "totalmobile_instance",
-        "totalmobile_client_id",
-        "totalmobile_client_secret",
-        "",
-        "",
-        "",
-        "",
-        "rest_api_url",
-        "gusty",
-        "",
-        "",
-        ""
-    )
+    config = config_helper.get_default_config()
 
     filtered_cases = [
         {"qDataBag.FieldRegion": ""},
