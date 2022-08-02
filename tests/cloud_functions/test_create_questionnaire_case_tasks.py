@@ -45,6 +45,9 @@ def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(_mo
         "reportingData": "",
     }
 
+    blaise_server_park = "gusty"
+    questionnaire_name = "OPN2101A"
+
     fields = [
         "qiD.Serial_Number",
         "dataModelName",
@@ -73,7 +76,7 @@ def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(_mo
 
     # assert
     _mock_rest_api_client.assert_called_with(
-        "gusty", "DST2106Z", fields
+        blaise_server_park, questionnaire_name, fields
     )
 
 
