@@ -5,6 +5,7 @@ import blaise_restapi
 import flask
 import pytest
 import logging
+from models.questionnaire_case_model import QuestionnaireCaseModel, UacChunks
 
 from tests.helpers import config_helper
 from client.optimise import OptimiseClient
@@ -14,7 +15,7 @@ from cloud_functions.create_questionnaire_case_tasks import (
     filter_cases,
     get_wave_from_questionnaire_name,
     map_totalmobile_job_models,
-    get_case_data,
+    get_questionnaire_case_model_list,
     get_world_ids,
     validate_request,
     append_uacs_to_retained_case
@@ -39,11 +40,7 @@ def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_mod
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
 def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(_mock_rest_api_client,):
     config = config_helper.get_default_config()
-    _mock_rest_api_client.return_value = {
-        "questionnaireName": "DST2106Z",
-        "questionnaireId": "12345-12345-12345-12345-12345",
-        "reportingData": "",
-    }
+    questionnaire_name = "OPN2101A"
 
     fields = [
         "qiD.Serial_Number",
@@ -69,7 +66,7 @@ def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(_mo
     ]
 
     # act
-    get_case_data(questionnaire_name, config)
+    get_questionnaire_case_model_list(questionnaire_name, config)
 
     # assert
     _mock_rest_api_client.assert_called_with(
@@ -87,22 +84,25 @@ def test_get_case_data_returns_the_case_data_supplied_by_the_rest_api_client(
         "questionnaireName": "DST2106Z",
         "questionnaireId": "12345-12345-12345-12345-12345",
         "reportingData": [
-            {"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110"},
-            {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "110"},
-            {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "110"},
+            {"qiD.Serial_Number": "10010", "hOut": "110"},
+            {"qiD.Serial_Number": "10020", "hOut": "210"},
+            {"qiD.Serial_Number": "10030", "hOut": "310"},
         ],
     }
     questionnaire_name = "OPN2101A"
 
     # act
-    result = get_case_data(questionnaire_name, config)
+    result = get_questionnaire_case_model_list(questionnaire_name, config)
 
     # assert
-    assert result == [
-        {"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110"},
-        {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "110"},
-        {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "110"},
-    ]
+    assert result[0].serial_number == "10010" 
+    assert result[0].outcome_code == "110"
+
+    assert result[1].serial_number == "10020" 
+    assert result[1].outcome_code == "210"
+
+    assert result[2].serial_number == "10030" 
+    assert result[2].outcome_code == "310"
 
 
 def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
@@ -144,158 +144,190 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
 def test_filter_cases_returns_cases_only_where_criteria_is_met():
     # arrange
     cases = [
-        {
-            # should return
-            "qDataBag.TelNo": "",
-            "qDataBag.TelNo2": "",
-            "telNoAppt": "",
-            "qDataBag.Wave": "1",
-            "qDataBag.Priority": "1",
-            "hOut": "310"
-        },
-        {
-            # should not return
-            "qDataBag.TelNo": "123435",
-            "qDataBag.TelNo2": "",
-            "telNoAppt": "",
-            "qDataBag.Wave": "1",
-            "qDataBag.Priority": "1",
-            "hOut": "310"
-        },
-        {
-            # should not return
-            "qDataBag.TelNo": "",
-            "qDataBag.TelNo2": "12345",
-            "telNoAppt": "",
-            "qDataBag.Wave": "1",
-            "qDataBag.Priority": "1",
-            "hOut": "310"
-        },
-        {
-            # should not return
-            "qDataBag.TelNo": "",
-            "qDataBag.TelNo2": "",
-            "telNoAppt": "12345",
-            "qDataBag.Wave": "1",
-            "qDataBag.Priority": "1",
-            "hOut": "310"
-        },
-        {
-            # should not return
-            "qDataBag.TelNo": "",
-            "qDataBag.TelNo2": "",
-            "telNoAppt": "",
-            "qDataBag.Wave": "2",
-            "qDataBag.Priority": "1",
-            "hOut": "310"
-        },
-        {
-            # should not return
-            "qDataBag.TelNo": "",
-            "qDataBag.TelNo2": "",
-            "telNoAppt": "",
-            "qDataBag.Wave": "1",
-            "qDataBag.Priority": "6",
-            "hOut": "310"
-        },
-        {
-            # should not return
-            "qDataBag.TelNo": "",
-            "qDataBag.TelNo2": "",
-            "telNoAppt": "",
-            "qDataBag.Wave": "1",
-            "qDataBag.Priority": "1",
-            "hOut": "410"
-        },
-        {
-            # should return
-            "qDataBag.TelNo": "",
-            "qDataBag.TelNo2": "",
-            "telNoAppt": "",
-            "qDataBag.Wave": "1",
-            "qDataBag.Priority": "1",
-            "hOut": "0"
-        },
-        {
-            # should return
-            "qDataBag.TelNo": "",
-            "qDataBag.TelNo2": "",
-            "telNoAppt": "",
-            "qDataBag.Wave": "1",
-            "qDataBag.Priority": "2",
-            "hOut": "0"
-        },
-        {
-            # should return
-            "qDataBag.TelNo": "",
-            "qDataBag.TelNo2": "",
-            "telNoAppt": "",
-            "qDataBag.Wave": "1",
-            "qDataBag.Priority": "3",
-            "hOut": "0"
-        },
-        {
-            # should return
-            "qDataBag.TelNo": "",
-            "qDataBag.TelNo2": "",
-            "telNoAppt": "",
-            "qDataBag.Wave": "1",
-            "qDataBag.Priority": "4",
-            "hOut": "0"
-        },
-        {
-            # should return
-            "qDataBag.TelNo": "",
-            "qDataBag.TelNo2": "",
-            "telNoAppt": "",
-            "qDataBag.Wave": "1",
-            "qDataBag.Priority": "5",
-            "hOut": "0"
-        },
-        {
-            # should return
-            "qDataBag.TelNo": "",
-            "qDataBag.TelNo2": "",
-            "telNoAppt": "",
-            "qDataBag.Wave": "1",
-            "qDataBag.Priority": "1",
-            "hOut": ""
-        },
+        # should return
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "1",
+            outcome_code= "310"  
+        ),
+        # should not return
+        QuestionnaireCaseModel(
+            telephone_number_1 = "123435",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "1",
+            outcome_code= "310"  
+        ),      
+        # should not return
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "123435",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "1",
+            outcome_code= "310"  
+        ),      
+        # should not return
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "123435",          
+            wave = "1",
+            priority = "1",
+            outcome_code= "310"  
+        ),    
+        # should not return
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "2",
+            priority = "1",
+            outcome_code= "310"  
+        ),       
+         # should not return
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "6",
+            outcome_code= "310"  
+        ),                       
+        # should not return
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "1",
+            outcome_code= "410"  
+        ),       
+        # should return
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "1",
+            outcome_code= "0"  
+        ),      
+        # should return
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "2",
+            outcome_code= "0"  
+        ),   
+        # should return
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "3",
+            outcome_code= "0"  
+        ),  
+        # should return
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "4",
+            outcome_code= "0"  
+        ),  
+        # should return
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "5",
+            outcome_code= "0"  
+        ),     
+        # should return
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "5",
+            outcome_code= ""  
+        )                                                
     ]
-
     # act
+
     result = filter_cases(cases)
+    print(len(cases))
+    print(len(result))
 
     # assert
     assert result == [
-        {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-            "qDataBag.Priority": "1", "hOut": "310"
-        },
-        {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-            "qDataBag.Priority": "1", "hOut": "0"
-        },
-        {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-            "qDataBag.Priority": "2", "hOut": "0"
-        },
-        {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-            "qDataBag.Priority": "3", "hOut": "0"
-        },
-        {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-            "qDataBag.Priority": "4", "hOut": "0"
-        },
-        {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-            "qDataBag.Priority": "5", "hOut": "0"
-        },
-        {
-            "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "", "qDataBag.Wave": "1",
-            "qDataBag.Priority": "1", "hOut": ""
-        },
+        # should return
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "1",
+            outcome_code= "310"  
+        ),
+   # should return
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "1",
+            outcome_code= "0"  
+        ),      
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "2",
+            outcome_code= "0"  
+        ),   
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "3",
+            outcome_code= "0"  
+        ),  
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "4",
+            outcome_code= "0"  
+        ),  
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "5",
+            outcome_code= "0"  
+        ),     
+        QuestionnaireCaseModel(
+            telephone_number_1 = "",
+            telephone_number_2 = "",
+            appointment_telephone_number = "",          
+            wave = "1",
+            priority = "5",
+            outcome_code= ""  
+        )  
     ]
 
 
@@ -313,7 +345,7 @@ def test_validate_request_when_missing_fields():
 
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.append_uacs_to_retained_case")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.get_world_ids")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_case_data")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_questionnaire_case_model_list")
 @mock.patch("client.bus.BusClient.get_uacs_by_case_id")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
@@ -376,16 +408,16 @@ def test_create_case_tasks_for_questionnaire(
     assert result == "Done"
 
 
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_case_data")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_questionnaire_case_model_list")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 def test_create_questionnaire_case_tasks_when_no_cases(
         mock_run_async_tasks,
-        mock_get_case_data,
+        mock_get_questionnaire_case_model_list,
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = config_helper.get_default_config()
-    mock_get_case_data.return_value = []
+    mock_get_questionnaire_case_model_list.return_value = []
 
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
@@ -395,18 +427,18 @@ def test_create_questionnaire_case_tasks_when_no_cases(
     assert result == "Exiting as no cases to send for questionnaire LMS2101_AA1"
 
 
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_case_data")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_questionnaire_case_model_list")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 def test_create_questionnaire_case_tasks_when_no_cases_after_filtering(
         mock_run_async_tasks,
         mock_filter_cases,
-        mock_get_case_data,
+        mock_get_questionnaire_case_model_list,
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = config_helper.get_default_config()
-    mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}]
+    mock_get_questionnaire_case_model_list.return_value = [QuestionnaireCaseModel(serial_number = "10010")]
     mock_filter_cases.return_value = []
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
@@ -429,19 +461,19 @@ def test_create_questionnaire_case_tasks_errors_if_misssing_questionnaire():
 
 
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.get_world_ids")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_case_data")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_questionnaire_case_model_list")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire(
         mock_filter_cases,
-        mock_get_case_data,
+        mock_get_questionnaire_case_model_list,
         mock_get_world_ids,
 ):
     # arrange
     config = config_helper.get_default_config()
     mock_request = flask.Request.from_values(json={"questionnaire": "OPN2101A"})
-    mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
+    mock_get_questionnaire_case_model_list.return_value = [QuestionnaireCaseModel(serial_number = "10010"), QuestionnaireCaseModel(serial_number = "10012")]
     mock_get_world_ids.return_value = "1"
-    mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
+    mock_filter_cases.return_value = [QuestionnaireCaseModel(serial_number = "10010")]
 
     # act
     with pytest.raises(Exception) as err:
@@ -467,11 +499,9 @@ def test_get_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mock_op
     # arrange
     config = config_helper.get_default_config()
 
-    filtered_cases = [
-        {"qDataBag.FieldRegion": "Region 1"},
-        {"qDataBag.FieldRegion": "Region 2"},
-        {"qDataBag.FieldRegion": "Region 4"},
-    ]
+    filtered_cases = [QuestionnaireCaseModel(field_region = "Region 1"),
+                      QuestionnaireCaseModel(field_region = "Region 2"),
+                      QuestionnaireCaseModel(field_region = "Region 4")]    
 
     _mock_optimise_client.return_value = [
         {
@@ -512,10 +542,11 @@ def test_get_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mock_op
         "3fa85f64-5717-4562-b3fc-2c963f66afa7",
         "3fa85f64-5717-4562-b3fc-2c963f66afa9",
     ]
+
     assert new_filtered_cases == [
-        {"qDataBag.FieldRegion": "Region 1"},
-        {"qDataBag.FieldRegion": "Region 2"},
-        {"qDataBag.FieldRegion": "Region 4"},
+        QuestionnaireCaseModel(field_region = "Region 1"),
+        QuestionnaireCaseModel(field_region = "Region 2"),
+        QuestionnaireCaseModel(field_region = "Region 4")
     ]
 
 
@@ -524,9 +555,7 @@ def test_get_world_ids_logs_a_console_error_when_given_an_unknown_world(_mock_op
     # arrange
     config = config_helper.get_default_config()
 
-    filtered_cases = [
-        {"qDataBag.FieldRegion": "Risca"},
-    ]
+    filtered_cases = [QuestionnaireCaseModel(field_region = "Risca")]    
 
     _mock_optimise_client.return_value = [
         {
@@ -551,10 +580,8 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
     # arrange
     config = config_helper.get_default_config()
 
-    filtered_cases = [
-        {"qDataBag.FieldRegion": "Risca"},
-        {"qDataBag.FieldRegion": "Region 1"},
-    ]
+    filtered_cases = [QuestionnaireCaseModel(field_region = "Risca"),
+                      QuestionnaireCaseModel(field_region = "Region 1")]    
 
     _mock_optimise_client.return_value = [
         {
@@ -572,7 +599,7 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
     # assert
     assert len(world_ids) == len(new_filtered_cases)
     assert world_ids == ["3fa85f64-5717-4562-b3fc-2c963f66afa6"]
-    assert new_filtered_cases == [{"qDataBag.FieldRegion": "Region 1"}]
+    assert new_filtered_cases == [QuestionnaireCaseModel(field_region = "Region 1")]
     assert ('root', logging.WARNING, 'Unsupported world: Risca') in caplog.record_tuples
 
 
@@ -581,9 +608,7 @@ def test_get_world_ids_logs_a_console_error_when_field_region_is_missing(_mock_o
     # arrange
     config = config_helper.get_default_config()
 
-    filtered_cases = [
-        {"qDataBag.FieldRegion": ""},
-    ]
+    filtered_cases = [QuestionnaireCaseModel(field_region = "")]    
 
     _mock_optimise_client.return_value = [
         {
@@ -608,10 +633,8 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
     # arrange
     config = config_helper.get_default_config()
 
-    filtered_cases = [
-        {"qDataBag.FieldRegion": ""},
-        {"qDataBag.FieldRegion": "Region 1"},
-    ]
+    filtered_cases = [QuestionnaireCaseModel(field_region = ""),
+                      QuestionnaireCaseModel(field_region = "Region 1")]    
 
     _mock_optimise_client.return_value = [
         {
@@ -629,7 +652,7 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
     # assert
     assert len(world_ids) == len(new_filtered_cases)
     assert world_ids == ["3fa85f64-5717-4562-b3fc-2c963f66afa6"]
-    assert new_filtered_cases == [{"qDataBag.FieldRegion": "Region 1"}]
+    assert new_filtered_cases == [QuestionnaireCaseModel(field_region = "Region 1")]
     assert ('root', logging.WARNING, 'Case rejected. Missing Field Region') in caplog.record_tuples
 
 
@@ -667,26 +690,29 @@ def test_uacs_are_correctly_appended_to_case_data():
         },
     }
 
-    filtered_cases = [{"qiD.Serial_Number": "10030", "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "",
-                       "qDataBag.Wave": "1",
-                       "qDataBag.Priority": "1", "hOut": "310"},
-                      ]
+    filtered_cases = [QuestionnaireCaseModel(
+        serial_number = "10030", 
+        telephone_number_1 = "", 
+        telephone_number_2 = "", 
+        appointment_telephone_number = "",
+        wave = "1", 
+        priority = "1", 
+        outcome_code = "310")]    
 
     result = append_uacs_to_retained_case(filtered_cases, case_uacs)
-    assert result == [{
-        "hOut": "310",
-        "qDataBag.Priority": "1",
-        "qDataBag.TelNo": "",
-        "qDataBag.TelNo2": "",
-        "qDataBag.Wave": "1",
-        "qiD.Serial_Number": "10030",
-        "telNoAppt": "",
-        "uac_chunks": {
-            "uac1": "8176",
-            "uac2": "4726",
-            "uac3": "3993"
-        },
-    }]
+    assert result == [QuestionnaireCaseModel(
+                serial_number = "10030", 
+                telephone_number_1 = "", 
+                telephone_number_2 = "", 
+                appointment_telephone_number = "",
+                wave = "1", 
+                priority = "1", 
+                outcome_code = "310",
+                uac_chunks = UacChunks(
+                    uac1 = "8176",
+                    uac2 = "4726",
+                    uac3 = "3993"
+                ))]  
 
 
 def test_uacs_with_blank_values_are_appended_to_case_data_when_case_id_not_found_in_bus():
@@ -703,27 +729,31 @@ def test_uacs_with_blank_values_are_appended_to_case_data_when_case_id_not_found
         },
     }
 
-    filtered_cases = [{"qiD.Serial_Number": "10030", "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "",
-                       "qDataBag.Wave": "1",
-                       "qDataBag.Priority": "1", "hOut": "310"},
-                      ]
+    filtered_cases = [QuestionnaireCaseModel(
+        serial_number = "10030", 
+        telephone_number_1 = "", 
+        telephone_number_2 = "", 
+        appointment_telephone_number = "",
+        wave = "1", 
+        priority = "1", 
+        outcome_code = "310")]    
+
 
     result = append_uacs_to_retained_case(filtered_cases, case_uacs)
-    assert result == [{
-        "hOut": "310",
-        "qDataBag.Priority": "1",
-        "qDataBag.TelNo": "",
-        "qDataBag.TelNo2": "",
-        "qDataBag.Wave": "1",
-        "qiD.Serial_Number": "10030",
-        "telNoAppt": "",
-        "uac_chunks": {
-            "uac1": "",
-            "uac2": "",
-            "uac3": ""
-        },
-    }]
-
+    assert result == [QuestionnaireCaseModel(
+                serial_number = "10030", 
+                telephone_number_1 = "", 
+                telephone_number_2 = "", 
+                appointment_telephone_number = "",
+                wave = "1", 
+                priority = "1", 
+                outcome_code = "310",
+                uac_chunks = UacChunks(
+                    uac1 = "",
+                    uac2 = "",
+                    uac3 = ""
+                ))]   
+    
 
 def test_an_error_is_logged_when_the_case_id_is_not_found_in_bus(caplog):
     case_uacs = {
@@ -739,10 +769,14 @@ def test_an_error_is_logged_when_the_case_id_is_not_found_in_bus(caplog):
         },
     }
 
-    filtered_cases = [{"qiD.Serial_Number": "10030", "qDataBag.TelNo": "", "qDataBag.TelNo2": "", "telNoAppt": "",
-                       "qDataBag.Wave": "1",
-                       "qDataBag.Priority": "1", "hOut": "310"},
-                      ]
+    filtered_cases = [QuestionnaireCaseModel(
+        serial_number = "10030", 
+        telephone_number_1 = "", 
+        telephone_number_2 = "", 
+        appointment_telephone_number = "",
+        wave = "1", 
+        priority = "1", 
+        outcome_code = "310")]    
 
     result = append_uacs_to_retained_case(filtered_cases, case_uacs)
     assert ('root', logging.WARNING, 'Serial number 10030 not found in BUS') in caplog.record_tuples
