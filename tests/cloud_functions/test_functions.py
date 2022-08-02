@@ -65,7 +65,6 @@ def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(
 @mock.patch.object(tasks_v2.CloudTasksAsyncClient, "create_task")
 def test_create_tasks_gets_called_once_for_each_task_given_to_it(mock_create_task):
     # arrange
-    task_client = tasks_v2.CloudTasksAsyncClient()
     mock_create_task.return_value = {}
     task_requests = [
         tasks_v2.CreateTaskRequest(parent="qid1", task=tasks_v2.Task()),
@@ -73,19 +72,17 @@ def test_create_tasks_gets_called_once_for_each_task_given_to_it(mock_create_tas
     ]
 
     # act
-    create_tasks(task_requests, task_client)
+    create_tasks(task_requests, mock_create_task)
 
     # assert
     mock_create_task.assert_has_calls(
-        [mock.call(task_request) for task_request in task_requests]
+        [mock.call.create_task(task_request) for task_request in task_requests]
     )
 
 
 @mock.patch.object(tasks_v2.CloudTasksAsyncClient, "create_task")
 def test_create_tasks_returns_the_correct_number_of_tasks(mock_create_task):
     # arrange
-    GOOGLE_APPLICATION_CREDENTIALS = "blah"
-    task_client = tasks_v2.CloudTasksAsyncClient()
     mock_create_task.return_value = {}
     task_requests = [
         tasks_v2.CreateTaskRequest(parent="qid1", task=tasks_v2.Task()),
@@ -93,7 +90,7 @@ def test_create_tasks_returns_the_correct_number_of_tasks(mock_create_task):
     ]
 
     # act
-    result = create_tasks(task_requests, task_client)
+    result = create_tasks(task_requests, mock_create_task)
 
     # assert
     assert len(result) == 2
