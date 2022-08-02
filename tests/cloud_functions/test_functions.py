@@ -84,6 +84,7 @@ def test_create_tasks_gets_called_once_for_each_task_given_to_it(mock_create_tas
 @mock.patch.object(tasks_v2.CloudTasksAsyncClient, "create_task")
 def test_create_tasks_returns_the_correct_number_of_tasks(mock_create_task):
     # arrange
+    GOOGLE_APPLICATION_CREDENTIALS = "blah"
     task_client = tasks_v2.CloudTasksAsyncClient()
     mock_create_task.return_value = {}
     task_requests = [
