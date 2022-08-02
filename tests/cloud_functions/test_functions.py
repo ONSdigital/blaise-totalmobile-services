@@ -62,25 +62,9 @@ def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(
     )
 
 
-@mock.patch.object(Config, "from_env")
 @mock.patch.object(tasks_v2.CloudTasksAsyncClient, "create_task")
-def test_create_tasks_gets_called_once_for_each_task_given_to_it(mock_create_task, mock_config_from_env):
+def test_create_tasks_gets_called_once_for_each_task_given_to_it(mock_create_task):
     # arrange
-    mock_config_from_env.return_value = Config(
-        "",
-        "",
-        "",
-        "",
-        "totalmobile_jobs_queue_id",
-        "cloud_function",
-        "project",
-        "region",
-        "rest_api_url",
-        "gusty",
-        "cloud_function_sa",
-        "",
-        ""
-    )
     task_client = tasks_v2.CloudTasksAsyncClient()
     mock_create_task.return_value = {}
     task_requests = [
@@ -97,25 +81,9 @@ def test_create_tasks_gets_called_once_for_each_task_given_to_it(mock_create_tas
     )
 
 
-@mock.patch.object(Config, "from_env")
 @mock.patch.object(tasks_v2.CloudTasksAsyncClient, "create_task")
-def test_create_tasks_returns_the_correct_number_of_tasks(mock_create_task, mock_config_from_env):
+def test_create_tasks_returns_the_correct_number_of_tasks(mock_create_task):
     # arrange
-    mock_config_from_env.return_value = Config(
-        "",
-        "",
-        "",
-        "",
-        "totalmobile_jobs_queue_id",
-        "cloud_function",
-        "project",
-        "region",
-        "rest_api_url",
-        "gusty",
-        "cloud_function_sa",
-        "",
-        ""
-    )
     task_client = tasks_v2.CloudTasksAsyncClient()
     mock_create_task.return_value = {}
     task_requests = [
