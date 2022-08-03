@@ -24,15 +24,15 @@ from models.totalmobile_job_model import TotalmobileJobModel
 
 
 def test_create_task_name_returns_correct_name_when_called():
-    case_data_dict = {"qiD.Serial_Number": "90001"}
-    model = TotalmobileJobModel("OPN2101A", "world", case_data_dict)
+    questionnaire_case_model = QuestionnaireCaseModel(serial_number = "90001")
+    model = TotalmobileJobModel("OPN2101A", "world", questionnaire_case_model)
 
     assert create_task_name(model).startswith("OPN2101A-90001-")
 
 
 def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_model():
-    case_data_dict = {"qiD.Serial_Number": "90001"}
-    model = TotalmobileJobModel("OPN2101A", "world", case_data_dict)
+    questionnaire_case_model = QuestionnaireCaseModel(serial_number = "90001")
+    model = TotalmobileJobModel("OPN2101A", "world", questionnaire_case_model)
 
     assert create_task_name(model) != create_task_name(model)
 
@@ -353,15 +353,17 @@ def test_create_case_tasks_for_questionnaire(
         mock_run_async_tasks,
         mock_filter_cases,
         mock_get_uacs_by_case_id,
-        mock_get_case_data,
+        mock_get_questionnaire_case_model_list,
         mock_get_world_ids,
         mock_append_uacs_to_retained_case
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = config_helper.get_default_config()
-    mock_get_case_data.return_value = [{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}]
-    mock_filter_cases.return_value = [{"qiD.Serial_Number": "10010"}]
+    mock_get_questionnaire_case_model_list.return_value = [
+        QuestionnaireCaseModel(serial_number = "10010"), 
+        QuestionnaireCaseModel(serial_number = "10012")]
+    mock_filter_cases.return_value = [QuestionnaireCaseModel(serial_number = "10010")]
     mock_get_uacs_by_case_id.return_value = {
         "10010": {
             "instrument_name": "LMS2101_AA1",
@@ -374,28 +376,22 @@ def test_create_case_tasks_for_questionnaire(
             "full_uac": "817647263991"
         }
     }
-    mock_append_uacs_to_retained_case.return_value = [
-        {
-            "qiD.Serial_Number": "10010",
-            "uac_chunks": {
-                "uac1": "8176",
-                "uac2": "4726",
-                "uac3": "3991"
-            },
-        }
-    ]
-    mock_get_world_ids.return_value = "1", [{"qiD.Serial_Number": "10010"}]
+    mock_append_uacs_to_retained_case.return_value = [QuestionnaireCaseModel(
+                serial_number = "10010",
+                uac_chunks = UacChunks(uac1 = "8176", uac2 = "4726", uac3 = "3991"))]
+    
+    mock_get_world_ids.return_value = "1", [QuestionnaireCaseModel(serial_number = "10010")]
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
 
     # assert
-    mock_get_case_data.assert_called_with("LMS2101_AA1", config)
-    mock_get_world_ids.assert_called_with(config, [{"qiD.Serial_Number": "10010", "uac_chunks": {
-        "uac1": "8176",
-        "uac2": "4726",
-        "uac3": "3991"
-    }, }])
-    mock_filter_cases.assert_called_with([{"qiD.Serial_Number": "10010"}, {"qiD.Serial_Number": "10012"}])
+    mock_get_questionnaire_case_model_list.assert_called_with("LMS2101_AA1", config)
+    mock_get_world_ids.assert_called_with(config, [QuestionnaireCaseModel(
+                serial_number = "10010",
+                uac_chunks = UacChunks(uac1 = "8176", uac2 = "4726", uac3 = "3991"))])
+    mock_filter_cases.assert_called_with([
+        QuestionnaireCaseModel(serial_number = "10010"), 
+        QuestionnaireCaseModel(serial_number = "10012")])
     mock_run_async_tasks.assert_called_once()
     kwargs = mock_run_async_tasks.call_args.kwargs
     assert kwargs['cloud_function'] == "totalmobile_job_cloud_function"
@@ -403,8 +399,9 @@ def test_create_case_tasks_for_questionnaire(
     assert len(kwargs['tasks']) == 1
     task = kwargs['tasks'][0]
     assert task[0][0:3] == "LMS"
-    assert json.loads(task[1]) == {'case': {'qiD.Serial_Number': '10010'},
-                                   'questionnaire': 'LMS2101_AA1', 'world_id': '1'}
+    print(json.loads(task[1]))
+
+    assert json.loads(task[1]) == {'questionnaire': 'LMS2101_AA1', 'world_id': '1', 'case': {'serial_number': '10010', 'data_model_name': '', 'survey_type': '', 'wave': '', 'address_line_1': '', 'address_line_2': '', 'address_line_3': '', 'county': '', 'town': '', 'postcode': '', 'telephone_number_1': '', 'telephone_number_2': '', 'appointment_telephone_number': '', 'outcome_code': '', 'latitude': '', 'longitude': '', 'priority': '', 'field_region': '', 'field_team': '', 'wave_com_dte': '', 'uac_chunks': {'uac1': '', 'uac2': '', 'uac3': ''}}}
     assert result == "Done"
 
 
