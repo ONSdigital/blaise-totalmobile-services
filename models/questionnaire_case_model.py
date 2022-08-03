@@ -1,40 +1,39 @@
-from dataclasses import dataclass, field, fields
-import json
-from dataclasses_json import config, dataclass_json
+from dataclasses import dataclass
+from dataclass_wizard import JSONWizard, json_field
 from typing import Dict, Optional, Type, TypeVar
+import json
 
 T = TypeVar('T')
 
 @dataclass
 class UacChunks:
-    uac1: Optional[str] = field(default="", metadata=config(field_name="uac1"))
-    uac2: Optional[str] = field(default="", metadata=config(field_name="uac2"))
-    uac3: Optional[str] = field(default="", metadata=config(field_name="uac3"))
+    uac1: str = json_field('uac1', all=True, default='')
+    uac2: str = json_field('uac2', all=True, default='')
+    uac3: str = json_field('uac3', all=True, default='')
 
-@dataclass_json
 @dataclass
-class QuestionnaireCaseModel:
-    serial_number: Optional[str] = field(default="", metadata=config(field_name="qiD.Serial_Number"))
-    data_model_name: Optional[str] = field(default="", metadata=config(field_name="dataModelName"))
-    survey_type: Optional[str] = field(default="", metadata=config(field_name="qDataBag.TLA"))
-    wave: Optional[str] = field(default="", metadata=config(field_name="qDataBag.Wave"))
-    address_line_1: Optional[str] = field(default="", metadata=config(field_name="qDataBag.Prem1"))
-    address_line_2: Optional[str] = field(default="", metadata=config(field_name="qDataBag.Prem2"))
-    address_line_3: Optional[str] = field(default="", metadata=config(field_name="qDataBag.Prem3"))
-    county: Optional[str] = field(default="", metadata=config(field_name="qDataBag.District"))
-    town: Optional[str] = field(default="", metadata=config(field_name="qDataBag.PostTown"))
-    postcode: Optional[str] = field(default="", metadata=config(field_name="qDataBag.PostCode"))
-    telephone_number_1: Optional[str] = field(default="", metadata=config(field_name="qDataBag.TelNo"))
-    telephone_number_2: Optional[str] = field(default="", metadata=config(field_name="qDataBag.TelNo2"))
-    appointment_telephone_number: Optional[str] = field(default="", metadata=config(field_name="telNoAppt"))
-    outcome_code: Optional[str] = field(default="", metadata=config(field_name="hOut"))
-    latitude: Optional[str] = field(default="", metadata=config(field_name="qDataBag.UPRN_Latitude"))
-    longitude: Optional[str] = field(default="", metadata=config(field_name="qDataBag.UPRN_Longitude"))
-    priority: Optional[str] = field(default="", metadata=config(field_name="qDataBag.Priority"))
-    field_region: Optional[str] = field(default="", metadata=config(field_name="qDataBag.FieldRegion"))
-    field_team: Optional[str] = field(default="", metadata=config(field_name="qDataBag.FieldTeam"))
-    wave_com_dte: Optional[str] = field(default="", metadata=config(field_name="qDataBag.WaveComDTE"))
-    uac_chunks : Optional[UacChunks] = field(default=UacChunks(uac1="", uac2="", uac3=""), metadata=config(field_name="uac_chunks"))
+class QuestionnaireCaseModel(JSONWizard):
+    serial_number: str = json_field('qiD.Serial_Number', all=True, default='')
+    data_model_name: str = json_field('dataModelName', all=True, default='')
+    survey_type: str = json_field('qDataBag.TLA', all=True, default='')
+    wave: str = json_field('qDataBag.Wave', all=True, default='') 
+    address_line_1: str = json_field('qDataBag.Prem1', all=True, default='')  
+    address_line_2: str = json_field('qDataBag.Prem2', all=True, default='') 
+    address_line_3: str = json_field('qDataBag.Prem3', all=True, default='')  
+    county: str = json_field('qDataBag.District', all=True, default='')  
+    town: str = json_field('qDataBag.PostTown', all=True, default='')  
+    postcode: str = json_field('qDataBag.PostCode', all=True, default='') 
+    telephone_number_1: str = json_field('qDataBag.TelNo', all=True, default='')  
+    telephone_number_2: str = json_field('qDataBag.TelNo2', all=True, default='') 
+    appointment_telephone_number: str = json_field('telNoAppt', all=True, default='') 
+    outcome_code: str = json_field('hOut', all=True, default='') 
+    latitude: str = json_field('qDataBag.UPRN_Latitude', all=True, default='') 
+    longitude: str = json_field('qDataBag.UPRN_Longitude', all=True, default='') 
+    priority: str = json_field('qDataBag.Priority', all=True, default='') 
+    field_region: str = json_field('qDataBag.FieldRegion', all=True, default='') 
+    field_team: str = json_field('qDataBag.FieldTeam', all=True, default='') 
+    wave_com_dte: str = json_field('qDataBag.WaveComDTE', all=True, default='') 
+    uac_chunks : Optional[UacChunks] = json_field('uac_chunks', all=True, default=UacChunks(uac1='', uac2='', uac3='')) 
 
     def is_valid(cls) -> bool:
         if cls.serial_number == "": return False
