@@ -1,4 +1,3 @@
-import json
 import logging
 from typing import Dict, List
 
@@ -7,7 +6,6 @@ import flask
 from appconfig import Config
 from client import OptimiseClient
 from cloud_functions.logging import setup_logger
-from models.questionnaire_case_model import QuestionnaireCaseModel
 
 setup_logger()
 
@@ -60,76 +58,75 @@ def create_description(questionnaire: str, case_id: str) -> str:
 
 def create_job_payload(request_json: Dict) -> Dict:
     questionnaire = request_json["questionnaire"]
-    case_data_dictionary = request_json["case"]
-    case = QuestionnaireCaseModel.import_case_data_dictionary(case_data_dictionary)
+    case = request_json["case"]
 
     totalmobile_payload = {
         "identity": {
-            "reference": create_job_reference(questionnaire, case.serial_number),
+            "reference": create_job_reference(questionnaire, case["qiD.Serial_Number"]),
         },
-        "description": create_description(questionnaire, case.serial_number),
+        "description": create_description(questionnaire, case["qiD.Serial_Number"]),
         "origin": "ONS",
         "duration": 15,
-        "workType": case.survey_type,
+        "workType": case["qDataBag.TLA"],
         "skills": [
             {
                 "identity": {
-                    "reference": case.survey_type,
+                    "reference": case["qDataBag.TLA"],
                 },
             },
         ],
         "dueDate": {
-            "end": case.wave_com_dte,
+            "end": case["qDataBag.WaveComDTE"],
         },
         "location": {
             "addressDetail": {
-                "addressLine1": case.address_line_1,
-                "addressLine2": case.address_line_2,
-                "addressLine3": case.address_line_3,
-                "addressLine4": case.county,
-                "addressLine5": case.town,
-                "postCode": case.postcode,
+                "addressLine1": case["qDataBag.Prem1"],
+                "addressLine2": case["qDataBag.Prem2"],
+                "addressLine3": case["qDataBag.Prem3"],
+                "addressLine4": case["qDataBag.District"],
+                "addressLine5": case["qDataBag.PostTown"],
+                "postCode": case["qDataBag.PostCode"],
                 "coordinates": {
-                    "latitude": case.latitude,
-                    "longitude": case.longitude,
+                    "latitude": case["qDataBag.UPRN_Latitude"],
+                    "longitude": case["qDataBag.UPRN_Longitude"],
                 },
             },
         },
         "contact": {
-            "name": case.postcode,
+            "name": case["qDataBag.PostCode"],
         },
         "additionalProperties": [
             {
                 "name": "surveyName",
-                "value": case.data_model_name
+                "value": case["dataModelName"]
             },
             {
                 "name": "tla",
-                "value": case.survey_type
+                "value": case["qDataBag.TLA"]
             },
             {
                 "name": "wave",
-                "value": case.wave
+                "value": case["qDataBag.Wave"]
             },
             {
                 "name": "priority",
-                "value": case.priority
+                "value": case["qDataBag.Priority"]
             },
             {
                 "name": "fieldTeam",
-                "value": case.field_team
+                "value": case["qDataBag.FieldTeam"]
             },
             {
                 "name": "uac1",
-                "value": case.uac_chunks.uac1
+                "value": case["uac_chunks"]["uac1"]
             },
             {
                 "name": "uac2",
-                "value": case.uac_chunks.uac2
+                "value": case["uac_chunks"]["uac2"]
             },
             {
                 "name": "uac3",
-                "value": case.uac_chunks.uac3
+                "value": case["uac_chunks"]["uac3"]
             },
         ],
     }

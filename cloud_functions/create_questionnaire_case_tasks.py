@@ -114,12 +114,12 @@ def get_wave_from_questionnaire_name(questionnaire_name: str):
 def map_totalmobile_job_models(
         cases: List[QuestionnaireCaseModel], world_ids: List[str], questionnaire_name: str
 ) -> List[TotalmobileJobModel]:
-    return [TotalmobileJobModel(questionnaire_name, world_id, case) for case, world_id in zip(cases, world_ids)]
+    return [TotalmobileJobModel(questionnaire_name, world_id, case.to_dict()) for case, world_id in zip(cases, world_ids)]
 
 
 def create_task_name(job_model: TotalmobileJobModel) -> str:
     return (
-        f"{job_model.questionnaire}-{job_model.case.serial_number}-{str(uuid4())}"
+        f"{job_model.questionnaire}-{job_model.case['qiD.Serial_Number']}-{str(uuid4())}"
     )
 
 

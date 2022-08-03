@@ -1,3 +1,4 @@
+from pytest import fail
 from models.questionnaire_case_model import QuestionnaireCaseModel
 from tests.helpers.questionnaire_case_model_helper import get_populated_case_model
 
@@ -314,3 +315,4 @@ def test_is_valid_returns_false_if_wave_com_dte_field_is_not_populated():
     case_model.wave_com_dte = "" 
 
     assert case_model.is_valid() is False          
+           

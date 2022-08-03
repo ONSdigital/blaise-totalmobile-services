@@ -25,14 +25,14 @@ from models.totalmobile_job_model import TotalmobileJobModel
 
 def test_create_task_name_returns_correct_name_when_called():
     questionnaire_case_model = QuestionnaireCaseModel(serial_number = "90001")
-    model = TotalmobileJobModel("OPN2101A", "world", questionnaire_case_model)
+    model = TotalmobileJobModel("OPN2101A", "world", questionnaire_case_model.to_dict())
 
     assert create_task_name(model).startswith("OPN2101A-90001-")
 
 
 def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_model():
     questionnaire_case_model = QuestionnaireCaseModel(serial_number = "90001")
-    model = TotalmobileJobModel("OPN2101A", "world", questionnaire_case_model)
+    model = TotalmobileJobModel("OPN2101A", "world", questionnaire_case_model.to_dict())
 
     assert create_task_name(model) != create_task_name(model)
 
@@ -110,9 +110,9 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     questionnaire_name = "OPN2101A"
 
     case_data = [
-        {"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110"},
-        {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "120"},
-        {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "130"},
+        QuestionnaireCaseModel(serial_number = "10010", outcome_code = "110"),
+        QuestionnaireCaseModel(serial_number = "10020", outcome_code = "120"),
+        QuestionnaireCaseModel(serial_number = "10030", outcome_code = "130")
     ]
 
     world_ids = [
@@ -127,16 +127,13 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     # assert
     assert result == [
         TotalmobileJobModel(
-            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa6", {"qiD.Serial_Number": "10010", "qhAdmin.HOut": "110",
-                                                                 }
+            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa6", case={'qiD.Serial_Number': '10010', 'dataModelName': '', 'qDataBag.TLA': '', 'qDataBag.Wave': '', 'qDataBag.Prem1': '', 'qDataBag.Prem2': '', 'qDataBag.Prem3': '', 'qDataBag.District': '', 'qDataBag.PostTown': '', 'qDataBag.PostCode': '', 'qDataBag.TelNo': '', 'qDataBag.TelNo2': '', 'telNoAppt': '', 'hOut': '110', 'qDataBag.UPRN_Latitude': '', 'qDataBag.UPRN_Longitude': '', 'qDataBag.Priority': '', 'qDataBag.FieldRegion': '', 'qDataBag.FieldTeam': '', 'qDataBag.WaveComDTE': '', 'uac_chunks': {'uac1': '', 'uac2': '', 'uac3': ''}}
         ),
         TotalmobileJobModel(
-            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa7", {"qiD.Serial_Number": "10020", "qhAdmin.HOut": "120",
-                                                                 }
+            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa7", case={'qiD.Serial_Number': '10020', 'dataModelName': '', 'qDataBag.TLA': '', 'qDataBag.Wave': '', 'qDataBag.Prem1': '', 'qDataBag.Prem2': '', 'qDataBag.Prem3': '', 'qDataBag.District': '', 'qDataBag.PostTown': '', 'qDataBag.PostCode': '', 'qDataBag.TelNo': '', 'qDataBag.TelNo2': '', 'telNoAppt': '', 'hOut': '120', 'qDataBag.UPRN_Latitude': '', 'qDataBag.UPRN_Longitude': '', 'qDataBag.Priority': '', 'qDataBag.FieldRegion': '', 'qDataBag.FieldTeam': '', 'qDataBag.WaveComDTE': '', 'uac_chunks': {'uac1': '', 'uac2': '', 'uac3': ''}}
         ),
         TotalmobileJobModel(
-            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa9", {"qiD.Serial_Number": "10030", "qhAdmin.HOut": "130",
-                                                                 }
+            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa9", case={'qiD.Serial_Number': '10030', 'dataModelName': '', 'qDataBag.TLA': '', 'qDataBag.Wave': '', 'qDataBag.Prem1': '', 'qDataBag.Prem2': '', 'qDataBag.Prem3': '', 'qDataBag.District': '', 'qDataBag.PostTown': '', 'qDataBag.PostCode': '', 'qDataBag.TelNo': '', 'qDataBag.TelNo2': '', 'telNoAppt': '', 'hOut': '130', 'qDataBag.UPRN_Latitude': '', 'qDataBag.UPRN_Longitude': '', 'qDataBag.Priority': '', 'qDataBag.FieldRegion': '', 'qDataBag.FieldTeam': '', 'qDataBag.WaveComDTE': '', 'uac_chunks': {'uac1': '', 'uac2': '', 'uac3': ''}}
         ),
     ]
 
@@ -401,7 +398,7 @@ def test_create_case_tasks_for_questionnaire(
     assert task[0][0:3] == "LMS"
     print(json.loads(task[1]))
 
-    assert json.loads(task[1]) == {'questionnaire': 'LMS2101_AA1', 'world_id': '1', 'case': {'serial_number': '10010', 'data_model_name': '', 'survey_type': '', 'wave': '', 'address_line_1': '', 'address_line_2': '', 'address_line_3': '', 'county': '', 'town': '', 'postcode': '', 'telephone_number_1': '', 'telephone_number_2': '', 'appointment_telephone_number': '', 'outcome_code': '', 'latitude': '', 'longitude': '', 'priority': '', 'field_region': '', 'field_team': '', 'wave_com_dte': '', 'uac_chunks': {'uac1': '', 'uac2': '', 'uac3': ''}}}
+    assert json.loads(task[1]) == {'questionnaire': 'LMS2101_AA1', 'world_id': '1', 'case': {'qiD.Serial_Number': '10010', 'dataModelName': '', 'qDataBag.TLA': '', 'qDataBag.Wave': '', 'qDataBag.Prem1': '', 'qDataBag.Prem2': '', 'qDataBag.Prem3': '', 'qDataBag.District': '', 'qDataBag.PostTown': '', 'qDataBag.PostCode': '', 'qDataBag.TelNo': '', 'qDataBag.TelNo2': '', 'telNoAppt': '', 'hOut': '', 'qDataBag.UPRN_Latitude': '', 'qDataBag.UPRN_Longitude': '', 'qDataBag.Priority': '', 'qDataBag.FieldRegion': '', 'qDataBag.FieldTeam': '', 'qDataBag.WaveComDTE': '', 'uac_chunks': {'uac1': '', 'uac2': '', 'uac3': ''}}}
     assert result == "Done"
 
 

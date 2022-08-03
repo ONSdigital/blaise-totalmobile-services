@@ -59,6 +59,9 @@ class QuestionnaireCaseModel(JSONWizard):
 
         return True
 
+    def to_dict(cls) -> Dict[str, str]:
+        return json.loads(cls.to_json())
+
     @classmethod
     def import_case_data_dictionary(cls: Type[T], case_data_dictionary:Dict[str, str]) -> T:
         return QuestionnaireCaseModel.from_json(json.dumps(case_data_dictionary))
