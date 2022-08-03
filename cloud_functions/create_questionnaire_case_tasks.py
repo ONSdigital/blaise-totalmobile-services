@@ -88,7 +88,7 @@ def get_questionnaire_case_model_list(questionnaire_name: str, config: Config) -
     )
 
     case_data_dictionary_list = questionnaire_data["reportingData"]
-    return [QuestionnaireCaseModel.from_json(json.dumps(case_data_dictionary)) for case_data_dictionary in case_data_dictionary_list]
+    return [QuestionnaireCaseModel.import_case_data_dictionary(case_data_dictionary) for case_data_dictionary in case_data_dictionary_list]
     
 
 def filter_cases(cases: List[QuestionnaireCaseModel]) -> List[QuestionnaireCaseModel]:

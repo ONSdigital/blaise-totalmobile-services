@@ -61,7 +61,7 @@ def create_description(questionnaire: str, case_id: str) -> str:
 def create_job_payload(request_json: Dict) -> Dict:
     questionnaire = request_json["questionnaire"]
     case_data_dictionary = request_json["case"]
-    case = QuestionnaireCaseModel.from_json(json.dumps(case_data_dictionary))
+    case = QuestionnaireCaseModel.import_case_data_dictionary(case_data_dictionary)
 
     totalmobile_payload = {
         "identity": {

@@ -2,30 +2,31 @@ from models.questionnaire_case_model import QuestionnaireCaseModel
 from tests.helpers.questionnaire_case_model_helper import get_populated_case_model
 
 def test_from_json_returns_a_populated_model():
-    mock_blaise_data = ('{ \
-            "qiD.Serial_Number": "90000000", \
-            "dataModelName" : "LM2007", \
-            "qDataBag.TLA" : "LMS", \
-            "qDataBag.Wave" : "1", \
-            "qDataBag.Prem1" : "12 Blaise Street", \
-            "qDataBag.Prem2" : "Blaise Hill", \
-            "qDataBag.Prem3" : "Blaiseville", \
-            "qDataBag.District" : "Gwent", \
-            "qDataBag.PostTown" : "Newport", \
-            "qDataBag.PostCode" : "FML134D", \
-            "qDataBag.TelNo" : "07900990901", \
-            "qDataBag.TelNo2" : "07900990902", \
-            "telNoAppt" : "07900990903", \
-            "hOut" : "301", \
-            "qDataBag.UPRN_Latitude" : "10020202", \
-            "qDataBag.UPRN_Longitude" : "34949494", \
-            "qDataBag.Priority" : "1", \
-            "qDataBag.FieldRegion" : "gwent", \
-            "qDataBag.FieldTeam": "B-Team", \
-            "qDataBag.WaveComDTE": "WGAFF" \
-         }')
+    case_data_dictionary = { 
+            "qiD.Serial_Number": "90000000",
+            "dataModelName" : "LM2007", 
+            "qDataBag.TLA" : "LMS", 
+            "qDataBag.Wave" : "1", 
+            "qDataBag.Prem1" : "12 Blaise Street", 
+            "qDataBag.Prem2" : "Blaise Hill", 
+            "qDataBag.Prem3" : "Blaiseville", 
+            "qDataBag.District" : "Gwent", 
+            "qDataBag.PostTown" : "Newport", 
+            "qDataBag.PostCode" : "FML134D", 
+            "qDataBag.TelNo" : "07900990901", 
+            "qDataBag.TelNo2" : "07900990902", 
+            "telNoAppt" : "07900990903", 
+            "hOut" : "301", 
+            "qDataBag.UPRN_Latitude" : "10020202",
+            "qDataBag.UPRN_Longitude" : "34949494", 
+            "qDataBag.Priority" : "1", 
+            "qDataBag.FieldRegion" : "gwent", 
+            "qDataBag.FieldTeam": "B-Team", 
+            "qDataBag.WaveComDTE": "WGAFF" 
+    }     
 
-    result = QuestionnaireCaseModel.from_json(mock_blaise_data)
+    result = QuestionnaireCaseModel.import_case_data_dictionary(case_data_dictionary)
+
     assert result.serial_number == "90000000"
     assert result.data_model_name == "LM2007"
     assert result.survey_type == "LMS"
@@ -49,30 +50,31 @@ def test_from_json_returns_a_populated_model():
 
 
 def test_from_json_returns_a_valid_object_when_a_blaise_field_is_incorrectly_typed():
-    mock_blaise_data = ('{ \
-            "qdatabag.Serial_Number": "90000000", \
-            "dataModelName" : "LM2007", \
-            "qDataBag.TLA" : "LMS", \
-            "qDataBag.Wave" : "1", \
-            "qDataBag.Prem1" : "12 Blaise Street", \
-            "qDataBag.Prem2" : "Blaise Hill", \
-            "qDataBag.Prem3" : "Blaiseville", \
-            "qDataBag.District" : "Gwent", \
-            "qDataBag.PostTown" : "Newport", \
-            "qDataBag.PostCode" : "FML134D", \
-            "qDataBag.TelNo" : "07900990901", \
-            "qDataBag.TelNo2" : "07900990902", \
-            "telNoAppt" : "07900990903", \
-            "hOut" : "301", \
-            "qDataBag.UPRN_Latitude" : "10020202", \
-            "qDataBag.UPRN_Longitude" : "34949494", \
-            "qDataBag.Priority" : "1", \
-            "qDataBag.FieldRegion" : "gwent", \
-            "qDataBag.FieldTeam": "B-Team", \
-            "qDataBag.WaveComDTE": "WGAFF" \
-         }')    
+    case_data_dictionary = { 
+            "qdatabag.Serial_Number": "90000000",
+            "dataModelName" : "LM2007", 
+            "qDataBag.TLA" : "LMS", 
+            "qDataBag.Wave" : "1", 
+            "qDataBag.Prem1" : "12 Blaise Street", 
+            "qDataBag.Prem2" : "Blaise Hill", 
+            "qDataBag.Prem3" : "Blaiseville", 
+            "qDataBag.District" : "Gwent", 
+            "qDataBag.PostTown" : "Newport", 
+            "qDataBag.PostCode" : "FML134D", 
+            "qDataBag.TelNo" : "07900990901", 
+            "qDataBag.TelNo2" : "07900990902", 
+            "telNoAppt" : "07900990903", 
+            "hOut" : "301", 
+            "qDataBag.UPRN_Latitude" : "10020202",
+            "qDataBag.UPRN_Longitude" : "34949494", 
+            "qDataBag.Priority" : "1", 
+            "qDataBag.FieldRegion" : "gwent", 
+            "qDataBag.FieldTeam": "B-Team", 
+            "qDataBag.WaveComDTE": "WGAFF" 
+    } 
 
-    result = QuestionnaireCaseModel.from_json(mock_blaise_data)
+    result = QuestionnaireCaseModel.import_case_data_dictionary(case_data_dictionary)
+
     assert result.serial_number == ""
     assert result.data_model_name == "LM2007"
     assert result.survey_type == "LMS"
@@ -96,29 +98,30 @@ def test_from_json_returns_a_valid_object_when_a_blaise_field_is_incorrectly_typ
 
 
 def test_from_json_returns_a_valid_object_when_an_optional_blaise_field_is_missing():
-    mock_blaise_data = ('{ \
-            "dataModelName" : "LM2007", \
-            "qDataBag.TLA" : "LMS", \
-            "qDataBag.Wave" : "1", \
-            "qDataBag.Prem1" : "12 Blaise Street", \
-            "qDataBag.Prem2" : "Blaise Hill", \
-            "qDataBag.Prem3" : "Blaiseville", \
-            "qDataBag.District" : "Gwent", \
-            "qDataBag.PostTown" : "Newport", \
-            "qDataBag.PostCode" : "FML134D", \
-            "qDataBag.TelNo" : "07900990901", \
-            "qDataBag.TelNo2" : "07900990902", \
-            "telNoAppt" : "07900990903", \
-            "hOut" : "301", \
-            "qDataBag.UPRN_Latitude" : "10020202", \
-            "qDataBag.UPRN_Longitude" : "34949494", \
-            "qDataBag.Priority" : "1", \
-            "qDataBag.FieldRegion" : "gwent", \
-            "qDataBag.FieldTeam": "B-Team", \
-            "qDataBag.WaveComDTE": "WGAFF" \
-         }')
+    case_data_dictionary = { 
+            "dataModelName" : "LM2007", 
+            "qDataBag.TLA" : "LMS", 
+            "qDataBag.Wave" : "1", 
+            "qDataBag.Prem1" : "12 Blaise Street", 
+            "qDataBag.Prem2" : "Blaise Hill", 
+            "qDataBag.Prem3" : "Blaiseville", 
+            "qDataBag.District" : "Gwent", 
+            "qDataBag.PostTown" : "Newport", 
+            "qDataBag.PostCode" : "FML134D", 
+            "qDataBag.TelNo" : "07900990901", 
+            "qDataBag.TelNo2" : "07900990902", 
+            "telNoAppt" : "07900990903", 
+            "hOut" : "301", 
+            "qDataBag.UPRN_Latitude" : "10020202",
+            "qDataBag.UPRN_Longitude" : "34949494", 
+            "qDataBag.Priority" : "1", 
+            "qDataBag.FieldRegion" : "gwent", 
+            "qDataBag.FieldTeam": "B-Team", 
+            "qDataBag.WaveComDTE": "WGAFF" 
+         }        
 
-    result = QuestionnaireCaseModel.from_json(mock_blaise_data)
+    result = QuestionnaireCaseModel.import_case_data_dictionary(case_data_dictionary)
+
     assert result.serial_number == ""    
     assert result.data_model_name == "LM2007"
     assert result.survey_type == "LMS"    

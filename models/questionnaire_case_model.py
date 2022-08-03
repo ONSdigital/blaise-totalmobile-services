@@ -1,6 +1,9 @@
 from dataclasses import dataclass, field, fields
+import json
 from dataclasses_json import config, dataclass_json
-from typing import Optional
+from typing import Dict, Optional, Type, TypeVar
+
+T = TypeVar('T')
 
 @dataclass
 class UacChunks:
@@ -31,7 +34,7 @@ class QuestionnaireCaseModel:
     field_region: Optional[str] = field(default="", metadata=config(field_name="qDataBag.FieldRegion"))
     field_team: Optional[str] = field(default="", metadata=config(field_name="qDataBag.FieldTeam"))
     wave_com_dte: Optional[str] = field(default="", metadata=config(field_name="qDataBag.WaveComDTE"))
-    uac_chunks : Optional[UacChunks] = field(default=UacChunks("", "", ""), metadata=config(field_name="uac_chunks"))
+    uac_chunks : Optional[UacChunks] = field(default=UacChunks(uac1="", uac2="", uac3=""), metadata=config(field_name="uac_chunks"))
 
     def is_valid(cls) -> bool:
         if cls.serial_number == "": return False
@@ -56,3 +59,7 @@ class QuestionnaireCaseModel:
         if cls.wave_com_dte == "": return False                                                                  
 
         return True
+
+    @classmethod
+    def import_case_data_dictionary(cls: Type[T], case_data_dictionary:Dict[str, str]) -> T:
+        return QuestionnaireCaseModel.from_json(json.dumps(case_data_dictionary))
