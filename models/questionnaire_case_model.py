@@ -35,32 +35,32 @@ class QuestionnaireCaseModel(JSONWizard):
     wave_com_dte: str = json_field('qDataBag.WaveComDTE', all=True, default='') 
     uac_chunks : Optional[UacChunks] = json_field('uac_chunks', all=True, default=UacChunks(uac1='', uac2='', uac3='')) 
 
-    def is_valid(cls) -> bool:
-        if cls.serial_number == "": return False
-        if cls.data_model_name == "": return False
-        if cls.survey_type == "": return False
-        if cls.wave == "": return False
-        if cls.address_line_1 == "": return False
-        if cls.address_line_2 == "": return False
-        if cls.address_line_3 == "": return False                                        
-        if cls.county == "": return False
-        if cls.town == "": return False
-        if cls.postcode == "": return False
-        if cls.telephone_number_1 == "": return False
-        if cls.telephone_number_2 == "": return False                                 
-        if cls.appointment_telephone_number == "": return False       
-        if cls.outcome_code == "": return False       
-        if cls.latitude == "": return False             
-        if cls.longitude == "": return False        
-        if cls.priority == "": return False           
-        if cls.field_region == "": return False    
-        if cls.field_team == "": return False    
-        if cls.wave_com_dte == "": return False                                                                  
+    def is_valid(self) -> bool:
+        if self.serial_number == "": return False
+        if self.data_model_name == "": return False
+        if self.survey_type == "": return False
+        if self.wave == "": return False
+        if self.address_line_1 == "": return False
+        if self.address_line_2 == "": return False
+        if self.address_line_3 == "": return False                                        
+        if self.county == "": return False
+        if self.town == "": return False
+        if self.postcode == "": return False
+        if self.telephone_number_1 == "": return False
+        if self.telephone_number_2 == "": return False                                 
+        if self.appointment_telephone_number == "": return False       
+        if self.outcome_code == "": return False       
+        if self.latitude == "": return False             
+        if self.longitude == "": return False        
+        if self.priority == "": return False           
+        if self.field_region == "": return False    
+        if self.field_team == "": return False    
+        if self.wave_com_dte == "": return False                                                                  
 
         return True
 
-    def to_dict(cls) -> Dict[str, str]:
-        return json.loads(cls.to_json())
+    def to_dict(self) -> Dict[str, str]:
+        return json.loads(self.to_json())
 
     @classmethod
     def import_case_data_dictionary(cls: Type[T], case_data_dictionary:Dict[str, str]) -> T:
