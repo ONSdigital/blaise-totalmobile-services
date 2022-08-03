@@ -1,3 +1,4 @@
+import json
 import logging
 from typing import Dict, List
 
@@ -6,6 +7,7 @@ import flask
 from appconfig import Config
 from client import OptimiseClient
 from cloud_functions.logging import setup_logger
+from models.questionnaire_case_model import QuestionnaireCaseModel
 
 setup_logger()
 
@@ -58,7 +60,8 @@ def create_description(questionnaire: str, case_id: str) -> str:
 
 def create_job_payload(request_json: Dict) -> Dict:
     questionnaire = request_json["questionnaire"]
-    case = request_json["case"]
+    case_data_dictionary = request_json["case"]
+    case = QuestionnaireCaseModel.from_json(json.dumps(case_data_dictionary))
 
     totalmobile_payload = {
         "identity": {
@@ -71,7 +74,7 @@ def create_job_payload(request_json: Dict) -> Dict:
         "skills": [
             {
                 "identity": {
-                    "reference": casesurvey_type,
+                    "reference": case.survey_type,
                 },
             },
         ],
