@@ -119,7 +119,7 @@ def map_totalmobile_job_models(
 
 def create_task_name(job_model: TotalmobileJobModel) -> str:
     return (
-        f"{job_model.questionnaire}-{job_model.case['qiD.Serial_Number']}-{str(uuid4())}"
+        f"{job_model.questionnaire}-{job_model.case.serial_number}-{str(uuid4())}"
     )
 
 
