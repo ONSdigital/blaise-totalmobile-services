@@ -365,7 +365,9 @@ def test_validate_request_when_missing_fields():
 @mock.patch("client.bus.BusClient.get_uacs_by_case_id")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_cases_with_valid_world_ids")
 def test_create_case_tasks_for_questionnaire(
+        mock_get_cases_with_valid_world_ids,
         mock_run_async_tasks,
         mock_filter_cases,
         mock_get_uacs_by_case_id,
@@ -396,15 +398,15 @@ def test_create_case_tasks_for_questionnaire(
         serial_number="10010",
         uac_chunks=UacChunks(uac1="8176", uac2="4726", uac3="3991"))]
 
-    mock_get_world_ids.return_value = "1", [QuestionnaireCaseModel(serial_number="10010")]
+    mock_get_world_ids.return_value = "1"
+    mock_get_cases_with_valid_world_ids.return_value = [QuestionnaireCaseModel(serial_number="10010")]
+
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
 
     # assert
     mock_get_questionnaire_case_model_list.assert_called_with("LMS2101_AA1", config)
-    mock_get_world_ids.assert_called_with(config, [QuestionnaireCaseModel(
-        serial_number="10010",
-        uac_chunks=UacChunks(uac1="8176", uac2="4726", uac3="3991"))])
+    mock_get_world_ids.assert_called_with(config)
     mock_filter_cases.assert_called_with([
         QuestionnaireCaseModel(serial_number="10010"),
         QuestionnaireCaseModel(serial_number="10012")])
