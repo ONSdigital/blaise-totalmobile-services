@@ -1,42 +1,21 @@
-import blaise_restapi
-
 from typing import List
 from appconfig import Config
+from services import blaise_restapi_service, uac_restapi_service
 from models.questionnaire_case_model import QuestionnaireCaseModel
-
-required_fields_from_blaise = [
-    "qiD.Serial_Number",
-    "dataModelName",
-    "qDataBag.TLA",
-    "qDataBag.Wave",
-    "qDataBag.Prem1",
-    "qDataBag.Prem2",
-    "qDataBag.Prem3",
-    "qDataBag.District",
-    "qDataBag.PostTown",
-    "qDataBag.PostCode",
-    "qDataBag.TelNo",
-    "qDataBag.TelNo2",
-    "telNoAppt",
-    "hOut",
-    "qDataBag.UPRN_Latitude",
-    "qDataBag.UPRN_Longitude",
-    "qDataBag.Priority",
-    "qDataBag.FieldRegion",
-    "qDataBag.FieldTeam",
-    "qDataBag.WaveComDTE",
-]
 
 
 def get_questionnaire_cases(questionnaire_name: str, config: Config) -> List[QuestionnaireCaseModel]:
-    restapi_client = blaise_restapi.Client(config.blaise_api_url)
+    questionnaire_case_data_dictionary = blaise_restapi_service.get_questionnaire_case_data(questionnaire_name, config)
 
-    questionnaire_data = restapi_client.get_questionnaire_data(
-        config.blaise_server_park,
-        questionnaire_name,
-        required_fields_from_blaise
-    )
+    return [QuestionnaireCaseModel.import_case_data(questionnaire_case_data_item) for questionnaire_case_data_item in
+            questionnaire_case_data_dictionary]
 
-    case_data_dictionary_list = questionnaire_data["reportingData"]
-    return [QuestionnaireCaseModel.import_case_data_dictionary(case_data_dictionary) for case_data_dictionary in
-            case_data_dictionary_list]
+
+def get_questionnaire_uacs(config: Config, questionnaire_name: str):
+    return uac_restapi_service.get_questionnaire_uacs(questionnaire_name, config)
+
+
+def get_wave_from_questionnaire_name(questionnaire_name: str):
+    if questionnaire_name[0:3] != "LMS":
+        raise Exception(f"Invalid format for questionnaire name: {questionnaire_name}")
+    return questionnaire_name[-1]

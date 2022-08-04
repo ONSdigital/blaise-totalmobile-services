@@ -12,7 +12,6 @@ from cloud_functions.create_questionnaire_case_tasks import (
     create_questionnaire_case_tasks,
     create_task_name,
     filter_cases,
-    get_wave_from_questionnaire_name,
     map_totalmobile_job_models,
     get_world_ids,
     validate_request,
@@ -383,40 +382,6 @@ def test_create_questionnaire_case_tasks_errors_if_misssing_questionnaire():
     assert (
             str(err.value) == "Required fields missing from request payload: ['questionnaire']"
     )
-
-
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_world_ids")
-@mock.patch("services.questionnaire_service.get_questionnaire_cases")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
-def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire(
-        mock_filter_cases,
-        mock_get_questionnaire_cases,
-        mock_get_world_ids,
-):
-    # arrange
-    config = config_helper.get_default_config()
-    mock_request = flask.Request.from_values(json={"questionnaire": "OPN2101A"})
-    mock_get_questionnaire_cases.return_value = [QuestionnaireCaseModel(serial_number = "10010"), QuestionnaireCaseModel(serial_number = "10012")]
-    mock_get_world_ids.return_value = "1"
-    mock_filter_cases.return_value = [QuestionnaireCaseModel(serial_number = "10010")]
-
-    # act
-    with pytest.raises(Exception) as err:
-        create_questionnaire_case_tasks(mock_request, config)
-
-    # assert
-    assert str(err.value) == "Invalid format for questionnaire name: OPN2101A"
-
-
-def test_get_wave_from_questionnaire_name():
-    assert get_wave_from_questionnaire_name("LMS2101_AA1") == "1"
-    assert get_wave_from_questionnaire_name("LMS1234_ZZ2") == "2"
-
-
-def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error():
-    with pytest.raises(Exception) as err:
-        get_wave_from_questionnaire_name("ABC1234_AA1")
-    assert str(err.value) == "Invalid format for questionnaire name: ABC1234_AA1"
 
 
 @mock.patch.object(OptimiseClient, "get_worlds")

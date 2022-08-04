@@ -7,7 +7,6 @@ import flask
 
 from appconfig import Config
 from client.optimise import OptimiseClient
-from client.bus import BusClient
 from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
 from models.totalmobile_job_model import TotalmobileJobModel
@@ -69,12 +68,6 @@ def filter_cases(cases: List[QuestionnaireCaseModel]) -> List[QuestionnaireCaseM
     ]
 
 
-def get_wave_from_questionnaire_name(questionnaire_name: str):
-    if questionnaire_name[0:3] != "LMS":
-        raise Exception(f"Invalid format for questionnaire name: {questionnaire_name}")
-    return questionnaire_name[-1]
-
-
 def map_totalmobile_job_models(
         cases: List[QuestionnaireCaseModel], world_ids: List[str], questionnaire_name: str
 ) -> List[TotalmobileJobModel]:
@@ -113,11 +106,6 @@ def append_uacs_to_retained_case(filtered_cases: List[QuestionnaireCaseModel], c
     return cases_with_uacs_appended
 
 
-def get_questionnaire_uacs(config: Config, questionnaire_name: str):
-    bus_client = BusClient(config.bus_api_url, config.bus_client_id)
-    return bus_client.get_uacs_by_case_id(questionnaire_name)
-
-
 def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> str:
     logging.info("Started creating questionnaire case tasks")
 
@@ -128,7 +116,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     validate_request(request_json)
 
     questionnaire_name = request_json["questionnaire"]
-    wave = get_wave_from_questionnaire_name(questionnaire_name)
+    wave = questionnaire_service.get_wave_from_questionnaire_name(questionnaire_name)
     if wave != "1":
         logging.info(
             f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported")
@@ -150,7 +138,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         return (f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
     logging.info(f"Retained {len(retained_cases)} cases after filtering")
 
-    questionnaire_uac_data = get_questionnaire_uacs(config, questionnaire_name)
+    questionnaire_uac_data = questionnaire_service.get_questionnaire_uacs(config, questionnaire_name)
     cases_with_uacs_appended = append_uacs_to_retained_case(retained_cases, questionnaire_uac_data)
     logging.info("Finished appending UACs to case data")
 

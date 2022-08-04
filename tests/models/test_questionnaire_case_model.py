@@ -26,7 +26,7 @@ def test_from_json_returns_a_populated_model():
             "qDataBag.WaveComDTE": "WGAFF" 
     }     
 
-    result = QuestionnaireCaseModel.import_case_data_dictionary(case_data_dictionary)
+    result = QuestionnaireCaseModel.import_case_data(case_data_dictionary)
 
     assert result.serial_number == "90000000"
     assert result.data_model_name == "LM2007"
@@ -74,7 +74,7 @@ def test_from_json_returns_a_valid_object_when_a_blaise_field_is_incorrectly_typ
             "qDataBag.WaveComDTE": "WGAFF" 
     } 
 
-    result = QuestionnaireCaseModel.import_case_data_dictionary(case_data_dictionary)
+    result = QuestionnaireCaseModel.import_case_data(case_data_dictionary)
 
     assert result.serial_number == ""
     assert result.data_model_name == "LM2007"
@@ -121,7 +121,7 @@ def test_from_json_returns_a_valid_object_when_an_optional_blaise_field_is_missi
             "qDataBag.WaveComDTE": "WGAFF" 
          }        
 
-    result = QuestionnaireCaseModel.import_case_data_dictionary(case_data_dictionary)
+    result = QuestionnaireCaseModel.import_case_data(case_data_dictionary)
 
     assert result.serial_number == ""    
     assert result.data_model_name == "LM2007"
