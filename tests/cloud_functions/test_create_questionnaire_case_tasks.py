@@ -13,9 +13,9 @@ from cloud_functions.create_questionnaire_case_tasks import (
     create_task_name,
     filter_cases,
     map_totalmobile_job_models,
-    get_world_ids,
     validate_request,
-    append_uacs_to_retained_case
+    append_uacs_to_retained_case,
+    get_cases_with_valid_world_ids
 )
 from models.totalmobile_job_model import TotalmobileJobModel
 
@@ -271,27 +271,59 @@ def test_validate_request_when_missing_fields():
 
 
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.append_uacs_to_retained_case")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_world_ids")
+@mock.patch("services.world_id_service.get_world_ids")
 @mock.patch("services.questionnaire_service.get_questionnaire_cases")
 @mock.patch("services.questionnaire_service.get_questionnaire_uacs")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
+@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_cases_with_valid_world_ids")
 def test_create_case_tasks_for_questionnaire(
+        mock_get_cases_with_valid_world_ids,
         mock_run_async_tasks,
         mock_filter_cases,
-        mock_gget_questionnaire_uacs,
+        mock_get_questionnaire_uacs,
         mock_get_questionnaire_cases,
         mock_get_world_ids,
         mock_append_uacs_to_retained_case
 ):
     # arrange
-    mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = config_helper.get_default_config()
+    mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
+
     mock_get_questionnaire_cases.return_value = [
-        QuestionnaireCaseModel(serial_number = "10010"), 
-        QuestionnaireCaseModel(serial_number = "10012")]
-    mock_filter_cases.return_value = [QuestionnaireCaseModel(serial_number = "10010")]
-    mock_gget_questionnaire_uacs.return_value = {
+        QuestionnaireCaseModel(
+            serial_number="10010",
+            telephone_number_1="",
+            telephone_number_2="",
+            appointment_telephone_number="",
+            wave="1",
+            priority="1",
+            outcome_code="310",
+        ),
+        QuestionnaireCaseModel(
+            serial_number="10012",
+            telephone_number_1="0123456789",
+            telephone_number_2="0123456789",
+            appointment_telephone_number="0123456789",
+            wave="2",
+            priority="1",
+            outcome_code="310",
+        ),
+    ]
+
+    mock_filter_cases.return_value = [
+        QuestionnaireCaseModel(
+            serial_number="10010",
+            telephone_number_1="",
+            telephone_number_2="",
+            appointment_telephone_number="",
+            wave="1",
+            priority="1",
+            outcome_code="310",
+        ),
+    ]
+
+    mock_get_questionnaire_uacs.return_value = {
         "10010": {
             "instrument_name": "LMS2101_AA1",
             "case_id": "10010",
@@ -303,22 +335,65 @@ def test_create_case_tasks_for_questionnaire(
             "full_uac": "817647263991"
         }
     }
-    mock_append_uacs_to_retained_case.return_value = [QuestionnaireCaseModel(
-                serial_number = "10010",
-                uac_chunks = UacChunks(uac1 = "8176", uac2 = "4726", uac3 = "3991"))]
-    
-    mock_get_world_ids.return_value = "1", [QuestionnaireCaseModel(serial_number = "10010")]
+    mock_append_uacs_to_retained_case.return_value = [
+        QuestionnaireCaseModel(
+            serial_number="10010",
+            uac_chunks=UacChunks(
+                uac1="8176",
+                uac2="4726",
+                uac3="3991"
+            )
+        )
+    ]
+
+    mock_get_world_ids.return_value = {
+        "Region 1": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
+
+    mock_get_cases_with_valid_world_ids.return_value = [
+        QuestionnaireCaseModel(
+            serial_number="10010",
+            telephone_number_1="",
+            telephone_number_2="",
+            appointment_telephone_number="",
+            wave="1",
+            priority="1",
+            outcome_code="310",
+            uac_chunks=UacChunks(
+                uac1="8176",
+                uac2="4726",
+                uac3="3991"
+            )
+        )]
+
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
 
     # assert
+    mock_get_world_ids.assert_called_with(config)
     mock_get_questionnaire_cases.assert_called_with("LMS2101_AA1", config)
-    mock_get_world_ids.assert_called_with(config, [QuestionnaireCaseModel(
-                serial_number = "10010",
-                uac_chunks = UacChunks(uac1 = "8176", uac2 = "4726", uac3 = "3991"))])
-    mock_filter_cases.assert_called_with([
-        QuestionnaireCaseModel(serial_number = "10010"), 
-        QuestionnaireCaseModel(serial_number = "10012")])
+    mock_filter_cases.assert_called_with(
+        [
+            QuestionnaireCaseModel(
+                serial_number="10010",
+                telephone_number_1="",
+                telephone_number_2="",
+                appointment_telephone_number="",
+                wave="1",
+                priority="1",
+                outcome_code="310",
+            ),
+            QuestionnaireCaseModel(
+                serial_number="10012",
+                telephone_number_1="0123456789",
+                telephone_number_2="0123456789",
+                appointment_telephone_number="0123456789",
+                wave="2",
+                priority="1",
+                outcome_code="310",
+            ),
+        ]
+    )
     mock_run_async_tasks.assert_called_once()
     kwargs = mock_run_async_tasks.call_args.kwargs
     assert kwargs['cloud_function'] == "totalmobile_job_cloud_function"
@@ -326,9 +401,37 @@ def test_create_case_tasks_for_questionnaire(
     assert len(kwargs['tasks']) == 1
     task = kwargs['tasks'][0]
     assert task[0][0:3] == "LMS"
-    print(json.loads(task[1]))
-
-    assert json.loads(task[1]) == {'questionnaire': 'LMS2101_AA1', 'world_id': '1', 'case': {'qiD.Serial_Number': '10010', 'dataModelName': '', 'qDataBag.TLA': '', 'qDataBag.Wave': '', 'qDataBag.Prem1': '', 'qDataBag.Prem2': '', 'qDataBag.Prem3': '', 'qDataBag.District': '', 'qDataBag.PostTown': '', 'qDataBag.PostCode': '', 'qDataBag.TelNo': '', 'qDataBag.TelNo2': '', 'telNoAppt': '', 'hOut': '', 'qDataBag.UPRN_Latitude': '', 'qDataBag.UPRN_Longitude': '', 'qDataBag.Priority': '', 'qDataBag.FieldRegion': '', 'qDataBag.FieldTeam': '', 'qDataBag.WaveComDTE': '', 'uac_chunks': {'uac1': '', 'uac2': '', 'uac3': ''}}}
+    assert json.loads(task[1]) == {
+        'questionnaire': 'LMS2101_AA1',
+        'world_id': 'Region 1',
+        'case': {
+            'qiD.Serial_Number': '10010',
+            'dataModelName': '',
+            'qDataBag.TLA': '',
+            'qDataBag.Wave': '1',
+            'qDataBag.Prem1': '',
+            'qDataBag.Prem2': '',
+            'qDataBag.Prem3': '',
+            'qDataBag.District': '',
+            'qDataBag.PostTown': '',
+            'qDataBag.PostCode': '',
+            'qDataBag.TelNo': '',
+            'qDataBag.TelNo2': '',
+            'telNoAppt': '',
+            'hOut': '310',
+            'qDataBag.UPRN_Latitude': '',
+            'qDataBag.UPRN_Longitude': '',
+            'qDataBag.Priority': '1',
+            'qDataBag.FieldRegion': '',
+            'qDataBag.FieldTeam': '',
+            'qDataBag.WaveComDTE': '',
+            'uac_chunks': {
+                'uac1': '8176',
+                'uac2': '4726',
+                'uac3': '3991'
+            }
+        }
+    }
     assert result == "Done"
 
 
@@ -383,166 +486,64 @@ def test_create_questionnaire_case_tasks_errors_if_misssing_questionnaire():
             str(err.value) == "Required fields missing from request payload: ['questionnaire']"
     )
 
-
 @mock.patch.object(OptimiseClient, "get_worlds")
-def test_get_world_ids_correctly_maps_a_case_field_region_to_a_world_id(_mock_optimise_client):
-    # arrange
-    config = config_helper.get_default_config()
+def test_get_cases_with_valid_world_ids_logs_a_console_error_when_given_an_unknown_region(_mock_optimise_client,
+                                                                                          caplog):
+    filtered_cases = [QuestionnaireCaseModel(field_region="Risca")]
+    world_ids = {
+        "Region 1": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
 
-    filtered_cases = [QuestionnaireCaseModel(field_region = "Region 1"),
-                      QuestionnaireCaseModel(field_region = "Region 2"),
-                      QuestionnaireCaseModel(field_region = "Region 4")]    
+    get_cases_with_valid_world_ids(filtered_cases, world_ids)
 
-    _mock_optimise_client.return_value = [
-        {
-            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            "identity": {
-                "reference": "Region 1"
-            },
-            "type": "foo"
-        },
-        {
-            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa7",
-            "identity": {
-                "reference": "Region 2"
-            },
-            "type": "foo"
-        },
-        {
-            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa8",
-            "identity": {
-                "reference": "Region 3"
-            },
-            "type": "foo"
-        },
-        {
-            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa9",
-            "identity": {
-                "reference": "Region 4"
-            },
-            "type": "foo"
-        },
-    ]
-
-    world_ids, new_filtered_cases = get_world_ids(config, filtered_cases)
-
-    # assert
-    assert world_ids == [
-        "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "3fa85f64-5717-4562-b3fc-2c963f66afa7",
-        "3fa85f64-5717-4562-b3fc-2c963f66afa9",
-    ]
-
-    assert new_filtered_cases == [
-        QuestionnaireCaseModel(field_region = "Region 1"),
-        QuestionnaireCaseModel(field_region = "Region 2"),
-        QuestionnaireCaseModel(field_region = "Region 4")
-    ]
-
-
-@mock.patch.object(OptimiseClient, "get_worlds")
-def test_get_world_ids_logs_a_console_error_when_given_an_unknown_world(_mock_optimise_client, caplog):
-    # arrange
-    config = config_helper.get_default_config()
-
-    filtered_cases = [QuestionnaireCaseModel(field_region = "Risca")]    
-
-    _mock_optimise_client.return_value = [
-        {
-            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            "identity": {
-                "reference": "Region 1"
-            },
-            "type": "foo"
-        },
-    ]
-
-    # act 
-    get_world_ids(config, filtered_cases)
-
-    # assert
     assert ('root', logging.WARNING, 'Unsupported world: Risca') in caplog.record_tuples
 
 
 @mock.patch.object(OptimiseClient, "get_worlds")
-def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world(
+def test_get_cases_with_valid_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world(
         _mock_optimise_client, caplog):
-    # arrange
-    config = config_helper.get_default_config()
+    filtered_cases = [QuestionnaireCaseModel(field_region="Risca"),
+                      QuestionnaireCaseModel(field_region="Region 1")]
+    world_ids = {
+        "Region 1": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
 
-    filtered_cases = [QuestionnaireCaseModel(field_region = "Risca"),
-                      QuestionnaireCaseModel(field_region = "Region 1")]    
+    cases_with_valid_world_ids = get_cases_with_valid_world_ids(filtered_cases, world_ids)
 
-    _mock_optimise_client.return_value = [
-        {
-            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            "identity": {
-                "reference": "Region 1"
-            },
-            "type": "foo"
-        },
-    ]
-
-    # act 
-    world_ids, new_filtered_cases = get_world_ids(config, filtered_cases)
-
-    # assert
-    assert len(world_ids) == len(new_filtered_cases)
-    assert world_ids == ["3fa85f64-5717-4562-b3fc-2c963f66afa6"]
-    assert new_filtered_cases == [QuestionnaireCaseModel(field_region = "Region 1")]
+    assert len(cases_with_valid_world_ids) == 1
+    assert cases_with_valid_world_ids == [QuestionnaireCaseModel(field_region="Region 1")]
     assert ('root', logging.WARNING, 'Unsupported world: Risca') in caplog.record_tuples
 
 
 @mock.patch.object(OptimiseClient, "get_worlds")
-def test_get_world_ids_logs_a_console_error_when_field_region_is_missing(_mock_optimise_client, caplog):
-    # arrange
-    config = config_helper.get_default_config()
+def test_get_cases_with_valid_world_ids_logs_a_console_error_when_field_region_is_an_empty_value(_mock_optimise_client,
+                                                                                                 caplog):
+    filtered_cases = [QuestionnaireCaseModel(field_region="")]
+    world_ids = {
+        "Region 1": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
 
-    filtered_cases = [QuestionnaireCaseModel(field_region = "")]    
+    get_cases_with_valid_world_ids(filtered_cases, world_ids)
 
-    _mock_optimise_client.return_value = [
-        {
-            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            "identity": {
-                "reference": "Region 1"
-            },
-            "type": "foo"
-        },
-    ]
-
-    # act
-    get_world_ids(config, filtered_cases)
-
-    # assert
     assert ('root', logging.WARNING, 'Case rejected. Missing Field Region') in caplog.record_tuples
 
 
 @mock.patch.object(OptimiseClient, "get_worlds")
 def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world_and_a_known_world(
         _mock_optimise_client, caplog):
-    # arrange
     config = config_helper.get_default_config()
 
-    filtered_cases = [QuestionnaireCaseModel(field_region = ""),
-                      QuestionnaireCaseModel(field_region = "Region 1")]    
+    filtered_cases = [QuestionnaireCaseModel(field_region=""),
+                      QuestionnaireCaseModel(field_region="Region 1")]
 
-    _mock_optimise_client.return_value = [
-        {
-            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            "identity": {
-                "reference": "Region 1"
-            },
-            "type": "foo"
-        },
-    ]
+    world_ids = {
+        "Region 1": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
 
-    # act
-    world_ids, new_filtered_cases = get_world_ids(config, filtered_cases)
+    cases_with_valid_world_ids = get_cases_with_valid_world_ids(filtered_cases, world_ids)
 
-    # assert
-    assert len(world_ids) == len(new_filtered_cases)
-    assert world_ids == ["3fa85f64-5717-4562-b3fc-2c963f66afa6"]
-    assert new_filtered_cases == [QuestionnaireCaseModel(field_region = "Region 1")]
+    assert len(cases_with_valid_world_ids) == 1
+    assert cases_with_valid_world_ids == [QuestionnaireCaseModel(field_region="Region 1")]
     assert ('root', logging.WARNING, 'Case rejected. Missing Field Region') in caplog.record_tuples
 
 

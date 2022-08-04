@@ -6,12 +6,11 @@ from uuid import uuid4
 import flask
 
 from appconfig import Config
-from client.optimise import OptimiseClient
 from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
 from models.totalmobile_job_model import TotalmobileJobModel
 from models.questionnaire_case_model import QuestionnaireCaseModel, UacChunks
-from services import questionnaire_service
+from services import questionnaire_service, world_id_service
 
 setup_logger()
 
@@ -29,29 +28,16 @@ def validate_request(request_json: Dict) -> None:
         )
 
 
-def get_world_ids(config: Config, filtered_cases: List[QuestionnaireCaseModel]) -> List[str]:
-    optimise_client = OptimiseClient(
-        config.totalmobile_url,
-        config.totalmobile_instance,
-        config.totalmobile_client_id,
-        config.totalmobile_client_secret,
-    )
-    logging.info("Looking up world ids")
-    worlds = optimise_client.get_worlds()
-
-    world_map_with_world_ids = {world["identity"]["reference"]: world["id"] for world in worlds}
-
+def get_cases_with_valid_world_ids(filtered_cases: List[QuestionnaireCaseModel], world_ids) -> List[str]:
     cases_with_valid_world_ids = []
-    world_ids = []
     for case in filtered_cases:
         if case.field_region == "":
             logging.warning("Case rejected. Missing Field Region")
-        elif case.field_region not in world_map_with_world_ids:
+        elif case.field_region not in world_ids:
             logging.warning(f"Unsupported world: {case.field_region}")
         else:
             cases_with_valid_world_ids.append(case)
-            world_ids.append(world_map_with_world_ids[case.field_region])
-    return world_ids, cases_with_valid_world_ids
+    return cases_with_valid_world_ids
 
 
 def filter_cases(cases: List[QuestionnaireCaseModel]) -> List[QuestionnaireCaseModel]:
@@ -142,8 +128,11 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     cases_with_uacs_appended = append_uacs_to_retained_case(retained_cases, questionnaire_uac_data)
     logging.info("Finished appending UACs to case data")
 
-    world_ids, cases_with_valid_world_ids = get_world_ids(config, cases_with_uacs_appended)
+    world_ids = world_id_service.get_world_ids(config)
     logging.info(f"Retrieved world ids")
+
+    cases_with_valid_world_ids = get_cases_with_valid_world_ids(cases_with_uacs_appended, world_ids)
+    logging.info(f"Finished searching for cases with valid world ids")
 
     totalmobile_job_models = map_totalmobile_job_models(
         cases_with_valid_world_ids, world_ids, questionnaire_name

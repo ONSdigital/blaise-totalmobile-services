@@ -38,7 +38,6 @@ def test_get_questionnaire_uacs_returns_the_case_data_supplied_by_the_rest_api_c
 
     # act
     result = get_questionnaire_uacs(questionnaire_name, config)
-    print(result)
 
     # assert
     assert result["10010"]["uac_chunks"]["uac1"] == "8176"
