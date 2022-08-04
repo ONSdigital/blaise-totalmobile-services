@@ -273,13 +273,13 @@ def test_validate_request_when_missing_fields():
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.append_uacs_to_retained_case")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.get_world_ids")
 @mock.patch("services.questionnaire_service.get_questionnaire_cases")
-@mock.patch("client.bus.BusClient.get_uacs_by_case_id")
+@mock.patch("services.questionnaire_service.get_questionnaire_uacs")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 def test_create_case_tasks_for_questionnaire(
         mock_run_async_tasks,
         mock_filter_cases,
-        mock_get_uacs_by_case_id,
+        mock_gget_questionnaire_uacs,
         mock_get_questionnaire_cases,
         mock_get_world_ids,
         mock_append_uacs_to_retained_case
@@ -291,7 +291,7 @@ def test_create_case_tasks_for_questionnaire(
         QuestionnaireCaseModel(serial_number = "10010"), 
         QuestionnaireCaseModel(serial_number = "10012")]
     mock_filter_cases.return_value = [QuestionnaireCaseModel(serial_number = "10010")]
-    mock_get_uacs_by_case_id.return_value = {
+    mock_gget_questionnaire_uacs.return_value = {
         "10010": {
             "instrument_name": "LMS2101_AA1",
             "case_id": "10010",

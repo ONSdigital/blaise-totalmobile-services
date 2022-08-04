@@ -11,7 +11,7 @@ def get_questionnaire_cases(questionnaire_name: str, config: Config) -> List[Que
             questionnaire_case_data_dictionary]
 
 
-def get_questionnaire_uacs(config: Config, questionnaire_name: str):
+def get_questionnaire_uacs(questionnaire_name: str, config: Config):
     return uac_restapi_service.get_questionnaire_uacs(questionnaire_name, config)
 
 
