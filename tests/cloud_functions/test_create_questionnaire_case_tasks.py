@@ -5,7 +5,6 @@ import flask
 import pytest
 import logging
 from models.questionnaire_case_model import QuestionnaireCaseModel, UacChunks
-from services.questionnaire_service import get_questionnaire_cases
 
 from tests.helpers import config_helper
 from client.optimise import OptimiseClient
@@ -359,7 +358,7 @@ def test_create_questionnaire_case_tasks_when_no_cases(
 def test_create_questionnaire_case_tasks_when_no_cases_after_filtering(
         mock_run_async_tasks,
         mock_filter_cases,
-        mock_get_questionnaire_cases,
+        mock_get_questionnaire_cases
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})

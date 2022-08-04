@@ -3,7 +3,6 @@ import logging
 from typing import Dict, List, Tuple, Union
 from uuid import uuid4
 
-import blaise_restapi
 import flask
 
 from appconfig import Config
@@ -13,7 +12,7 @@ from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
 from models.totalmobile_job_model import TotalmobileJobModel
 from models.questionnaire_case_model import QuestionnaireCaseModel, UacChunks
-from services.questionnaire_service import get_questionnaire_cases
+from services import questionnaire_service
 
 setup_logger()
 
@@ -138,7 +137,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
 
     logging.info(f"Creating case tasks for questionnaire {questionnaire_name}")
 
-    cases = [] # get_questionnaire_cases(questionnaire_name, config)
+    cases = questionnaire_service.get_questionnaire_cases(questionnaire_name, config)
     logging.info(f"Retrieved {len(cases)} cases for questionnaire {questionnaire_name}")
 
     if len(cases) == 0:
