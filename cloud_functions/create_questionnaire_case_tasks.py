@@ -13,6 +13,7 @@ from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
 from models.totalmobile_job_model import TotalmobileJobModel
 from models.questionnaire_case_model import QuestionnaireCaseModel, UacChunks
+from services.questionnaire_service import get_questionnaire_cases
 
 setup_logger()
 
@@ -54,40 +55,6 @@ def get_world_ids(config: Config, filtered_cases: List[QuestionnaireCaseModel]) 
             world_ids.append(world_map_with_world_ids[case.field_region])
     return world_ids, cases_with_valid_world_ids
 
-
-def get_questionnaire_case_model_list(questionnaire_name: str, config: Config) -> List[QuestionnaireCaseModel]:
-    restapi_client = blaise_restapi.Client(config.blaise_api_url)
-
-    questionnaire_data = restapi_client.get_questionnaire_data(
-        config.blaise_server_park,
-        questionnaire_name,
-        [
-            "qiD.Serial_Number",
-            "dataModelName",
-            "qDataBag.TLA",
-            "qDataBag.Wave",
-            "qDataBag.Prem1",
-            "qDataBag.Prem2",
-            "qDataBag.Prem3",
-            "qDataBag.District",
-            "qDataBag.PostTown",
-            "qDataBag.PostCode",
-            "qDataBag.TelNo",
-            "qDataBag.TelNo2",
-            "telNoAppt",
-            "hOut",
-            "qDataBag.UPRN_Latitude",
-            "qDataBag.UPRN_Longitude",
-            "qDataBag.Priority",
-            "qDataBag.FieldRegion",
-            "qDataBag.FieldTeam",
-            "qDataBag.WaveComDTE",
-        ],
-    )
-
-    case_data_dictionary_list = questionnaire_data["reportingData"]
-    return [QuestionnaireCaseModel.import_case_data_dictionary(case_data_dictionary) for case_data_dictionary in case_data_dictionary_list]
-    
 
 def filter_cases(cases: List[QuestionnaireCaseModel]) -> List[QuestionnaireCaseModel]:
     return [
@@ -171,7 +138,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
 
     logging.info(f"Creating case tasks for questionnaire {questionnaire_name}")
 
-    cases = get_questionnaire_case_model_list(questionnaire_name, config)
+    cases = [] # get_questionnaire_cases(questionnaire_name, config)
     logging.info(f"Retrieved {len(cases)} cases for questionnaire {questionnaire_name}")
 
     if len(cases) == 0:

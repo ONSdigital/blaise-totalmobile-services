@@ -1,11 +1,11 @@
 import json
 from unittest import mock
 
-import blaise_restapi
 import flask
 import pytest
 import logging
 from models.questionnaire_case_model import QuestionnaireCaseModel, UacChunks
+from services.questionnaire_service import get_questionnaire_cases
 
 from tests.helpers import config_helper
 from client.optimise import OptimiseClient
@@ -15,7 +15,6 @@ from cloud_functions.create_questionnaire_case_tasks import (
     filter_cases,
     get_wave_from_questionnaire_name,
     map_totalmobile_job_models,
-    get_questionnaire_case_model_list,
     get_world_ids,
     validate_request,
     append_uacs_to_retained_case
@@ -36,73 +35,6 @@ def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_mod
 
     assert create_task_name(model) != create_task_name(model)
 
-
-@mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-def test_get_case_data_calls_the_rest_api_client_with_the_correct_parameters(_mock_rest_api_client):
-    config = config_helper.get_default_config()
-    blaise_server_park = "gusty"
-    questionnaire_name = "DST2106Z"
-    fields = [
-        "qiD.Serial_Number",
-        "dataModelName",
-        "qDataBag.TLA",
-        "qDataBag.Wave",
-        "qDataBag.Prem1",
-        "qDataBag.Prem2",
-        "qDataBag.Prem3",
-        "qDataBag.District",
-        "qDataBag.PostTown",
-        "qDataBag.PostCode",
-        "qDataBag.TelNo",
-        "qDataBag.TelNo2",
-        "telNoAppt",
-        "hOut",
-        "qDataBag.UPRN_Latitude",
-        "qDataBag.UPRN_Longitude",
-        "qDataBag.Priority",
-        "qDataBag.FieldRegion",
-        "qDataBag.FieldTeam",
-        "qDataBag.WaveComDTE"
-    ]
-
-    # act
-    get_questionnaire_case_model_list(questionnaire_name, config)
-
-    # assert
-    _mock_rest_api_client.assert_called_with(
-        blaise_server_park, questionnaire_name, fields
-    )
-
-
-@mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-def test_get_case_data_returns_the_case_data_supplied_by_the_rest_api_client(
-        _mock_rest_api_client,
-):
-    # arrange
-    config = config_helper.get_default_config()
-    _mock_rest_api_client.return_value = {
-        "questionnaireName": "DST2106Z",
-        "questionnaireId": "12345-12345-12345-12345-12345",
-        "reportingData": [
-            {"qiD.Serial_Number": "10010", "hOut": "110"},
-            {"qiD.Serial_Number": "10020", "hOut": "210"},
-            {"qiD.Serial_Number": "10030", "hOut": "310"},
-        ],
-    }
-    questionnaire_name = "OPN2101A"
-
-    # act
-    result = get_questionnaire_case_model_list(questionnaire_name, config)
-
-    # assert
-    assert result[0].serial_number == "10010" 
-    assert result[0].outcome_code == "110"
-
-    assert result[1].serial_number == "10020" 
-    assert result[1].outcome_code == "210"
-
-    assert result[2].serial_number == "10030" 
-    assert result[2].outcome_code == "310"
 
 
 def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
@@ -342,7 +274,7 @@ def test_validate_request_when_missing_fields():
 
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.append_uacs_to_retained_case")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.get_world_ids")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_questionnaire_case_model_list")
+@mock.patch("services.questionnaire_service.get_questionnaire_cases")
 @mock.patch("client.bus.BusClient.get_uacs_by_case_id")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
@@ -350,14 +282,14 @@ def test_create_case_tasks_for_questionnaire(
         mock_run_async_tasks,
         mock_filter_cases,
         mock_get_uacs_by_case_id,
-        mock_get_questionnaire_case_model_list,
+        mock_get_questionnaire_cases,
         mock_get_world_ids,
         mock_append_uacs_to_retained_case
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = config_helper.get_default_config()
-    mock_get_questionnaire_case_model_list.return_value = [
+    mock_get_questionnaire_cases.return_value = [
         QuestionnaireCaseModel(serial_number = "10010"), 
         QuestionnaireCaseModel(serial_number = "10012")]
     mock_filter_cases.return_value = [QuestionnaireCaseModel(serial_number = "10010")]
@@ -382,7 +314,7 @@ def test_create_case_tasks_for_questionnaire(
     result = create_questionnaire_case_tasks(mock_request, config)
 
     # assert
-    mock_get_questionnaire_case_model_list.assert_called_with("LMS2101_AA1", config)
+    mock_get_questionnaire_cases.assert_called_with("LMS2101_AA1", config)
     mock_get_world_ids.assert_called_with(config, [QuestionnaireCaseModel(
                 serial_number = "10010",
                 uac_chunks = UacChunks(uac1 = "8176", uac2 = "4726", uac3 = "3991"))])
@@ -402,16 +334,16 @@ def test_create_case_tasks_for_questionnaire(
     assert result == "Done"
 
 
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_questionnaire_case_model_list")
+@mock.patch("services.questionnaire_service.get_questionnaire_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 def test_create_questionnaire_case_tasks_when_no_cases(
         mock_run_async_tasks,
-        mock_get_questionnaire_case_model_list,
+        mock_get_questionnaire_cases,
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = config_helper.get_default_config()
-    mock_get_questionnaire_case_model_list.return_value = []
+    mock_get_questionnaire_cases.return_value = []
 
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
@@ -421,18 +353,18 @@ def test_create_questionnaire_case_tasks_when_no_cases(
     assert result == "Exiting as no cases to send for questionnaire LMS2101_AA1"
 
 
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_questionnaire_case_model_list")
+@mock.patch("services.questionnaire_service.get_questionnaire_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 def test_create_questionnaire_case_tasks_when_no_cases_after_filtering(
         mock_run_async_tasks,
         mock_filter_cases,
-        mock_get_questionnaire_case_model_list,
+        mock_get_questionnaire_cases,
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = config_helper.get_default_config()
-    mock_get_questionnaire_case_model_list.return_value = [QuestionnaireCaseModel(serial_number = "10010")]
+    mock_get_questionnaire_cases.return_value = [QuestionnaireCaseModel(serial_number = "10010")]
     mock_filter_cases.return_value = []
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
@@ -455,17 +387,17 @@ def test_create_questionnaire_case_tasks_errors_if_misssing_questionnaire():
 
 
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.get_world_ids")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.get_questionnaire_case_model_list")
+@mock.patch("services.questionnaire_service.get_questionnaire_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
 def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire(
         mock_filter_cases,
-        mock_get_questionnaire_case_model_list,
+        mock_get_questionnaire_cases,
         mock_get_world_ids,
 ):
     # arrange
     config = config_helper.get_default_config()
     mock_request = flask.Request.from_values(json={"questionnaire": "OPN2101A"})
-    mock_get_questionnaire_case_model_list.return_value = [QuestionnaireCaseModel(serial_number = "10010"), QuestionnaireCaseModel(serial_number = "10012")]
+    mock_get_questionnaire_cases.return_value = [QuestionnaireCaseModel(serial_number = "10010"), QuestionnaireCaseModel(serial_number = "10012")]
     mock_get_world_ids.return_value = "1"
     mock_filter_cases.return_value = [QuestionnaireCaseModel(serial_number = "10010")]
 
