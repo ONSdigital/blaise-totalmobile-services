@@ -30,7 +30,7 @@ def validate_request(request_json: Dict) -> None:
         )
 
 
-def get_world_ids(config: Config, filtered_cases: List[QuestionnaireCaseModel]) -> List[str]:
+def get_world_ids(config: Config):
     optimise_client = OptimiseClient(
         config.totalmobile_url,
         config.totalmobile_instance,
@@ -38,21 +38,20 @@ def get_world_ids(config: Config, filtered_cases: List[QuestionnaireCaseModel]) 
         config.totalmobile_client_secret,
     )
     logging.info("Looking up world ids")
-    worlds = optimise_client.get_worlds()
 
-    world_map_with_world_ids = {world["identity"]["reference"]: world["id"] for world in worlds}
+    return {world["identity"]["reference"]: world["id"] for world in optimise_client.get_worlds()}
 
+
+def get_cases_with_valid_world_ids(filtered_cases: List[QuestionnaireCaseModel], world_ids) -> List[str]:
     cases_with_valid_world_ids = []
-    world_ids = []
     for case in filtered_cases:
         if case.field_region == "":
             logging.warning("Case rejected. Missing Field Region")
-        elif case.field_region not in world_map_with_world_ids:
+        elif case.field_region not in world_ids:
             logging.warning(f"Unsupported world: {case.field_region}")
         else:
             cases_with_valid_world_ids.append(case)
-            world_ids.append(world_map_with_world_ids[case.field_region])
-    return world_ids, cases_with_valid_world_ids
+    return cases_with_valid_world_ids
 
 
 def get_questionnaire_case_model_list(questionnaire_name: str, config: Config) -> List[QuestionnaireCaseModel]:
@@ -86,20 +85,21 @@ def get_questionnaire_case_model_list(questionnaire_name: str, config: Config) -
     )
 
     case_data_dictionary_list = questionnaire_data["reportingData"]
-    return [QuestionnaireCaseModel.import_case_data_dictionary(case_data_dictionary) for case_data_dictionary in case_data_dictionary_list]
-    
+    return [QuestionnaireCaseModel.import_case_data_dictionary(case_data_dictionary) for case_data_dictionary in
+            case_data_dictionary_list]
+
 
 def filter_cases(cases: List[QuestionnaireCaseModel]) -> List[QuestionnaireCaseModel]:
     return [
         case
         for case in cases
         if (
-            case.telephone_number_1 == ""
-            and case.telephone_number_2 == ""
-            and case.appointment_telephone_number == ""
-            and case.wave == "1"
-            and case.priority in ["1", "2", "3", "4", "5"]
-            and case.outcome_code in ["", "0", "310"])
+                case.telephone_number_1 == ""
+                and case.telephone_number_2 == ""
+                and case.appointment_telephone_number == ""
+                and case.wave == "1"
+                and case.priority in ["1", "2", "3", "4", "5"]
+                and case.outcome_code in ["", "0", "310"])
     ]
 
 
@@ -112,7 +112,8 @@ def get_wave_from_questionnaire_name(questionnaire_name: str):
 def map_totalmobile_job_models(
         cases: List[QuestionnaireCaseModel], world_ids: List[str], questionnaire_name: str
 ) -> List[TotalmobileJobModel]:
-    return [TotalmobileJobModel(questionnaire_name, world_id, case.to_dict()) for case, world_id in zip(cases, world_ids)]
+    return [TotalmobileJobModel(questionnaire_name, world_id, case.to_dict()) for case, world_id in
+            zip(cases, world_ids)]
 
 
 def create_task_name(job_model: TotalmobileJobModel) -> str:
@@ -131,7 +132,8 @@ def run_async_tasks(tasks: List[Tuple[str, str]], queue_id: str, cloud_function:
     asyncio.run(run(task_requests))
 
 
-def append_uacs_to_retained_case(filtered_cases: List[QuestionnaireCaseModel], case_uac_data: Dict[str, str]) -> List[QuestionnaireCaseModel]:
+def append_uacs_to_retained_case(filtered_cases: List[QuestionnaireCaseModel], case_uac_data: Dict[str, str]) -> List[
+    QuestionnaireCaseModel]:
     cases_with_uacs_appended = []
     for filtered_case in filtered_cases:
         if filtered_case.serial_number not in case_uac_data:
@@ -139,9 +141,9 @@ def append_uacs_to_retained_case(filtered_cases: List[QuestionnaireCaseModel], c
             cases_with_uacs_appended.append(filtered_case)
         else:
             filtered_case.uac_chunks = UacChunks(
-                uac1 = case_uac_data[filtered_case.serial_number]["uac_chunks"]["uac1"],
-                uac2 = case_uac_data[filtered_case.serial_number]["uac_chunks"]["uac2"],
-                uac3 = case_uac_data[filtered_case.serial_number]["uac_chunks"]["uac3"],
+                uac1=case_uac_data[filtered_case.serial_number]["uac_chunks"]["uac1"],
+                uac2=case_uac_data[filtered_case.serial_number]["uac_chunks"]["uac2"],
+                uac3=case_uac_data[filtered_case.serial_number]["uac_chunks"]["uac3"],
             )
             cases_with_uacs_appended.append(filtered_case)
     return cases_with_uacs_appended
@@ -188,8 +190,11 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     cases_with_uacs_appended = append_uacs_to_retained_case(retained_cases, questionnaire_uac_data)
     logging.info("Finished appending UACs to case data")
 
-    world_ids, cases_with_valid_world_ids = get_world_ids(config, cases_with_uacs_appended)
+    world_ids = get_world_ids(config)
     logging.info(f"Retrieved world ids")
+
+    cases_with_valid_world_ids = get_cases_with_valid_world_ids(cases_with_uacs_appended, world_ids)
+    logging.info(f"Finished searching for cases with valid world ids")
 
     totalmobile_job_models = map_totalmobile_job_models(
         cases_with_valid_world_ids, world_ids, questionnaire_name
