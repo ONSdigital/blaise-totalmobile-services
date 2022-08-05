@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple
 from uuid import uuid4
 
 import flask
@@ -10,7 +10,7 @@ from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
 from models.totalmobile_job_model import TotalmobileJobModel
 from models.questionnaire_case_model import QuestionnaireCaseModel, UacChunks
-from services import questionnaire_service, world_id_service
+from services import questionnaire_service, world_id_service, case_service
 
 setup_logger()
 
@@ -38,20 +38,6 @@ def get_cases_with_valid_world_ids(filtered_cases: List[QuestionnaireCaseModel],
         else:
             cases_with_valid_world_ids.append(case)
     return cases_with_valid_world_ids
-
-
-def filter_cases(cases: List[QuestionnaireCaseModel]) -> List[QuestionnaireCaseModel]:
-    return [
-        case
-        for case in cases
-        if (
-            case.telephone_number_1 == ""
-            and case.telephone_number_2 == ""
-            and case.appointment_telephone_number == ""
-            and case.wave == "1"
-            and case.priority in ["1", "2", "3", "4", "5"]
-            and case.outcome_code in ["", "0", "310"])
-    ]
 
 
 def map_totalmobile_job_models(
@@ -118,14 +104,14 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         logging.info(f"Exiting as no cases to send for questionnaire {questionnaire_name}")
         return (f"Exiting as no cases to send for questionnaire {questionnaire_name}")
 
-    retained_cases = filter_cases(cases)
-    if len(retained_cases) == 0:
+    eligible_cases = case_service.get_eligible_cases(cases)
+    if len(eligible_cases) == 0:
         logging.info(f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
         return (f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
-    logging.info(f"Retained {len(retained_cases)} cases after filtering")
+    logging.info(f"Retained {len(eligible_cases)} cases after filtering")
 
     questionnaire_uac_data = questionnaire_service.get_questionnaire_uacs(config, questionnaire_name)
-    cases_with_uacs_appended = append_uacs_to_retained_case(retained_cases, questionnaire_uac_data)
+    cases_with_uacs_appended = append_uacs_to_retained_case(eligible_cases, questionnaire_uac_data)
     logging.info("Finished appending UACs to case data")
 
     world_ids = world_id_service.get_world_ids(config)

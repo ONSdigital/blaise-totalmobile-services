@@ -18,10 +18,10 @@ def test_get_questionnaire_cases_calls_the_service_with_the_correct_parameters(m
 
 
 @mock.patch("services.blaise_restapi_service.get_questionnaire_case_data")
-def test_get_questionnaire_cases_returns_a_list_of_questionnaire_models(mock_questionnaire_service):
+def test_get_questionnaire_cases_returns_a_list_of_questionnaire_models(mock_restapi_service):
     # arrange
     config = config_helper.get_default_config()
-    mock_questionnaire_service.return_value = [
+    mock_restapi_service.return_value = [
             {"qiD.Serial_Number": "10010", "hOut": "110"},
             {"qiD.Serial_Number": "10020", "hOut": "210"},
             {"qiD.Serial_Number": "10030", "hOut": "310"},

@@ -11,7 +11,6 @@ from client.optimise import OptimiseClient
 from cloud_functions.create_questionnaire_case_tasks import (
     create_questionnaire_case_tasks,
     create_task_name,
-    filter_cases,
     map_totalmobile_job_models,
     validate_request,
     append_uacs_to_retained_case,
@@ -68,196 +67,6 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     ]
 
 
-def test_filter_cases_returns_cases_only_where_criteria_is_met():
-    # arrange
-    cases = [
-        # should return
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "1",
-            outcome_code= "310"  
-        ),
-        # should not return
-        QuestionnaireCaseModel(
-            telephone_number_1 = "123435",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "1",
-            outcome_code= "310"  
-        ),      
-        # should not return
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "123435",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "1",
-            outcome_code= "310"  
-        ),      
-        # should not return
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "123435",          
-            wave = "1",
-            priority = "1",
-            outcome_code= "310"  
-        ),    
-        # should not return
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "2",
-            priority = "1",
-            outcome_code= "310"  
-        ),       
-         # should not return
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "6",
-            outcome_code= "310"  
-        ),                       
-        # should not return
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "1",
-            outcome_code= "410"  
-        ),       
-        # should return
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "1",
-            outcome_code= "0"  
-        ),      
-        # should return
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "2",
-            outcome_code= "0"  
-        ),   
-        # should return
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "3",
-            outcome_code= "0"  
-        ),  
-        # should return
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "4",
-            outcome_code= "0"  
-        ),  
-        # should return
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "5",
-            outcome_code= "0"  
-        ),     
-        # should return
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "5",
-            outcome_code= ""  
-        )                                                
-    ]
-    # act
-
-    result = filter_cases(cases)
-    print(len(cases))
-    print(len(result))
-
-    # assert
-    assert result == [
-        # should return
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "1",
-            outcome_code= "310"  
-        ),
-   # should return
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "1",
-            outcome_code= "0"  
-        ),      
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "2",
-            outcome_code= "0"  
-        ),   
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "3",
-            outcome_code= "0"  
-        ),  
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "4",
-            outcome_code= "0"  
-        ),  
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "5",
-            outcome_code= "0"  
-        ),     
-        QuestionnaireCaseModel(
-            telephone_number_1 = "",
-            telephone_number_2 = "",
-            appointment_telephone_number = "",          
-            wave = "1",
-            priority = "5",
-            outcome_code= ""  
-        )  
-    ]
-
-
 def test_validate_request(mock_create_job_task):
     validate_request(mock_create_job_task)
 
@@ -274,13 +83,13 @@ def test_validate_request_when_missing_fields():
 @mock.patch("services.world_id_service.get_world_ids")
 @mock.patch("services.questionnaire_service.get_questionnaire_cases")
 @mock.patch("services.questionnaire_service.get_questionnaire_uacs")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
+@mock.patch("services.case_service.get_eligible_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.get_cases_with_valid_world_ids")
 def test_create_case_tasks_for_questionnaire(
         mock_get_cases_with_valid_world_ids,
         mock_run_async_tasks,
-        mock_filter_cases,
+        mock_get_eligible_cases,
         mock_get_questionnaire_uacs,
         mock_get_questionnaire_cases,
         mock_get_world_ids,
@@ -311,7 +120,7 @@ def test_create_case_tasks_for_questionnaire(
         ),
     ]
 
-    mock_filter_cases.return_value = [
+    mock_get_eligible_cases.return_value = [
         QuestionnaireCaseModel(
             serial_number="10010",
             telephone_number_1="",
@@ -372,7 +181,7 @@ def test_create_case_tasks_for_questionnaire(
     # assert
     mock_get_world_ids.assert_called_with(config)
     mock_get_questionnaire_cases.assert_called_with("LMS2101_AA1", config)
-    mock_filter_cases.assert_called_with(
+    mock_get_eligible_cases.assert_called_with(
         [
             QuestionnaireCaseModel(
                 serial_number="10010",
@@ -455,18 +264,18 @@ def test_create_questionnaire_case_tasks_when_no_cases(
 
 
 @mock.patch("services.questionnaire_service.get_questionnaire_cases")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.filter_cases")
+@mock.patch("services.case_service.get_eligible_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 def test_create_questionnaire_case_tasks_when_no_cases_after_filtering(
         mock_run_async_tasks,
-        mock_filter_cases,
+        mock_get_eligible_cases,
         mock_get_questionnaire_cases
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = config_helper.get_default_config()
     mock_get_questionnaire_cases.return_value = [QuestionnaireCaseModel(serial_number = "10010")]
-    mock_filter_cases.return_value = []
+    mock_get_eligible_cases.return_value = []
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
 
