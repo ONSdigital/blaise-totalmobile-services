@@ -1,12 +1,12 @@
-from models.case_model import QuestionnaireCaseModel
-from services.case_service import get_eligible_cases
+from services import case_service
+from models.case_model import CaseModel
 
 
-def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
+def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
     # arrange
     cases = [
         # should return
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -15,7 +15,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code= "310"
         ),
         # should not return
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "123435",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -24,7 +24,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code= "310"
         ),
         # should not return
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "123435",
             appointment_telephone_number = "",
@@ -33,7 +33,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code= "310"
         ),
         # should not return
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "123435",
@@ -42,7 +42,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code= "310"
         ),
         # should not return
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -51,7 +51,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code= "310"
         ),
         # should not return
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -60,7 +60,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code= "310"
         ),
         # should not return
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -69,7 +69,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code= "410"
         ),
         # should return
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -78,7 +78,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code= "0"
         ),
         # should return
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -87,7 +87,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code= "0"
         ),
         # should return
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -96,7 +96,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code= "0"
         ),
         # should return
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -105,7 +105,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code= "0"
         ),
         # should return
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -114,7 +114,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code= "0"
         ),
         # should return
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -125,12 +125,12 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
     ]
 
     # act
-    result = get_eligible_cases(cases)
+    result = case_service.filter_eligible_cases(cases)
 
     # assert
     assert result == [
         # should return
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -139,7 +139,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code= "310"
         ),
         # should return
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -147,7 +147,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             priority = "1",
             outcome_code= "0"
         ),
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -155,7 +155,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             priority = "2",
             outcome_code= "0"
         ),
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -163,7 +163,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             priority = "3",
             outcome_code= "0"
         ),
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -171,7 +171,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             priority = "4",
             outcome_code= "0"
         ),
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",
@@ -179,7 +179,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             priority = "5",
             outcome_code= "0"
         ),
-        QuestionnaireCaseModel(
+        CaseModel(
             telephone_number_1 = "",
             telephone_number_2 = "",
             appointment_telephone_number = "",

@@ -1,4 +1,4 @@
-from models.case_model import QuestionnaireCaseModel
+from models.case_model import CaseModel
 from models.uac_model import UacModel, UacChunks
 from tests.helpers import questionnaire_case_model_helper
 
@@ -27,7 +27,7 @@ def test_import_case_data_returns_a_populated_model():
             "qDataBag.WaveComDTE": "WGAFF" 
     }     
 
-    result = QuestionnaireCaseModel.import_case_data(case_data_dictionary)
+    result = CaseModel.import_case_data(case_data_dictionary)
 
     assert result.case_id == "90000000"
     assert result.data_model_name == "LM2007"
@@ -75,7 +75,7 @@ def test_import_case_data_returns_a_valid_object_when_a_blaise_field_is_incorrec
             "qDataBag.WaveComDTE": "WGAFF" 
     } 
 
-    result = QuestionnaireCaseModel.import_case_data(case_data_dictionary)
+    result = CaseModel.import_case_data(case_data_dictionary)
 
     assert result.case_id == ""
     assert result.data_model_name == "LM2007"
@@ -122,7 +122,7 @@ def test_import_case_data_returns_a_valid_object_when_an_optional_blaise_field_i
             "qDataBag.WaveComDTE": "WGAFF" 
          }        
 
-    result = QuestionnaireCaseModel.import_case_data(case_data_dictionary)
+    result = CaseModel.import_case_data(case_data_dictionary)
 
     assert result.case_id == ""
     assert result.data_model_name == "LM2007"

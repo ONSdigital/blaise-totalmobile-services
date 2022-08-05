@@ -4,7 +4,7 @@ from unittest import mock
 import flask
 import pytest
 import logging
-from models.case_model import QuestionnaireCaseModel, UacChunks
+from models.case_model import CaseModel, UacChunks
 
 from tests.helpers import config_helper
 from client.optimise import OptimiseClient
@@ -20,14 +20,14 @@ from models.totalmobile_job_model import TotalmobileJobModel
 
 
 def test_create_task_name_returns_correct_name_when_called():
-    questionnaire_case_model = QuestionnaireCaseModel(case_id = "90001")
+    questionnaire_case_model = CaseModel(case_id ="90001")
     model = TotalmobileJobModel("OPN2101A", "world", questionnaire_case_model.to_dict())
 
     assert create_task_name(model).startswith("OPN2101A-90001-")
 
 
 def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_model():
-    questionnaire_case_model = QuestionnaireCaseModel(case_id = "90001")
+    questionnaire_case_model = CaseModel(case_id ="90001")
     model = TotalmobileJobModel("OPN2101A", "world", questionnaire_case_model.to_dict())
 
     assert create_task_name(model) != create_task_name(model)
@@ -39,9 +39,9 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     questionnaire_name = "OPN2101A"
 
     case_data = [
-        QuestionnaireCaseModel(case_id = "10010", outcome_code = "110"),
-        QuestionnaireCaseModel(case_id = "10020", outcome_code = "120"),
-        QuestionnaireCaseModel(case_id = "10030", outcome_code = "130")
+        CaseModel(case_id ="10010", outcome_code ="110"),
+        CaseModel(case_id ="10020", outcome_code ="120"),
+        CaseModel(case_id ="10030", outcome_code ="130")
     ]
 
     world_ids = [
@@ -81,17 +81,15 @@ def test_validate_request_when_missing_fields():
 
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.append_uacs_to_retained_case")
 @mock.patch("services.world_id_service.get_world_ids")
-@mock.patch("services.questionnaire_service.get_cases")
+@mock.patch("services.questionnaire_service.get_eligible_cases")
 @mock.patch("services.questionnaire_service.get_uacs")
-@mock.patch("services.case_service.get_eligible_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.get_cases_with_valid_world_ids")
 def test_create_case_tasks_for_questionnaire(
         mock_get_cases_with_valid_world_ids,
         mock_run_async_tasks,
-        mock_get_eligible_cases,
         mock_get_uacs,
-        mock_get_cases,
+        mock_get_eligible_cases,
         mock_get_world_ids,
         mock_append_uacs_to_retained_case
 ):
@@ -99,29 +97,8 @@ def test_create_case_tasks_for_questionnaire(
     config = config_helper.get_default_config()
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
 
-    mock_get_cases.return_value = [
-        QuestionnaireCaseModel(
-            case_id="10010",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="1",
-            outcome_code="310",
-        ),
-        QuestionnaireCaseModel(
-            case_id="10012",
-            telephone_number_1="0123456789",
-            telephone_number_2="0123456789",
-            appointment_telephone_number="0123456789",
-            wave="2",
-            priority="1",
-            outcome_code="310",
-        ),
-    ]
-
     mock_get_eligible_cases.return_value = [
-        QuestionnaireCaseModel(
+        CaseModel(
             case_id="10010",
             telephone_number_1="",
             telephone_number_2="",
@@ -145,7 +122,7 @@ def test_create_case_tasks_for_questionnaire(
         }
     }
     mock_append_uacs_to_retained_case.return_value = [
-        QuestionnaireCaseModel(
+        CaseModel(
             case_id="10010",
             uac_chunks=UacChunks(
                 uac1="8176",
@@ -160,7 +137,7 @@ def test_create_case_tasks_for_questionnaire(
     }
 
     mock_get_cases_with_valid_world_ids.return_value = [
-        QuestionnaireCaseModel(
+        CaseModel(
             case_id="10010",
             telephone_number_1="",
             telephone_number_2="",
@@ -180,29 +157,8 @@ def test_create_case_tasks_for_questionnaire(
 
     # assert
     mock_get_world_ids.assert_called_with(config)
-    mock_get_cases.assert_called_with("LMS2101_AA1", config)
-    mock_get_eligible_cases.assert_called_with(
-        [
-            QuestionnaireCaseModel(
-                case_id="10010",
-                telephone_number_1="",
-                telephone_number_2="",
-                appointment_telephone_number="",
-                wave="1",
-                priority="1",
-                outcome_code="310",
-            ),
-            QuestionnaireCaseModel(
-                case_id="10012",
-                telephone_number_1="0123456789",
-                telephone_number_2="0123456789",
-                appointment_telephone_number="0123456789",
-                wave="2",
-                priority="1",
-                outcome_code="310",
-            ),
-        ]
-    )
+    mock_get_eligible_cases.assert_called_with("LMS2101_AA1", config)
+
     mock_run_async_tasks.assert_called_once()
     kwargs = mock_run_async_tasks.call_args.kwargs
     assert kwargs['cloud_function'] == "totalmobile_job_cloud_function"
@@ -244,44 +200,23 @@ def test_create_case_tasks_for_questionnaire(
     assert result == "Done"
 
 
-@mock.patch("services.questionnaire_service.get_cases")
+@mock.patch("services.questionnaire_service.get_eligible_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
-def test_create_questionnaire_case_tasks_when_no_cases(
+def test_create_questionnaire_case_tasks_when_no_eligible_cases(
         mock_run_async_tasks,
-        mock_get_cases,
+        mock_get_eligible_cases
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = config_helper.get_default_config()
-    mock_get_cases.return_value = []
-
-    # act
-    result = create_questionnaire_case_tasks(mock_request, config)
-
-    # assert
-    mock_run_async_tasks.assert_not_called()
-    assert result == "Exiting as no cases to send for questionnaire LMS2101_AA1"
-
-
-@mock.patch("services.questionnaire_service.get_cases")
-@mock.patch("services.case_service.get_eligible_cases")
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
-def test_create_questionnaire_case_tasks_when_no_cases_after_filtering(
-        mock_run_async_tasks,
-        mock_get_eligible_cases,
-        mock_get_cases
-):
-    # arrange
-    mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
-    config = config_helper.get_default_config()
-    mock_get_cases.return_value = [QuestionnaireCaseModel(case_id = "10010")]
     mock_get_eligible_cases.return_value = []
+
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
 
     # assert
     mock_run_async_tasks.assert_not_called()
-    assert result == "Exiting as no cases to send after filtering for questionnaire LMS2101_AA1"
+    assert result == "Exiting as no eligible cases to send for questionnaire LMS2101_AA1"
 
 
 def test_create_questionnaire_case_tasks_errors_if_misssing_questionnaire():
@@ -298,7 +233,7 @@ def test_create_questionnaire_case_tasks_errors_if_misssing_questionnaire():
 @mock.patch.object(OptimiseClient, "get_worlds")
 def test_get_cases_with_valid_world_ids_logs_a_console_error_when_given_an_unknown_region(_mock_optimise_client,
                                                                                           caplog):
-    filtered_cases = [QuestionnaireCaseModel(field_region="Risca")]
+    filtered_cases = [CaseModel(field_region="Risca")]
     world_ids = {
         "Region 1": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     }
@@ -311,8 +246,8 @@ def test_get_cases_with_valid_world_ids_logs_a_console_error_when_given_an_unkno
 @mock.patch.object(OptimiseClient, "get_worlds")
 def test_get_cases_with_valid_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world(
         _mock_optimise_client, caplog):
-    filtered_cases = [QuestionnaireCaseModel(field_region="Risca"),
-                      QuestionnaireCaseModel(field_region="Region 1")]
+    filtered_cases = [CaseModel(field_region="Risca"),
+                      CaseModel(field_region="Region 1")]
     world_ids = {
         "Region 1": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     }
@@ -320,14 +255,14 @@ def test_get_cases_with_valid_world_ids_logs_a_console_error_and_returns_data_wh
     cases_with_valid_world_ids = get_cases_with_valid_world_ids(filtered_cases, world_ids)
 
     assert len(cases_with_valid_world_ids) == 1
-    assert cases_with_valid_world_ids == [QuestionnaireCaseModel(field_region="Region 1")]
+    assert cases_with_valid_world_ids == [CaseModel(field_region="Region 1")]
     assert ('root', logging.WARNING, 'Unsupported world: Risca') in caplog.record_tuples
 
 
 @mock.patch.object(OptimiseClient, "get_worlds")
 def test_get_cases_with_valid_world_ids_logs_a_console_error_when_field_region_is_an_empty_value(_mock_optimise_client,
                                                                                                  caplog):
-    filtered_cases = [QuestionnaireCaseModel(field_region="")]
+    filtered_cases = [CaseModel(field_region="")]
     world_ids = {
         "Region 1": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     }
@@ -342,8 +277,8 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
         _mock_optimise_client, caplog):
     config = config_helper.get_default_config()
 
-    filtered_cases = [QuestionnaireCaseModel(field_region=""),
-                      QuestionnaireCaseModel(field_region="Region 1")]
+    filtered_cases = [CaseModel(field_region=""),
+                      CaseModel(field_region="Region 1")]
 
     world_ids = {
         "Region 1": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
@@ -352,7 +287,7 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
     cases_with_valid_world_ids = get_cases_with_valid_world_ids(filtered_cases, world_ids)
 
     assert len(cases_with_valid_world_ids) == 1
-    assert cases_with_valid_world_ids == [QuestionnaireCaseModel(field_region="Region 1")]
+    assert cases_with_valid_world_ids == [CaseModel(field_region="Region 1")]
     assert ('root', logging.WARNING, 'Case rejected. Missing Field Region') in caplog.record_tuples
 
 
@@ -390,7 +325,7 @@ def test_uacs_are_correctly_appended_to_case_data():
         },
     }
 
-    filtered_cases = [QuestionnaireCaseModel(
+    filtered_cases = [CaseModel(
         case_id = "10030",
         telephone_number_1 = "", 
         telephone_number_2 = "", 
@@ -400,7 +335,7 @@ def test_uacs_are_correctly_appended_to_case_data():
         outcome_code = "310")]    
 
     result = append_uacs_to_retained_case(filtered_cases, case_uacs)
-    assert result == [QuestionnaireCaseModel(
+    assert result == [CaseModel(
                 case_id = "10030",
                 telephone_number_1 = "", 
                 telephone_number_2 = "", 
@@ -429,7 +364,7 @@ def test_uacs_with_blank_values_are_appended_to_case_data_when_case_id_not_found
         },
     }
 
-    filtered_cases = [QuestionnaireCaseModel(
+    filtered_cases = [CaseModel(
         case_id = "10030",
         telephone_number_1 = "", 
         telephone_number_2 = "", 
@@ -440,7 +375,7 @@ def test_uacs_with_blank_values_are_appended_to_case_data_when_case_id_not_found
 
 
     result = append_uacs_to_retained_case(filtered_cases, case_uacs)
-    assert result == [QuestionnaireCaseModel(
+    assert result == [CaseModel(
                 case_id = "10030",
                 telephone_number_1 = "", 
                 telephone_number_2 = "", 
@@ -469,7 +404,7 @@ def test_an_error_is_logged_when_the_case_id_is_not_found_in_bus(caplog):
         },
     }
 
-    filtered_cases = [QuestionnaireCaseModel(
+    filtered_cases = [CaseModel(
         case_id = "10030",
         telephone_number_1 = "", 
         telephone_number_2 = "", 

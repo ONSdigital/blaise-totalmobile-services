@@ -8,7 +8,7 @@ T = TypeVar('T')
 
 
 @dataclass
-class QuestionnaireCaseModel(JSONWizard):
+class CaseModel(JSONWizard):
     case_id: str = json_field('qiD.Serial_Number', all=True, default='')
     data_model_name: str = json_field('dataModelName', all=True, default='')
     survey_type: str = json_field('qDataBag.TLA', all=True, default='')
@@ -35,7 +35,7 @@ class QuestionnaireCaseModel(JSONWizard):
         self.uac_chunks = uac_model.uac_chunks
 
     def is_fully_populated(self) -> bool:
-        for field in fields(QuestionnaireCaseModel):
+        for field in fields(CaseModel):
             if field.name == 'uac_chunks': continue
             if getattr(self, field.name) == "": return False
         return True
@@ -45,4 +45,4 @@ class QuestionnaireCaseModel(JSONWizard):
 
     @classmethod
     def import_case_data(cls: Type[T], case_data_dictionary: Dict[str, str]) -> T:
-        return QuestionnaireCaseModel.from_json(json.dumps(case_data_dictionary))
+        return CaseModel.from_json(json.dumps(case_data_dictionary))

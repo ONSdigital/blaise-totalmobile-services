@@ -9,8 +9,8 @@ from appconfig import Config
 from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
 from models.totalmobile_job_model import TotalmobileJobModel
-from models.case_model import QuestionnaireCaseModel, UacChunks
-from services import questionnaire_service, world_id_service, case_service
+from models.case_model import CaseModel, UacChunks
+from services import questionnaire_service, world_id_service
 
 setup_logger()
 
@@ -28,7 +28,7 @@ def validate_request(request_json: Dict) -> None:
         )
 
 
-def get_cases_with_valid_world_ids(filtered_cases: List[QuestionnaireCaseModel], world_ids) -> List[str]:
+def get_cases_with_valid_world_ids(filtered_cases: List[CaseModel], world_ids) -> List[str]:
     cases_with_valid_world_ids = []
     for case in filtered_cases:
         if case.field_region == "":
@@ -41,7 +41,7 @@ def get_cases_with_valid_world_ids(filtered_cases: List[QuestionnaireCaseModel],
 
 
 def map_totalmobile_job_models(
-        cases: List[QuestionnaireCaseModel], world_ids: List[str], questionnaire_name: str
+        cases: List[CaseModel], world_ids: List[str], questionnaire_name: str
 ) -> List[TotalmobileJobModel]:
     return [TotalmobileJobModel(questionnaire_name, world_id, case.to_dict()) for case, world_id in zip(cases, world_ids)]
 
@@ -62,7 +62,7 @@ def run_async_tasks(tasks: List[Tuple[str, str]], queue_id: str, cloud_function:
     asyncio.run(run(task_requests))
 
 
-def append_uacs_to_retained_case(filtered_cases: List[QuestionnaireCaseModel], case_uac_data: Dict[str, str]) -> List[QuestionnaireCaseModel]:
+def append_uacs_to_retained_case(filtered_cases: List[CaseModel], case_uac_data: Dict[str, str]) -> List[CaseModel]:
     cases_with_uacs_appended = []
     for filtered_case in filtered_cases:
         if filtered_case.case_id not in case_uac_data:
@@ -97,18 +97,13 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
 
     logging.info(f"Creating case tasks for questionnaire {questionnaire_name}")
 
-    cases = questionnaire_service.get_cases(questionnaire_name, config)
-    logging.info(f"Retrieved {len(cases)} cases for questionnaire {questionnaire_name}")
+    eligible_cases = questionnaire_service.get_eligible_cases(questionnaire_name, config)
+    logging.info(f"Retrieved {len(eligible_cases)} cases for questionnaire {questionnaire_name}")
 
-    if len(cases) == 0:
-        logging.info(f"Exiting as no cases to send for questionnaire {questionnaire_name}")
-        return (f"Exiting as no cases to send for questionnaire {questionnaire_name}")
-
-    eligible_cases = case_service.get_eligible_cases(cases)
     if len(eligible_cases) == 0:
-        logging.info(f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
-        return (f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
-    logging.info(f"Retained {len(eligible_cases)} cases after filtering")
+        logging.info(f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}")
+        return f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}"
+    logging.info(f"{len(eligible_cases)} eligible cases found")
 
     questionnaire_uac_data = questionnaire_service.get_uacs(config, questionnaire_name)
     cases_with_uacs_appended = append_uacs_to_retained_case(eligible_cases, questionnaire_uac_data)

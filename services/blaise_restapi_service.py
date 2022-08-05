@@ -1,6 +1,8 @@
 import blaise_restapi
 from appconfig import Config
-from typing import Dict
+from typing import List
+
+from models.case_model import CaseModel
 
 required_fields_from_blaise = [
     "qiD.Serial_Number",
@@ -26,7 +28,7 @@ required_fields_from_blaise = [
 ]
 
 
-def get_questionnaire_case_data(questionnaire_name: str, config: Config) -> [Dict[str, str]]:
+def get_cases(questionnaire_name: str, config: Config) -> [List[CaseModel]]:
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
 
     questionnaire_case_data = restapi_client.get_questionnaire_data(
@@ -35,4 +37,5 @@ def get_questionnaire_case_data(questionnaire_name: str, config: Config) -> [Dic
         required_fields_from_blaise
     )
 
-    return questionnaire_case_data["reportingData"]
+    return [CaseModel.import_case_data(case_data_item) for case_data_item in
+            questionnaire_case_data["reportingData"]]
