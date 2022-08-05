@@ -1,6 +1,6 @@
 import pytest
 
-from services.questionnaire_service import get_questionnaire_cases, get_wave_from_questionnaire_name, get_questionnaire_uacs
+from services.questionnaire_service import get_questionnaire_cases, get_wave_from_questionnaire_name, get_questionnaire_uac_models
 from unittest import mock
 from tests.helpers import config_helper
 
@@ -47,14 +47,61 @@ def test_get_questionnaire_cases_returns_a_list_of_questionnaire_models(mock_res
 
 @mock.patch("services.uac_restapi_service.get_questionnaire_uacs")
 def test_get_questionnaire_uacs_calls_the_service_with_the_correct_parameters(mock_uac_service):
+    # arrange
     config = config_helper.get_default_config()
     questionnaire_name = "LMS2101_AA1"
 
     # act
-    get_questionnaire_uacs(questionnaire_name, config)
+    get_questionnaire_uac_models(questionnaire_name, config)
 
     # assert
     mock_uac_service.assert_called_with(questionnaire_name, config)
+
+
+@mock.patch("services.uac_restapi_service.get_questionnaire_uacs")
+def test_get_questionnaire_uacs_returns_a_list_of_uac_models(mock_uac_service):
+    # arrange
+    config = config_helper.get_default_config()
+    mock_uac_service.return_value = {
+        "10010": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10010",
+            "uac_chunks": {
+                "uac1": "8176",
+                "uac2": "4726",
+                "uac3": "3991"
+            },
+            "full_uac": "817647263991"
+        },
+        "10020": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10020",
+            "uac_chunks": {
+                "uac1": "8176",
+                "uac2": "4726",
+                "uac3": "3992"
+            },
+            "full_uac": "817647263992"
+        },
+        "10030": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10030",
+            "uac_chunks": {
+                "uac1": "8176",
+                "uac2": "4726",
+                "uac3": "3993"
+            },
+            "full_uac": "817647263994"
+        },
+    }
+
+    questionnaire_name = "LMS2101_AA1"
+
+    # act
+    result = get_questionnaire_uac_models(questionnaire_name, config)
+
+    # assert
+    assert len(result) == 3
 
 
 def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire():

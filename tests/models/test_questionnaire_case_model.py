@@ -1,8 +1,9 @@
-from pytest import fail
 from models.questionnaire_case_model import QuestionnaireCaseModel
-from tests.helpers.questionnaire_case_model_helper import get_populated_case_model
+from models.uac_model import UacModel, UacChunks
+from tests.helpers import questionnaire_case_model_helper
 
-def test_from_json_returns_a_populated_model():
+
+def test_import_case_data_returns_a_populated_model():
     case_data_dictionary = { 
             "qiD.Serial_Number": "90000000",
             "dataModelName" : "LM2007", 
@@ -50,7 +51,7 @@ def test_from_json_returns_a_populated_model():
     assert result.wave_com_dte == "WGAFF"                        
 
 
-def test_from_json_returns_a_valid_object_when_a_blaise_field_is_incorrectly_typed():
+def test_import_case_data_returns_a_valid_object_when_a_blaise_field_is_incorrectly_typed():
     case_data_dictionary = { 
             "qdatabag.Serial_Number": "90000000",
             "dataModelName" : "LM2007", 
@@ -98,7 +99,7 @@ def test_from_json_returns_a_valid_object_when_a_blaise_field_is_incorrectly_typ
     assert result.wave_com_dte == "WGAFF"         
 
 
-def test_from_json_returns_a_valid_object_when_an_optional_blaise_field_is_missing():
+def test_import_case_data_returns_a_valid_object_when_an_optional_blaise_field_is_missing():
     case_data_dictionary = { 
             "dataModelName" : "LM2007", 
             "qDataBag.TLA" : "LMS", 
@@ -145,14 +146,26 @@ def test_from_json_returns_a_valid_object_when_an_optional_blaise_field_is_missi
     assert result.wave_com_dte == "WGAFF"         
     
 
-def test_is_valid_returns_true_if_all_mandatory_fields_are_populated():
-    case_model = get_populated_case_model()
+def test_populate_uac_data_populates_uac_fields_if_supplied():
+    uac_model = UacModel(
+        serial_number="10020",
+        uac_chunks=UacChunks(
+            uac1="8176",
+            uac2="4726",
+            uac3="3992"
+        )
+    )
 
-    assert case_model.is_valid() is True
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
+    case_model.populate_uac_data(uac_model)
+
+    assert case_model.uac_chunks.uac1 == "8176"
+    assert case_model.uac_chunks.uac2 == "4726"
+    assert case_model.uac_chunks.uac3 == "3992"
 
 
-def test_is_valid_returns_false_if_none_of_the_mandatory_fields_are_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_none_of_the_mandatory_fields_are_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.serial_number = ""   
     case_model.data_model_name = ""
     case_model.survey_type = ""
@@ -174,145 +187,145 @@ def test_is_valid_returns_false_if_none_of_the_mandatory_fields_are_populated():
     case_model.field_team  = ""      
     case_model.wave_com_dte  = ""           
 
-    assert case_model.is_valid() is False    
+    assert case_model.is_fully_populated() is False    
 
     
-def test_is_valid_returns_false_if_serial_number_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_serial_number_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.serial_number = "" 
    
-    assert case_model.is_valid() is False
+    assert case_model.is_fully_populated() is False
 
 
-def test_is_valid_returns_false_if_data_model_name_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_data_model_name_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.data_model_name = "" 
 
-    assert case_model.is_valid() is False    
+    assert case_model.is_fully_populated() is False    
 
 
-def test_is_valid_returns_false_if_survey_type_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_survey_type_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.survey_type = ""   
     
-    assert case_model.is_valid() is False      
+    assert case_model.is_fully_populated() is False      
 
 
-def test_is_valid_returns_false_if_wave_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_wave_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.wave = ""      
   
-    assert case_model.is_valid() is False     
+    assert case_model.is_fully_populated() is False     
 
 
-def test_is_valid_returns_false_if_address_line_1_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_address_line_1_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.address_line_1 = ""          
    
-    assert case_model.is_valid() is False         
+    assert case_model.is_fully_populated() is False         
 
 
-def test_is_valid_returns_false_if_address_line_2_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_address_line_2_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.address_line_2 = "" 
 
-    assert case_model.is_valid() is False   
+    assert case_model.is_fully_populated() is False   
 
 
-def test_is_valid_returns_false_if_address_line_3_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_address_line_3_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.address_line_3 = "" 
 
-    assert case_model.is_valid() is False       
+    assert case_model.is_fully_populated() is False       
 
 
-def test_is_valid_returns_false_if_county_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_county_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.county = "" 
 
-    assert case_model.is_valid() is False         
+    assert case_model.is_fully_populated() is False         
 
 
-def test_is_valid_returns_false_if_town_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_town_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.town = "" 
 
-    assert case_model.is_valid() is False     
+    assert case_model.is_fully_populated() is False     
 
 
-def test_is_valid_returns_false_if_postcode_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_postcode_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.postcode = "" 
 
-    assert case_model.is_valid() is False       
+    assert case_model.is_fully_populated() is False       
 
 
-def test_is_valid_returns_false_if_telephone_number_1_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_telephone_number_1_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.telephone_number_1 = "" 
 
-    assert case_model.is_valid() is False   
+    assert case_model.is_fully_populated() is False   
 
 
-def test_is_valid_returns_false_if_telephone_number_2_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_telephone_number_2_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.telephone_number_2 = "" 
 
-    assert case_model.is_valid() is False   
+    assert case_model.is_fully_populated() is False   
 
 
-def test_is_valid_returns_false_if_appointment_telephone_number_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_appointment_telephone_number_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.appointment_telephone_number = "" 
 
-    assert case_model.is_valid() is False            
+    assert case_model.is_fully_populated() is False            
 
 
-def test_is_valid_returns_false_if_outcome_code_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_outcome_code_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.outcome_code = "" 
 
-    assert case_model.is_valid() is False         
+    assert case_model.is_fully_populated() is False         
 
 
-def test_is_valid_returns_false_if_latitude_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_latitude_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.latitude = "" 
 
-    assert case_model.is_valid() is False     
+    assert case_model.is_fully_populated() is False     
 
 
-def test_is_valid_returns_false_if_longitude_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_longitude_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.longitude = "" 
 
-    assert case_model.is_valid() is False         
+    assert case_model.is_fully_populated() is False         
 
 
-def test_is_valid_returns_false_if_priority_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_priority_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.priority = "" 
 
-    assert case_model.is_valid() is False         
+    assert case_model.is_fully_populated() is False         
 
 
-def test_is_valid_returns_false_if_field_region_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_field_region_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.field_region = "" 
 
-    assert case_model.is_valid() is False       
+    assert case_model.is_fully_populated() is False       
 
 
-def test_is_valid_returns_false_if_field_team_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_field_team_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.field_team = "" 
 
-    assert case_model.is_valid() is False         
+    assert case_model.is_fully_populated() is False         
 
 
-def test_is_valid_returns_false_if_wave_com_dte_field_is_not_populated():
-    case_model = get_populated_case_model()
+def test_is_fully_populated_returns_false_if_wave_com_dte_field_is_not_populated():
+    case_model = questionnaire_case_model_helper.get_populated_case_model()
     case_model.wave_com_dte = "" 
 
-    assert case_model.is_valid() is False          
+    assert case_model.is_fully_populated() is False          
            

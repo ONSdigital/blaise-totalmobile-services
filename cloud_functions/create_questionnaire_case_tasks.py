@@ -110,7 +110,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         return (f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
     logging.info(f"Retained {len(eligible_cases)} cases after filtering")
 
-    questionnaire_uac_data = questionnaire_service.get_questionnaire_uacs(config, questionnaire_name)
+    questionnaire_uac_data = questionnaire_service.get_questionnaire_uac_models(config, questionnaire_name)
     cases_with_uacs_appended = append_uacs_to_retained_case(eligible_cases, questionnaire_uac_data)
     logging.info("Finished appending UACs to case data")
 
