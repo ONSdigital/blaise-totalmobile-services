@@ -9,7 +9,7 @@ from appconfig import Config
 from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
 from models.totalmobile_job_model import TotalmobileJobModel
-from models.questionnaire_case_model import QuestionnaireCaseModel, UacChunks
+from models.case_model import QuestionnaireCaseModel, UacChunks
 from services import questionnaire_service, world_id_service, case_service
 
 setup_logger()
@@ -65,14 +65,14 @@ def run_async_tasks(tasks: List[Tuple[str, str]], queue_id: str, cloud_function:
 def append_uacs_to_retained_case(filtered_cases: List[QuestionnaireCaseModel], case_uac_data: Dict[str, str]) -> List[QuestionnaireCaseModel]:
     cases_with_uacs_appended = []
     for filtered_case in filtered_cases:
-        if filtered_case.serial_number not in case_uac_data:
-            logging.warning(f"Serial number {filtered_case.serial_number} not found in BUS")
+        if filtered_case.case_id not in case_uac_data:
+            logging.warning(f"Serial number {filtered_case.case_id} not found in BUS")
             cases_with_uacs_appended.append(filtered_case)
         else:
             filtered_case.uac_chunks = UacChunks(
-                uac1 = case_uac_data[filtered_case.serial_number]["uac_chunks"]["uac1"],
-                uac2 = case_uac_data[filtered_case.serial_number]["uac_chunks"]["uac2"],
-                uac3 = case_uac_data[filtered_case.serial_number]["uac_chunks"]["uac3"],
+                uac1 = case_uac_data[filtered_case.case_id]["uac_chunks"]["uac1"],
+                uac2 = case_uac_data[filtered_case.case_id]["uac_chunks"]["uac2"],
+                uac3 = case_uac_data[filtered_case.case_id]["uac_chunks"]["uac3"],
             )
             cases_with_uacs_appended.append(filtered_case)
     return cases_with_uacs_appended
@@ -97,7 +97,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
 
     logging.info(f"Creating case tasks for questionnaire {questionnaire_name}")
 
-    cases = questionnaire_service.get_questionnaire_cases(questionnaire_name, config)
+    cases = questionnaire_service.get_cases(questionnaire_name, config)
     logging.info(f"Retrieved {len(cases)} cases for questionnaire {questionnaire_name}")
 
     if len(cases) == 0:
@@ -110,7 +110,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         return (f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
     logging.info(f"Retained {len(eligible_cases)} cases after filtering")
 
-    questionnaire_uac_data = questionnaire_service.get_questionnaire_uac_models(config, questionnaire_name)
+    questionnaire_uac_data = questionnaire_service.get_uacs(config, questionnaire_name)
     cases_with_uacs_appended = append_uacs_to_retained_case(eligible_cases, questionnaire_uac_data)
     logging.info("Finished appending UACs to case data")
 

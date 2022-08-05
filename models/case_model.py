@@ -1,6 +1,6 @@
 from dataclasses import dataclass, fields
 from dataclass_wizard import JSONWizard, json_field
-from typing import Dict, Optional, Type, TypeVar, List
+from typing import Dict, Optional, Type, TypeVar
 from models.uac_model import UacChunks, UacModel
 import json
 
@@ -9,7 +9,7 @@ T = TypeVar('T')
 
 @dataclass
 class QuestionnaireCaseModel(JSONWizard):
-    serial_number: str = json_field('qiD.Serial_Number', all=True, default='')
+    case_id: str = json_field('qiD.Serial_Number', all=True, default='')
     data_model_name: str = json_field('dataModelName', all=True, default='')
     survey_type: str = json_field('qDataBag.TLA', all=True, default='')
     wave: str = json_field('qDataBag.Wave', all=True, default='')

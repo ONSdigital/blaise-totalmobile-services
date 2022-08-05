@@ -15,7 +15,7 @@ def test_import_case_data_returns_a_populated_model():
 
     result = UacModel.import_uac_data(uac_data_dictionary)
 
-    assert result.serial_number == "10010"
+    assert result.case_id == "10010"
     assert result.uac_chunks.uac1 == "8175"
     assert result.uac_chunks.uac2 == "4725"
     assert result.uac_chunks.uac3 == "3990"

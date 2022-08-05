@@ -1,5 +1,5 @@
 from typing import List
-from models.questionnaire_case_model import QuestionnaireCaseModel
+from models.case_model import QuestionnaireCaseModel
 
 
 def get_eligible_cases(cases: List[QuestionnaireCaseModel]) -> List[QuestionnaireCaseModel]:

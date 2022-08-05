@@ -1,4 +1,4 @@
-from models.questionnaire_case_model import QuestionnaireCaseModel
+from models.case_model import QuestionnaireCaseModel
 from models.uac_model import UacModel, UacChunks
 from tests.helpers import questionnaire_case_model_helper
 
@@ -29,7 +29,7 @@ def test_import_case_data_returns_a_populated_model():
 
     result = QuestionnaireCaseModel.import_case_data(case_data_dictionary)
 
-    assert result.serial_number == "90000000"
+    assert result.case_id == "90000000"
     assert result.data_model_name == "LM2007"
     assert result.survey_type == "LMS"
     assert result.wave == "1"
@@ -77,7 +77,7 @@ def test_import_case_data_returns_a_valid_object_when_a_blaise_field_is_incorrec
 
     result = QuestionnaireCaseModel.import_case_data(case_data_dictionary)
 
-    assert result.serial_number == ""
+    assert result.case_id == ""
     assert result.data_model_name == "LM2007"
     assert result.survey_type == "LMS"
     assert result.wave == "1"
@@ -124,7 +124,7 @@ def test_import_case_data_returns_a_valid_object_when_an_optional_blaise_field_i
 
     result = QuestionnaireCaseModel.import_case_data(case_data_dictionary)
 
-    assert result.serial_number == ""    
+    assert result.case_id == ""
     assert result.data_model_name == "LM2007"
     assert result.survey_type == "LMS"    
     assert result.wave == "1"
@@ -148,7 +148,7 @@ def test_import_case_data_returns_a_valid_object_when_an_optional_blaise_field_i
 
 def test_populate_uac_data_populates_uac_fields_if_supplied():
     uac_model = UacModel(
-        serial_number="10020",
+        case_id="10020",
         uac_chunks=UacChunks(
             uac1="8176",
             uac2="4726",
@@ -166,7 +166,7 @@ def test_populate_uac_data_populates_uac_fields_if_supplied():
 
 def test_is_fully_populated_returns_false_if_none_of_the_mandatory_fields_are_populated():
     case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.serial_number = ""   
+    case_model.case_id = ""
     case_model.data_model_name = ""
     case_model.survey_type = ""
     case_model.wave = ""
@@ -190,9 +190,9 @@ def test_is_fully_populated_returns_false_if_none_of_the_mandatory_fields_are_po
     assert case_model.is_fully_populated() is False    
 
     
-def test_is_fully_populated_returns_false_if_serial_number_field_is_not_populated():
+def test_is_fully_populated_returns_false_if_case_id_field_is_not_populated():
     case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.serial_number = "" 
+    case_model.case_id = ""
    
     assert case_model.is_fully_populated() is False
 

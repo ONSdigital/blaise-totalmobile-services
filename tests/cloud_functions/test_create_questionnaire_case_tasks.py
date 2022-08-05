@@ -4,7 +4,7 @@ from unittest import mock
 import flask
 import pytest
 import logging
-from models.questionnaire_case_model import QuestionnaireCaseModel, UacChunks
+from models.case_model import QuestionnaireCaseModel, UacChunks
 
 from tests.helpers import config_helper
 from client.optimise import OptimiseClient
@@ -20,14 +20,14 @@ from models.totalmobile_job_model import TotalmobileJobModel
 
 
 def test_create_task_name_returns_correct_name_when_called():
-    questionnaire_case_model = QuestionnaireCaseModel(serial_number = "90001")
+    questionnaire_case_model = QuestionnaireCaseModel(case_id = "90001")
     model = TotalmobileJobModel("OPN2101A", "world", questionnaire_case_model.to_dict())
 
     assert create_task_name(model).startswith("OPN2101A-90001-")
 
 
 def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_model():
-    questionnaire_case_model = QuestionnaireCaseModel(serial_number = "90001")
+    questionnaire_case_model = QuestionnaireCaseModel(case_id = "90001")
     model = TotalmobileJobModel("OPN2101A", "world", questionnaire_case_model.to_dict())
 
     assert create_task_name(model) != create_task_name(model)
@@ -39,9 +39,9 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     questionnaire_name = "OPN2101A"
 
     case_data = [
-        QuestionnaireCaseModel(serial_number = "10010", outcome_code = "110"),
-        QuestionnaireCaseModel(serial_number = "10020", outcome_code = "120"),
-        QuestionnaireCaseModel(serial_number = "10030", outcome_code = "130")
+        QuestionnaireCaseModel(case_id = "10010", outcome_code = "110"),
+        QuestionnaireCaseModel(case_id = "10020", outcome_code = "120"),
+        QuestionnaireCaseModel(case_id = "10030", outcome_code = "130")
     ]
 
     world_ids = [
@@ -81,8 +81,8 @@ def test_validate_request_when_missing_fields():
 
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.append_uacs_to_retained_case")
 @mock.patch("services.world_id_service.get_world_ids")
-@mock.patch("services.questionnaire_service.get_questionnaire_cases")
-@mock.patch("services.questionnaire_service.get_questionnaire_uac_models")
+@mock.patch("services.questionnaire_service.get_cases")
+@mock.patch("services.questionnaire_service.get_uacs")
 @mock.patch("services.case_service.get_eligible_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.get_cases_with_valid_world_ids")
@@ -90,8 +90,8 @@ def test_create_case_tasks_for_questionnaire(
         mock_get_cases_with_valid_world_ids,
         mock_run_async_tasks,
         mock_get_eligible_cases,
-        mock_get_questionnaire_uac_models,
-        mock_get_questionnaire_cases,
+        mock_get_uacs,
+        mock_get_cases,
         mock_get_world_ids,
         mock_append_uacs_to_retained_case
 ):
@@ -99,9 +99,9 @@ def test_create_case_tasks_for_questionnaire(
     config = config_helper.get_default_config()
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
 
-    mock_get_questionnaire_cases.return_value = [
+    mock_get_cases.return_value = [
         QuestionnaireCaseModel(
-            serial_number="10010",
+            case_id="10010",
             telephone_number_1="",
             telephone_number_2="",
             appointment_telephone_number="",
@@ -110,7 +110,7 @@ def test_create_case_tasks_for_questionnaire(
             outcome_code="310",
         ),
         QuestionnaireCaseModel(
-            serial_number="10012",
+            case_id="10012",
             telephone_number_1="0123456789",
             telephone_number_2="0123456789",
             appointment_telephone_number="0123456789",
@@ -122,7 +122,7 @@ def test_create_case_tasks_for_questionnaire(
 
     mock_get_eligible_cases.return_value = [
         QuestionnaireCaseModel(
-            serial_number="10010",
+            case_id="10010",
             telephone_number_1="",
             telephone_number_2="",
             appointment_telephone_number="",
@@ -132,7 +132,7 @@ def test_create_case_tasks_for_questionnaire(
         ),
     ]
 
-    mock_get_questionnaire_uac_models.return_value = {
+    mock_get_uacs.return_value = {
         "10010": {
             "instrument_name": "LMS2101_AA1",
             "case_id": "10010",
@@ -146,7 +146,7 @@ def test_create_case_tasks_for_questionnaire(
     }
     mock_append_uacs_to_retained_case.return_value = [
         QuestionnaireCaseModel(
-            serial_number="10010",
+            case_id="10010",
             uac_chunks=UacChunks(
                 uac1="8176",
                 uac2="4726",
@@ -161,7 +161,7 @@ def test_create_case_tasks_for_questionnaire(
 
     mock_get_cases_with_valid_world_ids.return_value = [
         QuestionnaireCaseModel(
-            serial_number="10010",
+            case_id="10010",
             telephone_number_1="",
             telephone_number_2="",
             appointment_telephone_number="",
@@ -180,11 +180,11 @@ def test_create_case_tasks_for_questionnaire(
 
     # assert
     mock_get_world_ids.assert_called_with(config)
-    mock_get_questionnaire_cases.assert_called_with("LMS2101_AA1", config)
+    mock_get_cases.assert_called_with("LMS2101_AA1", config)
     mock_get_eligible_cases.assert_called_with(
         [
             QuestionnaireCaseModel(
-                serial_number="10010",
+                case_id="10010",
                 telephone_number_1="",
                 telephone_number_2="",
                 appointment_telephone_number="",
@@ -193,7 +193,7 @@ def test_create_case_tasks_for_questionnaire(
                 outcome_code="310",
             ),
             QuestionnaireCaseModel(
-                serial_number="10012",
+                case_id="10012",
                 telephone_number_1="0123456789",
                 telephone_number_2="0123456789",
                 appointment_telephone_number="0123456789",
@@ -244,16 +244,16 @@ def test_create_case_tasks_for_questionnaire(
     assert result == "Done"
 
 
-@mock.patch("services.questionnaire_service.get_questionnaire_cases")
+@mock.patch("services.questionnaire_service.get_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 def test_create_questionnaire_case_tasks_when_no_cases(
         mock_run_async_tasks,
-        mock_get_questionnaire_cases,
+        mock_get_cases,
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = config_helper.get_default_config()
-    mock_get_questionnaire_cases.return_value = []
+    mock_get_cases.return_value = []
 
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
@@ -263,18 +263,18 @@ def test_create_questionnaire_case_tasks_when_no_cases(
     assert result == "Exiting as no cases to send for questionnaire LMS2101_AA1"
 
 
-@mock.patch("services.questionnaire_service.get_questionnaire_cases")
+@mock.patch("services.questionnaire_service.get_cases")
 @mock.patch("services.case_service.get_eligible_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 def test_create_questionnaire_case_tasks_when_no_cases_after_filtering(
         mock_run_async_tasks,
         mock_get_eligible_cases,
-        mock_get_questionnaire_cases
+        mock_get_cases
 ):
     # arrange
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
     config = config_helper.get_default_config()
-    mock_get_questionnaire_cases.return_value = [QuestionnaireCaseModel(serial_number = "10010")]
+    mock_get_cases.return_value = [QuestionnaireCaseModel(case_id = "10010")]
     mock_get_eligible_cases.return_value = []
     # act
     result = create_questionnaire_case_tasks(mock_request, config)
@@ -391,7 +391,7 @@ def test_uacs_are_correctly_appended_to_case_data():
     }
 
     filtered_cases = [QuestionnaireCaseModel(
-        serial_number = "10030", 
+        case_id = "10030",
         telephone_number_1 = "", 
         telephone_number_2 = "", 
         appointment_telephone_number = "",
@@ -401,7 +401,7 @@ def test_uacs_are_correctly_appended_to_case_data():
 
     result = append_uacs_to_retained_case(filtered_cases, case_uacs)
     assert result == [QuestionnaireCaseModel(
-                serial_number = "10030", 
+                case_id = "10030",
                 telephone_number_1 = "", 
                 telephone_number_2 = "", 
                 appointment_telephone_number = "",
@@ -430,7 +430,7 @@ def test_uacs_with_blank_values_are_appended_to_case_data_when_case_id_not_found
     }
 
     filtered_cases = [QuestionnaireCaseModel(
-        serial_number = "10030", 
+        case_id = "10030",
         telephone_number_1 = "", 
         telephone_number_2 = "", 
         appointment_telephone_number = "",
@@ -441,7 +441,7 @@ def test_uacs_with_blank_values_are_appended_to_case_data_when_case_id_not_found
 
     result = append_uacs_to_retained_case(filtered_cases, case_uacs)
     assert result == [QuestionnaireCaseModel(
-                serial_number = "10030", 
+                case_id = "10030",
                 telephone_number_1 = "", 
                 telephone_number_2 = "", 
                 appointment_telephone_number = "",
@@ -470,7 +470,7 @@ def test_an_error_is_logged_when_the_case_id_is_not_found_in_bus(caplog):
     }
 
     filtered_cases = [QuestionnaireCaseModel(
-        serial_number = "10030", 
+        case_id = "10030",
         telephone_number_1 = "", 
         telephone_number_2 = "", 
         appointment_telephone_number = "",

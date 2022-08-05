@@ -1,24 +1,24 @@
 import pytest
 
-from services.questionnaire_service import get_questionnaire_cases, get_wave_from_questionnaire_name, get_questionnaire_uac_models
+from services.questionnaire_service import get_cases, get_wave_from_questionnaire_name, get_uacs
 from unittest import mock
 from tests.helpers import config_helper
 
 
 @mock.patch("services.blaise_restapi_service.get_questionnaire_case_data")
-def test_get_questionnaire_cases_calls_the_service_with_the_correct_parameters(mock_restapi_service):
+def test_get_cases_calls_the_service_with_the_correct_parameters(mock_restapi_service):
     config = config_helper.get_default_config()
     questionnaire_name = "LMS2101_AA1"
 
     # act
-    get_questionnaire_cases(questionnaire_name, config)
+    get_cases(questionnaire_name, config)
 
     # assert
     mock_restapi_service.assert_called_with(questionnaire_name, config)
 
 
 @mock.patch("services.blaise_restapi_service.get_questionnaire_case_data")
-def test_get_questionnaire_cases_returns_a_list_of_questionnaire_models(mock_restapi_service):
+def test_get_cases_returns_a_list_of_questionnaire_models(mock_restapi_service):
     # arrange
     config = config_helper.get_default_config()
     mock_restapi_service.return_value = [
@@ -30,29 +30,29 @@ def test_get_questionnaire_cases_returns_a_list_of_questionnaire_models(mock_res
     questionnaire_name = "LMS2101_AA1"
 
     # act
-    result = get_questionnaire_cases(questionnaire_name, config)
+    result = get_cases(questionnaire_name, config)
 
     # assert
     assert len(result) == 3
 
-    assert result[0].serial_number == "10010"
+    assert result[0].case_id == "10010"
     assert result[0].outcome_code == "110"
 
-    assert result[1].serial_number == "10020"
+    assert result[1].case_id == "10020"
     assert result[1].outcome_code == "210"
 
-    assert result[2].serial_number == "10030"
+    assert result[2].case_id == "10030"
     assert result[2].outcome_code == "310"
 
 
 @mock.patch("services.uac_restapi_service.get_questionnaire_uacs")
-def test_get_questionnaire_uacs_calls_the_service_with_the_correct_parameters(mock_uac_service):
+def test_get_uacs_calls_the_service_with_the_correct_parameters(mock_uac_service):
     # arrange
     config = config_helper.get_default_config()
     questionnaire_name = "LMS2101_AA1"
 
     # act
-    get_questionnaire_uac_models(questionnaire_name, config)
+    get_uacs(questionnaire_name, config)
 
     # assert
     mock_uac_service.assert_called_with(questionnaire_name, config)
@@ -98,7 +98,7 @@ def test_get_questionnaire_uacs_returns_a_list_of_uac_models(mock_uac_service):
     questionnaire_name = "LMS2101_AA1"
 
     # act
-    result = get_questionnaire_uac_models(questionnaire_name, config)
+    result = get_uacs(questionnaire_name, config)
 
     # assert
     assert len(result) == 3

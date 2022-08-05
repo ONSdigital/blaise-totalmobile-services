@@ -13,14 +13,14 @@ class UacChunks:
 
 @dataclass
 class UacModel:
-    serial_number: str
+    case_id: str
     uac_chunks: UacChunks
 
     @classmethod
     def import_uac_data(cls: Type[T], uac_data_dictionary: Dict[str, str]) -> T:
         print(uac_data_dictionary)
         return UacModel(
-            serial_number=uac_data_dictionary["case_id"],
+            case_id=uac_data_dictionary["case_id"],
             uac_chunks=UacChunks(
                 uac1=uac_data_dictionary["uac_chunks"]["uac1"],
                 uac2=uac_data_dictionary["uac_chunks"]["uac2"],

@@ -1,8 +1,8 @@
-from models.questionnaire_case_model import QuestionnaireCaseModel
+from models.case_model import QuestionnaireCaseModel
 
 def get_populated_case_model():
     return QuestionnaireCaseModel(
-        serial_number = "90000000",
+        case_id = "90000000",
         data_model_name = "LM2007",
         survey_type = "LMS",
         wave = "1",

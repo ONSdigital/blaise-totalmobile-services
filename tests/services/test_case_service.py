@@ -1,4 +1,4 @@
-from models.questionnaire_case_model import QuestionnaireCaseModel
+from models.case_model import QuestionnaireCaseModel
 from services.case_service import get_eligible_cases
 
 
