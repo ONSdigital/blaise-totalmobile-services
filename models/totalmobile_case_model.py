@@ -1,20 +1,27 @@
 from dataclasses import dataclass, fields
 from typing import Dict, Type, TypeVar
+
+from models.questionnaire_case_model import QuestionnaireCaseModel
 from models.uac_model import UacChunks, UacModel
 
 T = TypeVar('T')
 
 
 @dataclass
-class TotalMobileCaseModel:
-    case_id: str
+class Identity:
+    reference: str
 
-    uac_chunks: UacChunks
+
+@dataclass
+class TotalMobileCaseModel:
+    identity: Identity
+    description: str
+    origin: str
+    duration: int
+    workType: str
 
 
     @classmethod
-    def import_questionnaire_case_data(cls: Type[T], case_data_dictionary: Dict[str, str]) -> T:
+    def import_questionnaire_case_data(cls: Type[T], questionnaire_case: QuestionnaireCaseModel) -> T:
         return TotalMobileCaseModel(
-            case_id=case_data_dictionary.get("qiD.Serial_Number"),
-            uac_chunks=UacChunks(uac1='', uac2='', uac3='')
         )
