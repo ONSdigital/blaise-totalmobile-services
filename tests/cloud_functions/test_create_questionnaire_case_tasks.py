@@ -4,7 +4,7 @@ from unittest import mock
 import flask
 import pytest
 import logging
-from models.case_model import CaseModel, UacChunks
+from models.questionnaire_case_model import QuestionnaireCaseModel, UacChunks
 
 from tests.helpers import config_helper
 from client.optimise import OptimiseClient
@@ -13,21 +13,23 @@ from cloud_functions.create_questionnaire_case_tasks import (
     create_task_name,
     map_totalmobile_job_models,
     validate_request,
-    append_uacs_to_retained_case,
     get_cases_with_valid_world_ids
 )
 from models.totalmobile_job_model import TotalmobileJobModel
+from tests.helpers.questionnaire_case_model_helper import populated_case_model
 
 
 def test_create_task_name_returns_correct_name_when_called():
-    questionnaire_case_model = CaseModel(case_id ="90001")
+    questionnaire_case_model = populated_case_model()
+    questionnaire_case_model.case_id = "90001"
     model = TotalmobileJobModel("OPN2101A", "world", questionnaire_case_model.to_dict())
 
     assert create_task_name(model).startswith("OPN2101A-90001-")
 
 
 def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_model():
-    questionnaire_case_model = CaseModel(case_id ="90001")
+    questionnaire_case_model = populated_case_model()
+    questionnaire_case_model.case_id = "90001"
     model = TotalmobileJobModel("OPN2101A", "world", questionnaire_case_model.to_dict())
 
     assert create_task_name(model) != create_task_name(model)
@@ -39,9 +41,9 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     questionnaire_name = "OPN2101A"
 
     case_data = [
-        CaseModel(case_id ="10010", outcome_code ="110"),
-        CaseModel(case_id ="10020", outcome_code ="120"),
-        CaseModel(case_id ="10030", outcome_code ="130")
+        populated_case_model(case_id ="10010", outcome_code ="110"),
+        populated_case_model(case_id ="10020", outcome_code ="120"),
+        populated_case_model(case_id ="10030", outcome_code ="130")
     ]
 
     world_ids = [
@@ -79,26 +81,22 @@ def test_validate_request_when_missing_fields():
     )
 
 
-@mock.patch("cloud_functions.create_questionnaire_case_tasks.append_uacs_to_retained_case")
 @mock.patch("services.world_id_service.get_world_ids")
 @mock.patch("services.questionnaire_service.get_eligible_cases")
-@mock.patch("services.questionnaire_service.get_uacs")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.get_cases_with_valid_world_ids")
 def test_create_case_tasks_for_questionnaire(
         mock_get_cases_with_valid_world_ids,
         mock_run_async_tasks,
-        mock_get_uacs,
         mock_get_eligible_cases,
         mock_get_world_ids,
-        mock_append_uacs_to_retained_case
 ):
     # arrange
     config = config_helper.get_default_config()
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
 
     mock_get_eligible_cases.return_value = [
-        CaseModel(
+        populated_case_model(
             case_id="10010",
             telephone_number_1="",
             telephone_number_2="",
@@ -106,30 +104,12 @@ def test_create_case_tasks_for_questionnaire(
             wave="1",
             priority="1",
             outcome_code="310",
-        ),
-    ]
-
-    mock_get_uacs.return_value = {
-        "10010": {
-            "instrument_name": "LMS2101_AA1",
-            "case_id": "10010",
-            "uac_chunks": {
-                "uac1": "8176",
-                "uac2": "4726",
-                "uac3": "3991"
-            },
-            "full_uac": "817647263991"
-        }
-    }
-    mock_append_uacs_to_retained_case.return_value = [
-        CaseModel(
-            case_id="10010",
             uac_chunks=UacChunks(
                 uac1="8176",
                 uac2="4726",
                 uac3="3991"
             )
-        )
+        ),
     ]
 
     mock_get_world_ids.return_value = {
@@ -137,7 +117,7 @@ def test_create_case_tasks_for_questionnaire(
     }
 
     mock_get_cases_with_valid_world_ids.return_value = [
-        CaseModel(
+        populated_case_model(
             case_id="10010",
             telephone_number_1="",
             telephone_number_2="",
@@ -233,7 +213,7 @@ def test_create_questionnaire_case_tasks_errors_if_misssing_questionnaire():
 @mock.patch.object(OptimiseClient, "get_worlds")
 def test_get_cases_with_valid_world_ids_logs_a_console_error_when_given_an_unknown_region(_mock_optimise_client,
                                                                                           caplog):
-    filtered_cases = [CaseModel(field_region="Risca")]
+    filtered_cases = [populated_case_model(field_region="Risca")]
     world_ids = {
         "Region 1": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     }
@@ -246,8 +226,8 @@ def test_get_cases_with_valid_world_ids_logs_a_console_error_when_given_an_unkno
 @mock.patch.object(OptimiseClient, "get_worlds")
 def test_get_cases_with_valid_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world(
         _mock_optimise_client, caplog):
-    filtered_cases = [CaseModel(field_region="Risca"),
-                      CaseModel(field_region="Region 1")]
+    filtered_cases = [populated_case_model(field_region="Risca"),
+                      populated_case_model(field_region="Region 1")]
     world_ids = {
         "Region 1": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     }
@@ -255,14 +235,14 @@ def test_get_cases_with_valid_world_ids_logs_a_console_error_and_returns_data_wh
     cases_with_valid_world_ids = get_cases_with_valid_world_ids(filtered_cases, world_ids)
 
     assert len(cases_with_valid_world_ids) == 1
-    assert cases_with_valid_world_ids == [CaseModel(field_region="Region 1")]
+    assert cases_with_valid_world_ids == [populated_case_model(field_region="Region 1")]
     assert ('root', logging.WARNING, 'Unsupported world: Risca') in caplog.record_tuples
 
 
 @mock.patch.object(OptimiseClient, "get_worlds")
 def test_get_cases_with_valid_world_ids_logs_a_console_error_when_field_region_is_an_empty_value(_mock_optimise_client,
                                                                                                  caplog):
-    filtered_cases = [CaseModel(field_region="")]
+    filtered_cases = [populated_case_model(field_region="")]
     world_ids = {
         "Region 1": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     }
@@ -277,8 +257,8 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
         _mock_optimise_client, caplog):
     config = config_helper.get_default_config()
 
-    filtered_cases = [CaseModel(field_region=""),
-                      CaseModel(field_region="Region 1")]
+    filtered_cases = [populated_case_model(field_region=""),
+                      populated_case_model(field_region="Region 1")]
 
     world_ids = {
         "Region 1": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
@@ -287,131 +267,6 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
     cases_with_valid_world_ids = get_cases_with_valid_world_ids(filtered_cases, world_ids)
 
     assert len(cases_with_valid_world_ids) == 1
-    assert cases_with_valid_world_ids == [CaseModel(field_region="Region 1")]
+    assert cases_with_valid_world_ids == [populated_case_model(field_region="Region 1")]
     assert ('root', logging.WARNING, 'Case rejected. Missing Field Region') in caplog.record_tuples
 
-
-def test_uacs_are_correctly_appended_to_case_data():
-    case_uacs = {
-        "10010": {
-            "instrument_name": "OPN2101A",
-            "case_id": "10010",
-            "uac_chunks": {
-                "uac1": "8176",
-                "uac2": "4726",
-                "uac3": "3991"
-            },
-            "full_uac": "817647263991"
-        },
-        "10020": {
-            "instrument_name": "OPN2101A",
-            "case_id": "10020",
-            "uac_chunks": {
-                "uac1": "8176",
-                "uac2": "4726",
-                "uac3": "3992"
-            },
-            "full_uac": "817647263992"
-        },
-        "10030": {
-            "instrument_name": "OPN2101A",
-            "case_id": "10030",
-            "uac_chunks": {
-                "uac1": "8176",
-                "uac2": "4726",
-                "uac3": "3993"
-            },
-            "full_uac": "817647263994"
-        },
-    }
-
-    filtered_cases = [CaseModel(
-        case_id = "10030",
-        telephone_number_1 = "", 
-        telephone_number_2 = "", 
-        appointment_telephone_number = "",
-        wave = "1", 
-        priority = "1", 
-        outcome_code = "310")]    
-
-    result = append_uacs_to_retained_case(filtered_cases, case_uacs)
-    assert result == [CaseModel(
-                case_id = "10030",
-                telephone_number_1 = "", 
-                telephone_number_2 = "", 
-                appointment_telephone_number = "",
-                wave = "1", 
-                priority = "1", 
-                outcome_code = "310",
-                uac_chunks = UacChunks(
-                    uac1 = "8176",
-                    uac2 = "4726",
-                    uac3 = "3993"
-                ))]  
-
-
-def test_uacs_with_blank_values_are_appended_to_case_data_when_case_id_not_found_in_bus():
-    case_uacs = {
-        "10000": {
-            "instrument_name": "OPN2101A",
-            "case_id": "10000",
-            "uac_chunks": {
-                "uac1": "8176",
-                "uac2": "4726",
-                "uac3": "3991"
-            },
-            "full_uac": "817647263991"
-        },
-    }
-
-    filtered_cases = [CaseModel(
-        case_id = "10030",
-        telephone_number_1 = "", 
-        telephone_number_2 = "", 
-        appointment_telephone_number = "",
-        wave = "1", 
-        priority = "1", 
-        outcome_code = "310")]    
-
-
-    result = append_uacs_to_retained_case(filtered_cases, case_uacs)
-    assert result == [CaseModel(
-                case_id = "10030",
-                telephone_number_1 = "", 
-                telephone_number_2 = "", 
-                appointment_telephone_number = "",
-                wave = "1", 
-                priority = "1", 
-                outcome_code = "310",
-                uac_chunks = UacChunks(
-                    uac1 = "",
-                    uac2 = "",
-                    uac3 = ""
-                ))]   
-    
-
-def test_an_error_is_logged_when_the_case_id_is_not_found_in_bus(caplog):
-    case_uacs = {
-        "10000": {
-            "instrument_name": "OPN2101A",
-            "case_id": "10000",
-            "uac_chunks": {
-                "uac1": "8176",
-                "uac2": "4726",
-                "uac3": "3991"
-            },
-            "full_uac": "817647263991"
-        },
-    }
-
-    filtered_cases = [CaseModel(
-        case_id = "10030",
-        telephone_number_1 = "", 
-        telephone_number_2 = "", 
-        appointment_telephone_number = "",
-        wave = "1", 
-        priority = "1", 
-        outcome_code = "310")]    
-
-    result = append_uacs_to_retained_case(filtered_cases, case_uacs)
-    assert ('root', logging.WARNING, 'Serial number 10030 not found in BUS') in caplog.record_tuples

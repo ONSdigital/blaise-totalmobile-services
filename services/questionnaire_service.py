@@ -1,18 +1,25 @@
 from typing import List
 from appconfig import Config
-from models.uac_model import UacModel
-from services import blaise_restapi_service, uac_restapi_service, case_service
-from models.case_model import CaseModel
+from services import blaise_restapi_service, uac_restapi_service, eligible_case_service
+from models.questionnaire_case_model import QuestionnaireCaseModel
 
 
-def get_eligible_cases(questionnaire_name: str, config: Config) -> List[CaseModel]:
-    case_data_models = blaise_restapi_service.get_cases(questionnaire_name, config)
+def get_eligible_cases(questionnaire_name: str, config: Config) -> List[QuestionnaireCaseModel]:
+    questionnaire_cases = get_cases(questionnaire_name, config)
 
-    return case_service.filter_eligible_cases(case_data_models)
+    return eligible_case_service.filter_eligible_cases(questionnaire_cases)
 
 
-def get_uacs(questionnaire_name: str, config: Config) -> List[UacModel]:
-    return uac_restapi_service.get_questionnaire_uacs(questionnaire_name, config)
+def get_cases(questionnaire_name: str, config: Config) -> List[QuestionnaireCaseModel]:
+    questionnaire_cases = blaise_restapi_service.get_cases(questionnaire_name, config)
+    questionnaire_uacs = uac_restapi_service.get_uacs(questionnaire_name, config)
+
+    [questionnaire_case.populate_uac_data(
+        next((x for x in questionnaire_uacs if x.case_id == questionnaire_case.case_id), None))
+        for questionnaire_case in
+        questionnaire_cases]
+
+    return questionnaire_cases
 
 
 def get_wave_from_questionnaire_name(questionnaire_name: str) -> str:

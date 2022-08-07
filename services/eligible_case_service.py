@@ -1,8 +1,8 @@
 from typing import List
-from models.case_model import CaseModel
+from models.questionnaire_case_model import QuestionnaireCaseModel
 
 
-def filter_eligible_cases(cases: List[CaseModel]) -> List[CaseModel]:
+def filter_eligible_cases(cases: List[QuestionnaireCaseModel]) -> List[QuestionnaireCaseModel]:
     return [
         case
         for case in cases

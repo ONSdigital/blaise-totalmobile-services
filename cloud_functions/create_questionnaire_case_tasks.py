@@ -9,7 +9,7 @@ from appconfig import Config
 from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
 from models.totalmobile_job_model import TotalmobileJobModel
-from models.case_model import CaseModel, UacChunks
+from models.questionnaire_case_model import QuestionnaireCaseModel
 from services import questionnaire_service, world_id_service
 
 setup_logger()
@@ -28,7 +28,7 @@ def validate_request(request_json: Dict) -> None:
         )
 
 
-def get_cases_with_valid_world_ids(filtered_cases: List[CaseModel], world_ids) -> List[str]:
+def get_cases_with_valid_world_ids(filtered_cases: List[QuestionnaireCaseModel], world_ids) -> List[str]:
     cases_with_valid_world_ids = []
     for case in filtered_cases:
         if case.field_region == "":
@@ -41,7 +41,7 @@ def get_cases_with_valid_world_ids(filtered_cases: List[CaseModel], world_ids) -
 
 
 def map_totalmobile_job_models(
-        cases: List[CaseModel], world_ids: List[str], questionnaire_name: str
+        cases: List[QuestionnaireCaseModel], world_ids: List[str], questionnaire_name: str
 ) -> List[TotalmobileJobModel]:
     return [TotalmobileJobModel(questionnaire_name, world_id, case.to_dict()) for case, world_id in zip(cases, world_ids)]
 
@@ -60,22 +60,6 @@ def run_async_tasks(tasks: List[Tuple[str, str]], queue_id: str, cloud_function:
     )
 
     asyncio.run(run(task_requests))
-
-
-def append_uacs_to_retained_case(filtered_cases: List[CaseModel], case_uac_data: Dict[str, str]) -> List[CaseModel]:
-    cases_with_uacs_appended = []
-    for filtered_case in filtered_cases:
-        if filtered_case.case_id not in case_uac_data:
-            logging.warning(f"Serial number {filtered_case.case_id} not found in BUS")
-            cases_with_uacs_appended.append(filtered_case)
-        else:
-            filtered_case.uac_chunks = UacChunks(
-                uac1 = case_uac_data[filtered_case.case_id]["uac_chunks"]["uac1"],
-                uac2 = case_uac_data[filtered_case.case_id]["uac_chunks"]["uac2"],
-                uac3 = case_uac_data[filtered_case.case_id]["uac_chunks"]["uac3"],
-            )
-            cases_with_uacs_appended.append(filtered_case)
-    return cases_with_uacs_appended
 
 
 def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> str:
@@ -105,14 +89,10 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         return f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}"
     logging.info(f"{len(eligible_cases)} eligible cases found")
 
-    questionnaire_uac_data = questionnaire_service.get_uacs(config, questionnaire_name)
-    cases_with_uacs_appended = append_uacs_to_retained_case(eligible_cases, questionnaire_uac_data)
-    logging.info("Finished appending UACs to case data")
-
     world_ids = world_id_service.get_world_ids(config)
     logging.info(f"Retrieved world ids")
 
-    cases_with_valid_world_ids = get_cases_with_valid_world_ids(cases_with_uacs_appended, world_ids)
+    cases_with_valid_world_ids = get_cases_with_valid_world_ids(eligible_cases, world_ids)
     logging.info(f"Finished searching for cases with valid world ids")
 
     totalmobile_job_models = map_totalmobile_job_models(

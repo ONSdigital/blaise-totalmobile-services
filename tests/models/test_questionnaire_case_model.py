@@ -1,4 +1,6 @@
-from models.case_model import CaseModel
+import pytest
+
+from models.questionnaire_case_model import QuestionnaireCaseModel
 from models.uac_model import UacModel, UacChunks
 from tests.helpers import questionnaire_case_model_helper
 
@@ -27,7 +29,7 @@ def test_import_case_data_returns_a_populated_model():
             "qDataBag.WaveComDTE": "WGAFF" 
     }     
 
-    result = CaseModel.import_case_data(case_data_dictionary)
+    result = QuestionnaireCaseModel.import_case_data(case_data_dictionary)
 
     assert result.case_id == "90000000"
     assert result.data_model_name == "LM2007"
@@ -75,9 +77,9 @@ def test_import_case_data_returns_a_valid_object_when_a_blaise_field_is_incorrec
             "qDataBag.WaveComDTE": "WGAFF" 
     } 
 
-    result = CaseModel.import_case_data(case_data_dictionary)
+    result = QuestionnaireCaseModel.import_case_data(case_data_dictionary)
 
-    assert result.case_id == ""
+    assert result.case_id is None
     assert result.data_model_name == "LM2007"
     assert result.survey_type == "LMS"
     assert result.wave == "1"
@@ -122,9 +124,9 @@ def test_import_case_data_returns_a_valid_object_when_an_optional_blaise_field_i
             "qDataBag.WaveComDTE": "WGAFF" 
          }        
 
-    result = CaseModel.import_case_data(case_data_dictionary)
+    result = QuestionnaireCaseModel.import_case_data(case_data_dictionary)
 
-    assert result.case_id == ""
+    assert result.case_id is None
     assert result.data_model_name == "LM2007"
     assert result.survey_type == "LMS"    
     assert result.wave == "1"
@@ -156,7 +158,7 @@ def test_populate_uac_data_populates_uac_fields_if_supplied():
         )
     )
 
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
+    case_model = questionnaire_case_model_helper.populated_case_model()
     case_model.populate_uac_data(uac_model)
 
     assert case_model.uac_chunks.uac1 == "8176"
@@ -164,168 +166,189 @@ def test_populate_uac_data_populates_uac_fields_if_supplied():
     assert case_model.uac_chunks.uac3 == "3992"
 
 
-def test_is_fully_populated_returns_false_if_none_of_the_mandatory_fields_are_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.case_id = ""
-    case_model.data_model_name = ""
-    case_model.survey_type = ""
-    case_model.wave = ""
-    case_model.address_line_1 = ""
-    case_model.address_line_2 = ""
-    case_model.address_line_3 = ""
-    case_model.county = ""
-    case_model.town = ""      
-    case_model.postcode = ""       
-    case_model.telephone_number_1 = ""       
-    case_model.telephone_number_2  = ""             
-    case_model.appointment_telephone_number = ""        
-    case_model.outcome_code  = ""             
-    case_model.latitude  = ""                          
-    case_model.longitude  = ""     
-    case_model.priority  = ""     
-    case_model.field_region  = ""     
-    case_model.field_team  = ""      
-    case_model.wave_com_dte  = ""           
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_none_of_the_mandatory_fields_are_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.case_id = test_input
+    case_model.data_model_name = test_input
+    case_model.survey_type = test_input
+    case_model.wave = test_input
+    case_model.address_line_1 = test_input
+    case_model.address_line_2 = test_input
+    case_model.address_line_3 = test_input
+    case_model.county = test_input
+    case_model.town = test_input
+    case_model.postcode = test_input
+    case_model.telephone_number_1 = test_input
+    case_model.telephone_number_2  = test_input
+    case_model.appointment_telephone_number = test_input
+    case_model.outcome_code  = test_input
+    case_model.latitude  = test_input
+    case_model.longitude  = test_input
+    case_model.priority  = test_input
+    case_model.field_region  = test_input
+    case_model.field_team  = test_input
+    case_model.wave_com_dte  = test_input
 
-    assert case_model.is_fully_populated() is False    
+    assert case_model.is_fully_populated() is expected_outcome
 
-    
-def test_is_fully_populated_returns_false_if_case_id_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.case_id = ""
+
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_case_id_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.case_id = test_input
    
-    assert case_model.is_fully_populated() is False
+    assert case_model.is_fully_populated() is expected_outcome
 
 
-def test_is_fully_populated_returns_false_if_data_model_name_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.data_model_name = "" 
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_data_model_name_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.data_model_name = test_input
 
-    assert case_model.is_fully_populated() is False    
+    assert case_model.is_fully_populated() is expected_outcome
 
 
-def test_is_fully_populated_returns_false_if_survey_type_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.survey_type = ""   
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_survey_type_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.survey_type = test_input
     
-    assert case_model.is_fully_populated() is False      
+    assert case_model.is_fully_populated() is expected_outcome
 
 
-def test_is_fully_populated_returns_false_if_wave_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.wave = ""      
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_wave_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.wave = test_input
   
-    assert case_model.is_fully_populated() is False     
+    assert case_model.is_fully_populated() is expected_outcome
 
 
-def test_is_fully_populated_returns_false_if_address_line_1_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.address_line_1 = ""          
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_address_line_1_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.address_line_1 = test_input
    
-    assert case_model.is_fully_populated() is False         
+    assert case_model.is_fully_populated() is expected_outcome
 
 
-def test_is_fully_populated_returns_false_if_address_line_2_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.address_line_2 = "" 
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_address_line_2_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.address_line_2 = test_input
 
-    assert case_model.is_fully_populated() is False   
-
-
-def test_is_fully_populated_returns_false_if_address_line_3_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.address_line_3 = "" 
-
-    assert case_model.is_fully_populated() is False       
+    assert case_model.is_fully_populated() is expected_outcome
 
 
-def test_is_fully_populated_returns_false_if_county_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.county = "" 
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_address_line_3_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.address_line_3 = test_input
 
-    assert case_model.is_fully_populated() is False         
-
-
-def test_is_fully_populated_returns_false_if_town_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.town = "" 
-
-    assert case_model.is_fully_populated() is False     
+    assert case_model.is_fully_populated() is expected_outcome
 
 
-def test_is_fully_populated_returns_false_if_postcode_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.postcode = "" 
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_county_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.county = test_input
 
-    assert case_model.is_fully_populated() is False       
-
-
-def test_is_fully_populated_returns_false_if_telephone_number_1_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.telephone_number_1 = "" 
-
-    assert case_model.is_fully_populated() is False   
+    assert case_model.is_fully_populated() is expected_outcome
 
 
-def test_is_fully_populated_returns_false_if_telephone_number_2_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.telephone_number_2 = "" 
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_town_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.town = test_input
 
-    assert case_model.is_fully_populated() is False   
-
-
-def test_is_fully_populated_returns_false_if_appointment_telephone_number_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.appointment_telephone_number = "" 
-
-    assert case_model.is_fully_populated() is False            
+    assert case_model.is_fully_populated() is expected_outcome
 
 
-def test_is_fully_populated_returns_false_if_outcome_code_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.outcome_code = "" 
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_postcode_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.postcode = test_input
 
-    assert case_model.is_fully_populated() is False         
-
-
-def test_is_fully_populated_returns_false_if_latitude_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.latitude = "" 
-
-    assert case_model.is_fully_populated() is False     
+    assert case_model.is_fully_populated() is expected_outcome
 
 
-def test_is_fully_populated_returns_false_if_longitude_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.longitude = "" 
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_telephone_number_1_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.telephone_number_1 = test_input
 
-    assert case_model.is_fully_populated() is False         
-
-
-def test_is_fully_populated_returns_false_if_priority_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.priority = "" 
-
-    assert case_model.is_fully_populated() is False         
+    assert case_model.is_fully_populated() is expected_outcome
 
 
-def test_is_fully_populated_returns_false_if_field_region_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.field_region = "" 
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_telephone_number_2_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.telephone_number_2 = test_input
 
-    assert case_model.is_fully_populated() is False       
-
-
-def test_is_fully_populated_returns_false_if_field_team_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.field_team = "" 
-
-    assert case_model.is_fully_populated() is False         
+    assert case_model.is_fully_populated() is expected_outcome
 
 
-def test_is_fully_populated_returns_false_if_wave_com_dte_field_is_not_populated():
-    case_model = questionnaire_case_model_helper.get_populated_case_model()
-    case_model.wave_com_dte = "" 
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_appointment_telephone_number_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.appointment_telephone_number = test_input
 
-    assert case_model.is_fully_populated() is False          
+    assert case_model.is_fully_populated() is expected_outcome
+
+
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_outcome_code_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.outcome_code = test_input
+
+    assert case_model.is_fully_populated() is expected_outcome
+
+
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_latitude_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.latitude = test_input
+
+    assert case_model.is_fully_populated() is expected_outcome
+
+
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_longitude_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.longitude = test_input
+
+    assert case_model.is_fully_populated() is expected_outcome
+
+
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_priority_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.priority = test_input
+
+    assert case_model.is_fully_populated() is expected_outcome
+
+
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_field_region_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.field_region = test_input
+
+    assert case_model.is_fully_populated() is expected_outcome
+
+
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_field_team_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.field_team = test_input
+
+    assert case_model.is_fully_populated() is expected_outcome
+
+
+@pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
+def test_is_fully_populated_returns_false_if_wave_com_dte_field_is_not_populated(test_input, expected_outcome):
+    case_model = questionnaire_case_model_helper.populated_case_model()
+    case_model.wave_com_dte = test_input
+
+    assert case_model.is_fully_populated() is expected_outcome
            

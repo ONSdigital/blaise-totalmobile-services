@@ -1,5 +1,7 @@
 from client import bus
 from unittest import mock
+
+from models.uac_model import UacModel, UacChunks
 from services import uac_restapi_service
 from tests.helpers import config_helper
 
@@ -60,19 +62,30 @@ def test_get_uacs_returns_a_list_of_uac_models(_mock_rest_api_client):
     result = uac_restapi_service.get_uacs(questionnaire_name, config)
 
     # assert
-    assert len(result) == 3
+    assert result == [
+        UacModel(
+            case_id= "10010",
+            uac_chunks=UacChunks(
+                uac1="8176",
+                uac2="4726",
+                uac3="3991"
+            )
+        ),
+        UacModel(
+            case_id="10020",
+            uac_chunks=UacChunks(
+                uac1="8177",
+                uac2="4727",
+                uac3="3992"
+            )
+        ),
+        UacModel(
+            case_id="10030",
+            uac_chunks=UacChunks(
+                uac1="8178",
+                uac2="4728",
+                uac3="3993"
+            )
+        )
+    ]
 
-    assert result[0].case_id == "10010"
-    assert result[0].uac_chunks.uac1 == "8176"
-    assert result[0].uac_chunks.uac2 == "4726"
-    assert result[0].uac_chunks.uac3 == "3991"
-
-    assert result[1].case_id == "10020"
-    assert result[1].uac_chunks.uac1 == "8177"
-    assert result[1].uac_chunks.uac2 == "4727"
-    assert result[1].uac_chunks.uac3 == "3992"
-
-    assert result[2].case_id == "10030"
-    assert result[2].uac_chunks.uac1 == "8178"
-    assert result[2].uac_chunks.uac2 == "4728"
-    assert result[2].uac_chunks.uac3 == "3993"
