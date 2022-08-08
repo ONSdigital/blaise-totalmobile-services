@@ -1,11 +1,11 @@
 from unittest import mock
 from client.optimise import OptimiseClient
 from tests.helpers import config_helper
-from services.world_id_service import get_world_ids
+from services.world_id_service import get_world
 
 
 @mock.patch.object(OptimiseClient, "get_worlds")
-def test_get_world_ids_returns_a_dictionary_with_region_and_world_id_as_a_key_value_pair(_mock_optimise_client):
+def test_get_world_returns_a_world_model(_mock_optimise_client):
     config = config_helper.get_default_config()
     _mock_optimise_client.return_value = [
         {
@@ -38,9 +38,16 @@ def test_get_world_ids_returns_a_dictionary_with_region_and_world_id_as_a_key_va
         },
     ]
 
-    assert get_world_ids(config) == {
-        "Region 1": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "Region 2": "3fa85f64-5717-4562-b3fc-2c963f66afa7",
-        "Region 3": "3fa85f64-5717-4562-b3fc-2c963f66afa8",
-        "Region 4": "3fa85f64-5717-4562-b3fc-2c963f66afa9"
-    }
+    result = get_world(config)
+
+    assert result.world_ids[0].region == "Region 1"
+    assert result.world_ids[0].id == "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+
+    assert result.world_ids[1].region == "Region 2"
+    assert result.world_ids[1].id == "3fa85f64-5717-4562-b3fc-2c963f66afa7"
+
+    assert result.world_ids[2].region == "Region 3"
+    assert result.world_ids[2].id == "3fa85f64-5717-4562-b3fc-2c963f66afa8"
+
+    assert result.world_ids[3].region == "Region 4"
+    assert result.world_ids[3].id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"

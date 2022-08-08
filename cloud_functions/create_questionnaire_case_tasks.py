@@ -11,6 +11,7 @@ from cloud_functions.functions import prepare_tasks, run
 from models.totalmobile_job_model import TotalmobileJobModel
 from models.questionnaire_case_model import QuestionnaireCaseModel
 from models.totalmobile_case_model import TotalMobileCaseModel
+from models.totalmobile_world_model import TotalmobileWorldModel
 from services import questionnaire_service, world_id_service
 
 setup_logger()
@@ -29,12 +30,12 @@ def validate_request(request_json: Dict) -> None:
         )
 
 
-def get_cases_with_valid_world_ids(filtered_cases: List[QuestionnaireCaseModel], world_ids) -> List[str]:
+def get_cases_with_valid_world_ids(filtered_cases: List[QuestionnaireCaseModel], world_model: TotalmobileWorldModel) -> List[str]:
     cases_with_valid_world_ids = []
     for case in filtered_cases:
         if case.field_region == "":
             logging.warning("Case rejected. Missing Field Region")
-        elif case.field_region not in world_ids:
+        elif world_model.get_world_id(case.field_region) is None:
             logging.warning(f"Unsupported world: {case.field_region}")
         else:
             cases_with_valid_world_ids.append(case)
@@ -42,9 +43,9 @@ def get_cases_with_valid_world_ids(filtered_cases: List[QuestionnaireCaseModel],
 
 
 def map_totalmobile_job_models(
-        cases: List[QuestionnaireCaseModel], world_ids: List[str], questionnaire_name: str
+        cases: List[QuestionnaireCaseModel], world_model: TotalmobileWorldModel, questionnaire_name: str
 ) -> List[TotalmobileJobModel]:
-    return [TotalmobileJobModel(questionnaire_name, world_id, case.case_id, TotalMobileCaseModel.import_case(questionnaire_name, case).to_payload()) for case, world_id in zip(cases, world_ids)]
+    return [TotalmobileJobModel(questionnaire_name, world_model.get_world_id(case.field_region), case.case_id, TotalMobileCaseModel.import_case(questionnaire_name, case).to_payload()) for case in cases]
 
 
 def create_task_name(job_model: TotalmobileJobModel) -> str:
@@ -90,14 +91,14 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         return f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}"
     logging.info(f"{len(eligible_cases)} eligible cases found")
 
-    world_ids = world_id_service.get_world_ids(config)
-    logging.info(f"Retrieved world ids")
+    world_model = world_id_service.get_world(config)
+    logging.info(f"Retrieved world id model")
 
-    cases_with_valid_world_ids = get_cases_with_valid_world_ids(eligible_cases, world_ids)
+    cases_with_valid_world_ids = get_cases_with_valid_world_ids(eligible_cases, world_model)
     logging.info(f"Finished searching for cases with valid world ids")
 
     totalmobile_job_models = map_totalmobile_job_models(
-        cases_with_valid_world_ids, world_ids, questionnaire_name
+        cases_with_valid_world_ids, world_model, questionnaire_name
     )
     logging.info(f"Finished mapping Totalmobile jobs for questionnaire {questionnaire_name}")
 

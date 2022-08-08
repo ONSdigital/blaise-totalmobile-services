@@ -1,9 +1,9 @@
 from appconfig import Config
+from models.totalmobile_world_model import TotalmobileWorldModel
 from services import totalmobile_restapi_service
 
 
-def get_world_ids(config: Config):
+def get_world(config: Config):
     worlds = totalmobile_restapi_service.get_worlds(config)
-    return {world["identity"]["reference"]: world["id"] for world in worlds}
-
+    return TotalmobileWorldModel.import_world_ids(worlds)
 

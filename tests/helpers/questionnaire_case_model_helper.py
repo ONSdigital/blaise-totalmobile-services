@@ -20,7 +20,7 @@ def populated_case_model(
         latitude: str = "10020202",
         longitude: str = "34949494",
         priority: str = "1",
-        field_region: str = "gwent",
+        field_region: str = "Region 1",
         field_team: str = "B-Team",
         wave_com_dte: str = "01-01-2023",
         uac_chunks: UacChunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")):
