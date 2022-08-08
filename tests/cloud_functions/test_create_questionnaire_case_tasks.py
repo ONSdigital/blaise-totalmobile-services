@@ -58,58 +58,22 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     result = map_totalmobile_job_models(case_data, world_ids, questionnaire_name)
 
     # assert
-    assert result == [
-        TotalmobileJobModel(questionnaire='OPN2101A', world_id='3fa85f64-5717-4562-b3fc-2c963f66afa6', case_id='10010',
-                            payload={'identity': {'reference': 'OPN2101A.10010'},
-                                     'description': 'Study: OPN2101A\nCase ID: 10010', 'origin': 'ONS', 'duration': 15,
-                                     'workType': 'LMS', 'skills': [{'identity': {'reference': 'LMS'}}],
-                                     'dueDate': '01 - 01 - 2023', 'location': {
-                                    'addressDetail': {'addressLine1': '12 Blaise Street', 'addressLine2': 'Blaise Hill',
-                                                      'addressLine3':
-                                                          'Blaiseville',
-                                                      'addressLine4': 'Gwent', 'addressLine5': 'Newport',
-                                                      'postCode': 'FML134D', 'coordinates': {
-                                            'latitude': '10020202', 'longitude': '34949494'}}},
-                                     'contact': {'name': 'FML134D'}, 'additionalProperties': [
-                                    {'name': 'surveyName', 'value': 'LM2007'}, {'name': 'tla', 'value': 'LMS'},
-                                    {'name': 'wave', 'value': '1'}, {'name': 'priority', 'value': '1'},
-                                    {'name': 'fieldTeam', 'value': 'B - Team'}, {'name': 'uac1', 'value': '3456'},
-                                    {'name': 'uac2', 'value': '3453'}, {'name': 'uac3', 'value': '4546'}]}),
-        TotalmobileJobModel(questionnaire='OPN2101A', world_id='3fa85f64-5717-4562-b3fc-2c963f66afa7', case_id='10020',
-                            payload={'identity': {'reference': 'OPN2101A.10020'},
-                                     'description': 'Study: OPN2101A\nCase ID: 10020', 'origin': 'ONS', 'duration': 15,
-                                     'workType': 'LMS', 'skills': [{'identity': {'reference': 'LMS'}}],
-                                     'dueDate': '01 - 01 - 2023', 'location': {
-                                    'addressDetail': {'addressLine1': '12 Blaise Street', 'addressLine2': 'Blaise Hill',
-                                                      'addressLine3':
-                                                          'Blaiseville',
-                                                      'addressLine4': 'Gwent', 'addressLine5': 'Newport',
-                                                      'postCode': 'FML134D', 'coordinates': {
-                                            'latitude': '10020202', 'longitude': '34949494'}}},
-                                     'contact': {'name': 'FML134D'}, 'additionalProperties': [
-                                    {'name': 'surveyName', 'value': 'LM2007'}, {'name': 'tla', 'value': 'LMS'},
-                                    {'name': 'wave', 'value': '1'},
-                                    {'name': 'priority', 'value': '1'}, {'name': 'fieldTeam', 'value': 'B - Team'},
-                                    {'name': 'uac1', 'value': '3456'},
-                                    {'name': 'uac2', 'value': '3453'}, {'name': 'uac3', 'value': '4546'}]}),
-        TotalmobileJobModel(questionnaire='OPN2101A', world_id='3fa85f64-5717-4562-b3fc-2c963f66afa9', case_id='10030',
-                            payload={'identity': {'reference': 'OPN2101A.10030'},
-                                     'description': 'Study: OPN2101A\nCase ID: 10030', 'origin': 'ONS', 'duration': 15,
-                                     'workType': 'LMS', 'skills': [{'identity': {'reference': 'LMS'}}],
-                                     'dueDate': '01 - 01 - 2023', 'location': {
-                                    'addressDetail': {'addressLine1': '12 Blaise Street', 'addressLine2': 'Blaise Hill',
-                                                      'addressLine3':
-                                                          'Blaiseville',
-                                                      'addressLine4': 'Gwent', 'addressLine5': 'Newport',
-                                                      'postCode': 'FML134D', 'coordinates': {
-                                            'latitude': '10020202', 'longitude': '34949494'}}},
-                                     'contact': {'name': 'FML134D'}, 'additionalProperties': [
-                                    {'name': 'surveyName', 'value': 'LM2007'}, {'name': 'tla', 'value': 'LMS'},
-                                    {'name': 'wave', 'value': '1'}, {'name': 'priority', 'value': '1'},
-                                    {'name': 'fieldTeam', 'value': 'B - Team'}, {'name': 'uac1', 'value': '3456'},
-                                    {'name': 'uac2',
-                                     'value': '3453'}, {'name': 'uac3', 'value': '4546'}]}),
-    ]
+    assert len(result) == 3
+
+    assert result[0].questionnaire == "OPN2101A"
+    assert result[0].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    assert result[0].case_id == "10010"
+    assert result[0].payload == TotalMobileCaseModel.import_case(questionnaire_name, case_data[0]).to_payload()
+
+    assert result[1].questionnaire == "OPN2101A"
+    assert result[1].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa7"
+    assert result[1].case_id == "10020"
+    assert result[1].payload == TotalMobileCaseModel.import_case(questionnaire_name, case_data[1]).to_payload()
+
+    assert result[2].questionnaire == "OPN2101A"
+    assert result[2].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
+    assert result[2].case_id == "10030"
+    assert result[2].payload == TotalMobileCaseModel.import_case(questionnaire_name, case_data[2]).to_payload()
 
 
 def test_validate_request(mock_create_job_task):
@@ -138,7 +102,7 @@ def test_create_case_tasks_for_questionnaire(
     config = config_helper.get_default_config()
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
 
-    mock_get_eligible_cases.return_value = [
+    questionnaire_cases = [
         populated_case_model(
             case_id="10010",
             telephone_number_1="",
@@ -154,6 +118,8 @@ def test_create_case_tasks_for_questionnaire(
             )
         ),
     ]
+
+    mock_get_eligible_cases.return_value = questionnaire_cases
 
     mock_get_world_ids.return_value = {
         "Region 1": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
@@ -189,36 +155,12 @@ def test_create_case_tasks_for_questionnaire(
     assert len(kwargs['tasks']) == 1
     task = kwargs['tasks'][0]
     assert task[0][0:3] == "LMS"
+    print(json.loads(task[1]))
     assert json.loads(task[1]) == {
         'questionnaire': 'LMS2101_AA1',
         'world_id': 'Region 1',
-        'case': {
-            'qiD.Serial_Number': '10010',
-            'dataModelName': '',
-            'qDataBag.TLA': '',
-            'qDataBag.Wave': '1',
-            'qDataBag.Prem1': '',
-            'qDataBag.Prem2': '',
-            'qDataBag.Prem3': '',
-            'qDataBag.District': '',
-            'qDataBag.PostTown': '',
-            'qDataBag.PostCode': '',
-            'qDataBag.TelNo': '',
-            'qDataBag.TelNo2': '',
-            'telNoAppt': '',
-            'hOut': '310',
-            'qDataBag.UPRN_Latitude': '',
-            'qDataBag.UPRN_Longitude': '',
-            'qDataBag.Priority': '1',
-            'qDataBag.FieldRegion': '',
-            'qDataBag.FieldTeam': '',
-            'qDataBag.WaveComDTE': '',
-            'uac_chunks': {
-                'uac1': '8176',
-                'uac2': '4726',
-                'uac3': '3991'
-            }
-        }
+        'case_id': '10010',
+        'payload': TotalMobileCaseModel.import_case("LMS2101_AA1", questionnaire_cases[0]).to_payload()
     }
     assert result == "Done"
 
