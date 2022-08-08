@@ -10,6 +10,7 @@ from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
 from models.totalmobile_job_model import TotalmobileJobModel
 from models.questionnaire_case_model import QuestionnaireCaseModel
+from models.totalmobile_case_model import TotalMobileCaseModel
 from services import questionnaire_service, world_id_service
 
 setup_logger()
@@ -43,12 +44,12 @@ def get_cases_with_valid_world_ids(filtered_cases: List[QuestionnaireCaseModel],
 def map_totalmobile_job_models(
         cases: List[QuestionnaireCaseModel], world_ids: List[str], questionnaire_name: str
 ) -> List[TotalmobileJobModel]:
-    return [TotalmobileJobModel(questionnaire_name, world_id, case.to_dict()) for case, world_id in zip(cases, world_ids)]
+    return [TotalmobileJobModel(questionnaire_name, world_id, case.case_id, TotalMobileCaseModel.import_case(questionnaire_name, case).to_payload()) for case, world_id in zip(cases, world_ids)]
 
 
 def create_task_name(job_model: TotalmobileJobModel) -> str:
     return (
-        f"{job_model.questionnaire}-{job_model.case['qiD.Serial_Number']}-{str(uuid4())}"
+        f"{job_model.questionnaire}-{job_model.case_id}-{str(uuid4())}"
     )
 
 

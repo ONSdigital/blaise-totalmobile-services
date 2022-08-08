@@ -6,7 +6,7 @@ T = TypeVar('T')
 
 
 @dataclass
-class QuestionnaireCaseModel():
+class QuestionnaireCaseModel:
     case_id: str
     data_model_name: str
     survey_type: str
@@ -38,8 +38,11 @@ class QuestionnaireCaseModel():
                 return False
         return True
 
+    def to_dict(self) -> Dict[str, str]:
+        return []
+
     @classmethod
-    def import_case_data(cls: Type[T], case_data_dictionary: Dict[str, str]) -> T:
+    def import_case(cls: Type[T], case_data_dictionary: Dict[str, str]) -> T:
         return QuestionnaireCaseModel(
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
             data_model_name=case_data_dictionary.get("dataModelName"),

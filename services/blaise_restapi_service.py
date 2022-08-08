@@ -37,5 +37,5 @@ def get_cases(questionnaire_name: str, config: Config) -> [List[QuestionnaireCas
         required_fields_from_blaise
     )
 
-    return [QuestionnaireCaseModel.import_case_data(case_data_item) for case_data_item in
+    return [QuestionnaireCaseModel.import_case(case_data_item) for case_data_item in
             questionnaire_case_data["reportingData"]]

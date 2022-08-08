@@ -22,10 +22,10 @@ def populated_case_model(
         priority: str = "1",
         field_region: str = "gwent",
         field_team: str = "B-Team",
-        wave_com_dte: str = "WGAFF",
+        wave_com_dte: str = "01-01-2023",
         uac_chunks: UacChunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")):
     return QuestionnaireCaseModel(
-        case_id= case_id,
+        case_id=case_id,
         data_model_name=data_model_name,
         survey_type=survey_type,
         wave=wave,

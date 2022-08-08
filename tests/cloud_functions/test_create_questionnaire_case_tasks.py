@@ -5,6 +5,7 @@ import flask
 import pytest
 import logging
 from models.questionnaire_case_model import QuestionnaireCaseModel, UacChunks
+from models.totalmobile_case_model import TotalMobileCaseModel
 
 from tests.helpers import config_helper
 from client.optimise import OptimiseClient
@@ -22,7 +23,9 @@ from tests.helpers.questionnaire_case_model_helper import populated_case_model
 def test_create_task_name_returns_correct_name_when_called():
     questionnaire_case_model = populated_case_model()
     questionnaire_case_model.case_id = "90001"
-    model = TotalmobileJobModel("OPN2101A", "world", questionnaire_case_model.to_dict())
+    questionnaire_name = "OPN2101A"
+    totalmobile_case_model = TotalMobileCaseModel.import_case(questionnaire_name, questionnaire_case_model)
+    model = TotalmobileJobModel("OPN2101A", "world", "90001", totalmobile_case_model.to_payload())
 
     assert create_task_name(model).startswith("OPN2101A-90001-")
 
@@ -30,10 +33,9 @@ def test_create_task_name_returns_correct_name_when_called():
 def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_model():
     questionnaire_case_model = populated_case_model()
     questionnaire_case_model.case_id = "90001"
-    model = TotalmobileJobModel("OPN2101A", "world", questionnaire_case_model.to_dict())
+    model = TotalmobileJobModel("OPN2101A", "world", "90001", questionnaire_case_model.to_dict())
 
     assert create_task_name(model) != create_task_name(model)
-
 
 
 def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
@@ -41,9 +43,9 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     questionnaire_name = "OPN2101A"
 
     case_data = [
-        populated_case_model(case_id ="10010", outcome_code ="110"),
-        populated_case_model(case_id ="10020", outcome_code ="120"),
-        populated_case_model(case_id ="10030", outcome_code ="130")
+        populated_case_model(case_id="10010", outcome_code="110"),
+        populated_case_model(case_id="10020", outcome_code="120"),
+        populated_case_model(case_id="10030", outcome_code="130")
     ]
 
     world_ids = [
@@ -57,15 +59,56 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
 
     # assert
     assert result == [
-        TotalmobileJobModel(
-            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa6", case={'qiD.Serial_Number': '10010', 'dataModelName': '', 'qDataBag.TLA': '', 'qDataBag.Wave': '', 'qDataBag.Prem1': '', 'qDataBag.Prem2': '', 'qDataBag.Prem3': '', 'qDataBag.District': '', 'qDataBag.PostTown': '', 'qDataBag.PostCode': '', 'qDataBag.TelNo': '', 'qDataBag.TelNo2': '', 'telNoAppt': '', 'hOut': '110', 'qDataBag.UPRN_Latitude': '', 'qDataBag.UPRN_Longitude': '', 'qDataBag.Priority': '', 'qDataBag.FieldRegion': '', 'qDataBag.FieldTeam': '', 'qDataBag.WaveComDTE': '', 'uac_chunks': {'uac1': '', 'uac2': '', 'uac3': ''}}
-        ),
-        TotalmobileJobModel(
-            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa7", case={'qiD.Serial_Number': '10020', 'dataModelName': '', 'qDataBag.TLA': '', 'qDataBag.Wave': '', 'qDataBag.Prem1': '', 'qDataBag.Prem2': '', 'qDataBag.Prem3': '', 'qDataBag.District': '', 'qDataBag.PostTown': '', 'qDataBag.PostCode': '', 'qDataBag.TelNo': '', 'qDataBag.TelNo2': '', 'telNoAppt': '', 'hOut': '120', 'qDataBag.UPRN_Latitude': '', 'qDataBag.UPRN_Longitude': '', 'qDataBag.Priority': '', 'qDataBag.FieldRegion': '', 'qDataBag.FieldTeam': '', 'qDataBag.WaveComDTE': '', 'uac_chunks': {'uac1': '', 'uac2': '', 'uac3': ''}}
-        ),
-        TotalmobileJobModel(
-            "OPN2101A", "3fa85f64-5717-4562-b3fc-2c963f66afa9", case={'qiD.Serial_Number': '10030', 'dataModelName': '', 'qDataBag.TLA': '', 'qDataBag.Wave': '', 'qDataBag.Prem1': '', 'qDataBag.Prem2': '', 'qDataBag.Prem3': '', 'qDataBag.District': '', 'qDataBag.PostTown': '', 'qDataBag.PostCode': '', 'qDataBag.TelNo': '', 'qDataBag.TelNo2': '', 'telNoAppt': '', 'hOut': '130', 'qDataBag.UPRN_Latitude': '', 'qDataBag.UPRN_Longitude': '', 'qDataBag.Priority': '', 'qDataBag.FieldRegion': '', 'qDataBag.FieldTeam': '', 'qDataBag.WaveComDTE': '', 'uac_chunks': {'uac1': '', 'uac2': '', 'uac3': ''}}
-        ),
+        TotalmobileJobModel(questionnaire='OPN2101A', world_id='3fa85f64-5717-4562-b3fc-2c963f66afa6', case_id='10010',
+                            payload={'identity': {'reference': 'OPN2101A.10010'},
+                                     'description': 'Study: OPN2101A\nCase ID: 10010', 'origin': 'ONS', 'duration': 15,
+                                     'workType': 'LMS', 'skills': [{'identity': {'reference': 'LMS'}}],
+                                     'dueDate': '01 - 01 - 2023', 'location': {
+                                    'addressDetail': {'addressLine1': '12 Blaise Street', 'addressLine2': 'Blaise Hill',
+                                                      'addressLine3':
+                                                          'Blaiseville',
+                                                      'addressLine4': 'Gwent', 'addressLine5': 'Newport',
+                                                      'postCode': 'FML134D', 'coordinates': {
+                                            'latitude': '10020202', 'longitude': '34949494'}}},
+                                     'contact': {'name': 'FML134D'}, 'additionalProperties': [
+                                    {'name': 'surveyName', 'value': 'LM2007'}, {'name': 'tla', 'value': 'LMS'},
+                                    {'name': 'wave', 'value': '1'}, {'name': 'priority', 'value': '1'},
+                                    {'name': 'fieldTeam', 'value': 'B - Team'}, {'name': 'uac1', 'value': '3456'},
+                                    {'name': 'uac2', 'value': '3453'}, {'name': 'uac3', 'value': '4546'}]}),
+        TotalmobileJobModel(questionnaire='OPN2101A', world_id='3fa85f64-5717-4562-b3fc-2c963f66afa7', case_id='10020',
+                            payload={'identity': {'reference': 'OPN2101A.10020'},
+                                     'description': 'Study: OPN2101A\nCase ID: 10020', 'origin': 'ONS', 'duration': 15,
+                                     'workType': 'LMS', 'skills': [{'identity': {'reference': 'LMS'}}],
+                                     'dueDate': '01 - 01 - 2023', 'location': {
+                                    'addressDetail': {'addressLine1': '12 Blaise Street', 'addressLine2': 'Blaise Hill',
+                                                      'addressLine3':
+                                                          'Blaiseville',
+                                                      'addressLine4': 'Gwent', 'addressLine5': 'Newport',
+                                                      'postCode': 'FML134D', 'coordinates': {
+                                            'latitude': '10020202', 'longitude': '34949494'}}},
+                                     'contact': {'name': 'FML134D'}, 'additionalProperties': [
+                                    {'name': 'surveyName', 'value': 'LM2007'}, {'name': 'tla', 'value': 'LMS'},
+                                    {'name': 'wave', 'value': '1'},
+                                    {'name': 'priority', 'value': '1'}, {'name': 'fieldTeam', 'value': 'B - Team'},
+                                    {'name': 'uac1', 'value': '3456'},
+                                    {'name': 'uac2', 'value': '3453'}, {'name': 'uac3', 'value': '4546'}]}),
+        TotalmobileJobModel(questionnaire='OPN2101A', world_id='3fa85f64-5717-4562-b3fc-2c963f66afa9', case_id='10030',
+                            payload={'identity': {'reference': 'OPN2101A.10030'},
+                                     'description': 'Study: OPN2101A\nCase ID: 10030', 'origin': 'ONS', 'duration': 15,
+                                     'workType': 'LMS', 'skills': [{'identity': {'reference': 'LMS'}}],
+                                     'dueDate': '01 - 01 - 2023', 'location': {
+                                    'addressDetail': {'addressLine1': '12 Blaise Street', 'addressLine2': 'Blaise Hill',
+                                                      'addressLine3':
+                                                          'Blaiseville',
+                                                      'addressLine4': 'Gwent', 'addressLine5': 'Newport',
+                                                      'postCode': 'FML134D', 'coordinates': {
+                                            'latitude': '10020202', 'longitude': '34949494'}}},
+                                     'contact': {'name': 'FML134D'}, 'additionalProperties': [
+                                    {'name': 'surveyName', 'value': 'LM2007'}, {'name': 'tla', 'value': 'LMS'},
+                                    {'name': 'wave', 'value': '1'}, {'name': 'priority', 'value': '1'},
+                                    {'name': 'fieldTeam', 'value': 'B - Team'}, {'name': 'uac1', 'value': '3456'},
+                                    {'name': 'uac2',
+                                     'value': '3453'}, {'name': 'uac3', 'value': '4546'}]}),
     ]
 
 
@@ -210,6 +253,7 @@ def test_create_questionnaire_case_tasks_errors_if_misssing_questionnaire():
             str(err.value) == "Required fields missing from request payload: ['questionnaire']"
     )
 
+
 @mock.patch.object(OptimiseClient, "get_worlds")
 def test_get_cases_with_valid_world_ids_logs_a_console_error_when_given_an_unknown_region(_mock_optimise_client,
                                                                                           caplog):
@@ -269,4 +313,3 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
     assert len(cases_with_valid_world_ids) == 1
     assert cases_with_valid_world_ids == [populated_case_model(field_region="Region 1")]
     assert ('root', logging.WARNING, 'Case rejected. Missing Field Region') in caplog.record_tuples
-
