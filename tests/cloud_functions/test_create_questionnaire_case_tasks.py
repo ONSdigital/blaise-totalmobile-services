@@ -91,7 +91,7 @@ def test_validate_request_when_missing_fields():
     )
 
 
-@mock.patch("services.world_id_service.get_world")
+@mock.patch("services.world_service.get_worlds")
 @mock.patch("services.questionnaire_service.get_eligible_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.get_cases_with_valid_world_ids")
@@ -99,7 +99,7 @@ def test_create_case_tasks_for_questionnaire(
         mock_get_cases_with_valid_world_ids,
         mock_run_async_tasks,
         mock_get_eligible_cases,
-        mock_get_world,
+        mock_get_worlds,
 ):
     # arrange
     config = config_helper.get_default_config()
@@ -125,7 +125,7 @@ def test_create_case_tasks_for_questionnaire(
 
     mock_get_eligible_cases.return_value = questionnaire_cases
 
-    mock_get_world.return_value = TotalmobileWorldModel(
+    mock_get_worlds.return_value = TotalmobileWorldModel(
         worlds=[
             World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")
         ]
@@ -152,7 +152,7 @@ def test_create_case_tasks_for_questionnaire(
     result = create_questionnaire_case_tasks(mock_request, config)
 
     # assert
-    mock_get_world.assert_called_with(config)
+    mock_get_worlds.assert_called_with(config)
     mock_get_eligible_cases.assert_called_with("LMS2101_AA1", config)
 
     mock_run_async_tasks.assert_called_once()

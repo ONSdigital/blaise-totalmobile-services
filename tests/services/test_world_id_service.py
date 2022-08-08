@@ -1,7 +1,7 @@
 from unittest import mock
 from client.optimise import OptimiseClient
 from tests.helpers import config_helper
-from services.world_id_service import get_world
+from services.world_service import get_worlds
 
 
 @mock.patch.object(OptimiseClient, "get_worlds")
@@ -38,7 +38,7 @@ def test_get_world_returns_a_world_model(_mock_optimise_client):
         },
     ]
 
-    result = get_world(config)
+    result = get_worlds(config)
 
     assert result.worlds[0].region == "Region 1"
     assert result.worlds[0].id == "3fa85f64-5717-4562-b3fc-2c963f66afa6"

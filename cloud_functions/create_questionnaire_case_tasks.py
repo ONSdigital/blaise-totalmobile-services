@@ -12,7 +12,7 @@ from models.totalmobile_job_model import TotalmobileJobModel
 from models.questionnaire_case_model import QuestionnaireCaseModel
 from models.totalmobile_case_model import TotalMobileCaseModel
 from models.totalmobile_world_model import TotalmobileWorldModel
-from services import questionnaire_service, world_id_service
+from services import questionnaire_service, world_service
 
 setup_logger()
 
@@ -91,7 +91,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         return f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}"
     logging.info(f"{len(eligible_cases)} eligible cases found")
 
-    world_model = world_id_service.get_world(config)
+    world_model = world_service.get_worlds(config)
     logging.info(f"Retrieved world id model")
 
     cases_with_valid_world_ids = get_cases_with_valid_world_ids(eligible_cases, world_model)
