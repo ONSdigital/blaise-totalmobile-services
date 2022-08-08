@@ -6,7 +6,7 @@ import pytest
 import logging
 from models.questionnaire_case_model import QuestionnaireCaseModel, UacChunks
 from models.totalmobile_case_model import TotalMobileCaseModel
-from models.totalmobile_world_model import TotalmobileWorldModel, WorldId
+from models.totalmobile_world_model import TotalmobileWorldModel, World
 
 from tests.helpers import config_helper
 from client.optimise import OptimiseClient
@@ -50,10 +50,10 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     ]
 
     world_model = TotalmobileWorldModel(
-        world_ids=[
-            WorldId(region="region1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6"),
-            WorldId(region="region2", id="3fa85f64-5717-4562-b3fc-2c963f66afa7"),
-            WorldId(region="region3", id="3fa85f64-5717-4562-b3fc-2c963f66afa9")
+        worlds=[
+            World(region="region1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+            World(region="region2", id="3fa85f64-5717-4562-b3fc-2c963f66afa7"),
+            World(region="region3", id="3fa85f64-5717-4562-b3fc-2c963f66afa9")
         ]
     )
 
@@ -126,8 +126,8 @@ def test_create_case_tasks_for_questionnaire(
     mock_get_eligible_cases.return_value = questionnaire_cases
 
     mock_get_world.return_value = TotalmobileWorldModel(
-        world_ids=[
-            WorldId(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")
+        worlds=[
+            World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")
         ]
     )
 
@@ -208,8 +208,8 @@ def test_get_cases_with_valid_world_ids_logs_a_console_error_when_given_an_unkno
                                                                                           caplog):
     filtered_cases = [populated_case_model(field_region="Risca")]
     world_model = TotalmobileWorldModel(
-        world_ids=[
-            WorldId(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")
+        worlds=[
+            World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")
         ]
     )
 
@@ -224,8 +224,8 @@ def test_get_cases_with_valid_world_ids_logs_a_console_error_and_returns_data_wh
     filtered_cases = [populated_case_model(field_region="Risca"),
                       populated_case_model(field_region="Region 1")]
     world_model = TotalmobileWorldModel(
-        world_ids=[
-            WorldId(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")
+        worlds=[
+            World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")
         ]
     )
 
@@ -236,13 +236,11 @@ def test_get_cases_with_valid_world_ids_logs_a_console_error_and_returns_data_wh
     assert ('root', logging.WARNING, 'Unsupported world: Risca') in caplog.record_tuples
 
 
-@mock.patch.object(OptimiseClient, "get_worlds")
-def test_get_cases_with_valid_world_ids_logs_a_console_error_when_field_region_is_an_empty_value(_mock_optimise_client,
-                                                                                                 caplog):
+def test_get_cases_with_valid_world_ids_logs_a_console_error_when_field_region_is_an_empty_value(caplog):
     filtered_cases = [populated_case_model(field_region="")]
     world_model = TotalmobileWorldModel(
-        world_ids=[
-            WorldId(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")
+        worlds=[
+            World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")
         ]
     )
     get_cases_with_valid_world_ids(filtered_cases, world_model)
@@ -250,17 +248,15 @@ def test_get_cases_with_valid_world_ids_logs_a_console_error_when_field_region_i
     assert ('root', logging.WARNING, 'Case rejected. Missing Field Region') in caplog.record_tuples
 
 
-@mock.patch.object(OptimiseClient, "get_worlds")
-def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world_and_a_known_world(
-        _mock_optimise_client, caplog):
+def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world_and_a_known_world(caplog):
     config = config_helper.get_default_config()
 
     filtered_cases = [populated_case_model(field_region=""),
                       populated_case_model(field_region="Region 1")]
 
     world_model = TotalmobileWorldModel(
-        world_ids=[
-            WorldId(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")
+        worlds=[
+            World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")
         ]
     )
 

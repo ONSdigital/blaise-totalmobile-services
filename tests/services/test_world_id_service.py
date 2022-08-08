@@ -40,14 +40,14 @@ def test_get_world_returns_a_world_model(_mock_optimise_client):
 
     result = get_world(config)
 
-    assert result.world_ids[0].region == "Region 1"
-    assert result.world_ids[0].id == "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    assert result.worlds[0].region == "Region 1"
+    assert result.worlds[0].id == "3fa85f64-5717-4562-b3fc-2c963f66afa6"
 
-    assert result.world_ids[1].region == "Region 2"
-    assert result.world_ids[1].id == "3fa85f64-5717-4562-b3fc-2c963f66afa7"
+    assert result.worlds[1].region == "Region 2"
+    assert result.worlds[1].id == "3fa85f64-5717-4562-b3fc-2c963f66afa7"
 
-    assert result.world_ids[2].region == "Region 3"
-    assert result.world_ids[2].id == "3fa85f64-5717-4562-b3fc-2c963f66afa8"
+    assert result.worlds[2].region == "Region 3"
+    assert result.worlds[2].id == "3fa85f64-5717-4562-b3fc-2c963f66afa8"
 
-    assert result.world_ids[3].region == "Region 4"
-    assert result.world_ids[3].id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
+    assert result.worlds[3].region == "Region 4"
+    assert result.worlds[3].id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
