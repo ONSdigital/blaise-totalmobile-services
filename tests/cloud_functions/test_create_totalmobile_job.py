@@ -46,12 +46,12 @@ def test_validate_request_when_missing_fields():
         validate_request({"world_id": ""})
     assert (
             str(err.value)
-            == "Required fields missing from request payload: ['questionnaire', 'case']"
+            == "Required fields missing from request payload: ['questionnaire', 'payload']"
     )
 
 
 def test_validate_case_data(mock_create_job_task):
-    validate_case_data(mock_create_job_task["case"])
+    validate_case_data(mock_create_job_task["payload"])
 
 
 def test_validate_case_data_when_missing_fields():
