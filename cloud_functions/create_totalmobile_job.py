@@ -74,6 +74,8 @@ def create_totalmobile_job(request: flask.Request) -> str:
         logging.error("Function was not triggered by a valid request")
         raise Exception("Function was not triggered by a valid request")
 
+    logging.info(f"Totalmobile job request {request_json}")
+
     totalmobile_job = TotalmobileJobModel.import_job(request_json)
 
     logging.info(
