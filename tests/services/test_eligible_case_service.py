@@ -357,13 +357,13 @@ def test_filter_eligible_cases_logs_cases_only_where_criteria_is_met(caplog):
     # assert
     assert len(result) == 7
 
-    assert ('root', logging.INFO, "Case '90001' was eligible and will included") in caplog.record_tuples
-    assert ('root', logging.INFO, "Case '90008' was eligible and will included") in caplog.record_tuples
-    assert ('root', logging.INFO, "Case '90009' was eligible and will included") in caplog.record_tuples
-    assert ('root', logging.INFO, "Case '90010' was eligible and will included") in caplog.record_tuples
-    assert ('root', logging.INFO, "Case '90011' was eligible and will included") in caplog.record_tuples
-    assert ('root', logging.INFO, "Case '90012' was eligible and will included") in caplog.record_tuples
-    assert ('root', logging.INFO, "Case '90013' was eligible and will included") in caplog.record_tuples
+    assert ('root', logging.INFO, "Case '90001' was eligible and will be included") in caplog.record_tuples
+    assert ('root', logging.INFO, "Case '90008' was eligible and will be included") in caplog.record_tuples
+    assert ('root', logging.INFO, "Case '90009' was eligible and will be included") in caplog.record_tuples
+    assert ('root', logging.INFO, "Case '90010' was eligible and will be included") in caplog.record_tuples
+    assert ('root', logging.INFO, "Case '90011' was eligible and will be included") in caplog.record_tuples
+    assert ('root', logging.INFO, "Case '90012' was eligible and will be included") in caplog.record_tuples
+    assert ('root', logging.INFO, "Case '90013' was eligible and will be included") in caplog.record_tuples
 
 
 def test_filter_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_telephone_number_1_has_a_value(caplog):

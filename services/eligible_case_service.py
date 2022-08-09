@@ -21,7 +21,7 @@ def filter_eligible_cases(cases: List[QuestionnaireCaseModel]) -> List[Questionn
     ]
 
     for filtered_case in filtered_cases:
-        logging.info(f"Case '{filtered_case.case_id}' was eligible and will included")
+        logging.info(f"Case '{filtered_case.case_id}' was eligible and will be included")
 
     return filtered_cases
 
