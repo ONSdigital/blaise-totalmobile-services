@@ -216,7 +216,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
     ]
 
 
-def test_filter_eligible_cases_logs_cases_only_where_criteria_is_met(caplog):
+def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
     # arrange
     cases = [
         # should return
@@ -358,6 +358,12 @@ def test_filter_eligible_cases_logs_cases_only_where_criteria_is_met(caplog):
     assert len(result) == 7
 
     assert ('root', logging.INFO, "Case '90001' was eligible and will be included") in caplog.record_tuples
+    assert ('root', logging.INFO, "Case '90002' was not eligible to be sent to totalmobile as it has a value set for the field 'telephone_number_1'") in caplog.record_tuples
+    assert ('root', logging.INFO, "Case '90003' was not eligible to be sent to totalmobile as it has a value set for the field 'telephone_number_2'") in caplog.record_tuples
+    assert ('root', logging.INFO, "Case '90004' was not eligible to be sent to totalmobile as it has a value set for the field 'appointment_telephone_number'") in caplog.record_tuples
+    assert ('root', logging.INFO, "Case '90005' was not eligible to be sent to totalmobile as it has a value '2' outside of the range '['1']' set for the field 'wave'") in caplog.record_tuples
+    assert ('root', logging.INFO, "Case '90006' was not eligible to be sent to totalmobile as it has a value '6' outside of the range '['1', '2', '3', '4', '5']' set for the field 'priority'") in caplog.record_tuples
+    assert ('root', logging.INFO, "Case '90007' was not eligible to be sent to totalmobile as it has a value '410' outside of the range '['', '0', '310']' set for the field 'outcome_code'") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90008' was eligible and will be included") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90009' was eligible and will be included") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90010' was eligible and will be included") in caplog.record_tuples
@@ -387,7 +393,6 @@ def test_filter_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_tel
     assert len(result) == 0
 
     assert ('root', logging.INFO, "Case '90001' was not eligible to be sent to totalmobile as it has a value set for the field 'telephone_number_1'") in caplog.record_tuples
-
 
 
 def test_filter_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_telephone_number_2_has_a_value(caplog):
