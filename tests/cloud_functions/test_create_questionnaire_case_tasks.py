@@ -4,7 +4,7 @@ from unittest import mock
 import flask
 import pytest
 import logging
-from models.questionnaire_case_model import QuestionnaireCaseModel, UacChunks
+from models.questionnaire_case_model import UacChunks
 from models.totalmobile_case_model import TotalMobileCaseModel
 from models.totalmobile_world_model import TotalmobileWorldModel, World
 
@@ -24,24 +24,24 @@ from tests.helpers.questionnaire_case_model_helper import populated_case_model
 def test_create_task_name_returns_correct_name_when_called():
     questionnaire_case_model = populated_case_model()
     questionnaire_case_model.case_id = "90001"
-    questionnaire_name = "OPN2101A"
+    questionnaire_name = "LMS2101_AA1"
     totalmobile_case_model = TotalMobileCaseModel.import_case(questionnaire_name, questionnaire_case_model)
-    model = TotalmobileJobModel("OPN2101A", "world", "90001", totalmobile_case_model.to_payload())
+    model = TotalmobileJobModel("LMS2101_AA1", "world", "90001", totalmobile_case_model.to_payload())
 
-    assert create_task_name(model).startswith("OPN2101A-90001-")
+    assert create_task_name(model).startswith("LMS2101_AA1-90001-")
 
 
 def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_model():
     questionnaire_case_model = populated_case_model()
     questionnaire_case_model.case_id = "90001"
-    model = TotalmobileJobModel("OPN2101A", "world", "90001", questionnaire_case_model.to_dict())
+    model = TotalmobileJobModel("LMS2101_AA1", "world", "90001", questionnaire_case_model.to_dict())
 
     assert create_task_name(model) != create_task_name(model)
 
 
 def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     # arrange
-    questionnaire_name = "OPN2101A"
+    questionnaire_name = "LMS2101_AA1"
 
     case_data = [
         populated_case_model(case_id="10010", outcome_code="110", field_region="region1"),
@@ -63,17 +63,17 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     # assert
     assert len(result) == 3
 
-    assert result[0].questionnaire == "OPN2101A"
+    assert result[0].questionnaire == "LMS2101_AA1"
     assert result[0].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     assert result[0].case_id == "10010"
     assert result[0].payload == TotalMobileCaseModel.import_case(questionnaire_name, case_data[0]).to_payload()
 
-    assert result[1].questionnaire == "OPN2101A"
+    assert result[1].questionnaire == "LMS2101_AA1"
     assert result[1].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa7"
     assert result[1].case_id == "10020"
     assert result[1].payload == TotalMobileCaseModel.import_case(questionnaire_name, case_data[1]).to_payload()
 
-    assert result[2].questionnaire == "OPN2101A"
+    assert result[2].questionnaire == "LMS2101_AA1"
     assert result[2].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
     assert result[2].case_id == "10030"
     assert result[2].payload == TotalMobileCaseModel.import_case(questionnaire_name, case_data[2]).to_payload()
@@ -91,7 +91,7 @@ def test_validate_request_when_missing_fields():
     )
 
 
-@mock.patch("services.world_service.get_worlds")
+@mock.patch("services.totalmobile_service.get_worlds")
 @mock.patch("services.questionnaire_service.get_eligible_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.get_cases_with_valid_world_ids")

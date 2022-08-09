@@ -1,6 +1,6 @@
 import blaise_restapi
 
-from services import blaise_restapi_service
+from services import blaise_service
 from unittest import mock
 from tests.helpers import config_helper
 
@@ -10,10 +10,10 @@ def test_get_cases_calls_the_rest_api_client_with_the_correct_parameters(_mock_r
     config = config_helper.get_default_config()
     blaise_server_park = "gusty"
     questionnaire_name = "DST2106Z"
-    fields = blaise_restapi_service.required_fields_from_blaise
+    fields = blaise_service.required_fields_from_blaise
 
     # act
-    blaise_restapi_service.get_cases(questionnaire_name, config)
+    blaise_service.get_cases(questionnaire_name, config)
 
     # assert
     _mock_rest_api_client.assert_called_with(blaise_server_park, questionnaire_name, fields)
@@ -37,7 +37,7 @@ def test_get_cases_returns_a_list_of_case_models(
     questionnaire_name = "OPN2101A"
 
     # act
-    result = blaise_restapi_service.get_cases(questionnaire_name, config)
+    result = blaise_service.get_cases(questionnaire_name, config)
 
     # assert
     assert len(result) == 3

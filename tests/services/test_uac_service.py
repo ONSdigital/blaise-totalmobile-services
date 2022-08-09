@@ -2,7 +2,7 @@ from client import bus
 from unittest import mock
 
 from models.uac_model import UacModel, UacChunks
-from services import uac_restapi_service
+from services import uac_service
 from tests.helpers import config_helper
 
 
@@ -13,7 +13,7 @@ def test_get_uacs_calls_the_rest_api_client_with_the_correct_parameters(_mock_re
     questionnaire_name = "DST2106Z"
 
     # act
-    uac_restapi_service.get_uacs(questionnaire_name, config)
+    uac_service.get_uacs(questionnaire_name, config)
 
     # assert
     _mock_rest_api_client.assert_called_with(questionnaire_name)
@@ -59,7 +59,7 @@ def test_get_uacs_returns_a_list_of_uac_models(_mock_rest_api_client):
     questionnaire_name = "OPN2101A"
 
     # act
-    result = uac_restapi_service.get_uacs(questionnaire_name, config)
+    result = uac_service.get_uacs(questionnaire_name, config)
 
     # assert
     assert result == [

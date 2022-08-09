@@ -59,9 +59,9 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
     assert result == eligible_cases
 
 
-@mock.patch("services.uac_restapi_service.get_uacs")
-@mock.patch("services.blaise_restapi_service.get_cases")
-def test_get_cases_returns_a_list_of_fully_populated_cases(mock_blaise_restapi_service, mock_uac_restapi_service):
+@mock.patch("services.uac_service.get_uacs")
+@mock.patch("services.blaise_service.get_cases")
+def test_get_cases_returns_a_list_of_fully_populated_cases(mock_blaise_service, mock_uac_service):
     # arrange
     config = config_helper.get_default_config()
 
@@ -86,8 +86,8 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(mock_blaise_restapi_s
             uac_chunks=UacChunks(uac1="4324", uac2="8744", uac3="7646")),
     ]
 
-    mock_blaise_restapi_service.return_value = questionnaire_cases
-    mock_uac_restapi_service.return_value = questionnaire_uacs
+    mock_blaise_service.return_value = questionnaire_cases
+    mock_uac_service.return_value = questionnaire_uacs
 
     questionnaire_name = "LMS2101_AA1"
 

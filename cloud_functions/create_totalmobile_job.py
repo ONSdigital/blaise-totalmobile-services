@@ -5,6 +5,7 @@ from appconfig import Config
 from client import OptimiseClient
 from cloud_functions.logging import setup_logger
 from models.totalmobile_job_model import TotalmobileJobModel
+from services import totalmobile_service
 
 setup_logger()
 
@@ -58,15 +59,7 @@ setup_logger()
 
 def create_totalmobile_job(request: flask.Request) -> str:
     config = Config.from_env()
-
     config.validate()
-
-    optimise_client = OptimiseClient(
-        config.totalmobile_url,
-        config.totalmobile_instance,
-        config.totalmobile_client_id,
-        config.totalmobile_client_secret,
-    )
 
     request_json = request.get_json()
 
@@ -80,10 +73,7 @@ def create_totalmobile_job(request: flask.Request) -> str:
 
     logging.info(
         f"Creating Totalmobile job for questionnaire {totalmobile_job.questionnaire} with case ID {totalmobile_job.case_id}")
-    response = optimise_client.create_job(
-        totalmobile_job.world_id,
-        totalmobile_job.payload
-    )
+    response = totalmobile_service.create_job(config, totalmobile_job)
     logging.info(f"Response: {response}")
     return "Done"
 
