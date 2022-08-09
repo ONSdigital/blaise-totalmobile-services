@@ -1,5 +1,3 @@
-from flask import Response
-
 from appconfig import Config
 from client.optimise import OptimiseClient
 from models.totalmobile_job_model import TotalmobileJobModel
@@ -13,7 +11,7 @@ def get_worlds(config: Config) -> TotalmobileJobModel:
     return TotalmobileWorldModel.import_worlds(worlds)
 
 
-def create_job(config: Config, job: TotalmobileJobModel) -> Response:
+def create_job(config: Config, job: TotalmobileJobModel):
     optimise_client = get_client(config)
     return optimise_client.create_job(
         job.world_id,

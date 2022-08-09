@@ -20,12 +20,13 @@ class TotalmobileWorldModel:
                 return world.id
         return None
 
-    def get_regions(self) -> List[str]:        return [world.region for world in self.worlds]
+    def get_regions(self) -> List[str]:
+        return [world.region for world in self.worlds]
 
     @classmethod
     def import_worlds(cls: Type[T], world_dictionary: dict[str, str]) -> T:
-        return TotalmobileWorldModel(
-            [World(region=world_dictionary_item["identity"]["reference"], id=world_dictionary_item["id"]) for world_dictionary_item in world_dictionary])
-
-
-
+        return TotalmobileWorldModel([
+            World(region=world_dictionary_item["identity"]["reference"], id=world_dictionary_item["id"])
+            for world_dictionary_item
+            in world_dictionary
+        ])
