@@ -1,7 +1,7 @@
 from dataclasses import dataclass, fields
 from typing import Dict, Type, TypeVar
 from models.uac_model import UacChunks, UacModel
-import datetime
+from datetime import date
 
 T = TypeVar('T')
 
@@ -27,7 +27,7 @@ class QuestionnaireCaseModel:
     priority: str
     field_region: str
     field_team: str
-    wave_com_dte: datetime.datetime
+    wave_com_dte: date
     uac_chunks: UacChunks
 
     def populate_uac_data(self, uac_model: UacModel):
