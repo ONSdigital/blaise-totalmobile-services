@@ -1,7 +1,6 @@
 import logging
 from app.services.total_mobile_service import (
     do_something_service,
-    update_case_telephone_number,
 )
 from app.utilities.parse_json import (
     get_case_details,
@@ -9,6 +8,8 @@ from app.utilities.parse_json import (
     get_telephone_number,
     validate_data,
 )
+from appconfig.config import Config
+from services import questionnaire_service
 
 
 def submit_form_result_request_handler(request):
@@ -22,7 +23,10 @@ def submit_form_result_request_handler(request):
 
     telephone_number = get_telephone_number(data)
     
-    update_case_telephone_number(questionnaire_name, case_id, telephone_number)
+    print(f"Updating telephone number for {questionnaire_name}, {case_id}, please wait...")
+    config = Config.from_env()
+    questionnaire_service.update_case_field(questionnaire_name, case_id, "qDataBag.TelNo", telephone_number, config)
+    #if above failed, log an error "failed to update case xx for questionnaire yy"
 
 
 def update_visit_status_request_handler(request):
