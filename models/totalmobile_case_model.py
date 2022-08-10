@@ -1,6 +1,6 @@
 from dataclasses import dataclass, asdict
 from typing import Type, TypeVar, List
-from datetime import date
+import datetime
 
 from models.questionnaire_case_model import QuestionnaireCaseModel
 
@@ -19,7 +19,7 @@ class Skill:
 
 @dataclass
 class DueDate:
-    end: date
+    end: datetime.datetime
 
 
 @dataclass
