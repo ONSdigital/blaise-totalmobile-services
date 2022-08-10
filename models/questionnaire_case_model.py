@@ -64,5 +64,5 @@ class QuestionnaireCaseModel:
             field_region=case_data_dictionary.get("qDataBag.FieldRegion"),
             field_team=case_data_dictionary.get("qDataBag.FieldTeam"),
             wave_com_dte=case_data_dictionary.get("qDataBag.WaveComDTE"),
-            uac_chunks=UacChunks(uac1='', uac2='', uac3='')
+            uac_chunks=UacChunks(uac1="", uac2="", uac3="")
         )
