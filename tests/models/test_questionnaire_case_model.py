@@ -149,6 +149,8 @@ def test_import_case_returns_a_valid_object_when_an_optional_blaise_field_is_mis
 
 
 def test_populate_uac_data_populates_uac_fields_if_supplied():
+    case_model = questionnaire_case_model_helper.populated_case_model(case_id="10020")
+
     uac_model = UacModel(
         case_id="10020",
         uac_chunks=UacChunks(
@@ -158,12 +160,19 @@ def test_populate_uac_data_populates_uac_fields_if_supplied():
         )
     )
 
-    case_model = questionnaire_case_model_helper.populated_case_model()
     case_model.populate_uac_data(uac_model)
 
+    assert case_model.uac_chunks is not None
     assert case_model.uac_chunks.uac1 == "8176"
     assert case_model.uac_chunks.uac2 == "4726"
     assert case_model.uac_chunks.uac3 == "3992"
+
+
+def test_populate_uac_data_does_not_populate_uac_fields_if_Not_supplied():
+    case_model = questionnaire_case_model_helper.populated_case_model(case_id="10010")
+    case_model.populate_uac_data(None)
+
+    assert case_model.uac_chunks is None
 
 
 @pytest.mark.parametrize("test_input,expected_outcome", [("", False), (None, False)])
