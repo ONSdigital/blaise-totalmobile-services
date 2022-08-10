@@ -20,7 +20,7 @@ class TotalmobileWorldModel:
                 return world.id
         return None
 
-    def get_regions(self) -> List[str]:
+    def get_available_regions(self) -> List[str]:
         return [world.region for world in self.worlds]
 
     @classmethod
