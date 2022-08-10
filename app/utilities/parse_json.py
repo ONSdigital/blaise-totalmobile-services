@@ -1,12 +1,13 @@
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 import phonenumbers
 
 
-def get_case_details(input: Dict[str, Any]) -> list[str]:
+def get_case_details(input: Dict[str, Any]) -> Tuple[str]:
     print(f"Getting instquestionnairerument name and case id, please wait...")
     try:
-        return input["Result"]["Association"]["Reference"].split("-")
+        result = input["Result"]["Association"]["Reference"].split(".")
+        return result[0],result[1]
     except Exception as err:
         print(f"Failed to get questionnaire name and case id: {err}")
         raise err
