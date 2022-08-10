@@ -30,7 +30,7 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(mock_
 
     # assert
     mock_get_cases.assert_called_with(questionnaire_name, config)
-    mock_get_eligible_cases.assert_called_with(questionnaire_cases)
+    mock_get_eligible_cases.assert_called_with(questionnaire_cases, questionnaire_name)
 
 
 @mock.patch("services.questionnaire_service.get_cases")
