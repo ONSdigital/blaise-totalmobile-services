@@ -1,18 +1,18 @@
 import asyncio
 import logging
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple
 from uuid import uuid4
 
-import blaise_restapi
 import flask
 
 from appconfig import Config
-from client.optimise import OptimiseClient
-from client.bus import BusClient
 from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
 from models.totalmobile_job_model import TotalmobileJobModel
-from models.questionnaire_case_model import QuestionnaireCaseModel, UacChunks
+from models.questionnaire_case_model import QuestionnaireCaseModel
+from models.totalmobile_case_model import TotalMobileCaseModel
+from models.totalmobile_world_model import TotalmobileWorldModel
+from services import questionnaire_service, totalmobile_service
 
 setup_logger()
 
@@ -30,94 +30,27 @@ def validate_request(request_json: Dict) -> None:
         )
 
 
-def get_world_ids(config: Config, filtered_cases: List[QuestionnaireCaseModel]) -> List[str]:
-    optimise_client = OptimiseClient(
-        config.totalmobile_url,
-        config.totalmobile_instance,
-        config.totalmobile_client_id,
-        config.totalmobile_client_secret,
-    )
-    logging.info("Looking up world ids")
-    worlds = optimise_client.get_worlds()
-
-    world_map_with_world_ids = {world["identity"]["reference"]: world["id"] for world in worlds}
-
+def get_cases_with_valid_world_ids(filtered_cases: List[QuestionnaireCaseModel], world_model: TotalmobileWorldModel) -> List[str]:
     cases_with_valid_world_ids = []
-    world_ids = []
     for case in filtered_cases:
         if case.field_region == "":
             logging.warning("Case rejected. Missing Field Region")
-        elif case.field_region not in world_map_with_world_ids:
+        elif world_model.get_world_id(case.field_region) is None:
             logging.warning(f"Unsupported world: {case.field_region}")
         else:
             cases_with_valid_world_ids.append(case)
-            world_ids.append(world_map_with_world_ids[case.field_region])
-    return world_ids, cases_with_valid_world_ids
-
-
-def get_questionnaire_case_model_list(questionnaire_name: str, config: Config) -> List[QuestionnaireCaseModel]:
-    restapi_client = blaise_restapi.Client(config.blaise_api_url)
-
-    questionnaire_data = restapi_client.get_questionnaire_data(
-        config.blaise_server_park,
-        questionnaire_name,
-        [
-            "qiD.Serial_Number",
-            "dataModelName",
-            "qDataBag.TLA",
-            "qDataBag.Wave",
-            "qDataBag.Prem1",
-            "qDataBag.Prem2",
-            "qDataBag.Prem3",
-            "qDataBag.District",
-            "qDataBag.PostTown",
-            "qDataBag.PostCode",
-            "qDataBag.TelNo",
-            "qDataBag.TelNo2",
-            "telNoAppt",
-            "hOut",
-            "qDataBag.UPRN_Latitude",
-            "qDataBag.UPRN_Longitude",
-            "qDataBag.Priority",
-            "qDataBag.FieldRegion",
-            "qDataBag.FieldTeam",
-            "qDataBag.WaveComDTE",
-        ],
-    )
-
-    case_data_dictionary_list = questionnaire_data["reportingData"]
-    return [QuestionnaireCaseModel.import_case_data_dictionary(case_data_dictionary) for case_data_dictionary in case_data_dictionary_list]
-    
-
-def filter_cases(cases: List[QuestionnaireCaseModel]) -> List[QuestionnaireCaseModel]:
-    return [
-        case
-        for case in cases
-        if (
-            case.telephone_number_1 == ""
-            and case.telephone_number_2 == ""
-            and case.appointment_telephone_number == ""
-            and case.wave == "1"
-            and case.priority in ["1", "2", "3", "4", "5"]
-            and case.outcome_code in ["", "0", "310"])
-    ]
-
-
-def get_wave_from_questionnaire_name(questionnaire_name: str):
-    if questionnaire_name[0:3] != "LMS":
-        raise Exception(f"Invalid format for questionnaire name: {questionnaire_name}")
-    return questionnaire_name[-1]
+    return cases_with_valid_world_ids
 
 
 def map_totalmobile_job_models(
-        cases: List[QuestionnaireCaseModel], world_ids: List[str], questionnaire_name: str
+        cases: List[QuestionnaireCaseModel], world_model: TotalmobileWorldModel, questionnaire_name: str
 ) -> List[TotalmobileJobModel]:
-    return [TotalmobileJobModel(questionnaire_name, world_id, case.to_dict()) for case, world_id in zip(cases, world_ids)]
+    return [TotalmobileJobModel(questionnaire_name, world_model.get_world_id(case.field_region), case.case_id, TotalMobileCaseModel.import_case(questionnaire_name, case).to_payload()) for case in cases]
 
 
 def create_task_name(job_model: TotalmobileJobModel) -> str:
     return (
-        f"{job_model.questionnaire}-{job_model.case['qiD.Serial_Number']}-{str(uuid4())}"
+        f"{job_model.questionnaire}-{job_model.case_id}-{str(uuid4())}"
     )
 
 
@@ -131,27 +64,6 @@ def run_async_tasks(tasks: List[Tuple[str, str]], queue_id: str, cloud_function:
     asyncio.run(run(task_requests))
 
 
-def append_uacs_to_retained_case(filtered_cases: List[QuestionnaireCaseModel], case_uac_data: Dict[str, str]) -> List[QuestionnaireCaseModel]:
-    cases_with_uacs_appended = []
-    for filtered_case in filtered_cases:
-        if filtered_case.serial_number not in case_uac_data:
-            logging.warning(f"Serial number {filtered_case.serial_number} not found in BUS")
-            cases_with_uacs_appended.append(filtered_case)
-        else:
-            filtered_case.uac_chunks = UacChunks(
-                uac1 = case_uac_data[filtered_case.serial_number]["uac_chunks"]["uac1"],
-                uac2 = case_uac_data[filtered_case.serial_number]["uac_chunks"]["uac2"],
-                uac3 = case_uac_data[filtered_case.serial_number]["uac_chunks"]["uac3"],
-            )
-            cases_with_uacs_appended.append(filtered_case)
-    return cases_with_uacs_appended
-
-
-def get_questionnaire_uacs(config: Config, questionnaire_name: str):
-    bus_client = BusClient(config.bus_api_url, config.bus_client_id)
-    return bus_client.get_uacs_by_case_id(questionnaire_name)
-
-
 def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> str:
     logging.info("Started creating questionnaire case tasks")
 
@@ -162,7 +74,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     validate_request(request_json)
 
     questionnaire_name = request_json["questionnaire"]
-    wave = get_wave_from_questionnaire_name(questionnaire_name)
+    wave = questionnaire_service.get_wave_from_questionnaire_name(questionnaire_name)
     if wave != "1":
         logging.info(
             f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported")
@@ -171,28 +83,22 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
 
     logging.info(f"Creating case tasks for questionnaire {questionnaire_name}")
 
-    cases = get_questionnaire_case_model_list(questionnaire_name, config)
-    logging.info(f"Retrieved {len(cases)} cases for questionnaire {questionnaire_name}")
+    eligible_cases = questionnaire_service.get_eligible_cases(questionnaire_name, config)
+    logging.info(f"Retrieved {len(eligible_cases)} cases for questionnaire {questionnaire_name}")
 
-    if len(cases) == 0:
-        logging.info(f"Exiting as no cases to send for questionnaire {questionnaire_name}")
-        return (f"Exiting as no cases to send for questionnaire {questionnaire_name}")
+    if len(eligible_cases) == 0:
+        logging.info(f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}")
+        return f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}"
+    logging.info(f"{len(eligible_cases)} eligible cases found")
 
-    retained_cases = filter_cases(cases)
-    if len(retained_cases) == 0:
-        logging.info(f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
-        return (f"Exiting as no cases to send after filtering for questionnaire {questionnaire_name}")
-    logging.info(f"Retained {len(retained_cases)} cases after filtering")
+    world_model = totalmobile_service.get_worlds(config)
+    logging.info(f"Retrieved world id model")
 
-    questionnaire_uac_data = get_questionnaire_uacs(config, questionnaire_name)
-    cases_with_uacs_appended = append_uacs_to_retained_case(retained_cases, questionnaire_uac_data)
-    logging.info("Finished appending UACs to case data")
-
-    world_ids, cases_with_valid_world_ids = get_world_ids(config, cases_with_uacs_appended)
-    logging.info(f"Retrieved world ids")
+    cases_with_valid_world_ids = get_cases_with_valid_world_ids(eligible_cases, world_model)
+    logging.info(f"Finished searching for cases with valid world ids")
 
     totalmobile_job_models = map_totalmobile_job_models(
-        cases_with_valid_world_ids, world_ids, questionnaire_name
+        cases_with_valid_world_ids, world_model, questionnaire_name
     )
     logging.info(f"Finished mapping Totalmobile jobs for questionnaire {questionnaire_name}")
 

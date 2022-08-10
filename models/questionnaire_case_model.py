@@ -1,67 +1,72 @@
-from dataclasses import dataclass
-from dataclass_wizard import JSONWizard, json_field
-from typing import Dict, Optional, Type, TypeVar
-import json
+from dataclasses import dataclass, fields
+from typing import Dict, Type, TypeVar
+from models.uac_model import UacChunks, UacModel
 
 T = TypeVar('T')
 
-@dataclass
-class UacChunks:
-    uac1: str = json_field('uac1', all=True, default='')
-    uac2: str = json_field('uac2', all=True, default='')
-    uac3: str = json_field('uac3', all=True, default='')
 
 @dataclass
-class QuestionnaireCaseModel(JSONWizard):
-    serial_number: str = json_field('qiD.Serial_Number', all=True, default='')
-    data_model_name: str = json_field('dataModelName', all=True, default='')
-    survey_type: str = json_field('qDataBag.TLA', all=True, default='')
-    wave: str = json_field('qDataBag.Wave', all=True, default='') 
-    address_line_1: str = json_field('qDataBag.Prem1', all=True, default='')  
-    address_line_2: str = json_field('qDataBag.Prem2', all=True, default='') 
-    address_line_3: str = json_field('qDataBag.Prem3', all=True, default='')  
-    county: str = json_field('qDataBag.District', all=True, default='')  
-    town: str = json_field('qDataBag.PostTown', all=True, default='')  
-    postcode: str = json_field('qDataBag.PostCode', all=True, default='') 
-    telephone_number_1: str = json_field('qDataBag.TelNo', all=True, default='')  
-    telephone_number_2: str = json_field('qDataBag.TelNo2', all=True, default='') 
-    appointment_telephone_number: str = json_field('telNoAppt', all=True, default='') 
-    outcome_code: str = json_field('hOut', all=True, default='') 
-    latitude: str = json_field('qDataBag.UPRN_Latitude', all=True, default='') 
-    longitude: str = json_field('qDataBag.UPRN_Longitude', all=True, default='') 
-    priority: str = json_field('qDataBag.Priority', all=True, default='') 
-    field_region: str = json_field('qDataBag.FieldRegion', all=True, default='') 
-    field_team: str = json_field('qDataBag.FieldTeam', all=True, default='') 
-    wave_com_dte: str = json_field('qDataBag.WaveComDTE', all=True, default='') 
-    uac_chunks : Optional[UacChunks] = json_field('uac_chunks', all=True, default=UacChunks(uac1='', uac2='', uac3='')) 
+class QuestionnaireCaseModel:
+    case_id: str
+    data_model_name: str
+    survey_type: str
+    wave: str
+    address_line_1: str
+    address_line_2: str
+    address_line_3: str
+    county: str
+    town: str
+    postcode: str
+    telephone_number_1: str
+    telephone_number_2: str
+    appointment_telephone_number: str
+    outcome_code: str
+    latitude: str
+    longitude: str
+    priority: str
+    field_region: str
+    field_team: str
+    wave_com_dte: str
+    uac_chunks: UacChunks
 
-    def is_valid(self) -> bool:
-        if self.serial_number == "": return False
-        if self.data_model_name == "": return False
-        if self.survey_type == "": return False
-        if self.wave == "": return False
-        if self.address_line_1 == "": return False
-        if self.address_line_2 == "": return False
-        if self.address_line_3 == "": return False                                        
-        if self.county == "": return False
-        if self.town == "": return False
-        if self.postcode == "": return False
-        if self.telephone_number_1 == "": return False
-        if self.telephone_number_2 == "": return False                                 
-        if self.appointment_telephone_number == "": return False       
-        if self.outcome_code == "": return False       
-        if self.latitude == "": return False             
-        if self.longitude == "": return False        
-        if self.priority == "": return False           
-        if self.field_region == "": return False    
-        if self.field_team == "": return False    
-        if self.wave_com_dte == "": return False                                                                  
+    def populate_uac_data(self, uac_model: UacModel):
+        if uac_model is None:
+            self.uac_chunks = None
+            return
 
+        self.uac_chunks = uac_model.uac_chunks
+
+    def is_fully_populated(self) -> bool:
+        for field in fields(QuestionnaireCaseModel):
+            if getattr(self, field.name) is None or getattr(self, field.name) == "":
+                return False
         return True
 
     def to_dict(self) -> Dict[str, str]:
-        return json.loads(self.to_json())
+        return []
 
     @classmethod
-    def import_case_data_dictionary(cls: Type[T], case_data_dictionary:Dict[str, str]) -> T:
-        return QuestionnaireCaseModel.from_json(json.dumps(case_data_dictionary))
+    def import_case(cls: Type[T], case_data_dictionary: Dict[str, str]) -> T:
+        return QuestionnaireCaseModel(
+            case_id=case_data_dictionary.get("qiD.Serial_Number"),
+            data_model_name=case_data_dictionary.get("dataModelName"),
+            survey_type=case_data_dictionary.get("qDataBag.TLA"),
+            wave=case_data_dictionary.get("qDataBag.Wave"),
+            address_line_1=case_data_dictionary.get("qDataBag.Prem1"),
+            address_line_2=case_data_dictionary.get("qDataBag.Prem2"),
+            address_line_3=case_data_dictionary.get("qDataBag.Prem3"),
+            county=case_data_dictionary.get("qDataBag.District"),
+            town=case_data_dictionary.get("qDataBag.PostTown"),
+            postcode=case_data_dictionary.get("qDataBag.PostCode"),
+            telephone_number_1=case_data_dictionary.get("qDataBag.TelNo"),
+            telephone_number_2=case_data_dictionary.get("qDataBag.TelNo2"),
+            appointment_telephone_number=case_data_dictionary.get("telNoAppt"),
+            outcome_code=case_data_dictionary.get("hOut"),
+            latitude=case_data_dictionary.get("qDataBag.UPRN_Latitude"),
+            longitude=case_data_dictionary.get("qDataBag.UPRN_Longitude"),
+            priority=case_data_dictionary.get("qDataBag.Priority"),
+            field_region=case_data_dictionary.get("qDataBag.FieldRegion"),
+            field_team=case_data_dictionary.get("qDataBag.FieldTeam"),
+            wave_com_dte=case_data_dictionary.get("qDataBag.WaveComDTE"),
+            uac_chunks=UacChunks(uac1="", uac2="", uac3="")
+        )

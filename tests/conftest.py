@@ -39,33 +39,8 @@ def mock_create_job_task() -> Dict:
     return {
         "questionnaire": "DST2101_AA1",
         "world_id": "test-world-id",
-        "case": {
-            "qiD.Serial_Number": "100100",
-            "dataModelName": "DST2101_AA1",
-            "qDataBag.TLA": "DST",
-            "qDataBag.Wave": "1",
-            "qDataBag.Prem1": "Ye Olde Fighting Cocks",
-            "qDataBag.Prem2": "16 Abbey Mill Lane",
-            "qDataBag.Prem3": "",
-            "qDataBag.District": "",
-            "qDataBag.PostTown": "St Albans",
-            "qDataBag.PostCode": "AL3 4HE",
-            "qDataBag.TelNo": "",
-            "qDataBag.TelNo2": "",
-            "telNoAppt": "",
-            "hOut": "",
-            "qDataBag.UPRN_Latitude": "51.748930",
-            "qDataBag.UPRN_Longitude": "-0.346820",
-            "qDataBag.Priority": "1",
-            "qDataBag.FieldRegion": "",
-            "qDataBag.FieldTeam": "The A Team",
-            "qDataBag.WaveComDTE": "2020-11-17",
-            "uac_chunks": {
-                "uac1": "8176",
-                "uac2": "4726",
-                "uac3": "3993"
-            },
-        },
+        "case_id": "100100",
+        "payload": {}
     }
 
 
