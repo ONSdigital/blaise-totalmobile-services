@@ -87,7 +87,7 @@ class TotalMobileCaseModel:
             duration=15,
             workType=questionnaire_case.survey_type,
             skills=[Skill(identity=Reference(reference=questionnaire_case.survey_type))],
-            dueDate=questionnaire_case.wave_com_dte,
+            dueDate=DueDate(end=questionnaire_case.wave_com_dte),
             location=AddressDetails(addressDetail=Address(
                 addressLine1=questionnaire_case.address_line_1,
                 addressLine2=questionnaire_case.address_line_2,
