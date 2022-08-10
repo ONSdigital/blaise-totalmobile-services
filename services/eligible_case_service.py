@@ -1,9 +1,6 @@
 import logging
 from typing import List
 from models.questionnaire_case_model import QuestionnaireCaseModel
-from cloud_functions.logging import setup_logger
-
-setup_logger()
 
 
 def filter_eligible_cases(cases: List[QuestionnaireCaseModel]) -> List[QuestionnaireCaseModel]:
