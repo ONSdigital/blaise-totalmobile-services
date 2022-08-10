@@ -75,6 +75,19 @@ def test_import_case_returns_a_populated_model():
     assert result.additionalProperties[7].value == "4546"
 
 
+def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uacs_are_set():
+    questionnaire_name = "LMS2101_AA1"
+
+    questionnaire_case = questionnaire_case_model_helper.populated_case_model(
+        uac_chunks=None
+    )
+
+    result = TotalMobileCaseModel.import_case(questionnaire_name, questionnaire_case)
+
+    for additional_property in result.additionalProperties:
+        assert additional_property.name.startswith('uac') is False
+
+
 def test_to_payload_returns_a_correctly_formatted_payload():
 
     totalmobile_case = TotalMobileCaseModel(

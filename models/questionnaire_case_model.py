@@ -30,6 +30,10 @@ class QuestionnaireCaseModel:
     uac_chunks: UacChunks
 
     def populate_uac_data(self, uac_model: UacModel):
+        if uac_model is None:
+            self.uac_chunks = None
+            return
+
         self.uac_chunks = uac_model.uac_chunks
 
     def is_fully_populated(self) -> bool:

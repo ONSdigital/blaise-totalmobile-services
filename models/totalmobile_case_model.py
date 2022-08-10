@@ -80,7 +80,7 @@ class TotalMobileCaseModel:
 
     @classmethod
     def import_case(cls: Type[T], questionnaire_name: str, questionnaire_case: QuestionnaireCaseModel) -> T:
-        return TotalMobileCaseModel(
+        total_mobile_case = TotalMobileCaseModel(
             identity=Reference(reference=cls.create_job_reference(questionnaire_name, questionnaire_case.case_id)),
             description=cls.create_description(questionnaire_name, questionnaire_case.case_id),
             origin="ONS",
@@ -122,17 +122,23 @@ class TotalMobileCaseModel:
                     name="fieldTeam",
                     value=questionnaire_case.field_team
                 ),
-                AdditionalProperty(
-                    name="uac1",
-                    value=questionnaire_case.uac_chunks.uac1
-                ),
-                AdditionalProperty(
-                    name="uac2",
-                    value=questionnaire_case.uac_chunks.uac2
-                ),
-                AdditionalProperty(
-                    name="uac3",
-                    value=questionnaire_case.uac_chunks.uac3
-                )
-            ]
-        )
+            ])
+
+        if questionnaire_case.uac_chunks is not None:
+            total_mobile_case.additionalProperties.extend(
+                [
+                    AdditionalProperty(
+                        name="uac1",
+                        value=questionnaire_case.uac_chunks.uac1
+                    ),
+                    AdditionalProperty(
+                        name="uac2",
+                        value=questionnaire_case.uac_chunks.uac2
+                    ),
+                    AdditionalProperty(
+                        name="uac3",
+                        value=questionnaire_case.uac_chunks.uac3
+                    )]
+            )
+
+        return total_mobile_case
