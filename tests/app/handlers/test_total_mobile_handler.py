@@ -16,5 +16,5 @@ def test_submit_form_result_request_handler_passes_the_correct_parameters_to_upd
 
     # assert
     mock_update_case_telephone_number.assert_called_with(
-        "DST2111Z", "1001011", "07000000000"
+        "DST2111Z-AA1", "1001011", "07000000000"
     )

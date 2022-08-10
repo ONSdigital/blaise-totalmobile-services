@@ -151,7 +151,7 @@ def submit_form_result_request_sample():
         },
         "Association": {
           "WorkType": "SS",
-          "Reference": "DST2111Z-1001011",
+          "Reference": "DST2111Z-AA1.1001011",
           "PropertyReference": "1001011",
           "ClientReference": ""
         },

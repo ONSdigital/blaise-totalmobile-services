@@ -1,3 +1,4 @@
+import logging
 from app.services.total_mobile_service import (
     do_something_service,
     update_case_telephone_number,
@@ -12,13 +13,15 @@ from app.utilities.parse_json import (
 
 def submit_form_result_request_handler(request):
     print("This placeholder is per BLAIS5-3086 to update Telephone Number in Blaise")
-
     data = request.get_json()
     validate_data(data)
-
+    
     questionnaire_name, case_id = get_case_details(data)
-    telephone_number = get_telephone_number(data)
+    logging.info(f'Successfully found questionnaire {questionnaire_name} in Blaise')
+    logging.info(f'Successfully found case {case_id} for questionnaire {questionnaire_name} in Blaise')
 
+    telephone_number = get_telephone_number(data)
+    
     update_case_telephone_number(questionnaire_name, case_id, telephone_number)
 
 
