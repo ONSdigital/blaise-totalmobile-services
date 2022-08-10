@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 
 from app.auth import auth
 from app.handlers.total_mobile_handler import (
@@ -20,7 +20,8 @@ def update_visit_status_request():
 @incoming.route("/submitformresultrequest", methods=["POST"])
 @auth.login_required
 def submit_form_result_request():
-    submit_form_result_request_handler(request, questionnaire_service)
+    submit_form_result_request_handler(request, current_app.questionnaire_service)
+    return "ok"
 
 
 @incoming.route("/completevisitrequest", methods=["POST"])

@@ -4,3 +4,8 @@ Feature: Totalmobile update
         When Totalmobile sends an update for reference "LMS2206-AA1.12345"
         Then "Successfully found questionnaire LMS2206-AA1 in Blaise" is logged as an information message
         And "Successfully found case 12345 for questionnaire LMS2206-AA1 in Blaise" is logged as an information message
+
+    Scenario: Reference is not matched with a questionnaire in Blaise
+        Given there is no questionnaire in Blaise for reference "LMS2206-AA1"
+        When Totalmobile sends an update for reference "LMS2206-AA1.12345"
+        Then "Could not find questionnaire LMS2206_AA1 in Blaise" is logged as an error message
