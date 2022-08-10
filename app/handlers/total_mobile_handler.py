@@ -9,10 +9,9 @@ from app.utilities.parse_json import (
     validate_data,
 )
 from appconfig.config import Config
-from services import questionnaire_service
 
 
-def submit_form_result_request_handler(request):
+def submit_form_result_request_handler(request, questionnaire_service):
     print("This placeholder is per BLAIS5-3086 to update Telephone Number in Blaise")
     data = request.get_json()
     validate_data(data)
