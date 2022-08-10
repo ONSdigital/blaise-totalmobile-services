@@ -1,4 +1,5 @@
 import logging
+from urllib.error import HTTPError
 from app.services.total_mobile_service import (
     do_something_service,
 )
@@ -12,7 +13,6 @@ from appconfig.config import Config
 
 
 def submit_form_result_request_handler(request, questionnaire_service):
-    print("This placeholder is per BLAIS5-3086 to update Telephone Number in Blaise")
     data = request.get_json()
     validate_data(data)
     
@@ -24,8 +24,10 @@ def submit_form_result_request_handler(request, questionnaire_service):
     
     print(f"Updating telephone number for {questionnaire_name}, {case_id}, please wait...")
     config = Config.from_env()
-    questionnaire_service.update_case_field(questionnaire_name, case_id, "qDataBag.TelNo", telephone_number, config)
-    #if above failed, log an error "failed to update case xx for questionnaire yy"
+    try:
+        questionnaire_service.update_case_field(questionnaire_name, case_id, "qDataBag.TelNo", telephone_number, config)
+    except HTTPError:
+        logging.error("Could not find questionnaire LMS2206_AA1 in Blaise")
 
 
 def update_visit_status_request_handler(request):
