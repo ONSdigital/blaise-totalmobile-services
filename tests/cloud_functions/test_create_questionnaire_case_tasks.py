@@ -34,7 +34,9 @@ def test_create_task_name_returns_correct_name_when_called():
 def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_model():
     questionnaire_case_model = populated_case_model()
     questionnaire_case_model.case_id = "90001"
-    model = TotalmobileJobModel("LMS2101_AA1", "world", "90001", questionnaire_case_model.to_dict())
+    questionnaire_name = "LMS2101_AA1"
+    totalmobile_case_model = TotalMobileCaseModel.import_case(questionnaire_name, questionnaire_case_model)
+    model = TotalmobileJobModel("LMS2101_AA1", "world", "90001", totalmobile_case_model.to_payload())
 
     assert create_task_name(model) != create_task_name(model)
 

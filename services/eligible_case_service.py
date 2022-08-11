@@ -24,7 +24,7 @@ def filter_eligible_cases(cases: List[QuestionnaireCaseModel], questionnaire_nam
 
 
 def telephone_number_is_empty(case: QuestionnaireCaseModel, questionnaire_name: str) -> bool:
-    if case.telephone_number_1 == "":
+    if case.contact_details.telephone_number_1 == "":
         return True
 
     logging.info(
@@ -33,7 +33,7 @@ def telephone_number_is_empty(case: QuestionnaireCaseModel, questionnaire_name: 
 
 
 def telephone_number_2_is_empty(case: QuestionnaireCaseModel, questionnaire_name: str) -> bool:
-    if case.telephone_number_2 == "":
+    if case.contact_details.telephone_number_2 == "":
         return True
 
     logging.info(
@@ -42,7 +42,7 @@ def telephone_number_2_is_empty(case: QuestionnaireCaseModel, questionnaire_name
 
 
 def appointment_telephone_number_is_empty(case: QuestionnaireCaseModel, questionnaire_name: str) -> bool:
-    if case.appointment_telephone_number == "":
+    if case.contact_details.appointment_telephone_number == "":
         return True
 
     logging.info(
