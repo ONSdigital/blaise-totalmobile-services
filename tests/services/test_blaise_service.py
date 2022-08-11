@@ -20,13 +20,11 @@ def test_get_cases_calls_the_rest_api_client_with_the_correct_parameters(_mock_r
 
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-def test_get_cases_returns_a_list_of_case_models(
-        _mock_rest_api_client,
-):
+def test_get_cases_returns_a_list_of_case_models(_mock_rest_api_client):
     # arrange
     config = config_helper.get_default_config()
     _mock_rest_api_client.return_value = {
-        "questionnaireName": "DST2106Z",
+        "questionnaireName": "LMS2101_AA1",
         "questionnaireId": "12345-12345-12345-12345-12345",
         "reportingData": [
             {"qiD.Serial_Number": "10010", "hOut": "110"},
@@ -34,7 +32,7 @@ def test_get_cases_returns_a_list_of_case_models(
             {"qiD.Serial_Number": "10030", "hOut": "310"},
         ],
     }
-    questionnaire_name = "OPN2101A"
+    questionnaire_name = "LMS2101_AA1"
 
     # act
     result = blaise_service.get_cases(questionnaire_name, config)
