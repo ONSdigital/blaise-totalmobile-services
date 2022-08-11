@@ -4,6 +4,7 @@ from models.uac_model import UacChunks
 
 
 def populated_case_model(
+        questionnaire_name: str = "LMS2101_AA1",
         case_id: str = "90000",
         data_model_name: str = "LM2007",
         survey_type: str = "LMS",
@@ -26,6 +27,7 @@ def populated_case_model(
         wave_com_dte: str = "01-01-2023",
         uac_chunks: UacChunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")):
     return QuestionnaireCaseModel(
+        questionnaire_name=questionnaire_name,
         case_id=case_id,
         data_model_name=data_model_name,
         survey_type=survey_type,
