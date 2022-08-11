@@ -6,6 +6,7 @@ from app.handlers.total_mobile_handler import (
     submit_form_result_request_handler,
     update_visit_status_request_handler,
 )
+from app.utilities.parse_json import MissingReferenceError
 from services import questionnaire_service
 
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
@@ -20,8 +21,11 @@ def update_visit_status_request():
 @incoming.route("/submitformresultrequest", methods=["POST"])
 @auth.login_required
 def submit_form_result_request():
-    submit_form_result_request_handler(request, current_app.questionnaire_service)
-    return "ok"
+    try:
+        submit_form_result_request_handler(request, current_app.questionnaire_service)
+        return "ok"
+    except MissingReferenceError:
+        return "Missing reference", 400
 
 
 @incoming.route("/completevisitrequest", methods=["POST"])
