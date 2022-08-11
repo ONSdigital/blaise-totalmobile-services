@@ -7,7 +7,7 @@ from models.questionnaire_case_model import QuestionnaireCaseModel
 def get_eligible_cases(questionnaire_name: str, config: Config) -> List[QuestionnaireCaseModel]:
     questionnaire_cases = get_cases(questionnaire_name, config)
 
-    return eligible_case_service.filter_eligible_cases(questionnaire_cases, questionnaire_name)
+    return eligible_case_service.filter_eligible_cases(questionnaire_cases)
 
 
 def get_cases(questionnaire_name: str, config: Config) -> List[QuestionnaireCaseModel]:
