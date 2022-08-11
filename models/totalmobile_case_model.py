@@ -89,18 +89,18 @@ class TotalMobileCaseModel:
             skills=[Skill(identity=Reference(reference=questionnaire_case.survey_type))],
             dueDate=DueDate(end=questionnaire_case.wave_com_dte),
             location=AddressDetails(addressDetail=Address(
-                addressLine1=questionnaire_case.address_line_1,
-                addressLine2=questionnaire_case.address_line_2,
-                addressLine3=questionnaire_case.address_line_3,
-                addressLine4=questionnaire_case.county,
-                addressLine5=questionnaire_case.town,
-                postCode=questionnaire_case.postcode,
+                addressLine1=questionnaire_case.address_details.address.address_line_1,
+                addressLine2=questionnaire_case.address_details.address.address_line_2,
+                addressLine3=questionnaire_case.address_details.address.address_line_3,
+                addressLine4=questionnaire_case.address_details.address.county,
+                addressLine5=questionnaire_case.address_details.address.town,
+                postCode=questionnaire_case.address_details.address.postcode,
                 coordinates=AddressCoordinates(
-                    latitude=questionnaire_case.latitude,
-                    longitude=questionnaire_case.longitude
+                    latitude=questionnaire_case.address_details.address.coordinates.latitude,
+                    longitude=questionnaire_case.address_details.address.coordinates.longitude
                 ))
             ),
-            contact=ContactDetails(name=questionnaire_case.postcode),
+            contact=ContactDetails(name=questionnaire_case.address_details.address.postcode),
             additionalProperties=[
                 AdditionalProperty(
                     name="surveyName",
