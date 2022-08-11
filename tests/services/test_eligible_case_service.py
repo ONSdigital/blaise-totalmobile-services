@@ -141,9 +141,8 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
         )
     ]
 
-    questionnaire_name = "LMS2101_AA1"
     # act
-    result = eligible_case_service.filter_eligible_cases(cases, questionnaire_name)
+    result = eligible_case_service.filter_eligible_cases(cases)
 
     # assert
     assert len(result) == 7
@@ -352,10 +351,8 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
         )
     ]
 
-    questionnaire_name = "LMS2101_AA1"
-
     # act
-    result = eligible_case_service.filter_eligible_cases(cases, questionnaire_name)
+    result = eligible_case_service.filter_eligible_cases(cases)
 
     # assert
     assert len(result) == 7
@@ -389,10 +386,8 @@ def test_filter_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_tel
         )
     ]
 
-    questionnaire_name = "LMS2101_AA1"
-
     # act
-    result = eligible_case_service.filter_eligible_cases(cases, questionnaire_name)
+    result = eligible_case_service.filter_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -414,10 +409,8 @@ def test_filter_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_tel
         )
     ]
 
-    questionnaire_name = "LMS2101_AA1"
-
     # act
-    result = eligible_case_service.filter_eligible_cases(cases, questionnaire_name)
+    result = eligible_case_service.filter_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -439,10 +432,8 @@ def test_filter_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_app
         )
     ]
 
-    questionnaire_name = "LMS2101_AA1"
-
     # act
-    result = eligible_case_service.filter_eligible_cases(cases, questionnaire_name)
+    result = eligible_case_service.filter_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -467,10 +458,8 @@ def test_filter_eligible_cases_logs_a_message_when_a_wave_is_not_in_range(test_i
         )
     ]
 
-    questionnaire_name = "LMS2101_AA1"
-
     # act
-    result = eligible_case_service.filter_eligible_cases(cases, questionnaire_name)
+    result = eligible_case_service.filter_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -495,10 +484,8 @@ def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(te
         )
     ]
 
-    questionnaire_name = "LMS2101_AA1"
-
     # act
-    result = eligible_case_service.filter_eligible_cases(cases, questionnaire_name)
+    result = eligible_case_service.filter_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -523,14 +510,10 @@ def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(te
         )
     ]
 
-    questionnaire_name = "LMS2101_AA1"
-
     # act
-    result = eligible_case_service.filter_eligible_cases(cases, questionnaire_name)
+    result = eligible_case_service.filter_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
 
     assert ('root', logging.INFO, f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '{test_input}' outside of the range '{value_range}' set for the field 'outcome_code'") in caplog.record_tuples
-
-

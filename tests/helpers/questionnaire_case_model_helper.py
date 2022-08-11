@@ -1,8 +1,10 @@
-from models.questionnaire_case_model import QuestionnaireCaseModel
+from models.questionnaire_case_model import QuestionnaireCaseModel, AddressDetails, Address, AddressCoordinates, \
+    ContactDetails
 from models.uac_model import UacChunks
 
 
 def populated_case_model(
+        questionnaire_name: str = "LMS2101_AA1",
         case_id: str = "90000",
         data_model_name: str = "LM2007",
         survey_type: str = "LMS",
@@ -25,22 +27,31 @@ def populated_case_model(
         wave_com_dte: str = "01-01-2023",
         uac_chunks: UacChunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")):
     return QuestionnaireCaseModel(
+        questionnaire_name=questionnaire_name,
         case_id=case_id,
         data_model_name=data_model_name,
         survey_type=survey_type,
         wave=wave,
-        address_line_1=address_line_1,
-        address_line_2=address_line_2,
-        address_line_3=address_line_3,
-        county=county,
-        town=town,
-        postcode=postcode,
-        telephone_number_1=telephone_number_1,
-        telephone_number_2=telephone_number_2,
-        appointment_telephone_number=appointment_telephone_number,
+        address_details=AddressDetails(
+            address=Address(
+                address_line_1=address_line_1,
+                address_line_2=address_line_2,
+                address_line_3=address_line_3,
+                county=county,
+                town=town,
+                postcode=postcode,
+                coordinates=AddressCoordinates(
+                    latitude=latitude,
+                    longitude=longitude,
+                )
+            )
+        ),
+        contact_details=ContactDetails(
+            telephone_number_1=telephone_number_1,
+            telephone_number_2=telephone_number_2,
+            appointment_telephone_number=appointment_telephone_number,
+        ),
         outcome_code=outcome_code,
-        latitude=latitude,
-        longitude=longitude,
         priority=priority,
         field_region=field_region,
         field_team=field_team,
