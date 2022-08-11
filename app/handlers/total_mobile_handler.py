@@ -10,6 +10,7 @@ from app.utilities.parse_json import (
     validate_data,
 )
 from appconfig.config import Config
+from services.blaise_service import QuestionnaireCaseDoesNotExistError
 
 class QuestionnaireDoesNotExistError(Exception):
     pass
@@ -26,6 +27,12 @@ def submit_form_result_request_handler(request, questionnaire_service):
     if not check_questionnaire_exists:
         logging.error(f"Could not find questionnaire {questionnaire_name} in Blaise")
         raise QuestionnaireDoesNotExistError()
+    
+    try:
+        questionnaire_service.get_case(questionnaire_name, case_id, config)
+    except QuestionnaireCaseDoesNotExistError as err:
+        logging.error(f"Could not find case {case_id} for questionnaire {questionnaire_name} in Blaise")
+        raise err
     
     logging.info(f'Successfully found questionnaire {questionnaire_name} in Blaise')
     

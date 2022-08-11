@@ -1,8 +1,13 @@
+from urllib.error import HTTPError
 import blaise_restapi
 from appconfig import Config
 from typing import List
 
 from models.questionnaire_case_model import QuestionnaireCaseModel
+
+class QuestionnaireCaseDoesNotExistError(Exception):
+    pass
+
 
 required_fields_from_blaise = [
     "qiD.Serial_Number",
@@ -39,3 +44,17 @@ def get_cases(questionnaire_name: str, config: Config) -> [List[QuestionnaireCas
 
     return [QuestionnaireCaseModel.import_case(questionnaire_name, case_data_item) for case_data_item in
             questionnaire_case_data["reportingData"]]
+
+
+def get_case(questionnaire_name: str, case_id: str, config: Config) -> QuestionnaireCaseModel:
+    restapi_client = blaise_restapi.Client(config.blaise_api_url)
+
+    try:
+        case = restapi_client.get_case(
+            config.blaise_server_park,
+            questionnaire_name,
+            case_id
+        )
+    except HTTPError:
+        raise QuestionnaireCaseDoesNotExistError()
+    return case

@@ -2,24 +2,27 @@ import base64
 import logging
 from behave import given, when, then
 from behave.log_capture import LoggingCapture
-from app.app import app
 
 
-@given('there is a questionnaire "{questionnaire}" with case "{case}"')
+@given('there is a questionnaire "{questionnaire}" with case "{case}" in Blaise')
 def step_impl(context, questionnaire, case):
-    context.questionnaire_service.add_questionnaire_with_case(questionnaire, case)
+    context.questionnaire_service.add_questionnaire(questionnaire)
+    context.questionnaire_service.add_case_to_questionnaire(questionnaire, case)
 
 
-@given(u'there is no questionnaire in Blaise for reference "{questionnaire}"')
+@given(u'there is no questionnaire "{questionnaire}" in Blaise')
 def step_impl(context, questionnaire):
     #State is reset before every scenario - leaving test empty to ensure no questionnaires are added
     pass
 
-@given(u'there is no case in Blaise for reference "{case}"')
-def step_impl(context, case):
-    #State is reset before every scenario - leaving test empty to ensure no cases are added
-    pass
+@given(u'there is a questionnaire "{questionnaire}" in Blaise')
+def step_impl(context, questionnaire):
+    context.questionnaire_service.add_questionnaire(questionnaire)
 
+@given(u'there is no case "{case}" for questionnaire "{questionnaire}" in Blaise')
+def step_impl(context, questionnaire, case):
+    #State is reset before every scenario - leaving test empty to ensure no questionnaires/cases are added
+    pass
 
 @when('Totalmobile sends an update for reference "{reference}"')
 def step_impl(context, reference):

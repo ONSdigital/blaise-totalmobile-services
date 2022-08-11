@@ -8,7 +8,7 @@ from app.handlers.total_mobile_handler import (
     update_visit_status_request_handler,
 )
 from app.utilities.parse_json import MissingReferenceError
-from services import questionnaire_service
+from services.blaise_service import QuestionnaireCaseDoesNotExistError
 
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
 
@@ -27,7 +27,7 @@ def submit_form_result_request():
         return "ok"
     except MissingReferenceError:
         return "Missing reference", 400
-    except QuestionnaireDoesNotExistError:
+    except (QuestionnaireDoesNotExistError, QuestionnaireCaseDoesNotExistError):
         return "Questionnaire does not exist in Blaise", 404
 
 
