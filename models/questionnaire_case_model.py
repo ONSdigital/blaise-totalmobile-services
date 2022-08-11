@@ -38,6 +38,7 @@ class ContactDetails:
 
 @dataclass
 class QuestionnaireCaseModel(BaseModel):
+    questionnaire_name: str
     case_id: str
     data_model_name: str
     survey_type: str
@@ -65,8 +66,9 @@ class QuestionnaireCaseModel(BaseModel):
                 self.validate_dataclass_model_fields_are_populated(self.contact_details))
 
     @classmethod
-    def import_case(cls: Type[T], case_data_dictionary: Dict[str, str]) -> T:
+    def import_case(cls: Type[T], questionnaire_name: str, case_data_dictionary: Dict[str, str]) -> T:
         return QuestionnaireCaseModel(
+            questionnaire_name=questionnaire_name,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
             data_model_name=case_data_dictionary.get("dataModelName"),
             survey_type=case_data_dictionary.get("qDataBag.TLA"),

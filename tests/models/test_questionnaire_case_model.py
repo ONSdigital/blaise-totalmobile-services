@@ -6,6 +6,8 @@ from tests.helpers import questionnaire_case_model_helper
 
 
 def test_import_case_data_returns_a_populated_model():
+    questionnaire_name = "LMS2101_AA1"
+
     case_data_dictionary = {
         "qiD.Serial_Number": "90000000",
         "dataModelName": "LM2007",
@@ -29,8 +31,9 @@ def test_import_case_data_returns_a_populated_model():
         "qDataBag.WaveComDTE": "WGAFF"
     }
 
-    result = QuestionnaireCaseModel.import_case(case_data_dictionary)
+    result = QuestionnaireCaseModel.import_case(questionnaire_name, case_data_dictionary)
 
+    assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id == "90000000"
     assert result.data_model_name == "LM2007"
     assert result.survey_type == "LMS"
@@ -54,6 +57,8 @@ def test_import_case_data_returns_a_populated_model():
 
 
 def test_import_case_returns_a_valid_object_when_a_blaise_field_is_incorrectly_typed():
+    questionnaire_name = "LMS2101_AA1"
+
     case_data_dictionary = {
         "qdatabag.Serial_Number": "90000000",
         "dataModelName": "LM2007",
@@ -77,8 +82,9 @@ def test_import_case_returns_a_valid_object_when_a_blaise_field_is_incorrectly_t
         "qDataBag.WaveComDTE": "WGAFF"
     }
 
-    result = QuestionnaireCaseModel.import_case(case_data_dictionary)
+    result = QuestionnaireCaseModel.import_case(questionnaire_name, case_data_dictionary)
 
+    assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id is None
     assert result.data_model_name == "LM2007"
     assert result.survey_type == "LMS"
@@ -102,6 +108,8 @@ def test_import_case_returns_a_valid_object_when_a_blaise_field_is_incorrectly_t
 
 
 def test_import_case_returns_a_valid_object_when_an_optional_blaise_field_is_missing():
+    questionnaire_name = "LMS2101_AA1"
+
     case_data_dictionary = {
         "dataModelName": "LM2007",
         "qDataBag.TLA": "LMS",
@@ -124,8 +132,9 @@ def test_import_case_returns_a_valid_object_when_an_optional_blaise_field_is_mis
         "qDataBag.WaveComDTE": "WGAFF"
     }
 
-    result = QuestionnaireCaseModel.import_case(case_data_dictionary)
+    result = QuestionnaireCaseModel.import_case(questionnaire_name, case_data_dictionary)
 
+    assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id is None
     assert result.data_model_name == "LM2007"
     assert result.survey_type == "LMS"
