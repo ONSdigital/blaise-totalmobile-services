@@ -4,7 +4,6 @@ from appconfig import Config
 from services import blaise_service, uac_service, eligible_case_service
 from models.questionnaire_case_model import QuestionnaireCaseModel
 
-
 def get_eligible_cases(questionnaire_name: str, config: Config) -> List[QuestionnaireCaseModel]:
     questionnaire_cases = get_cases(questionnaire_name, config)
 
@@ -21,6 +20,10 @@ def get_cases(questionnaire_name: str, config: Config) -> List[QuestionnaireCase
         questionnaire_cases]
 
     return questionnaire_cases
+
+
+def get_case(questionnaire_name: str, case_id: str, config: Config) -> QuestionnaireCaseModel:
+    return blaise_service.get_case(questionnaire_name, case_id, config)
 
 
 def get_wave_from_questionnaire_name(questionnaire_name: str) -> str:
@@ -46,11 +49,4 @@ def check_questionnaire_exists(questionnaire_name: str, config: Config) -> str:
     print(f"\nrest_api: {restapi_client}")
 
     check_questionnaire_exists = restapi_client.questionnaire_exists_on_server_park(config.blaise_server_park, questionnaire_name)
-    return check_questionnaire_exists
-
-def check_case_exists(questionnaire_name: str, case_id: str, config: Config) -> str:
-    restapi_client = blaise_restapi.Client(config.blaise_api_url)
-    print(f"\nrest_api: {restapi_client}")
-
-    check_case_exists = restapi_client.questionnaire_exists_on_server_park(config.blaise_server_park, questionnaire_name)
     return check_questionnaire_exists

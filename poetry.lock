@@ -75,7 +75,7 @@ requests = "^2.26.0"
 type = "git"
 url = "https://github.com/ONSdigital/blaise-api-python-client.git"
 reference = "main"
-resolved_reference = "0b7713b1db50e805b0a33aac704dfe8b1e9a0cdc"
+resolved_reference = "f46ad50d49a572a68014296b741db2003c87bfde"
 
 [[package]]
 name = "cachetools"
