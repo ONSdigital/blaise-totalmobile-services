@@ -3,7 +3,7 @@ from appconfig import Config
 import flask
 
 from dotenv import load_dotenv
-from app.app import app, load_config, setup_app
+from app.app import load_config, setup_app
 
 import cloud_functions.create_totalmobile_job
 import cloud_functions.create_questionnaire_case_tasks
@@ -27,8 +27,8 @@ if os.path.isfile("./.env"):
     print("Loading environment variables from dotenv file")
     load_dotenv()
 
+app = setup_app()
 load_config(app)
-setup_app(app)
 
 
 if __name__ == "__main__":

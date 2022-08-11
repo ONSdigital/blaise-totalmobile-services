@@ -5,8 +5,6 @@ from app.config import Config
 from app.endpoints import incoming
 import services
 
-app = Flask(__name__)
-
 
 def load_config(application):
     config = Config.from_env()
@@ -14,7 +12,9 @@ def load_config(application):
     application.config["password_hash"] = config.password_hash
 
 
-def setup_app(application):
+def setup_app():
+    application = Flask(__name__)
     application.auth = auth
     application.register_blueprint(incoming)
     application.questionnaire_service = services.questionnaire_service
+    return application

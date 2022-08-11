@@ -6,8 +6,8 @@ from unittest import mock
 
 import pytest
 from werkzeug.security import generate_password_hash
+from app.app import setup_app
 
-from app.app import app as flask_app
 from client import OptimiseClient
 
 
@@ -46,7 +46,7 @@ def mock_create_job_task() -> Dict:
 
 @pytest.fixture
 def app():
-    yield flask_app
+    return setup_app()
 
 
 @pytest.fixture
