@@ -1,6 +1,5 @@
 from dataclasses import dataclass, fields
 from typing import Dict, Type, TypeVar
-
 from models.base_model import BaseModel
 from models.uac_model import UacChunks, UacModel
 
@@ -99,5 +98,3 @@ class QuestionnaireCaseModel(BaseModel):
             wave_com_dte=case_data_dictionary.get("qDataBag.WaveComDTE"),
             uac_chunks=UacChunks(uac1="", uac2="", uac3="")
         )
-
-

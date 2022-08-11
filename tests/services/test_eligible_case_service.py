@@ -517,5 +517,3 @@ def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(te
     assert len(result) == 0
 
     assert ('root', logging.INFO, f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '{test_input}' outside of the range '{value_range}' set for the field 'outcome_code'") in caplog.record_tuples
-
-
