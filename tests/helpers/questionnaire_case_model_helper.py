@@ -1,5 +1,6 @@
 from models.questionnaire_case_model import QuestionnaireCaseModel, AddressDetails, Address, AddressCoordinates, \
     ContactDetails
+from models.questionnaire_case_model import QuestionnaireCaseModel
 from models.uac_model import UacChunks
 
 
