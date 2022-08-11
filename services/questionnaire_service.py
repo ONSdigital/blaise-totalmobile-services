@@ -40,3 +40,17 @@ def update_case_field(
     restapi_client.patch_case_data(
         config.blaise_server_park, questionnaire_name, case_id, data_fields
     )
+
+def check_questionnaire_exists(questionnaire_name: str, config: Config) -> str:
+    restapi_client = blaise_restapi.Client(config.blaise_api_url)
+    print(f"\nrest_api: {restapi_client}")
+
+    check_questionnaire_exists = restapi_client.questionnaire_exists_on_server_park(config.blaise_server_park, questionnaire_name)
+    return check_questionnaire_exists
+
+def check_case_exists(questionnaire_name: str, case_id: str, config: Config) -> str:
+    restapi_client = blaise_restapi.Client(config.blaise_api_url)
+    print(f"\nrest_api: {restapi_client}")
+
+    check_case_exists = restapi_client.questionnaire_exists_on_server_park(config.blaise_server_park, questionnaire_name)
+    return check_questionnaire_exists
