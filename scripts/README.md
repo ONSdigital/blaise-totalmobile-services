@@ -27,5 +27,5 @@ poetry install
 Ensure your Python path is set to the root of the repository:
 ```shell
 Unix: PYTHONPATH=. poetry run python scripts/my_funky_script.sh
-Windows: set PYTHONPATH=. & poetry run python scripts/my_funky_script.sh
+Windows: set PYTHONPATH=. & poetry run python scripts\my_funky_script.sh
 ```
