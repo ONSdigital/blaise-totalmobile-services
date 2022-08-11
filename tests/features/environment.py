@@ -21,3 +21,6 @@ class MockQuestionnaireService():
     def update_case_field(self, questionnaire_name, case_id, field_id, field_value, config):
         if self.case != f"{questionnaire_name}.{case_id}": 
             raise HTTPError("https://mock-questionnaire-service", 500, "Couldn't find questionnaire case", {}, None)
+    
+    def check_questionnaire_exists(self, questionnaire_name, config):
+        return self.case is not None

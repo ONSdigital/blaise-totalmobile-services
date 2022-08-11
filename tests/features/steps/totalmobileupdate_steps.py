@@ -15,6 +15,11 @@ def step_impl(context, questionnaire):
     #State is reset before every scenario - leaving test empty to ensure no questionnaires are added
     pass
 
+@given(u'there is no case in Blaise for reference "{case}"')
+def step_impl(context, case):
+    #State is reset before every scenario - leaving test empty to ensure no cases are added
+    pass
+
 
 @when('Totalmobile sends an update for reference "{reference}"')
 def step_impl(context, reference):
@@ -42,8 +47,34 @@ def step_impl(context, reference):
             }
         },
     )
-    assert response.status_code == 200, response.status_code
+    context.response = response
 
+@when(u'Totalmobile sends an update with missing reference')
+def step_impl(context):
+    valid_credentials = base64.b64encode(b"test_username:test_password").decode("utf-8")
+    response = context.test_client.post(
+        "/bts/submitformresultrequest",
+        headers={"Authorization": f"Basic {valid_credentials}"},
+        json={
+            "Result": {
+                "Responses": [
+                    {
+                        "Responses": [
+                            {
+                                "Value": "12345",
+                                "Element": {
+                                    "Reference": "TelNo",
+                                },
+                            }
+                        ],
+                    },
+                ],
+                "Association": {
+                },
+            }
+        },
+    )
+    context.response = response
 
 @then('"{message}" is logged as an {error_level} message')
 def step_impl(context, message, error_level):
@@ -54,4 +85,13 @@ def step_impl(context, message, error_level):
         "information" : logging.INFO,
         "error" : logging.ERROR
     }
-    assert (mappings[error_level], message) in messages
+    assert (mappings[error_level], message) in messages, f"Could not find {mappings[error_level]}, {message} in {messages}"
+
+@then(u'a "{response}" response is sent back to Totalmobile')
+def step_impl(context, response):
+    mappings = {
+        "200 OK" : 200,
+        "400 Bad Request" : 400,
+        "404 Not Found" : 404
+    }
+    assert context.response.status_code == mappings[response], f"Context response is {context.response.status_code}, response is {mappings[response]}"
