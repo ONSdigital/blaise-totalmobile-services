@@ -1,10 +1,21 @@
+import logging
 from typing import Any, Dict, Tuple
 
 import phonenumbers
 
+class MissingReferenceError(Exception):
+    pass
 
 def get_case_details(input: Dict[str, Any]) -> Tuple[str]:
     print(f"Getting instquestionnairerument name and case id, please wait...")
+    if (
+        "Result" not in input
+        or "Association" not in input["Result"]
+        or "Reference" not in input["Result"]["Association"] 
+        or input["Result"]["Association"]["Reference"] == ""
+    ):
+        logging.error("Unique reference is missing from totalmobile payload")
+        raise MissingReferenceError()
     try:
         result = input["Result"]["Association"]["Reference"].split(".")
         return result[0],result[1]
