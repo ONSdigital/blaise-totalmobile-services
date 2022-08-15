@@ -1,49 +1,4 @@
-import pytest
-
 from appconfig import Config, ConfigError
-
-
-def test_config_validate():
-    config = Config(
-        "foo",
-        "bar",
-        "fwibble",
-        "fish",
-        "queue-id",
-        "cloud-function",
-        "blaise-sandbox",
-        "region",
-        "rest_api_url",
-        "gusty",
-        "cloud_function_sa",
-        "bus_api_url",
-        "bus_client_id"
-    )
-    config.validate()
-
-
-def test_config_validate_err():
-    config = Config(
-        "",
-        "",
-        "fwibble",
-        "fish",
-        "queue-id",
-        "cloud-function",
-        "blaise-sandbox",
-        "region",
-        "rest_api_url",
-        "gusty",
-        "cloud_function_sa",
-        "bus_api_url",
-        "bus_client_id"
-    )
-    with pytest.raises(ConfigError) as err:
-        config.validate()
-    assert (
-        str(err.value)
-        == "Config fields not set: ['totalmobile_url', 'totalmobile_instance']"
-    )
 
 
 def test_config_from_env():
