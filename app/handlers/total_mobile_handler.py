@@ -39,14 +39,6 @@ def submit_form_result_request_handler(request, questionnaire_service):
 
     logging.info(f'Successfully found case {case_id} for questionnaire {questionnaire_name} in Blaise')
 
-    telephone_number = get_telephone_number(data)
-    
-    print(f"Updating telephone number for {questionnaire_name}, {case_id}, please wait...")
-    
-    questionnaire_service.update_case_field(questionnaire_name, case_id, "qDataBag.TelNo", telephone_number, config)
-    
-    
-
 
 def update_visit_status_request_handler(request):
     print("This is a basic placeholder per BLAIS5-3071")
