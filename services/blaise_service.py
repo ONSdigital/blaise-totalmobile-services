@@ -1,4 +1,4 @@
-from urllib.error import HTTPError
+from urllib3.exceptions import HTTPError
 import blaise_restapi
 from appconfig import Config
 from typing import List
