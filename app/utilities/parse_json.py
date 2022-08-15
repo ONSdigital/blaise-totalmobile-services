@@ -7,7 +7,7 @@ class MissingReferenceError(Exception):
     pass
 
 def get_case_details(input: Dict[str, Any]) -> Tuple[str]:
-    print(f"Getting instquestionnairerument name and case id, please wait...")
+    print(f"Getting questionnaire name and case id, please wait...")
     if (
         "Result" not in input
         or "Association" not in input["Result"]
