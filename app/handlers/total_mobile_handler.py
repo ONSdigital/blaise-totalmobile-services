@@ -23,7 +23,7 @@ def submit_form_result_request_handler(request, questionnaire_service):
     
     questionnaire_name, case_id = get_case_details(data)
 
-    check_questionnaire_exists = questionnaire_service.check_questionnaire_exists(questionnaire_name, config)
+    check_questionnaire_exists = questionnaire_service.questionnaire_exists(questionnaire_name, config)
     
     if not check_questionnaire_exists:
         logging.error(f"Could not find questionnaire {questionnaire_name} in Blaise")
