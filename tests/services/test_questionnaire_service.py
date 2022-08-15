@@ -1,10 +1,11 @@
 import pytest
 
 from models.uac_model import UacChunks, UacModel
-from services.questionnaire_service import get_eligible_cases, get_cases, get_wave_from_questionnaire_name
+from services.questionnaire_service import get_eligible_cases, get_cases, get_wave_from_questionnaire_name, update_case_field
 from tests.helpers import questionnaire_case_model_helper
 from unittest import mock
 from tests.helpers import config_helper
+import blaise_restapi
 
 
 @mock.patch("services.questionnaire_service.get_cases")
@@ -125,4 +126,16 @@ def test_get_wave_from_questionnaire_name():
 def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error():
     with pytest.raises(Exception) as err:
         get_wave_from_questionnaire_name("ABC1234_AA1")
+
     assert str(err.value) == "Invalid format for questionnaire name: ABC1234_AA1"
+
+
+@mock.patch.object(blaise_restapi.Client, "patch_case_data")
+def test_update_case_field(patch_case_data):
+    config = config_helper.get_default_config()
+
+    update_case_field("ABC1234-AA1", "12345", "key", "value", config)
+
+    patch_case_data.assert_called_with(
+        "gusty", "ABC1234-AA1", "12345", {"key":"value"}
+    )
