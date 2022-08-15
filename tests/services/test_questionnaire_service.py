@@ -1,11 +1,10 @@
 import pytest
 
 from models.uac_model import UacChunks, UacModel
-from services.questionnaire_service import get_eligible_cases, get_cases, get_wave_from_questionnaire_name, update_case_field
+from services.questionnaire_service import get_eligible_cases, get_cases, get_wave_from_questionnaire_name, questionnaire_exists
 from tests.helpers import questionnaire_case_model_helper
 from unittest import mock
 from tests.helpers import config_helper
-import blaise_restapi
 
 
 @mock.patch("services.questionnaire_service.get_cases")
@@ -119,23 +118,40 @@ def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire():
 
 
 def test_get_wave_from_questionnaire_name():
+    # assert
     assert get_wave_from_questionnaire_name("LMS2101_AA1") == "1"
     assert get_wave_from_questionnaire_name("LMS1234_ZZ2") == "2"
 
 
 def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error():
+    # assert
     with pytest.raises(Exception) as err:
         get_wave_from_questionnaire_name("ABC1234_AA1")
 
     assert str(err.value) == "Invalid format for questionnaire name: ABC1234_AA1"
 
 
-@mock.patch.object(blaise_restapi.Client, "patch_case_data")
-def test_update_case_field(patch_case_data):
+@mock.patch("services.blaise_service.questionnaire_exists")
+def test_questionnaire_exists_calls_the_rest_api_client_with_the_correct_parameters(mock_blaise_service):
     config = config_helper.get_default_config()
+    questionnaire_name = "LMS2101_AA1"
 
-    update_case_field("ABC1234-AA1", "12345", "key", "value", config)
+    # act
+    questionnaire_exists(questionnaire_name, config)
 
-    patch_case_data.assert_called_with(
-        "gusty", "ABC1234-AA1", "12345", {"key":"value"}
-    )
+    # assert
+    mock_blaise_service.assert_called_with(questionnaire_name, config)
+
+
+@pytest.mark.parametrize("api_response, expected_response", [(False, False), (True, True)])
+@mock.patch("services.blaise_service.questionnaire_exists")
+def test_questionnaire_exists_returns_correct_response(mock_blaise_service, api_response, expected_response):
+    config = config_helper.get_default_config()
+    questionnaire_name = "LMS2101_AA1"
+    mock_blaise_service.return_value = api_response
+
+    # act
+    result = questionnaire_exists(questionnaire_name, config)
+
+    # assert
+    assert result == expected_response

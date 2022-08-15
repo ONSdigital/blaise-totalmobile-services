@@ -1,4 +1,3 @@
-import blaise_restapi
 from typing import List
 from appconfig import Config
 from services import blaise_service, uac_service, eligible_case_service
@@ -33,22 +32,5 @@ def get_wave_from_questionnaire_name(questionnaire_name: str) -> str:
     return questionnaire_name[-1]
 
 
-def update_case_field(
-    questionnaire_name: str, case_id: str, field_id: str, field_value: str, config: Config
-) -> None:
-    restapi_client = blaise_restapi.Client(config.blaise_api_url)
-    print(f"\nrest_api: {restapi_client}")
-
-    data_fields = {field_id: field_value}
-    print(f"\ndata_fields: {data_fields}")
-    restapi_client.patch_case_data(
-        config.blaise_server_park, questionnaire_name, case_id, data_fields
-    )
-
-
-def check_questionnaire_exists(questionnaire_name: str, config: Config) -> str:
-    restapi_client = blaise_restapi.Client(config.blaise_api_url)
-    print(f"\nrest_api: {restapi_client}")
-
-    check_questionnaire_exists = restapi_client.questionnaire_exists_on_server_park(config.blaise_server_park, questionnaire_name)
-    return check_questionnaire_exists
+def questionnaire_exists(questionnaire_name: str, config: Config) -> str:
+    return blaise_service.questionnaire_exists(questionnaire_name, config)

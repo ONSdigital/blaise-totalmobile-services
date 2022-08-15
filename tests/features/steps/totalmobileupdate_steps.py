@@ -1,7 +1,6 @@
 import base64
 import logging
 from behave import given, when, then
-from behave.log_capture import LoggingCapture
 
 
 @given('there is a questionnaire "{questionnaire}" with case "{case}" in Blaise')
@@ -15,14 +14,17 @@ def step_impl(context, questionnaire):
     #State is reset before every scenario - leaving test empty to ensure no questionnaires are added
     pass
 
+
 @given(u'there is a questionnaire "{questionnaire}" in Blaise')
 def step_impl(context, questionnaire):
     context.questionnaire_service.add_questionnaire(questionnaire)
+
 
 @given(u'there is no case "{case}" for questionnaire "{questionnaire}" in Blaise')
 def step_impl(context, questionnaire, case):
     #State is reset before every scenario - leaving test empty to ensure no questionnaires/cases are added
     pass
+
 
 @when('Totalmobile sends an update for reference "{reference}"')
 def step_impl(context, reference):
@@ -52,6 +54,7 @@ def step_impl(context, reference):
     )
     context.response = response
 
+
 @when(u'Totalmobile sends an update with missing reference')
 def step_impl(context):
     valid_credentials = base64.b64encode(b"test_username:test_password").decode("utf-8")
@@ -79,6 +82,7 @@ def step_impl(context):
     )
     context.response = response
 
+
 @then('"{message}" is logged as an {error_level} message')
 def step_impl(context, message, error_level):
     messages = [
@@ -89,6 +93,7 @@ def step_impl(context, message, error_level):
         "error" : logging.ERROR
     }
     assert (mappings[error_level], message) in messages, f"Could not find {mappings[error_level]}, {message} in {messages}"
+
 
 @then(u'a "{response}" response is sent back to Totalmobile')
 def step_impl(context, response):
