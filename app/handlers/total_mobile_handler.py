@@ -1,5 +1,4 @@
 import logging
-from urllib.error import HTTPError
 from app.services.total_mobile_service import (
     do_something_service,
 )
@@ -12,8 +11,10 @@ from app.utilities.parse_json import (
 from appconfig.config import Config
 from services.blaise_service import QuestionnaireCaseDoesNotExistError
 
+
 class QuestionnaireDoesNotExistError(Exception):
     pass
+
 
 def submit_form_result_request_handler(request, questionnaire_service):
     config = Config.from_env()

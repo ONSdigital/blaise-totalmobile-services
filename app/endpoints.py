@@ -27,8 +27,10 @@ def submit_form_result_request():
         return "ok"
     except MissingReferenceError:
         return "Missing reference", 400
-    except (QuestionnaireDoesNotExistError, QuestionnaireCaseDoesNotExistError):
+    except QuestionnaireDoesNotExistError:
         return "Questionnaire does not exist in Blaise", 404
+    except QuestionnaireCaseDoesNotExistError:
+        return "Case does not exist in Blaise", 404
 
 
 @incoming.route("/completevisitrequest", methods=["POST"])
