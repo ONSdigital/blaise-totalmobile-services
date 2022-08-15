@@ -43,6 +43,7 @@ responses = "^0.20.0"
 requests-mock-flask = "^2022.4.3"
 google-cloud = "^0.34.0"
 google-cloud-datastore = "^2.7.1"
+behave = "^1.2.6"
 
 [tool.isort]
 multi_line_output = "3"

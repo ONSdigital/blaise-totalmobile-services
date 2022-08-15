@@ -1,11 +1,14 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 
 from app.auth import auth
 from app.handlers.total_mobile_handler import (
+    QuestionnaireDoesNotExistError,
     complete_visit_request_handler,
     submit_form_result_request_handler,
     update_visit_status_request_handler,
 )
+from app.utilities.parse_json import MissingReferenceError
+from services.blaise_service import QuestionnaireCaseDoesNotExistError
 
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
 
@@ -19,7 +22,15 @@ def update_visit_status_request():
 @incoming.route("/submitformresultrequest", methods=["POST"])
 @auth.login_required
 def submit_form_result_request():
-    submit_form_result_request_handler(request)
+    try:
+        submit_form_result_request_handler(request, current_app.questionnaire_service)
+        return "ok"
+    except MissingReferenceError:
+        return "Missing reference", 400
+    except QuestionnaireDoesNotExistError:
+        return "Questionnaire does not exist in Blaise", 404
+    except QuestionnaireCaseDoesNotExistError:
+        return "Case does not exist in Blaise", 404
 
 
 @incoming.route("/completevisitrequest", methods=["POST"])

@@ -66,6 +66,7 @@ class QuestionnaireCaseModel(BaseModel):
 
     @classmethod
     def import_case(cls: Type[T], questionnaire_name: str, case_data_dictionary: Dict[str, str]) -> T:
+        print(case_data_dictionary)
         return QuestionnaireCaseModel(
             questionnaire_name=questionnaire_name,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),

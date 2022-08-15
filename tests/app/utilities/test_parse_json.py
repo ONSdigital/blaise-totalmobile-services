@@ -4,6 +4,7 @@ from unittest import mock
 import pytest
 
 from app.utilities.parse_json import (
+    MissingReferenceError,
     __valid_element_dictionary,
     __valid_second_level_responses,
     __valid_telephone_number,
@@ -23,24 +24,66 @@ def test_get_case_details_returns_questionnaire_name_and_case_id(
     sample_json = submit_form_result_request_sample
 
     # act
-    actual_result = get_case_details(sample_json)
-    actual_questionnaire_name = actual_result[0]
-    actual_case_id = actual_result[1]
+    actual_questionnaire_name, actual_case_id = get_case_details(sample_json)
 
     # assert
-    assert type(actual_result) == list
-    assert actual_result == ["DST2111Z", "1001011"]
-
-    assert type(actual_questionnaire_name) == str
-    assert actual_questionnaire_name == "DST2111Z"
-
-    assert type(actual_case_id) == str
+    assert actual_questionnaire_name == "DST2111Z-AA1"
     assert actual_case_id == "1001011"
 
 
-def test_get_case_details_raises_an_error():
+def test_get_case_details_raises_an_error_when_json_is_empty():
     with pytest.raises(Exception):
         get_case_details({})
+
+
+def test_get_case_details_raises_an_error_when_reference_in_incorrect_format(
+    submit_form_result_request_sample: Dict[str, Any]
+):
+     # arrange
+    sample_json = submit_form_result_request_sample
+    sample_json["Result"]["Association"]["Reference"] = "DST2111Z-AA11001011"
+    with pytest.raises(Exception):
+        get_case_details(sample_json)
+
+
+def test_get_case_details_raises_an_error_when_reference_is_missing(
+    submit_form_result_request_sample: Dict[str, Any]
+):
+     # arrange
+    sample_json = submit_form_result_request_sample
+    del sample_json["Result"]["Association"]["Reference"]
+    with pytest.raises(MissingReferenceError):
+        get_case_details(sample_json)
+
+
+def test_get_case_details_raises_an_error_when_association_is_missing(
+    submit_form_result_request_sample: Dict[str, Any]
+):
+     # arrange
+    sample_json = submit_form_result_request_sample
+    del sample_json["Result"]["Association"]
+    with pytest.raises(MissingReferenceError):
+        get_case_details(sample_json)
+
+
+def test_get_case_details_raises_an_error_when_association_is_missing(
+    submit_form_result_request_sample: Dict[str, Any]
+):
+     # arrange
+    sample_json = submit_form_result_request_sample
+    del sample_json["Result"]
+    with pytest.raises(MissingReferenceError):
+        get_case_details(sample_json)
+
+
+def test_get_case_details_raises_an_error_when_reference_is_empty(
+    submit_form_result_request_sample: Dict[str, Any]
+):
+     # arrange
+    sample_json = submit_form_result_request_sample
+    sample_json["Result"]["Association"]["Reference"] = ""
+    with pytest.raises(MissingReferenceError):
+        get_case_details(sample_json)
 
 
 def test_get_telephone_number_returns_a_telephone_number(

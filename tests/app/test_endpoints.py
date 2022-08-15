@@ -1,10 +1,10 @@
 import pytest
 import json
 
-from app.app import app, load_config, setup_app
+from app.app import load_config, setup_app
 
+app = setup_app()
 load_config(app)
-setup_app(app)
 
 
 @pytest.mark.parametrize(
