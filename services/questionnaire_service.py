@@ -4,6 +4,7 @@ from appconfig import Config
 from services import blaise_service, uac_service, eligible_case_service
 from models.questionnaire_case_model import QuestionnaireCaseModel
 
+
 def get_eligible_cases(questionnaire_name: str, config: Config) -> List[QuestionnaireCaseModel]:
     questionnaire_cases = get_cases(questionnaire_name, config)
 
@@ -43,6 +44,7 @@ def update_case_field(
     restapi_client.patch_case_data(
         config.blaise_server_park, questionnaire_name, case_id, data_fields
     )
+
 
 def check_questionnaire_exists(questionnaire_name: str, config: Config) -> str:
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
