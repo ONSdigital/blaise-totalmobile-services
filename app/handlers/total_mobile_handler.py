@@ -35,7 +35,6 @@ def submit_form_result_request_handler(request, questionnaire_service):
         raise err
     
     logging.info(f'Successfully found questionnaire {questionnaire_name} in Blaise')
-    
 
     logging.info(f'Successfully found case {case_id} for questionnaire {questionnaire_name} in Blaise')
 
