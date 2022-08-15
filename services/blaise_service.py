@@ -5,6 +5,7 @@ from typing import List
 
 from models.questionnaire_case_model import QuestionnaireCaseModel
 
+
 class QuestionnaireCaseDoesNotExistError(Exception):
     pass
 
@@ -50,11 +51,18 @@ def get_case(questionnaire_name: str, case_id: str, config: Config) -> Questionn
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
 
     try:
-        case = restapi_client.get_case(
+        questionnaire_case_data = restapi_client.get_case(
             config.blaise_server_park,
             questionnaire_name,
             case_id
         )
     except HTTPError:
         raise QuestionnaireCaseDoesNotExistError()
-    return case
+
+    return QuestionnaireCaseModel.import_case(questionnaire_name, questionnaire_case_data["fieldData"])
+
+
+def questionnaire_exists(questionnaire_name: str, config: Config) -> bool:
+    restapi_client = blaise_restapi.Client(config.blaise_api_url)
+
+    return restapi_client.questionnaire_exists_on_server_park(config.blaise_server_park, questionnaire_name)
