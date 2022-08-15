@@ -12,7 +12,6 @@ setup_logger()
 
 def create_totalmobile_job(request: flask.Request) -> str:
     config = Config.from_env()
-    config.validate()
 
     request_json = request.get_json()
 
