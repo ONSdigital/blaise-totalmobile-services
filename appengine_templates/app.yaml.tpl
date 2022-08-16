@@ -5,7 +5,7 @@ vpc_access_connector:
   name: projects/_PROJECT_ID/locations/europe-west2/connectors/vpcconnect
 
 env_variables:
-  BLAISE_API_URL: _BLAISE_API_URL
+  BLAISE_API_URL: http://_BLAISE_API_URL
   BLAISE_SERVER_PARK: _BLAISE_SERVER_PARK
   TOTALMOBILE_USER: _TOTALMOBILE_USER
   TOTALMOBILE_PASSWORD_HASH: _TOTALMOBILE_PASSWORD_HASH

@@ -6,8 +6,8 @@ from unittest import mock
 
 import pytest
 from werkzeug.security import generate_password_hash
+from app.app import setup_app
 
-from app.app import app as flask_app
 from client import OptimiseClient
 
 
@@ -46,7 +46,7 @@ def mock_create_job_task() -> Dict:
 
 @pytest.fixture
 def app():
-    yield flask_app
+    return setup_app()
 
 
 @pytest.fixture
@@ -151,7 +151,7 @@ def submit_form_result_request_sample():
         },
         "Association": {
           "WorkType": "SS",
-          "Reference": "DST2111Z-1001011",
+          "Reference": "DST2111Z-AA1.1001011",
           "PropertyReference": "1001011",
           "ClientReference": ""
         },
