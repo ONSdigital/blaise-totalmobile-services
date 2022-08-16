@@ -4,6 +4,7 @@ from models.uac_model import UacChunks
 from datetime import datetime
 from typing import Optional
 
+
 def get_populated_case_model(
         questionnaire_name: str = "LMS2101_AA1",
         case_id: str = "90000",
