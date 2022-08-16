@@ -16,7 +16,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             telephone_number_2="",
             appointment_telephone_number="",
             wave="1",
-            priority="1",
+            field_case="Y",
             outcome_code="310"
         ),
         # should not return
@@ -26,7 +26,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             telephone_number_2="",
             appointment_telephone_number="",
             wave="1",
-            priority="1",
+            field_case="Y",
             outcome_code="310"
         ),
         # should not return
@@ -36,7 +36,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             telephone_number_2="123435",
             appointment_telephone_number="",
             wave="1",
-            priority="1",
+            field_case="Y",
             outcome_code="310"
         ),
         # should not return
@@ -46,7 +46,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             telephone_number_2="",
             appointment_telephone_number="123435",
             wave="1",
-            priority="1",
+            field_case="Y",
             outcome_code="310"
         ),
         # should not return
@@ -56,7 +56,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             telephone_number_2="",
             appointment_telephone_number="",
             wave="2",
-            priority="1",
+            field_case="Y",
             outcome_code="310"
         ),
         # should not return
@@ -66,7 +66,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             telephone_number_2="",
             appointment_telephone_number="",
             wave="1",
-            priority="6",
+            field_case="N",
             outcome_code="310"
         ),
         # should not return
@@ -76,7 +76,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             telephone_number_2="",
             appointment_telephone_number="",
             wave="1",
-            priority="1",
+            field_case="Y",
             outcome_code="410"
         ),
         # should return
@@ -86,66 +86,16 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             telephone_number_2="",
             appointment_telephone_number="",
             wave="1",
-            priority="1",
+            field_case="y",
             outcome_code="0"
         ),
-        # should return
-        populated_case_model(
-            case_id="90009",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="2",
-            outcome_code="0"
-        ),
-        # should return
-        populated_case_model(
-            case_id="90010",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="3",
-            outcome_code="0"
-        ),
-        # should return
-        populated_case_model(
-            case_id="90011",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="4",
-            outcome_code="0"
-        ),
-        # should return
-        populated_case_model(
-            case_id="90012",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="5",
-            outcome_code="0"
-        ),
-        # should return
-        populated_case_model(
-            case_id="90013",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="5",
-            outcome_code=""
-        )
     ]
 
     # act
     result = eligible_case_service.filter_eligible_cases(cases)
 
     # assert
-    assert len(result) == 7
+    assert len(result) == 2
 
     assert result == [
         # should return
@@ -155,7 +105,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             telephone_number_2="",
             appointment_telephone_number="",
             wave="1",
-            priority="1",
+            field_case="Y",
             outcome_code="310"
         ),
         # should return
@@ -165,54 +115,9 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             telephone_number_2="",
             appointment_telephone_number="",
             wave="1",
-            priority="1",
+            field_case="y",
             outcome_code="0"
         ),
-        populated_case_model(
-            case_id="90009",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="2",
-            outcome_code="0"
-        ),
-        populated_case_model(
-            case_id="90010",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="3",
-            outcome_code="0"
-        ),
-        populated_case_model(
-            case_id="90011",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="4",
-            outcome_code="0"
-        ),
-        populated_case_model(
-            case_id="90012",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="5",
-            outcome_code="0"
-        ),
-        populated_case_model(
-            case_id="90013",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="5",
-            outcome_code=""
-        )
     ]
 
 
@@ -226,7 +131,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             telephone_number_2="",
             appointment_telephone_number="",
             wave="1",
-            priority="1",
+            field_case="Y",
             outcome_code="310"
         ),
         # should not return
@@ -236,7 +141,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             telephone_number_2="",
             appointment_telephone_number="",
             wave="1",
-            priority="1",
+            field_case="Y",
             outcome_code="310"
         ),
         # should not return
@@ -246,7 +151,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             telephone_number_2="123435",
             appointment_telephone_number="",
             wave="1",
-            priority="1",
+            field_case="Y",
             outcome_code="310"
         ),
         # should not return
@@ -256,7 +161,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             telephone_number_2="",
             appointment_telephone_number="123435",
             wave="1",
-            priority="1",
+            field_case="Y",
             outcome_code="310"
         ),
         # should not return
@@ -266,7 +171,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             telephone_number_2="",
             appointment_telephone_number="",
             wave="2",
-            priority="1",
+            field_case="Y",
             outcome_code="310"
         ),
         # should not return
@@ -276,7 +181,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             telephone_number_2="",
             appointment_telephone_number="",
             wave="1",
-            priority="6",
+            field_case="N",
             outcome_code="310"
         ),
         # should not return
@@ -286,7 +191,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             telephone_number_2="",
             appointment_telephone_number="",
             wave="1",
-            priority="1",
+            field_case="Y",
             outcome_code="410"
         ),
         # should return
@@ -296,80 +201,26 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             telephone_number_2="",
             appointment_telephone_number="",
             wave="1",
-            priority="1",
+            field_case="y",
             outcome_code="0"
         ),
-        # should return
-        populated_case_model(
-            case_id="90009",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="2",
-            outcome_code="0"
-        ),
-        # should return
-        populated_case_model(
-            case_id="90010",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="3",
-            outcome_code="0"
-        ),
-        # should return
-        populated_case_model(
-            case_id="90011",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="4",
-            outcome_code="0"
-        ),
-        # should return
-        populated_case_model(
-            case_id="90012",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="5",
-            outcome_code="0"
-        ),
-        # should return
-        populated_case_model(
-            case_id="90013",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="5",
-            outcome_code=""
-        )
     ]
 
     # act
     result = eligible_case_service.filter_eligible_cases(cases)
 
     # assert
-    assert len(result) == 7
+    assert len(result) == 2
 
     assert ('root', logging.INFO, "Case '90001' in questionnaire 'LMS2101_AA1' was eligible and will be included") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90002' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value set for the field 'telephone_number_1'") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90003' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value set for the field 'telephone_number_2'") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90004' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value set for the field 'appointment_telephone_number'") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90005' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '2' outside of the range '['1']' set for the field 'wave'") in caplog.record_tuples
-    assert ('root', logging.INFO, "Case '90006' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '6' outside of the range '['1', '2', '3', '4', '5']' set for the field 'priority'") in caplog.record_tuples
+    assert ('root', logging.INFO, "Case '90006' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a field case value of 'N', not 'Y'") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90007' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '410' outside of the range '['', '0', '310', '320']' set for the field 'outcome_code'") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90008' in questionnaire 'LMS2101_AA1' was eligible and will be included") in caplog.record_tuples
-    assert ('root', logging.INFO, "Case '90009' in questionnaire 'LMS2101_AA1' was eligible and will be included") in caplog.record_tuples
-    assert ('root', logging.INFO, "Case '90010' in questionnaire 'LMS2101_AA1' was eligible and will be included") in caplog.record_tuples
-    assert ('root', logging.INFO, "Case '90011' in questionnaire 'LMS2101_AA1' was eligible and will be included") in caplog.record_tuples
-    assert ('root', logging.INFO, "Case '90012' in questionnaire 'LMS2101_AA1' was eligible and will be included") in caplog.record_tuples
-    assert ('root', logging.INFO, "Case '90013' in questionnaire 'LMS2101_AA1' was eligible and will be included") in caplog.record_tuples
+
 
 
 def test_filter_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_telephone_number_1_has_a_value(caplog):
@@ -467,32 +318,6 @@ def test_filter_eligible_cases_logs_a_message_when_a_wave_is_not_in_range(test_i
     assert ('root', logging.INFO, f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '{test_input}' outside of the range '{value_range}' set for the field 'wave'") in caplog.record_tuples
 
 
-@pytest.mark.parametrize("test_input", ["", "6", "7", "8"])
-def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(test_input, caplog):
-    # arrange
-    value_range = ["1", "2", "3", "4", "5"]
-
-    cases = [
-        populated_case_model(
-            case_id="90001",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority=test_input,
-            outcome_code="310"
-        )
-    ]
-
-    # act
-    result = eligible_case_service.filter_eligible_cases(cases)
-
-    # assert
-    assert len(result) == 0
-
-    assert ('root', logging.INFO, f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '{test_input}' outside of the range '{value_range}' set for the field 'priority'") in caplog.record_tuples
-
-
 @pytest.mark.parametrize("test_input", ["110", "210", "410"])
 def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(test_input, caplog):
     # arrange
@@ -517,3 +342,52 @@ def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(te
     assert len(result) == 0
 
     assert ('root', logging.INFO, f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '{test_input}' outside of the range '{value_range}' set for the field 'outcome_code'") in caplog.record_tuples
+
+
+def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_N(caplog):
+    # arrange
+
+    cases = [
+        populated_case_model(
+            case_id="90001",
+            telephone_number_1="",
+            telephone_number_2="",
+            appointment_telephone_number="",
+            wave="1",
+            field_case="N",
+            outcome_code="310"
+        )
+    ]
+
+    # act
+    result = eligible_case_service.filter_eligible_cases(cases)
+
+    # assert
+    assert len(result) == 0
+
+    assert ('root', logging.INFO, f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a field case value of 'N', not 'Y'") in caplog.record_tuples
+
+
+def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_an_empty_string(caplog):
+    # arrange
+
+    cases = [
+        populated_case_model(
+            case_id="90001",
+            telephone_number_1="",
+            telephone_number_2="",
+            appointment_telephone_number="",
+            wave="1",
+            field_case="",
+            outcome_code="310"
+        )
+    ]
+
+    # act
+    result = eligible_case_service.filter_eligible_cases(cases)
+
+    # assert
+    assert len(result) == 0
+
+    assert ('root', logging.INFO, f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a field case value of '', not 'Y'") in caplog.record_tuples
+
