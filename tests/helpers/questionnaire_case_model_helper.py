@@ -1,7 +1,8 @@
 from models.questionnaire_case_model import QuestionnaireCaseModel, AddressDetails, Address, AddressCoordinates, \
     ContactDetails
 from models.uac_model import UacChunks
-
+from datetime import datetime
+from typing import Optional
 
 def populated_case_model(
         questionnaire_name: str = "LMS2101_AA1",
@@ -24,7 +25,7 @@ def populated_case_model(
         priority: str = "1",
         field_region: str = "Region 1",
         field_team: str = "B-Team",
-        wave_com_dte: str = "01-01-2023",
+        wave_com_dte: Optional[datetime] = datetime(2023, 1, 31),
         uac_chunks: UacChunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")):
     return QuestionnaireCaseModel(
         questionnaire_name=questionnaire_name,

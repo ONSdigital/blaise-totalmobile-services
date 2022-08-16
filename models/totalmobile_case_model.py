@@ -1,6 +1,6 @@
 from dataclasses import dataclass, asdict
 from datetime import datetime
-from typing import Type, TypeVar, List
+from typing import Type, TypeVar, List, Optional
 
 from models.questionnaire_case_model import QuestionnaireCaseModel
 
@@ -19,7 +19,7 @@ class Skill:
 
 @dataclass
 class DueDate:
-    end: datetime
+    end: Optional[datetime]
 
 
 @dataclass
@@ -69,7 +69,9 @@ class TotalMobileCaseModel:
     additionalProperties: List[AdditionalProperty]
 
     def to_payload(self) -> dict[str, str]:
-        return asdict(self)
+        payload = asdict(self)
+        payload["dueDate"]["end"] = self.dueDate.end.strftime("%Y-%m-%d") if self.dueDate.end else ""
+        return payload
 
     @staticmethod
     def create_job_reference(questionnaire_name: str, case_id: str) -> str:

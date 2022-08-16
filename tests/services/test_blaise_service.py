@@ -24,16 +24,16 @@ def test_get_cases_calls_the_rest_api_client_with_the_correct_parameters(_mock_r
 
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-def test_get_cases_returns_a_list_of_case_models(_mock_rest_api_client):
+def test_get_cases_returns_a_list_of_case_models(_mock_rest_api_client_get_questionnaire):
     # arrange
     config = config_helper.get_default_config()
-    _mock_rest_api_client.return_value = {
+    _mock_rest_api_client_get_questionnaire.return_value = {
         "questionnaireName": "LMS2101_AA1",
         "questionnaireId": "12345-12345-12345-12345-12345",
         "reportingData": [
-            {"qiD.Serial_Number": "10010", "hOut": "110"},
-            {"qiD.Serial_Number": "10020", "hOut": "210"},
-            {"qiD.Serial_Number": "10030", "hOut": "310"},
+            {"qiD.Serial_Number": "10010", "hOut": "110", "qDataBag.WaveComDTE": "31-01-2023"},
+            {"qiD.Serial_Number": "10020", "hOut": "210", "qDataBag.WaveComDTE": "31-01-2023"},
+            {"qiD.Serial_Number": "10030", "hOut": "310", "qDataBag.WaveComDTE": "31-01-2023"},
         ],
     }
     questionnaire_name = "LMS2101_AA1"
@@ -61,6 +61,14 @@ def test_get_case_calls_the_rest_api_client_with_the_correct_parameters(_mock_re
     questionnaire_name = "LMS2101_AA1"
     case_id = "9001"
 
+    _mock_rest_api_client.return_value = {
+      "caseId": "2000000001",
+      "fieldData": {
+          "qiD.Serial_Number": "10010", "hOut": "110",
+          "qDataBag.WaveComDTE": "31-01-2023"
+        }
+    }
+
     # act
     blaise_service.get_case(questionnaire_name, case_id, config)
 
@@ -77,7 +85,8 @@ def test_get_case_returns_a_case_model(_mock_rest_api_client):
     _mock_rest_api_client.return_value = {
       "caseId": "2000000001",
       "fieldData": {
-          "qiD.Serial_Number": "10010", "hOut": "110"
+          "qiD.Serial_Number": "10010", "hOut": "110",
+          "qDataBag.WaveComDTE": "31-01-2023"
         }
     }
 

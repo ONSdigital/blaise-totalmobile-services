@@ -68,6 +68,8 @@ class QuestionnaireCaseModel(BaseModel):
     @classmethod
     def import_case(cls: Type[T], questionnaire_name: str, case_data_dictionary: Dict[str, str]) -> T:
         print(case_data_dictionary)
+        wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE")
+        wave_com_dte = datetime.strptime(wave_com_dte_str, "%d-%m-%Y") if wave_com_dte_str != '' else None
         return QuestionnaireCaseModel(
             questionnaire_name=questionnaire_name,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
@@ -97,6 +99,6 @@ class QuestionnaireCaseModel(BaseModel):
             priority=case_data_dictionary.get("qDataBag.Priority"),
             field_region=case_data_dictionary.get("qDataBag.FieldRegion"),
             field_team=case_data_dictionary.get("qDataBag.FieldTeam"),
-            wave_com_dte=case_data_dictionary.get("qDataBag.WaveComDTE"),
+            wave_com_dte=wave_com_dte,
             uac_chunks=UacChunks(uac1="", uac2="", uac3="")
         )
