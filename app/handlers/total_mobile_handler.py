@@ -1,25 +1,24 @@
+import logging
 from app.services.total_mobile_service import (
     do_something_service,
-    update_case_telephone_number,
 )
 from app.utilities.parse_json import (
-    get_case_details,
     get_reference_number,
-    get_telephone_number,
     validate_data,
 )
+from appconfig.config import Config
+from models.totalmobile_incoming_case_model import TotalMobileIncomingCaseModel
+from services import update_blaise_case_service
 
 
-def submit_form_result_request_handler(request):
-    print("This placeholder is per BLAIS5-3086 to update Telephone Number in Blaise")
-
+def submit_form_result_request_handler(request, questionnaire_service):
+    config = Config.from_env()
     data = request.get_json()
     validate_data(data)
 
-    questionnaire_name, case_id = get_case_details(data)
-    telephone_number = get_telephone_number(data)
+    totalmobile_case = TotalMobileIncomingCaseModel.import_case(data)
 
-    update_case_telephone_number(questionnaire_name, case_id, telephone_number)
+    update_blaise_case_service.update_case(totalmobile_case, config, questionnaire_service)
 
 
 def update_visit_status_request_handler(request):

@@ -3,8 +3,7 @@ from flask import Flask
 from app.auth import auth
 from app.config import Config
 from app.endpoints import incoming
-
-app = Flask(__name__)
+from services import questionnaire_service
 
 
 def load_config(application):
@@ -13,6 +12,9 @@ def load_config(application):
     application.config["password_hash"] = config.password_hash
 
 
-def setup_app(application):
+def setup_app():
+    application = Flask(__name__)
     application.auth = auth
     application.register_blueprint(incoming)
+    application.questionnaire_service = questionnaire_service
+    return application

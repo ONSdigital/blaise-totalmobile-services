@@ -58,10 +58,3 @@ class Config:
         print(f"Configuration - bus_api_url: {self.bus_api_url}")
         print(f"Configuration - bus_client_id: {self.bus_client_id}")
 
-    def validate(self) -> None:
-        errored_fields = []
-        for field in fields(self):
-            if getattr(self, field.name) == "":
-                errored_fields.append(field.name)
-        if len(errored_fields) > 0:
-            raise ConfigError(f"Config fields not set: {errored_fields}")

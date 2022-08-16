@@ -2,15 +2,15 @@ import logging
 
 import pytest
 
-from services import eligible_case_service
-from tests.helpers.questionnaire_case_model_helper import populated_case_model
+from services import eligible_blaise_case_service
+from tests.helpers.questionnaire_case_model_helper import get_populated_case_model
 
 
-def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
+def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
     # arrange
     cases = [
         # should return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90001",
             telephone_number_1="",
             telephone_number_2="",
@@ -20,7 +20,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code="310"
         ),
         # should not return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90002",
             telephone_number_1="123435",
             telephone_number_2="",
@@ -30,7 +30,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code="310"
         ),
         # should not return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90003",
             telephone_number_1="",
             telephone_number_2="123435",
@@ -40,7 +40,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code="310"
         ),
         # should not return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90004",
             telephone_number_1="",
             telephone_number_2="",
@@ -50,7 +50,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code="310"
         ),
         # should not return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90005",
             telephone_number_1="",
             telephone_number_2="",
@@ -60,7 +60,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code="310"
         ),
         # should not return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90006",
             telephone_number_1="",
             telephone_number_2="",
@@ -70,7 +70,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code="310"
         ),
         # should not return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90007",
             telephone_number_1="",
             telephone_number_2="",
@@ -80,7 +80,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code="410"
         ),
         # should return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90008",
             telephone_number_1="",
             telephone_number_2="",
@@ -90,7 +90,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code="0"
         ),
         # should return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90009",
             telephone_number_1="",
             telephone_number_2="",
@@ -100,7 +100,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code="0"
         ),
         # should return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90010",
             telephone_number_1="",
             telephone_number_2="",
@@ -110,7 +110,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code="0"
         ),
         # should return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90011",
             telephone_number_1="",
             telephone_number_2="",
@@ -120,7 +120,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code="0"
         ),
         # should return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90012",
             telephone_number_1="",
             telephone_number_2="",
@@ -130,7 +130,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code="0"
         ),
         # should return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90013",
             telephone_number_1="",
             telephone_number_2="",
@@ -142,14 +142,14 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
     ]
 
     # act
-    result = eligible_case_service.filter_eligible_cases(cases)
+    result = eligible_blaise_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 7
 
     assert result == [
         # should return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90001",
             telephone_number_1="",
             telephone_number_2="",
@@ -159,7 +159,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             outcome_code="310"
         ),
         # should return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90008",
             telephone_number_1="",
             telephone_number_2="",
@@ -168,7 +168,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             priority="1",
             outcome_code="0"
         ),
-        populated_case_model(
+        get_populated_case_model(
             case_id="90009",
             telephone_number_1="",
             telephone_number_2="",
@@ -177,7 +177,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             priority="2",
             outcome_code="0"
         ),
-        populated_case_model(
+        get_populated_case_model(
             case_id="90010",
             telephone_number_1="",
             telephone_number_2="",
@@ -186,7 +186,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             priority="3",
             outcome_code="0"
         ),
-        populated_case_model(
+        get_populated_case_model(
             case_id="90011",
             telephone_number_1="",
             telephone_number_2="",
@@ -195,7 +195,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             priority="4",
             outcome_code="0"
         ),
-        populated_case_model(
+        get_populated_case_model(
             case_id="90012",
             telephone_number_1="",
             telephone_number_2="",
@@ -204,7 +204,7 @@ def test_filter_eligible_cases_returns_cases_only_where_criteria_is_met():
             priority="5",
             outcome_code="0"
         ),
-        populated_case_model(
+        get_populated_case_model(
             case_id="90013",
             telephone_number_1="",
             telephone_number_2="",
@@ -220,7 +220,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
     # arrange
     cases = [
         # should return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90001",
             telephone_number_1="",
             telephone_number_2="",
@@ -230,7 +230,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             outcome_code="310"
         ),
         # should not return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90002",
             telephone_number_1="123435",
             telephone_number_2="",
@@ -240,7 +240,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             outcome_code="310"
         ),
         # should not return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90003",
             telephone_number_1="",
             telephone_number_2="123435",
@@ -250,7 +250,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             outcome_code="310"
         ),
         # should not return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90004",
             telephone_number_1="",
             telephone_number_2="",
@@ -260,7 +260,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             outcome_code="310"
         ),
         # should not return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90005",
             telephone_number_1="",
             telephone_number_2="",
@@ -270,7 +270,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             outcome_code="310"
         ),
         # should not return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90006",
             telephone_number_1="",
             telephone_number_2="",
@@ -280,7 +280,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             outcome_code="310"
         ),
         # should not return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90007",
             telephone_number_1="",
             telephone_number_2="",
@@ -290,7 +290,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             outcome_code="410"
         ),
         # should return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90008",
             telephone_number_1="",
             telephone_number_2="",
@@ -300,7 +300,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             outcome_code="0"
         ),
         # should return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90009",
             telephone_number_1="",
             telephone_number_2="",
@@ -310,7 +310,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             outcome_code="0"
         ),
         # should return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90010",
             telephone_number_1="",
             telephone_number_2="",
@@ -320,7 +320,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             outcome_code="0"
         ),
         # should return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90011",
             telephone_number_1="",
             telephone_number_2="",
@@ -330,7 +330,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             outcome_code="0"
         ),
         # should return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90012",
             telephone_number_1="",
             telephone_number_2="",
@@ -340,7 +340,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             outcome_code="0"
         ),
         # should return
-        populated_case_model(
+        get_populated_case_model(
             case_id="90013",
             telephone_number_1="",
             telephone_number_2="",
@@ -352,7 +352,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
     ]
 
     # act
-    result = eligible_case_service.filter_eligible_cases(cases)
+    result = eligible_blaise_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 7
@@ -372,10 +372,10 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
     assert ('root', logging.INFO, "Case '90013' in questionnaire 'LMS2101_AA1' was eligible and will be included") in caplog.record_tuples
 
 
-def test_filter_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_telephone_number_1_has_a_value(caplog):
+def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_telephone_number_1_has_a_value(caplog):
     # arrange
     cases = [
-        populated_case_model(
+        get_populated_case_model(
             case_id="90001",
             telephone_number_1="3535232",
             telephone_number_2="",
@@ -387,7 +387,7 @@ def test_filter_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_tel
     ]
 
     # act
-    result = eligible_case_service.filter_eligible_cases(cases)
+    result = eligible_blaise_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -395,10 +395,10 @@ def test_filter_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_tel
     assert ('root', logging.INFO, "Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value set for the field 'telephone_number_1'") in caplog.record_tuples
 
 
-def test_filter_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_telephone_number_2_has_a_value(caplog):
+def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_telephone_number_2_has_a_value(caplog):
     # arrange
     cases = [
-        populated_case_model(
+        get_populated_case_model(
             case_id="90001",
             telephone_number_1="",
             telephone_number_2="2221221",
@@ -410,7 +410,7 @@ def test_filter_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_tel
     ]
 
     # act
-    result = eligible_case_service.filter_eligible_cases(cases)
+    result = eligible_blaise_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -418,10 +418,10 @@ def test_filter_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_tel
     assert ('root', logging.INFO, "Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value set for the field 'telephone_number_2'") in caplog.record_tuples
 
 
-def test_filter_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_appointment_telephone_number_has_a_value(caplog):
+def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_appointment_telephone_number_has_a_value(caplog):
     # arrange
     cases = [
-        populated_case_model(
+        get_populated_case_model(
             case_id="90001",
             telephone_number_1="",
             telephone_number_2="",
@@ -433,7 +433,7 @@ def test_filter_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_app
     ]
 
     # act
-    result = eligible_case_service.filter_eligible_cases(cases)
+    result = eligible_blaise_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -442,12 +442,12 @@ def test_filter_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_app
 
 
 @pytest.mark.parametrize("test_input", ["2", "3", "4", "5"])
-def test_filter_eligible_cases_logs_a_message_when_a_wave_is_not_in_range(test_input, caplog):
+def test_get_eligible_cases_logs_a_message_when_a_wave_is_not_in_range(test_input, caplog):
     # arrange
     value_range = ["1"]
 
     cases = [
-        populated_case_model(
+        get_populated_case_model(
             case_id="90001",
             telephone_number_1="",
             telephone_number_2="",
@@ -459,7 +459,7 @@ def test_filter_eligible_cases_logs_a_message_when_a_wave_is_not_in_range(test_i
     ]
 
     # act
-    result = eligible_case_service.filter_eligible_cases(cases)
+    result = eligible_blaise_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -468,12 +468,12 @@ def test_filter_eligible_cases_logs_a_message_when_a_wave_is_not_in_range(test_i
 
 
 @pytest.mark.parametrize("test_input", ["", "6", "7", "8"])
-def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(test_input, caplog):
+def test_get_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(test_input, caplog):
     # arrange
     value_range = ["1", "2", "3", "4", "5"]
 
     cases = [
-        populated_case_model(
+        get_populated_case_model(
             case_id="90001",
             telephone_number_1="",
             telephone_number_2="",
@@ -485,7 +485,7 @@ def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(te
     ]
 
     # act
-    result = eligible_case_service.filter_eligible_cases(cases)
+    result = eligible_blaise_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -494,12 +494,12 @@ def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(te
 
 
 @pytest.mark.parametrize("test_input", ["110", "210", "410"])
-def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(test_input, caplog):
+def test_get_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(test_input, caplog):
     # arrange
     value_range = ["", "0", "310"]
 
     cases = [
-        populated_case_model(
+        get_populated_case_model(
             case_id="90001",
             telephone_number_1="",
             telephone_number_2="",
@@ -511,7 +511,7 @@ def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(te
     ]
 
     # act
-    result = eligible_case_service.filter_eligible_cases(cases)
+    result = eligible_blaise_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0

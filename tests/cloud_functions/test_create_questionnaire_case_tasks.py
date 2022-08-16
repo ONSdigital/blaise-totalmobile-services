@@ -5,7 +5,7 @@ import flask
 import pytest
 import logging
 from models.questionnaire_case_model import UacChunks
-from models.totalmobile_case_model import TotalMobileCaseModel
+from models.totalmobile_outgoing_case_model import TotalMobileOutgoingCaseModel
 from models.totalmobile_world_model import TotalmobileWorldModel, World
 
 from tests.helpers import config_helper
@@ -18,24 +18,24 @@ from cloud_functions.create_questionnaire_case_tasks import (
     get_cases_with_valid_world_ids
 )
 from models.totalmobile_job_model import TotalmobileJobModel
-from tests.helpers.questionnaire_case_model_helper import populated_case_model
+from tests.helpers.questionnaire_case_model_helper import get_populated_case_model
 
 
 def test_create_task_name_returns_correct_name_when_called():
-    questionnaire_case_model = populated_case_model()
+    questionnaire_case_model = get_populated_case_model()
     questionnaire_case_model.case_id = "90001"
     questionnaire_name = "LMS2101_AA1"
-    totalmobile_case_model = TotalMobileCaseModel.import_case(questionnaire_name, questionnaire_case_model)
+    totalmobile_case_model = TotalMobileOutgoingCaseModel.import_case(questionnaire_name, questionnaire_case_model)
     model = TotalmobileJobModel("LMS2101_AA1", "world", "90001", totalmobile_case_model.to_payload())
 
     assert create_task_name(model).startswith("LMS2101_AA1-90001-")
 
 
 def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_model():
-    questionnaire_case_model = populated_case_model()
+    questionnaire_case_model = get_populated_case_model()
     questionnaire_case_model.case_id = "90001"
     questionnaire_name = "LMS2101_AA1"
-    totalmobile_case_model = TotalMobileCaseModel.import_case(questionnaire_name, questionnaire_case_model)
+    totalmobile_case_model = TotalMobileOutgoingCaseModel.import_case(questionnaire_name, questionnaire_case_model)
     model = TotalmobileJobModel("LMS2101_AA1", "world", "90001", totalmobile_case_model.to_payload())
 
     assert create_task_name(model) != create_task_name(model)
@@ -46,9 +46,9 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     questionnaire_name = "LMS2101_AA1"
 
     case_data = [
-        populated_case_model(case_id="10010", outcome_code="110", field_region="region1"),
-        populated_case_model(case_id="10020", outcome_code="120", field_region="region2"),
-        populated_case_model(case_id="10030", outcome_code="130", field_region="region3")
+        get_populated_case_model(case_id="10010", outcome_code="110", field_region="region1"),
+        get_populated_case_model(case_id="10020", outcome_code="120", field_region="region2"),
+        get_populated_case_model(case_id="10030", outcome_code="130", field_region="region3")
     ]
 
     world_model = TotalmobileWorldModel(
@@ -68,17 +68,17 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     assert result[0].questionnaire == "LMS2101_AA1"
     assert result[0].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     assert result[0].case_id == "10010"
-    assert result[0].payload == TotalMobileCaseModel.import_case(questionnaire_name, case_data[0]).to_payload()
+    assert result[0].payload == TotalMobileOutgoingCaseModel.import_case(questionnaire_name, case_data[0]).to_payload()
 
     assert result[1].questionnaire == "LMS2101_AA1"
     assert result[1].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa7"
     assert result[1].case_id == "10020"
-    assert result[1].payload == TotalMobileCaseModel.import_case(questionnaire_name, case_data[1]).to_payload()
+    assert result[1].payload == TotalMobileOutgoingCaseModel.import_case(questionnaire_name, case_data[1]).to_payload()
 
     assert result[2].questionnaire == "LMS2101_AA1"
     assert result[2].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
     assert result[2].case_id == "10030"
-    assert result[2].payload == TotalMobileCaseModel.import_case(questionnaire_name, case_data[2]).to_payload()
+    assert result[2].payload == TotalMobileOutgoingCaseModel.import_case(questionnaire_name, case_data[2]).to_payload()
 
 
 def test_validate_request(mock_create_job_task):
@@ -108,7 +108,7 @@ def test_create_case_tasks_for_questionnaire(
     mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
 
     questionnaire_cases = [
-        populated_case_model(
+        get_populated_case_model(
             case_id="10010",
             telephone_number_1="",
             telephone_number_2="",
@@ -134,7 +134,7 @@ def test_create_case_tasks_for_questionnaire(
     )
 
     mock_get_cases_with_valid_world_ids.return_value = [
-        populated_case_model(
+        get_populated_case_model(
             case_id="10010",
             telephone_number_1="",
             telephone_number_2="",
@@ -169,7 +169,7 @@ def test_create_case_tasks_for_questionnaire(
         'questionnaire': 'LMS2101_AA1',
         'world_id': '3fa85f64-5717-4562-b3fc-2c963f66afa6',
         'case_id': '10010',
-        'payload': TotalMobileCaseModel.import_case("LMS2101_AA1", questionnaire_cases[0]).to_payload()
+        'payload': TotalMobileOutgoingCaseModel.import_case("LMS2101_AA1", questionnaire_cases[0]).to_payload()
     }
     assert result == "Done"
 
@@ -208,7 +208,7 @@ def test_create_questionnaire_case_tasks_errors_if_misssing_questionnaire():
 @mock.patch.object(OptimiseClient, "get_worlds")
 def test_get_cases_with_valid_world_ids_logs_a_console_error_when_given_an_unknown_region(_mock_optimise_client,
                                                                                           caplog):
-    filtered_cases = [populated_case_model(field_region="Risca")]
+    filtered_cases = [get_populated_case_model(field_region="Risca")]
     world_model = TotalmobileWorldModel(
         worlds=[
             World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")
@@ -223,8 +223,8 @@ def test_get_cases_with_valid_world_ids_logs_a_console_error_when_given_an_unkno
 @mock.patch.object(OptimiseClient, "get_worlds")
 def test_get_cases_with_valid_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world(
         _mock_optimise_client, caplog):
-    filtered_cases = [populated_case_model(field_region="Risca"),
-                      populated_case_model(field_region="Region 1")]
+    filtered_cases = [get_populated_case_model(field_region="Risca"),
+                      get_populated_case_model(field_region="Region 1")]
     world_model = TotalmobileWorldModel(
         worlds=[
             World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")
@@ -234,12 +234,12 @@ def test_get_cases_with_valid_world_ids_logs_a_console_error_and_returns_data_wh
     cases_with_valid_world_ids = get_cases_with_valid_world_ids(filtered_cases, world_model)
 
     assert len(cases_with_valid_world_ids) == 1
-    assert cases_with_valid_world_ids == [populated_case_model(field_region="Region 1")]
+    assert cases_with_valid_world_ids == [get_populated_case_model(field_region="Region 1")]
     assert ('root', logging.WARNING, 'Unsupported world: Risca') in caplog.record_tuples
 
 
 def test_get_cases_with_valid_world_ids_logs_a_console_error_when_field_region_is_an_empty_value(caplog):
-    filtered_cases = [populated_case_model(field_region="")]
+    filtered_cases = [get_populated_case_model(field_region="")]
     world_model = TotalmobileWorldModel(
         worlds=[
             World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")
@@ -253,8 +253,8 @@ def test_get_cases_with_valid_world_ids_logs_a_console_error_when_field_region_i
 def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world_and_a_known_world(caplog):
     config = config_helper.get_default_config()
 
-    filtered_cases = [populated_case_model(field_region=""),
-                      populated_case_model(field_region="Region 1")]
+    filtered_cases = [get_populated_case_model(field_region=""),
+                      get_populated_case_model(field_region="Region 1")]
 
     world_model = TotalmobileWorldModel(
         worlds=[
@@ -265,5 +265,5 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
     cases_with_valid_world_ids = get_cases_with_valid_world_ids(filtered_cases, world_model)
 
     assert len(cases_with_valid_world_ids) == 1
-    assert cases_with_valid_world_ids == [populated_case_model(field_region="Region 1")]
+    assert cases_with_valid_world_ids == [get_populated_case_model(field_region="Region 1")]
     assert ('root', logging.WARNING, 'Case rejected. Missing Field Region') in caplog.record_tuples

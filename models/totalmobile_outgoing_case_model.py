@@ -1,7 +1,9 @@
 from dataclasses import dataclass, asdict
-from typing import Type, TypeVar, List
+from datetime import datetime
+from typing import Type, TypeVar, List, Optional
 
 from models.questionnaire_case_model import QuestionnaireCaseModel
+from models.totalmobile_reference_model import TotalmobileReferenceModel
 
 T = TypeVar('T')
 
@@ -18,7 +20,7 @@ class Skill:
 
 @dataclass
 class DueDate:
-    end: str
+    end: Optional[datetime]
 
 
 @dataclass
@@ -55,7 +57,7 @@ class AdditionalProperty:
 
 
 @dataclass
-class TotalMobileCaseModel:
+class TotalMobileOutgoingCaseModel:
     identity: Reference
     description: str
     origin: str
@@ -68,19 +70,23 @@ class TotalMobileCaseModel:
     additionalProperties: List[AdditionalProperty]
 
     def to_payload(self) -> dict[str, str]:
-        return asdict(self)
+        payload = asdict(self)
+        payload["dueDate"]["end"] = self.dueDate.end.strftime("%Y-%m-%d") if self.dueDate.end else ""
+        return payload
 
     @staticmethod
     def create_job_reference(questionnaire_name: str, case_id: str) -> str:
-        return f"{questionnaire_name.replace('_', '-')}.{case_id}"
+        reference_model = TotalmobileReferenceModel(questionnaire_name, case_id)
+        return reference_model.create_reference()
 
     @staticmethod
     def create_description(questionnaire_name: str, case_id: str) -> str:
         return f"Study: {questionnaire_name}\nCase ID: {case_id}"
 
+
     @classmethod
     def import_case(cls: Type[T], questionnaire_name: str, questionnaire_case: QuestionnaireCaseModel) -> T:
-        total_mobile_case = TotalMobileCaseModel(
+        total_mobile_case = TotalMobileOutgoingCaseModel(
             identity=Reference(reference=cls.create_job_reference(questionnaire_name, questionnaire_case.case_id)),
             description=cls.create_description(questionnaire_name, questionnaire_case.case_id),
             origin="ONS",

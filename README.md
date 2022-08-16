@@ -121,9 +121,14 @@ Run unit tests:
 poetry run python -m pytest
 ```
 
+Run behave tests:
+```shell
+poetry run python -m behave tests/features
+```
+
 ### Poetry Problems
 
-Dependencies (like the blaise-restapi) not updating properly after running ```poetry update blaise-restapi``` ???
+#### Dependencies (like the blaise-restapi) not updating properly after running ```poetry update blaise-restapi``` ???
 
 This worked for me:
 
@@ -131,3 +136,16 @@ This worked for me:
 * Run ```poetry env list``` (this will show you the venv for the project)
 * Then run ```poetry env remove whatever-WhATeVs-py3.9``` to delete it (where ```whatever-WhATeVs-py3.9``` is the venv displayed from the above command) 
 * Running ```poetry install``` <i>should</i> install all the deps listed in pyproject.toml.
+
+
+#### Dependencies (like the blaise-restapi) not updating properly in Concourse???
+
+This worked for me:
+
+* Clone or pull https://github.com/ONSdigital/blaise-api-python-client and create a new branch
+* Execute ```poetry version patch``` to bump the version
+* Add it, commit it, push it, raise a PR and get it deployed
+* In this repository create a new branch and execute ```poetry update blaise-restapi``` to update the dependencies (if there are issues, follow the above instructions)
+* Add it, commit it, push it, raise a PR (you will see the version for blaise-restapi has been bumped in poetry.lock) and get it deployed
+
+

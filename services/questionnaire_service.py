@@ -1,13 +1,13 @@
 from typing import List
 from appconfig import Config
-from services import blaise_service, uac_service, eligible_case_service
+from services import blaise_service, uac_service, eligible_blaise_case_service
 from models.questionnaire_case_model import QuestionnaireCaseModel
 
 
 def get_eligible_cases(questionnaire_name: str, config: Config) -> List[QuestionnaireCaseModel]:
     questionnaire_cases = get_cases(questionnaire_name, config)
 
-    return eligible_case_service.filter_eligible_cases(questionnaire_cases)
+    return eligible_blaise_case_service.get_eligible_cases(questionnaire_cases)
 
 
 def get_cases(questionnaire_name: str, config: Config) -> List[QuestionnaireCaseModel]:
@@ -22,7 +22,15 @@ def get_cases(questionnaire_name: str, config: Config) -> List[QuestionnaireCase
     return questionnaire_cases
 
 
+def get_case(questionnaire_name: str, case_id: str, config: Config) -> QuestionnaireCaseModel:
+    return blaise_service.get_case(questionnaire_name, case_id, config)
+
+
 def get_wave_from_questionnaire_name(questionnaire_name: str) -> str:
     if questionnaire_name[0:3] != "LMS":
         raise Exception(f"Invalid format for questionnaire name: {questionnaire_name}")
     return questionnaire_name[-1]
+
+
+def questionnaire_exists(questionnaire_name: str, config: Config) -> str:
+    return blaise_service.questionnaire_exists(questionnaire_name, config)
