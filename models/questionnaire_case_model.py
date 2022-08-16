@@ -47,6 +47,7 @@ class QuestionnaireCaseModel(BaseModel):
     contact_details: ContactDetails
     outcome_code: str
     priority: str
+    field_case: str
     field_region: str
     field_team: str
     wave_com_dte: Optional[datetime]
@@ -97,6 +98,7 @@ class QuestionnaireCaseModel(BaseModel):
             ),
             outcome_code=case_data_dictionary.get("hOut"),
             priority=case_data_dictionary.get("qDataBag.Priority"),
+            field_case=case_data_dictionary.get("qDatabag.FieldCase"),
             field_region=case_data_dictionary.get("qDataBag.FieldRegion"),
             field_team=case_data_dictionary.get("qDataBag.FieldTeam"),
             wave_com_dte=wave_com_dte,

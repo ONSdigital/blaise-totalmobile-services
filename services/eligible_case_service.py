@@ -12,7 +12,7 @@ def filter_eligible_cases(cases: List[QuestionnaireCaseModel]) -> List[Questionn
                 telephone_number_2_is_empty(case) and
                 appointment_telephone_number_is_empty(case) and
                 case_is_part_of_wave_1(case) and
-                case_has_a_priority_between_1_and_5(case) and
+                case_has_field_case_of_y(case) and
                 case_has_a_desired_outcome_code_of_blank_0_or_310_or_320(case)
         )
     ]
@@ -60,15 +60,16 @@ def case_is_part_of_wave_1(case: QuestionnaireCaseModel) -> bool:
     return False
 
 
-def case_has_a_priority_between_1_and_5(case: QuestionnaireCaseModel) -> bool:
-    value_range = ["1", "2", "3", "4", "5"]
-    if case.priority in value_range:
-        return True
+# def case_has_a_priority_between_1_and_5(case: QuestionnaireCaseModel) -> bool:
+#     value_range = ["1", "2", "3", "4", "5"]
+#     if case.priority in value_range:
+#         return True
+#
+#     logging.info(
+#         f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to totalmobile as it has a value '{case.priority}' outside of the range '{value_range}' set for the field 'priority'")
+#     return False
 
-    logging.info(
-        f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to totalmobile as it has a value '{case.priority}' outside of the range '{value_range}' set for the field 'priority'")
-    return False
-
+def case_has_field_case_of_y(case: QuestionnaireCaseModel) -> bool:
 
 def case_has_a_desired_outcome_code_of_blank_0_or_310_or_320(case: QuestionnaireCaseModel) -> bool:
     value_range = ["", "0", "310", "320"]
