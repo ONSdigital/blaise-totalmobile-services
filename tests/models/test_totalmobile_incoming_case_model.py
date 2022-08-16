@@ -8,8 +8,15 @@ from tests.helpers import incoming_request_helper
 def test_import_case_returns_a_populated_model():
     # arrange
     reference = "LMS2101_AA1.90001"
+    outcome_code = "300"
+    home_phone_number = "01234567890"
+    mobile_phone_number = "07123123123"
 
-    update_case_request = incoming_request_helper.get_populated_update_case_request(reference=reference)
+    update_case_request = incoming_request_helper.get_populated_update_case_request(
+        reference=reference,
+        outcome_code=outcome_code,
+        home_phone_number=home_phone_number,
+        mobile_phone_number=mobile_phone_number)
 
     # act
     result = TotalMobileIncomingCaseModel.import_case(update_case_request)
@@ -17,7 +24,9 @@ def test_import_case_returns_a_populated_model():
     # assert
     assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id == "90001"
-    assert result.outcome_code == ""
+    assert result.outcome_code == "300"
+    assert result.home_phone_number == "01234567890"
+    assert result.mobile_phone_number == "07123123123"
 
 
 def test_import_case_raises_a_missing_reference_error_if_the_request_does_not_have_expected_root_element():

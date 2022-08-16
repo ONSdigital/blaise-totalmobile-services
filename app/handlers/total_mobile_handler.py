@@ -8,16 +8,17 @@ from app.utilities.parse_json import (
 )
 from appconfig.config import Config
 from models.totalmobile_incoming_case_model import TotalMobileIncomingCaseModel
+from services import update_blaise_case_service
 
 
-def submit_form_result_request_handler(request, update_blaise_case_service):
+def submit_form_result_request_handler(request, questionnaire_service):
     config = Config.from_env()
     data = request.get_json()
     validate_data(data)
 
     totalmobile_case = TotalMobileIncomingCaseModel.import_case(data)
 
-    update_blaise_case_service.update_case(totalmobile_case, config)
+    update_blaise_case_service.update_case(totalmobile_case, config, questionnaire_service)
 
 
 def update_visit_status_request_handler(request):

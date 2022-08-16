@@ -1,3 +1,4 @@
+import logging
 from typing import List, Dict, Tuple
 
 from app.exceptions.custom_exceptions import BadReferenceError, MissingReferenceError
@@ -53,6 +54,7 @@ class TotalmobileReferenceModel:
                 or "Reference" not in incoming_request["Result"]["Association"]
                 or incoming_request["Result"]["Association"]["Reference"] == ""
         ):
+            logging.error("Unique reference is missing from totalmobile payload")
             raise MissingReferenceError()
 
         return incoming_request["Result"]["Association"]["Reference"]

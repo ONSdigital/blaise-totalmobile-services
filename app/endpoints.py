@@ -7,7 +7,8 @@ from app.handlers.total_mobile_handler import (
     update_visit_status_request_handler,
 )
 
-from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError, QuestionnaireDoesNotExistError, MissingReferenceError
+from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError, QuestionnaireDoesNotExistError, \
+    MissingReferenceError, BadReferenceError
 
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
 
@@ -22,9 +23,11 @@ def update_visit_status_request():
 @auth.login_required
 def submit_form_result_request():
     try:
-        submit_form_result_request_handler(request, current_app.update_blaise_case_service)
+        submit_form_result_request_handler(request, current_app.questionnaire_service)
         return "ok"
     except MissingReferenceError:
+        return "Missing reference", 400
+    except BadReferenceError:
         return "Missing reference", 400
     except QuestionnaireDoesNotExistError:
         return "Questionnaire does not exist in Blaise", 404
