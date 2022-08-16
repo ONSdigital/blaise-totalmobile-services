@@ -324,7 +324,7 @@ def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(te
     value_range = ["", "0", "310", "320"]
 
     cases = [
-        populated_case_model(
+        get_populated_case_model(
             case_id="90001",
             telephone_number_1="",
             telephone_number_2="",
@@ -336,7 +336,7 @@ def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(te
     ]
 
     # act
-    result = eligible_case_service.filter_eligible_cases(cases)
+    result = eligible_blaise_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -390,4 +390,3 @@ def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_an_empty
     assert len(result) == 0
 
     assert ('root', logging.INFO, f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a field case value of '', not 'Y'") in caplog.record_tuples
-
