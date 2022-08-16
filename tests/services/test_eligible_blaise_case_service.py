@@ -374,7 +374,7 @@ def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_N(caplog
     # arrange
 
     cases = [
-        populated_case_model(
+        get_populated_case_model(
             case_id="90001",
             telephone_number_1="",
             telephone_number_2="",
