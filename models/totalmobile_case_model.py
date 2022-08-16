@@ -1,4 +1,5 @@
 from dataclasses import dataclass, asdict
+from datetime import datetime
 from typing import Type, TypeVar, List
 
 from models.questionnaire_case_model import QuestionnaireCaseModel
@@ -18,7 +19,7 @@ class Skill:
 
 @dataclass
 class DueDate:
-    end: str
+    end: datetime
 
 
 @dataclass
@@ -77,6 +78,7 @@ class TotalMobileCaseModel:
     @staticmethod
     def create_description(questionnaire_name: str, case_id: str) -> str:
         return f"Study: {questionnaire_name}\nCase ID: {case_id}"
+
 
     @classmethod
     def import_case(cls: Type[T], questionnaire_name: str, questionnaire_case: QuestionnaireCaseModel) -> T:
