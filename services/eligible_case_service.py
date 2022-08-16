@@ -13,7 +13,7 @@ def filter_eligible_cases(cases: List[QuestionnaireCaseModel]) -> List[Questionn
                 appointment_telephone_number_is_empty(case) and
                 case_is_part_of_wave_1(case) and
                 case_has_a_priority_between_1_and_5(case) and
-                case_has_a_desired_outcome_code_of_blank_0_or_310(case)
+                case_has_a_desired_outcome_code_of_blank_0_or_310_or_320(case)
         )
     ]
 
@@ -70,8 +70,8 @@ def case_has_a_priority_between_1_and_5(case: QuestionnaireCaseModel) -> bool:
     return False
 
 
-def case_has_a_desired_outcome_code_of_blank_0_or_310(case: QuestionnaireCaseModel) -> bool:
-    value_range = ["", "0", "310"]
+def case_has_a_desired_outcome_code_of_blank_0_or_310_or_320(case: QuestionnaireCaseModel) -> bool:
+    value_range = ["", "0", "310", "320"]
     if case.outcome_code in value_range:
         return True
 

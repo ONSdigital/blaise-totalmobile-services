@@ -363,7 +363,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
     assert ('root', logging.INFO, "Case '90004' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value set for the field 'appointment_telephone_number'") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90005' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '2' outside of the range '['1']' set for the field 'wave'") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90006' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '6' outside of the range '['1', '2', '3', '4', '5']' set for the field 'priority'") in caplog.record_tuples
-    assert ('root', logging.INFO, "Case '90007' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '410' outside of the range '['', '0', '310']' set for the field 'outcome_code'") in caplog.record_tuples
+    assert ('root', logging.INFO, "Case '90007' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '410' outside of the range '['', '0', '310', '320']' set for the field 'outcome_code'") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90008' in questionnaire 'LMS2101_AA1' was eligible and will be included") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90009' in questionnaire 'LMS2101_AA1' was eligible and will be included") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90010' in questionnaire 'LMS2101_AA1' was eligible and will be included") in caplog.record_tuples
@@ -496,7 +496,7 @@ def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(te
 @pytest.mark.parametrize("test_input", ["110", "210", "410"])
 def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(test_input, caplog):
     # arrange
-    value_range = ["", "0", "310"]
+    value_range = ["", "0", "310", "320"]
 
     cases = [
         populated_case_model(
