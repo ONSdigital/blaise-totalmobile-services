@@ -1,14 +1,11 @@
 from urllib3.exceptions import HTTPError
 import blaise_restapi
+
+from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
 from appconfig import Config
 from typing import List
 
 from models.questionnaire_case_model import QuestionnaireCaseModel
-
-
-class QuestionnaireCaseDoesNotExistError(Exception):
-    pass
-
 
 required_fields_from_blaise = [
     "qiD.Serial_Number",

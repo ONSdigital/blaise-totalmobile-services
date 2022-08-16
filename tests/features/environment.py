@@ -16,7 +16,7 @@ def before_scenario(context, scenario):
     context.test_client = app.test_client()
 
 
-class MockQuestionnaireService(): 
+class MockQuestionnaireService:
     def __init__(self):
         self.questionnaires: Dict[str, List[str]] = {}
 

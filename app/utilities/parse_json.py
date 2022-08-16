@@ -3,8 +3,8 @@ from typing import Any, Dict, Tuple
 
 import phonenumbers
 
-class MissingReferenceError(Exception):
-    pass
+from app.exceptions.custom_exceptions import MissingReferenceError
+
 
 def get_case_details(input: Dict[str, Any]) -> Tuple[str]:
     print(f"Getting questionnaire name and case id, please wait...")
