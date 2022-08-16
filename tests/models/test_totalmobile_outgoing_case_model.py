@@ -1,4 +1,4 @@
-from models.totalmobile_case_model import TotalMobileCaseModel, Reference, Skill, AddressDetails, Address, \
+from models.totalmobile_outgoing_case_model import TotalMobileOutgoingCaseModel, Reference, Skill, AddressDetails, Address, \
     AddressCoordinates, ContactDetails, AdditionalProperty, DueDate
 from models.uac_model import UacChunks
 from tests.helpers import questionnaire_case_model_helper
@@ -6,9 +6,10 @@ from datetime import datetime
 
 
 def test_import_case_returns_a_populated_model():
+    # arrange
     questionnaire_name = "LMS2101_AA1"
 
-    questionnaire_case = questionnaire_case_model_helper.populated_case_model(
+    questionnaire_case = questionnaire_case_model_helper.get_populated_case_model(
         case_id="90001",
         data_model_name="LM2007",
         survey_type="LMS",
@@ -32,8 +33,10 @@ def test_import_case_returns_a_populated_model():
         uac_chunks=UacChunks(uac1="3456", uac2="3453", uac3="4546")
     )
 
-    result = TotalMobileCaseModel.import_case(questionnaire_name, questionnaire_case)
+    # act
+    result = TotalMobileOutgoingCaseModel.import_case(questionnaire_name, questionnaire_case)
 
+    # assert
     assert result.identity.reference == "LMS2101-AA1.90001"
     assert result.description == "Study: LMS2101_AA1\nCase ID: 90001"
     assert result.origin == "ONS"
@@ -77,20 +80,23 @@ def test_import_case_returns_a_populated_model():
 
 
 def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uacs_are_set():
+    # arrange
     questionnaire_name = "LMS2101_AA1"
 
-    questionnaire_case = questionnaire_case_model_helper.populated_case_model(
+    questionnaire_case = questionnaire_case_model_helper.get_populated_case_model(
         uac_chunks=None
     )
 
-    result = TotalMobileCaseModel.import_case(questionnaire_name, questionnaire_case)
+    # act
+    result = TotalMobileOutgoingCaseModel.import_case(questionnaire_name, questionnaire_case)
 
+    # assert
     for additional_property in result.additionalProperties:
         assert additional_property.name.startswith('uac') is False
 
 
 def test_to_payload_returns_a_correctly_formatted_payload():
-    totalmobile_case = TotalMobileCaseModel(
+    totalmobile_case = TotalMobileOutgoingCaseModel(
         identity=Reference("LMS2101-AA1.90001"),
         description="Study: LMS2101_AA1\nCase ID: 90001",
         origin="ONS",
@@ -145,9 +151,10 @@ def test_to_payload_returns_a_correctly_formatted_payload():
             )
         ])
 
+    # act
     result = totalmobile_case.to_payload()
-    print(result)
 
+    # assert
     assert result == {
         "identity": {
             "reference": "LMS2101-AA1.90001",
@@ -223,11 +230,11 @@ def test_to_payload_returns_a_correctly_formatted_payload():
 def test_to_payload_sends_an_empty_string_to_totalmobile_if_the_due_date_is_missing():
     questionnaire_name = "LMS2101_AA1"
 
-    questionnaire_case = questionnaire_case_model_helper.populated_case_model(
+    questionnaire_case = questionnaire_case_model_helper.get_populated_case_model(
         wave_com_dte=None
     )
 
-    case = TotalMobileCaseModel.import_case(questionnaire_name, questionnaire_case)
+    case = TotalMobileOutgoingCaseModel.import_case(questionnaire_name, questionnaire_case)
     result = case.to_payload()
 
     assert result["dueDate"]["end"] == ""

@@ -121,6 +121,11 @@ Run unit tests:
 poetry run python -m pytest
 ```
 
+Run behave tests:
+```shell
+poetry run python -m behave tests/features
+```
+
 ### Poetry Problems
 
 #### Dependencies (like the blaise-restapi) not updating properly after running ```poetry update blaise-restapi``` ???
