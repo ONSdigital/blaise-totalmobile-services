@@ -6,7 +6,7 @@ from urllib3.exceptions import HTTPError
 from services import blaise_service
 from unittest import mock
 
-from services.blaise_service import QuestionnaireCaseDoesNotExistError
+from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
 from tests.helpers import config_helper
 
 

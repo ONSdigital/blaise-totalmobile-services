@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Type, TypeVar, List, Optional
 
 from models.questionnaire_case_model import QuestionnaireCaseModel
+from models.totalmobile_reference_model import TotalmobileReferenceModel
 
 T = TypeVar('T')
 
@@ -56,7 +57,7 @@ class AdditionalProperty:
 
 
 @dataclass
-class TotalMobileCaseModel:
+class TotalMobileOutgoingCaseModel:
     identity: Reference
     description: str
     origin: str
@@ -75,7 +76,8 @@ class TotalMobileCaseModel:
 
     @staticmethod
     def create_job_reference(questionnaire_name: str, case_id: str) -> str:
-        return f"{questionnaire_name.replace('_', '-')}.{case_id}"
+        reference_model = TotalmobileReferenceModel(questionnaire_name, case_id)
+        return reference_model.create_reference()
 
     @staticmethod
     def create_description(questionnaire_name: str, case_id: str) -> str:
@@ -84,7 +86,7 @@ class TotalMobileCaseModel:
 
     @classmethod
     def import_case(cls: Type[T], questionnaire_name: str, questionnaire_case: QuestionnaireCaseModel) -> T:
-        total_mobile_case = TotalMobileCaseModel(
+        total_mobile_case = TotalMobileOutgoingCaseModel(
             identity=Reference(reference=cls.create_job_reference(questionnaire_name, questionnaire_case.case_id)),
             description=cls.create_description(questionnaire_name, questionnaire_case.case_id),
             origin="ONS",
