@@ -1,6 +1,7 @@
 import blaise_restapi
 import pytest
 
+from datetime import datetime
 from urllib3.exceptions import HTTPError
 from services import blaise_service
 from unittest import mock
@@ -32,8 +33,8 @@ def test_get_cases_returns_a_list_of_case_models(_mock_rest_api_client_get_quest
         "questionnaireId": "12345-12345-12345-12345-12345",
         "reportingData": [
             {"qiD.Serial_Number": "10010", "hOut": "110", "qDataBag.WaveComDTE": "31-01-2023"},
-            {"qiD.Serial_Number": "10020", "hOut": "210", "qDataBag.WaveComDTE": "31-01-2023"},
-            {"qiD.Serial_Number": "10030", "hOut": "310", "qDataBag.WaveComDTE": "31-01-2023"},
+            {"qiD.Serial_Number": "10020", "hOut": "210", "qDataBag.WaveComDTE": ""},
+            {"qiD.Serial_Number": "10030", "hOut": "310", "qDataBag.WaveComDTE": ""},
         ],
     }
     questionnaire_name = "LMS2101_AA1"
@@ -46,12 +47,15 @@ def test_get_cases_returns_a_list_of_case_models(_mock_rest_api_client_get_quest
 
     assert result[0].case_id == "10010"
     assert result[0].outcome_code == "110"
+    assert result[0].wave_com_dte == datetime(2023, 1, 31)
 
     assert result[1].case_id == "10020"
     assert result[1].outcome_code == "210"
+    assert result[1].wave_com_dte == None
 
     assert result[2].case_id == "10030"
     assert result[2].outcome_code == "310"
+    assert result[2].wave_com_dte == None
 
 
 @mock.patch.object(blaise_restapi.Client, "get_case")

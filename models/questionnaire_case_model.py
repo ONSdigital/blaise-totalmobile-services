@@ -1,6 +1,6 @@
 from dataclasses import dataclass, fields
 from datetime import datetime
-from typing import Dict, Type, TypeVar
+from typing import Dict, Type, TypeVar, Optional
 from models.base_model import BaseModel
 from models.uac_model import UacChunks, UacModel
 
@@ -49,7 +49,7 @@ class QuestionnaireCaseModel(BaseModel):
     priority: str
     field_region: str
     field_team: str
-    wave_com_dte: datetime
+    wave_com_dte: Optional[datetime]
     uac_chunks: UacChunks
 
     def populate_uac_data(self, uac_model: UacModel):
