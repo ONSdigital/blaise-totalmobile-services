@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Type, TypeVar, Dict
 
-from services.totalmobile_reference_service import TotalmobileReferenceService
+from models.totalmobile_reference_model import TotalmobileReferenceModel
 
 T = TypeVar('T')
 
@@ -14,11 +14,11 @@ class TotalMobileIncomingCaseModel:
 
     @classmethod
     def import_case(cls: Type[T], incoming_request: Dict[str, str]) -> T:
-        reference = TotalmobileReferenceService.get_reference_from_incoming_request(incoming_request)
+        reference_model = TotalmobileReferenceModel(incoming_request)
 
         total_mobile_case = TotalMobileIncomingCaseModel(
-            questionnaire_name=TotalmobileReferenceService.get_questionnaire_name_from_reference(reference),
-            case_id=TotalmobileReferenceService.get_case_id_from_reference(reference),
+            questionnaire_name=reference_model.questionnaire_name,
+            case_id=reference_model.case_id,
             outcome_code=""
         )
 

@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Type, TypeVar, List, Optional
 
 from models.questionnaire_case_model import QuestionnaireCaseModel
-from services.totalmobile_reference_service import TotalmobileReferenceService
+from models.totalmobile_reference_model import TotalmobileReferenceModel
 
 T = TypeVar('T')
 
@@ -76,7 +76,8 @@ class TotalMobileOutgoingCaseModel:
 
     @staticmethod
     def create_job_reference(questionnaire_name: str, case_id: str) -> str:
-        return TotalmobileReferenceService.create_reference(questionnaire_name, case_id)
+        reference_model = TotalmobileReferenceModel(questionnaire_name, case_id)
+        return reference_model.create_reference()
 
     @staticmethod
     def create_description(questionnaire_name: str, case_id: str) -> str:
