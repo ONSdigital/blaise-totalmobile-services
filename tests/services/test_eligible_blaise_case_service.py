@@ -223,6 +223,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
 
 
 
+
 def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_telephone_number_1_has_a_value(caplog):
     # arrange
     cases = [
@@ -355,6 +356,31 @@ def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_N(caplog
             appointment_telephone_number="",
             wave="1",
             field_case="N",
+            priority="1",
+            outcome_code=test_input
+        )
+    ]
+
+    # act
+    result = eligible_case_service.filter_eligible_cases(cases)
+
+    # assert
+    assert len(result) == 0
+
+    assert ('root', logging.INFO, f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '{test_input}' outside of the range '{value_range}' set for the field 'outcome_code'") in caplog.record_tuples
+
+
+def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_N(caplog):
+    # arrange
+
+    cases = [
+        populated_case_model(
+            case_id="90001",
+            telephone_number_1="",
+            telephone_number_2="",
+            appointment_telephone_number="",
+            wave="1",
+            field_case="N",
             outcome_code="310"
         )
     ]
@@ -390,3 +416,4 @@ def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_an_empty
     assert len(result) == 0
 
     assert ('root', logging.INFO, f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a field case value of '', not 'Y'") in caplog.record_tuples
+
