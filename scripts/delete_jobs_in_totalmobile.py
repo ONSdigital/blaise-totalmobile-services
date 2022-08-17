@@ -8,4 +8,4 @@ if __name__ == "__main__":
     for world_id in world_ids:
         jobs = totalmobile_service.get_jobs(config, world_id["id"])
         for job in jobs:
-            totalmobile_service.delete_job(config, world_id, job["results"]["identity"]["reference"])
+            totalmobile_service.delete_job(config, world_id["id"], job["results"]["identity"]["reference"])
