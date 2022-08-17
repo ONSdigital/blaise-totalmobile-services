@@ -71,6 +71,7 @@ def test_create_tasks_gets_called_once_for_each_task_given_to_it(mock_create_tas
         tasks_v2.CreateTaskRequest(parent="qid2", task=tasks_v2.Task()),
     ]
 
+
     # act
     create_tasks(task_requests, mock_create_task)
 

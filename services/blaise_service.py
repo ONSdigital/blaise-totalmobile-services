@@ -25,6 +25,7 @@ required_fields_from_blaise = [
     "qDataBag.UPRN_Latitude",
     "qDataBag.UPRN_Longitude",
     "qDataBag.Priority",
+    "qDataBag.FieldCase",
     "qDataBag.FieldRegion",
     "qDataBag.FieldTeam",
     "qDataBag.WaveComDTE",
