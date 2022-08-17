@@ -2,6 +2,7 @@ from appconfig import Config
 from client.optimise import OptimiseClient
 from models.totalmobile_job_model import TotalmobileJobModel
 from models.totalmobile_world_model import TotalmobileWorldModel
+from typing import Dict
 
 
 def get_worlds(config: Config) -> TotalmobileJobModel:
