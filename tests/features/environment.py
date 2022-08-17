@@ -33,3 +33,7 @@ class MockQuestionnaireService:
         if not (questionnaire_name in self.questionnaires and case_id in self.questionnaires[questionnaire_name]):
             raise QuestionnaireCaseDoesNotExistError()
         return {}
+
+    def update_case(self, questionnaire_name, case_id, data_fields, config):
+        print("yo")
+        return

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 from appconfig import Config
 from services import blaise_service, uac_service, eligible_blaise_case_service
 from models.questionnaire_case_model import QuestionnaireCaseModel
@@ -34,3 +34,7 @@ def get_wave_from_questionnaire_name(questionnaire_name: str) -> str:
 
 def questionnaire_exists(questionnaire_name: str, config: Config) -> str:
     return blaise_service.questionnaire_exists(questionnaire_name, config)
+
+
+def update_case(questionnaire_name: str, case_id: str, data_fields: Dict[str, str], config: Config) -> None:
+    return blaise_service.update_case(questionnaire_name, case_id, data_fields, config)

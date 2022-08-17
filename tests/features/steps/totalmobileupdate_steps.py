@@ -1,7 +1,8 @@
 import base64
 import logging
-from behave import given, when, then
 
+from behave import given, when, then
+from tests.helpers import incoming_request_helper
 
 @given('there is a questionnaire "{questionnaire}" with case "{case}" in Blaise')
 def step_impl(context, questionnaire, case):
@@ -32,26 +33,9 @@ def step_impl(context, reference):
     response = context.test_client.post(
         "/bts/submitformresultrequest",
         headers={"Authorization": f"Basic {valid_credentials}"},
-        json={
-            "Result": {
-                "Responses": [
-                    {
-                        "Responses": [
-                            {
-                                "Value": "12345",
-                                "Element": {
-                                    "Reference": "TelNo",
-                                },
-                            }
-                        ],
-                    },
-                ],
-                "Association": {
-                    "Reference": reference,
-                },
-            }
-        },
+        json=incoming_request_helper.get_populated_update_case_request(reference=reference)
     )
+
     context.response = response
 
 
@@ -61,24 +45,7 @@ def step_impl(context):
     response = context.test_client.post(
         "/bts/submitformresultrequest",
         headers={"Authorization": f"Basic {valid_credentials}"},
-        json={
-            "Result": {
-                "Responses": [
-                    {
-                        "Responses": [
-                            {
-                                "Value": "12345",
-                                "Element": {
-                                    "Reference": "TelNo",
-                                },
-                            }
-                        ],
-                    },
-                ],
-                "Association": {
-                },
-            }
-        },
+        json=incoming_request_helper.get_update_case_request_without_reference_element()
     )
     context.response = response
 

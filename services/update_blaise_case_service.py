@@ -9,6 +9,13 @@ def update_case(totalmobile_case: TotalMobileIncomingCaseModel, config: Config, 
     validate_questionnaire_exists(totalmobile_case.questionnaire_name, config, questionnaire_service)
     validate_case_exists(totalmobile_case.questionnaire_name, totalmobile_case.case_id, config, questionnaire_service)
 
+    questionnaire_service.update_case(
+        totalmobile_case.questionnaire_name,
+        totalmobile_case.case_id,
+        totalmobile_case.to_blaise_data_fields(),
+        config
+    )
+
 
 def validate_questionnaire_exists(questionnaire_name: str, config: Config, questionnaire_service) -> None:
     if not questionnaire_service.questionnaire_exists(questionnaire_name, config):

@@ -1,6 +1,7 @@
 def get_populated_update_case_request(
         reference="LMS2101-AA1.90001",
         outcome_code="300",
+        contact_name="Duncan Bell",
         home_phone_number="01234567890",
         mobile_phone_number="07123123123"
 ):
@@ -74,7 +75,7 @@ def get_populated_update_case_request(
                     "Instance": 0,
                     "Responses": [
                         {
-                            "Value": "Duncan",
+                            "Value": contact_name,
                             "Description": None,
                             "Element": {
                                 "Reference": "Contact_Name",

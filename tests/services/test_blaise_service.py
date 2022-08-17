@@ -141,3 +141,23 @@ def test_questionnaire_exists_returns_correct_response(_mock_rest_api_client, ap
 
     # assert
     assert result == expected_response
+
+
+@mock.patch.object(blaise_restapi.Client, "patch_case_data")
+def test_update_case_calls_the_rest_api_client_with_the_correct_parameters(_mock_rest_api_client):
+    config = config_helper.get_default_config()
+    blaise_server_park = "gusty"
+    questionnaire_name = "LMS2101_AA1"
+    case_id = "900001"
+    data_fields = [
+        {"hOut": "110"},
+        {"dMktnName": "John Smith"},
+        {"qDataBag.TelNo": "01234 567890"},
+        {"qDataBag.TelNo2": "07734 567890"},
+    ]
+
+    # act
+    blaise_service.update_case(questionnaire_name, case_id, data_fields, config)
+
+    # assert
+    _mock_rest_api_client.assert_called_with(blaise_server_park, questionnaire_name, case_id, data_fields)
