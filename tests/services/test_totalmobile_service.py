@@ -117,3 +117,15 @@ def test_create_job_auth_error(_mock_create_job):
 
     with pytest.raises(AuthException):
         create_job(config, totalmobile_job_model)
+
+
+@mock.patch.object(OptimiseClient, "get_jobs")
+def test_get_jobs_calls_the_rest_api_client_with_the_correct_parameters(_mock_get_jobs):
+    # arrange
+    config = config_helper.get_default_config()
+
+    # act
+    get_worlds(config)
+
+    # assert
+    _mock_get_worlds.assert_called_with()
