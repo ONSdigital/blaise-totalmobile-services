@@ -26,3 +26,5 @@ def get_client(config: Config):
         config.totalmobile_client_id,
         config.totalmobile_client_secret,
     )
+
+def get_jobs()
