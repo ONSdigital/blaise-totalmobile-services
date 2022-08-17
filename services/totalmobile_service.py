@@ -19,6 +19,16 @@ def create_job(config: Config, job: TotalmobileJobModel):
     )
 
 
+def get_jobs(config: Config, world_id: str) -> Dict[str, str]:
+    optimise_client = get_client(config)
+    return optimise_client.get_jobs(world_id)
+
+
+def delete_job(config: Config, world_id: str, job: str):
+    optimise_client = get_client(config)
+    return optimise_client.delete_job(world_id, job)
+
+
 def get_client(config: Config):
     return OptimiseClient(
         config.totalmobile_url,
@@ -26,5 +36,3 @@ def get_client(config: Config):
         config.totalmobile_client_id,
         config.totalmobile_client_secret,
     )
-
-def get_jobs()
