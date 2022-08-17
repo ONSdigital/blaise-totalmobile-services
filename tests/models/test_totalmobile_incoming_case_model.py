@@ -24,9 +24,9 @@ def test_import_case_returns_a_populated_model():
     # assert
     assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id == "90001"
-    assert result.outcome_code == ""
-    assert result.home_phone_number == ""
-    assert result.mobile_phone_number == ""
+    assert result.outcome_code == outcome_code
+    assert result.home_phone_number == "home_phone_number"
+    assert result.mobile_phone_number == "mobile_phone_number"
 
 
 def test_import_case_raises_a_missing_reference_error_if_the_request_does_not_have_expected_root_element():

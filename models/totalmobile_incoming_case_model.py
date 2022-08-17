@@ -16,7 +16,11 @@ class TotalMobileIncomingCaseModel:
 
     @staticmethod
     def get_outcome_code(incoming_request: Dict[str, str]) -> str:
-        return ""
+        for key, value in incoming_request:
+            if key == "Reference" and value == "Primary_Outcome":
+                print("yo")
+            print(key)
+        return incoming_request["result"]["responses"][0]["responses"][1][""]
 
     @staticmethod
     def get_home_phone_number(incoming_request: Dict[str, str]) -> str:
