@@ -27,6 +27,7 @@ def test_import_case_data_returns_a_populated_model():
         "qDataBag.UPRN_Latitude": "10020202",
         "qDataBag.UPRN_Longitude": "34949494",
         "qDataBag.Priority": "1",
+        "qDataBag.FieldCase": "Y",
         "qDataBag.FieldRegion": "gwent",
         "qDataBag.FieldTeam": "B-Team",
         "qDataBag.WaveComDTE": "31-01-2023"
@@ -53,6 +54,7 @@ def test_import_case_data_returns_a_populated_model():
     assert result.address_details.address.coordinates.longitude == "34949494"
     assert result.priority == "1"
     assert result.field_region == "gwent"
+    assert result.field_case == "Y"
     assert result.field_team == "B-Team"
     assert result.wave_com_dte == datetime(2023, 1, 31)
 
