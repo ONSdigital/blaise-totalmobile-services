@@ -4,6 +4,7 @@ from services import totalmobile_service
 from typing import List
 
 def get_list_of_active_world_ids(config):
+    print("Retrieving world ids")
     return totalmobile_service.get_worlds(config).get_available_ids()
 
 
