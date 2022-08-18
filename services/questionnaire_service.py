@@ -1,3 +1,4 @@
+import logging
 from typing import List, Dict
 from appconfig import Config
 from services import blaise_service, uac_service, eligible_blaise_case_service
@@ -37,4 +38,7 @@ def questionnaire_exists(questionnaire_name: str, config: Config) -> str:
 
 
 def update_case(questionnaire_name: str, case_id: str, data_fields: Dict[str, str], config: Config) -> None:
+    logging.info(
+        f'Attempting to update case {case_id} in questionnaire {questionnaire_name} in Blaise with data fields {data_fields}')
+
     return blaise_service.update_case(questionnaire_name, case_id, data_fields, config)
