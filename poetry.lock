@@ -74,8 +74,8 @@ requests = "^2.26.0"
 [package.source]
 type = "git"
 url = "https://github.com/ONSdigital/blaise-api-python-client.git"
-reference = "ce019e35371bd4aa2b237af507b1abc49766e07a"
-resolved_reference = "ce019e35371bd4aa2b237af507b1abc49766e07a"
+reference = "ef09ee17152c67f6b2a06645ff1d7e7286053fbd"
+resolved_reference = "ef09ee17152c67f6b2a06645ff1d7e7286053fbd"
 
 [[package]]
 name = "cachetools"
@@ -1051,7 +1051,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "93d19f2e7273e04901a6108af6341b7becfe86036c68281ed6c826de47b2e4b6"
+content-hash = "b578779f92ab0aa065fec76690a665c918e4ac2bd5c771d393d9b140c79e35f2"
 
 [metadata.files]
 atomicwrites = [
