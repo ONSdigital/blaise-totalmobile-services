@@ -7,7 +7,6 @@ from typing import Dict
 
 def get_worlds(config: Config) -> TotalmobileJobModel:
     optimise_client = get_client(config)
-
     worlds = optimise_client.get_worlds()
     return TotalmobileWorldModel.import_worlds(worlds)
 

@@ -39,3 +39,6 @@ class OptimiseClient(BaseClient):
 
     def _post(self, path: str, data: Any) -> Any:
         return super()._post(f"api/optimise/{path}", data)
+
+    def _delete(self, path: str) -> Any:
+        return super()._delete(f"api/optimise/{path}")
