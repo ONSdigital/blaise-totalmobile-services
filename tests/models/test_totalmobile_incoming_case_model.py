@@ -97,9 +97,9 @@ def test_to_blaise_data_fields_maps_the_correct_fields_and_values():
     result = totalmobile_case_model.to_blaise_data_fields()
 
     # assert
-    assert result == [
+    assert result == {
         {"hOut": "110"},
         {"dMktnName": "John Smith"},
         {"qDataBag.TelNo": "01234 567890"},
         {"qDataBag.TelNo2": "07734 567890"},
-    ]
+    }

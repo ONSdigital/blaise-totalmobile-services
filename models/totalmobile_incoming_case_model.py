@@ -16,12 +16,12 @@ class TotalMobileIncomingCaseModel:
     mobile_phone_number: str
 
     def to_blaise_data_fields(self):
-        return [
+        return {
             {"hOut": self.outcome_code},
             {"dMktnName": self.contact_name},
             {"qDataBag.TelNo": self.home_phone_number},
             {"qDataBag.TelNo2": self.mobile_phone_number},
-        ]
+        }
 
     @classmethod
     def import_case(cls: Type[T], incoming_request: Dict[str, str]) -> T:
