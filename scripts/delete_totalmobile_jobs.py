@@ -1,6 +1,6 @@
 from appconfig import Config
 from services import totalmobile_service
-
+from typing import List
 
 def get_list_of_active_world_ids(config):
     return totalmobile_service.get_worlds(config).get_available_ids()
@@ -10,7 +10,7 @@ def delete_all_totalmobile_jobs_in_active_worlds(config: Config, world_ids: List
     for world_id in world_ids:
         jobs = totalmobile_service.get_jobs(config, world_id)
         for job in jobs:
-            totalmobile_service.delete_job(config, world_id.id, job["results"][0]["identity"]["reference"])
+            totalmobile_service.delete_job(config, world_id, job["results"][0]["identity"]["reference"])
     return "Done"
 
 
