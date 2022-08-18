@@ -8,7 +8,7 @@ from tests.helpers import incoming_request_helper
 def test_import_case_returns_a_populated_model():
     # arrange
     reference = "LMS2101_AA1.90001"
-    outcome_code = "300"
+    outcome_code = 300
     contact_name= "Duncan Bell"
     home_phone_number = "01234567890"
     mobile_phone_number = "07123123123"
@@ -80,26 +80,3 @@ def test_import_case_raises_a_bad_reference_error_if_the_request_does_not_have_a
     # assert
     with pytest.raises(BadReferenceError):
         TotalMobileIncomingUpdateRequestModel.import_request(update_case_request)
-
-
-def test_to_blaise_data_fields_maps_the_correct_fields_and_values():
-    # arrange
-    totalmobile_case_model = TotalMobileIncomingUpdateRequestModel(
-        questionnaire_name="LMS2101_AA1",
-        case_id="900001",
-        outcome_code="110",
-        contact_name="John Smith",
-        home_phone_number="01234 567890",
-        mobile_phone_number="07734 567890"
-    )
-
-    # act
-    result = totalmobile_case_model.to_blaise_data_fields()
-
-    # assert
-    assert result == {
-        "hOut": "110",
-        "dMktnName": "John Smith",
-        "qDataBag.TelNo": "01234 567890",
-        "qDataBag.TelNo2": "07734 567890"
-    }
