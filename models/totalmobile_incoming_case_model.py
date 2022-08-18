@@ -15,12 +15,12 @@ class TotalMobileIncomingCaseModel:
     home_phone_number: str
     mobile_phone_number: str
 
-    def to_blaise_data_fields(self):
+    def to_blaise_data_fields(self) -> Dict[str, str]:
         return {
-            {"hOut": self.outcome_code},
-            {"dMktnName": self.contact_name},
-            {"qDataBag.TelNo": self.home_phone_number},
-            {"qDataBag.TelNo2": self.mobile_phone_number},
+            "hOut": self.outcome_code,
+            "dMktnName": self.contact_name,
+            "qDataBag.TelNo": self.home_phone_number,
+            "qDataBag.TelNo2": self.mobile_phone_number
         }
 
     @classmethod

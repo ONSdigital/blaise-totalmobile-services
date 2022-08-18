@@ -98,8 +98,8 @@ def test_to_blaise_data_fields_maps_the_correct_fields_and_values():
 
     # assert
     assert result == {
-        {"hOut": "110"},
-        {"dMktnName": "John Smith"},
-        {"qDataBag.TelNo": "01234 567890"},
-        {"qDataBag.TelNo2": "07734 567890"},
+        "hOut": "110",
+        "dMktnName": "John Smith",
+        "qDataBag.TelNo": "01234 567890",
+        "qDataBag.TelNo2": "07734 567890"
     }
