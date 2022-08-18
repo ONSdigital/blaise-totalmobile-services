@@ -1,4 +1,4 @@
-from models.totalmobile_outgoing_case_model import TotalMobileOutgoingCaseModel, Reference, Skill, AddressDetails, Address, \
+from models.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingCreateRequestModel, Reference, Skill, AddressDetails, Address, \
     AddressCoordinates, ContactDetails, AdditionalProperty, DueDate
 from models.uac_model import UacChunks
 from tests.helpers import questionnaire_case_model_helper
@@ -34,7 +34,7 @@ def test_import_case_returns_a_populated_model():
     )
 
     # act
-    result = TotalMobileOutgoingCaseModel.import_case(questionnaire_name, questionnaire_case)
+    result = TotalMobileOutgoingCreateRequestModel.import_case(questionnaire_name, questionnaire_case)
 
     # assert
     assert result.identity.reference == "LMS2101-AA1.90001"
@@ -88,7 +88,7 @@ def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uac
     )
 
     # act
-    result = TotalMobileOutgoingCaseModel.import_case(questionnaire_name, questionnaire_case)
+    result = TotalMobileOutgoingCreateRequestModel.import_case(questionnaire_name, questionnaire_case)
 
     # assert
     for additional_property in result.additionalProperties:
@@ -96,7 +96,7 @@ def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uac
 
 
 def test_to_payload_returns_a_correctly_formatted_payload():
-    totalmobile_case = TotalMobileOutgoingCaseModel(
+    totalmobile_case = TotalMobileOutgoingCreateRequestModel(
         identity=Reference("LMS2101-AA1.90001"),
         description="Study: LMS2101_AA1\nCase ID: 90001",
         origin="ONS",
@@ -234,7 +234,7 @@ def test_to_payload_sends_an_empty_string_to_totalmobile_if_the_due_date_is_miss
         wave_com_dte=None
     )
 
-    case = TotalMobileOutgoingCaseModel.import_case(questionnaire_name, questionnaire_case)
+    case = TotalMobileOutgoingCreateRequestModel.import_case(questionnaire_name, questionnaire_case)
     result = case.to_payload()
 
     assert result["dueDate"]["end"] == ""

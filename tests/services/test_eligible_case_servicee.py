@@ -2,7 +2,7 @@ import logging
 
 import pytest
 
-from services import eligible_blaise_case_service
+from services import eligible_case_service
 from tests.helpers.questionnaire_case_model_helper import get_populated_case_model
 
 
@@ -92,7 +92,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 2
@@ -207,7 +207,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 2
@@ -239,7 +239,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_teleph
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -262,7 +262,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_teleph
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -285,7 +285,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_appoin
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -311,7 +311,7 @@ def test_get_eligible_cases_logs_a_message_when_a_wave_is_not_in_range(test_inpu
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -337,7 +337,7 @@ def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(te
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -386,7 +386,7 @@ def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_N(caplog
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -410,7 +410,7 @@ def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_an_empty
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0

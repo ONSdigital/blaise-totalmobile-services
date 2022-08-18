@@ -1,7 +1,7 @@
 import pytest
 
 from app.exceptions.custom_exceptions import MissingReferenceError, BadReferenceError
-from models.totalmobile_incoming_case_model import TotalMobileIncomingCaseModel
+from models.totalmobile_incoming_update_request_model import TotalMobileIncomingUpdateRequestModel
 from tests.helpers import incoming_request_helper
 
 
@@ -21,7 +21,7 @@ def test_import_case_returns_a_populated_model():
         mobile_phone_number=mobile_phone_number)
 
     # act
-    result = TotalMobileIncomingCaseModel.import_case(update_case_request)
+    result = TotalMobileIncomingUpdateRequestModel.import_request(update_case_request)
 
     # assert
     assert result.questionnaire_name == "LMS2101_AA1"
@@ -39,7 +39,7 @@ def test_import_case_raises_a_missing_reference_error_if_the_request_does_not_ha
 
     # assert
     with pytest.raises(MissingReferenceError):
-        TotalMobileIncomingCaseModel.import_case(update_case_request)
+        TotalMobileIncomingUpdateRequestModel.import_request(update_case_request)
 
 
 def test_import_case_raises_a_missing_reference_error_if_the_request_does_not_have_expected_association_element():
@@ -49,7 +49,7 @@ def test_import_case_raises_a_missing_reference_error_if_the_request_does_not_ha
 
     # assert
     with pytest.raises(MissingReferenceError):
-        TotalMobileIncomingCaseModel.import_case(update_case_request)
+        TotalMobileIncomingUpdateRequestModel.import_request(update_case_request)
 
 
 def test_import_case_raises_a_missing_reference_error_if_the_request_does_not_have_expected_reference_element():
@@ -59,7 +59,7 @@ def test_import_case_raises_a_missing_reference_error_if_the_request_does_not_ha
 
     # assert
     with pytest.raises(MissingReferenceError):
-        TotalMobileIncomingCaseModel.import_case(update_case_request)
+        TotalMobileIncomingUpdateRequestModel.import_request(update_case_request)
 
 
 def test_import_case_raises_a_missing_reference_error_if_the_request_has_an_empty_reference():
@@ -69,7 +69,7 @@ def test_import_case_raises_a_missing_reference_error_if_the_request_has_an_empt
 
     # assert
     with pytest.raises(MissingReferenceError):
-        TotalMobileIncomingCaseModel.import_case(update_case_request)
+        TotalMobileIncomingUpdateRequestModel.import_request(update_case_request)
 
 
 @pytest.mark.parametrize("reference", [" ", "LMS2101_AA1-90001", "LMS2101_AA1:90001", "LMS2101_AA1.", ".90001"])
@@ -79,12 +79,12 @@ def test_import_case_raises_a_bad_reference_error_if_the_request_does_not_have_a
 
     # assert
     with pytest.raises(BadReferenceError):
-        TotalMobileIncomingCaseModel.import_case(update_case_request)
+        TotalMobileIncomingUpdateRequestModel.import_request(update_case_request)
 
 
 def test_to_blaise_data_fields_maps_the_correct_fields_and_values():
     # arrange
-    totalmobile_case_model = TotalMobileIncomingCaseModel(
+    totalmobile_case_model = TotalMobileIncomingUpdateRequestModel(
         questionnaire_name="LMS2101_AA1",
         case_id="900001",
         outcome_code="110",

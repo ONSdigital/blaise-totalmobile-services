@@ -8,9 +8,9 @@ import flask
 from appconfig import Config
 from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
-from models.totalmobile_job_model import TotalmobileJobModel
+from models.totalmobile_outgoing_job_model import TotalmobileJobModel
 from models.questionnaire_case_model import QuestionnaireCaseModel
-from models.totalmobile_outgoing_case_model import TotalMobileOutgoingCaseModel
+from models.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingCreateRequestModel
 from models.totalmobile_world_model import TotalmobileWorldModel
 from services import questionnaire_service, totalmobile_service
 
@@ -45,7 +45,7 @@ def get_cases_with_valid_world_ids(filtered_cases: List[QuestionnaireCaseModel],
 def map_totalmobile_job_models(
         cases: List[QuestionnaireCaseModel], world_model: TotalmobileWorldModel, questionnaire_name: str
 ) -> List[TotalmobileJobModel]:
-    return [TotalmobileJobModel(questionnaire_name, world_model.get_world_id(case.field_region), case.case_id, TotalMobileOutgoingCaseModel.import_case(questionnaire_name, case).to_payload()) for case in cases]
+    return [TotalmobileJobModel(questionnaire_name, world_model.get_world_id(case.field_region), case.case_id, TotalMobileOutgoingCreateRequestModel.import_case(questionnaire_name, case).to_payload()) for case in cases]
 
 
 def create_task_name(job_model: TotalmobileJobModel) -> str:

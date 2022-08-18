@@ -9,7 +9,7 @@ from tests.helpers import config_helper
 
 
 @mock.patch("services.questionnaire_service.get_cases")
-@mock.patch("services.eligible_blaise_case_service.get_eligible_cases")
+@mock.patch("services.eligible_case_service.get_eligible_cases")
 def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(mock_get_eligible_cases, mock_get_cases):
     # arrange
     config = config_helper.get_default_config()
@@ -35,7 +35,7 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(mock_
 
 
 @mock.patch("services.questionnaire_service.get_cases")
-@mock.patch("services.eligible_blaise_case_service.get_eligible_cases")
+@mock.patch("services.eligible_case_service.get_eligible_cases")
 def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible_case_service(mock_get_eligible_cases,
                                                                                               mock_get_cases):
     # arrange

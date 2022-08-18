@@ -1,14 +1,14 @@
 import logging
 from typing import List, Dict
 from appconfig import Config
-from services import blaise_service, uac_service, eligible_blaise_case_service
+from services import blaise_service, uac_service, eligible_case_service
 from models.questionnaire_case_model import QuestionnaireCaseModel
 
 
 def get_eligible_cases(questionnaire_name: str, config: Config) -> List[QuestionnaireCaseModel]:
     questionnaire_cases = get_cases(questionnaire_name, config)
 
-    return eligible_blaise_case_service.get_eligible_cases(questionnaire_cases)
+    return eligible_case_service.get_eligible_cases(questionnaire_cases)
 
 
 def get_cases(questionnaire_name: str, config: Config) -> List[QuestionnaireCaseModel]:
