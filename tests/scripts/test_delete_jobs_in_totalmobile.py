@@ -30,4 +30,7 @@ def test_delete_all_totalmobile_jobs_in_active_world_deletes_all_jobs(mock_get_j
     ]
     mock_delete_job.return_value = []
     result = delete_all_totalmobile_jobs_in_active_worlds(config, list_of_active_world_ids)
+    mock_get_jobs.assert_called_with(config, "3fa85f64-5717-4562-b3fc-2c963f66afa6")
+
+    mock_delete_job.assert_called_with(config, "3fa85f64-5717-4562-b3fc-2c963f66afa6", "Bar")
     assert result == "Done"
