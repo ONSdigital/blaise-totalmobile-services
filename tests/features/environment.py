@@ -3,9 +3,9 @@ from app.app import setup_app
 from werkzeug.security import generate_password_hash
 
 from app.exceptions.custom_exceptions import QuestionnaireDoesNotExistError
-from models.questionnaire_case_model import QuestionnaireCaseModel
+from models.blaise.get_blaise_case_model import GetBlaiseCaseModel
 from services.blaise_service import QuestionnaireCaseDoesNotExistError
-from tests.helpers import questionnaire_case_model_helper
+from tests.helpers import get_blaise_case_model_helper
 
 
 def before_scenario(context, scenario):
@@ -20,12 +20,13 @@ def before_scenario(context, scenario):
 
 class MockQuestionnaireService:
     def __init__(self):
-        self.questionnaires: Dict[str, List[QuestionnaireCaseModel]] = {}
+        self.questionnaires: Dict[str, List[GetBlaiseCaseModel]] = {}
         self.update_case_request: Optional[Dict[str, Any]] = None
 
     # functions for setting up data
     def add_case_to_questionnaire(self, questionnaire, case_id):
-        case_model = questionnaire_case_model_helper.get_populated_case_model(case_id=case_id)
+        case_model = get_blaise_case_model_helper.get_populated_case_model(
+            case_id=case_id, questionnaire_name=questionnaire)
         self.questionnaires[questionnaire].append(case_model)
 
     def get_case_from_questionnaire(self, questionnaire, case_id):

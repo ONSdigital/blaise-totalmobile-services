@@ -1,9 +1,7 @@
-from unittest import mock
-
 import flask
 import pytest
 
-from appconfig import Config
+from unittest import mock
 from client import AuthException, OptimiseClient
 from cloud_functions.create_totalmobile_job import (
     create_totalmobile_job,

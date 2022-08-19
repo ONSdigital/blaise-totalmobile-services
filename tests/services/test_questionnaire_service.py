@@ -1,9 +1,9 @@
 import pytest
 
-from models.uac_model import UacChunks, UacModel
+from models.blaise.uac_model import UacChunks, UacModel
 from services.questionnaire_service import get_eligible_cases, get_cases, get_wave_from_questionnaire_name, \
     questionnaire_exists, update_case
-from tests.helpers import questionnaire_case_model_helper
+from tests.helpers import get_blaise_case_model_helper
 from unittest import mock
 from tests.helpers import config_helper
 
@@ -15,8 +15,8 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(mock_
     config = config_helper.get_default_config()
 
     questionnaire_cases = [
-        questionnaire_case_model_helper.get_populated_case_model(),  # eligible
-        questionnaire_case_model_helper.get_populated_case_model(),  # not eligible
+        get_blaise_case_model_helper.get_populated_case_model(),  # eligible
+        get_blaise_case_model_helper.get_populated_case_model(),  # not eligible
     ]
 
     eligible_cases = [questionnaire_cases[0]]
@@ -42,8 +42,8 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
     config = config_helper.get_default_config()
 
     questionnaire_cases = [
-        questionnaire_case_model_helper.get_populated_case_model(),  # eligible
-        questionnaire_case_model_helper.get_populated_case_model(),  # not eligible
+        get_blaise_case_model_helper.get_populated_case_model(),  # eligible
+        get_blaise_case_model_helper.get_populated_case_model(),  # not eligible
     ]
 
     eligible_cases = [questionnaire_cases[0]]
@@ -67,10 +67,10 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(mock_blaise_service, 
     config = config_helper.get_default_config()
 
     questionnaire_cases = [
-        questionnaire_case_model_helper.get_populated_case_model(
+        get_blaise_case_model_helper.get_populated_case_model(
             case_id="20001",
             uac_chunks=UacChunks(uac1="", uac2="", uac3="")),
-        questionnaire_case_model_helper.get_populated_case_model(
+        get_blaise_case_model_helper.get_populated_case_model(
             case_id="20003",
             uac_chunks=UacChunks(uac1="", uac2="", uac3="")),
     ]
@@ -97,10 +97,10 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(mock_blaise_service, 
 
     # assert
     assert result == [
-        questionnaire_case_model_helper.get_populated_case_model(
+        get_blaise_case_model_helper.get_populated_case_model(
             case_id="20001",
             uac_chunks=UacChunks(uac1="2324", uac2="6744", uac3="5646")),
-        questionnaire_case_model_helper.get_populated_case_model(
+        get_blaise_case_model_helper.get_populated_case_model(
             case_id="20003",
             uac_chunks=UacChunks(uac1="4324", uac2="8744", uac3="7646")),
     ]

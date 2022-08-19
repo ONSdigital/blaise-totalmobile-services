@@ -1,7 +1,7 @@
 from client import bus
 from unittest import mock
 
-from models.uac_model import UacModel, UacChunks
+from models.blaise.uac_model import UacModel, UacChunks
 from services import uac_service
 from tests.helpers import config_helper
 

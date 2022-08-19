@@ -7,7 +7,7 @@ from app.utilities.parse_json import (
     validate_data,
 )
 from appconfig.config import Config
-from models.totalmobile_incoming_update_request_model import TotalMobileIncomingUpdateRequestModel
+from models.totalmobile.totalmobile_incoming_update_request_model import TotalMobileIncomingUpdateRequestModel
 from services import update_case_service
 
 

@@ -3,7 +3,7 @@ import logging
 import pytest
 
 from services import eligible_case_service
-from tests.helpers.questionnaire_case_model_helper import get_populated_case_model
+from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
 
 def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():

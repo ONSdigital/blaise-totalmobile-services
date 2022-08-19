@@ -1,7 +1,7 @@
 import pytest
 
 from app.exceptions.custom_exceptions import MissingReferenceError, BadReferenceError
-from models.totalmobile_incoming_update_request_model import TotalMobileIncomingUpdateRequestModel
+from models.totalmobile.totalmobile_incoming_update_request_model import TotalMobileIncomingUpdateRequestModel
 from tests.helpers import incoming_request_helper
 
 

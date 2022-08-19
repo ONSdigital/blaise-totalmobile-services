@@ -2,9 +2,8 @@ import logging
 import flask
 
 from appconfig import Config
-from client import OptimiseClient
 from cloud_functions.logging import setup_logger
-from models.totalmobile_outgoing_job_model import TotalmobileJobModel
+from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
 from services import totalmobile_service
 
 setup_logger()

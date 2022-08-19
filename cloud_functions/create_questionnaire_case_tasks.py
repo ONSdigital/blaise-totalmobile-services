@@ -8,10 +8,10 @@ import flask
 from appconfig import Config
 from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
-from models.totalmobile_outgoing_job_model import TotalmobileJobModel
-from models.questionnaire_case_model import QuestionnaireCaseModel
-from models.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingCreateRequestModel
-from models.totalmobile_world_model import TotalmobileWorldModel
+from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
+from models.blaise.get_blaise_case_model import GetBlaiseCaseModel
+from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingCreateRequestModel
+from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 from services import questionnaire_service, totalmobile_service
 
 setup_logger()
@@ -30,7 +30,7 @@ def validate_request(request_json: Dict) -> None:
         )
 
 
-def get_cases_with_valid_world_ids(filtered_cases: List[QuestionnaireCaseModel], world_model: TotalmobileWorldModel) -> List[str]:
+def get_cases_with_valid_world_ids(filtered_cases: List[GetBlaiseCaseModel], world_model: TotalmobileWorldModel) -> List[str]:
     cases_with_valid_world_ids = []
     for case in filtered_cases:
         if case.field_region == "":
@@ -43,7 +43,7 @@ def get_cases_with_valid_world_ids(filtered_cases: List[QuestionnaireCaseModel],
 
 
 def map_totalmobile_job_models(
-        cases: List[QuestionnaireCaseModel], world_model: TotalmobileWorldModel, questionnaire_name: str
+        cases: List[GetBlaiseCaseModel], world_model: TotalmobileWorldModel, questionnaire_name: str
 ) -> List[TotalmobileJobModel]:
     return [TotalmobileJobModel(questionnaire_name, world_model.get_world_id(case.field_region), case.case_id, TotalMobileOutgoingCreateRequestModel.import_case(questionnaire_name, case).to_payload()) for case in cases]
 

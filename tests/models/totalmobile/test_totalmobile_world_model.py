@@ -1,4 +1,4 @@
-from models.totalmobile_world_model import TotalmobileWorldModel, World
+from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 
 
 def test_import_worlds_returns_a_populated_model():

@@ -4,9 +4,9 @@ from unittest import mock
 import flask
 import pytest
 import logging
-from models.questionnaire_case_model import UacChunks
-from models.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingCreateRequestModel
-from models.totalmobile_world_model import TotalmobileWorldModel, World
+from models.blaise.get_blaise_case_model import UacChunks
+from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingCreateRequestModel
+from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 
 from tests.helpers import config_helper
 from client.optimise import OptimiseClient
@@ -17,8 +17,8 @@ from cloud_functions.create_questionnaire_case_tasks import (
     validate_request,
     get_cases_with_valid_world_ids
 )
-from models.totalmobile_outgoing_job_model import TotalmobileJobModel
-from tests.helpers.questionnaire_case_model_helper import get_populated_case_model
+from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
+from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
 
 def test_create_task_name_returns_correct_name_when_called():

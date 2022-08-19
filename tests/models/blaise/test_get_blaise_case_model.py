@@ -1,12 +1,12 @@
 import pytest
 
 from datetime import datetime
-from models.questionnaire_case_model import QuestionnaireCaseModel
-from models.uac_model import UacModel, UacChunks
-from tests.helpers import questionnaire_case_model_helper
+from models.blaise.get_blaise_case_model import GetBlaiseCaseModel
+from models.blaise.uac_model import UacModel, UacChunks
+from tests.helpers import get_blaise_case_model_helper
 
 
-def test_import_case_data_returns_a_populated_model():
+def test_import_case_returns_a_populated_model():
     questionnaire_name = "LMS2101_AA1"
 
     case_data_dictionary = {
@@ -33,7 +33,7 @@ def test_import_case_data_returns_a_populated_model():
         "qDataBag.WaveComDTE": "31-01-2023"
     }
 
-    result = QuestionnaireCaseModel.import_case(questionnaire_name, case_data_dictionary)
+    result = GetBlaiseCaseModel.import_case(questionnaire_name, case_data_dictionary)
 
     assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id == "90000000"
@@ -85,7 +85,7 @@ def test_import_case_returns_a_valid_object_when_a_blaise_field_is_incorrectly_t
         "qDataBag.WaveComDTE": "31-01-2023"
     }
 
-    result = QuestionnaireCaseModel.import_case(questionnaire_name, case_data_dictionary)
+    result = GetBlaiseCaseModel.import_case(questionnaire_name, case_data_dictionary)
 
     assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id is None
@@ -118,7 +118,7 @@ def test_import_case_sets_outcome_code_to_zero_if_empty():
         "qDataBag.WaveComDTE": "31-01-2023"
     }
 
-    result = QuestionnaireCaseModel.import_case(questionnaire_name, case_data_dictionary)
+    result = GetBlaiseCaseModel.import_case(questionnaire_name, case_data_dictionary)
 
     assert result.outcome_code == 0
 
@@ -130,7 +130,7 @@ def test_import_case_sets_outcome_code_to_if_not_supplied():
         "qDataBag.WaveComDTE": "31-01-2023"
     }
 
-    result = QuestionnaireCaseModel.import_case(questionnaire_name, case_data_dictionary)
+    result = GetBlaiseCaseModel.import_case(questionnaire_name, case_data_dictionary)
 
     assert result.outcome_code == 0
 
@@ -160,7 +160,7 @@ def test_import_case_returns_a_valid_object_when_an_optional_blaise_field_is_mis
         "qDataBag.WaveComDTE": "31-01-2023"
     }
 
-    result = QuestionnaireCaseModel.import_case(questionnaire_name, case_data_dictionary)
+    result = GetBlaiseCaseModel.import_case(questionnaire_name, case_data_dictionary)
 
     assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id is None
@@ -186,7 +186,7 @@ def test_import_case_returns_a_valid_object_when_an_optional_blaise_field_is_mis
 
 
 def test_populate_uac_data_populates_uac_fields_if_supplied():
-    case_model = questionnaire_case_model_helper.get_populated_case_model(case_id="10020")
+    case_model = get_blaise_case_model_helper.get_populated_case_model(case_id="10020")
 
     uac_model = UacModel(
         case_id="10020",
@@ -206,7 +206,7 @@ def test_populate_uac_data_populates_uac_fields_if_supplied():
 
 
 def test_populate_uac_data_does_not_populate_uac_fields_if_Not_supplied():
-    case_model = questionnaire_case_model_helper.get_populated_case_model(case_id="10010")
+    case_model = get_blaise_case_model_helper.get_populated_case_model(case_id="10010")
     case_model.populate_uac_data(None)
 
     assert case_model.uac_chunks is None
@@ -236,7 +236,6 @@ def test_populate_uac_data_sets_date_to_none_if_date_is_an_empty_string():
         "qDataBag.WaveComDTE": ""
     }
 
-    result = QuestionnaireCaseModel.import_case("LMS", case_data_dictionary)
-
+    result = GetBlaiseCaseModel.import_case("LMS", case_data_dictionary)
 
     assert result.wave_com_dte is None

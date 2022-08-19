@@ -3,10 +3,11 @@ import pytest
 from unittest import mock
 from client import AuthException
 from client.optimise import OptimiseClient
-from models.totalmobile_outgoing_job_model import TotalmobileJobModel
+from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
 from tests.helpers import config_helper
 from services.totalmobile_service import get_worlds, create_job, get_jobs, delete_job
 from models.totalmobile_world_model import TotalmobileWorldModel, World
+
 
 
 @mock.patch.object(OptimiseClient, "get_worlds")

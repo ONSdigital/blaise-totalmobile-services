@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Type, TypeVar, Dict
 
-from models.totalmobile_reference_model import TotalmobileReferenceModel
+from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
 
 T = TypeVar('T')
 

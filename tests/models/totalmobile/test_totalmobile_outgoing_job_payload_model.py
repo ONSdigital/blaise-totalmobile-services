@@ -1,7 +1,7 @@
-from models.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingCreateRequestModel, Reference, Skill, AddressDetails, Address, \
+from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingCreateRequestModel, Reference, Skill, AddressDetails, Address, \
     AddressCoordinates, ContactDetails, AdditionalProperty, DueDate
-from models.uac_model import UacChunks
-from tests.helpers import questionnaire_case_model_helper
+from models.blaise.uac_model import UacChunks
+from tests.helpers import get_blaise_case_model_helper
 from datetime import datetime
 
 
@@ -9,7 +9,7 @@ def test_import_case_returns_a_populated_model():
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
-    questionnaire_case = questionnaire_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
         case_id="90001",
         data_model_name="LM2007",
         survey_type="LMS",
@@ -83,7 +83,7 @@ def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uac
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
-    questionnaire_case = questionnaire_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
         uac_chunks=None
     )
 
@@ -230,7 +230,7 @@ def test_to_payload_returns_a_correctly_formatted_payload():
 def test_to_payload_sends_an_empty_string_to_totalmobile_if_the_due_date_is_missing():
     questionnaire_name = "LMS2101_AA1"
 
-    questionnaire_case = questionnaire_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
         wave_com_dte=None
     )
 

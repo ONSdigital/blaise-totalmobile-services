@@ -11,7 +11,7 @@ def get_populated_update_case_request(
                 "ID": 263,
                 "IDSpecified": True,
                 "Name": "Test.INT.NW2.01",
-                "DeviceID": "DUNCANFIELDSIPHONEc2e1238c-12d4-4e3a-962b-9c95a8be",
+                "DeviceID": "DUNCANFIELDSIPHONEc2e1238quec-12d4-4e3a-962b-9c95a8be",
                 "UserAttributes": [
                     {
                         "Name": "AuthNo",

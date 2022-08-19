@@ -1,7 +1,7 @@
 from typing import List
 from appconfig import Config
 from client.bus import BusClient
-from models.uac_model import UacModel
+from models.blaise.uac_model import UacModel
 
 
 def get_uacs(questionnaire_name: str, config: Config) -> List[UacModel]:

@@ -1,9 +1,9 @@
 import logging
 from typing import List
-from models.questionnaire_case_model import QuestionnaireCaseModel
+from models.blaise.get_blaise_case_model import GetBlaiseCaseModel
 
 
-def get_eligible_cases(cases: List[QuestionnaireCaseModel]) -> List[QuestionnaireCaseModel]:
+def get_eligible_cases(cases: List[GetBlaiseCaseModel]) -> List[GetBlaiseCaseModel]:
     filtered_cases = [
         case
         for case in cases
@@ -24,7 +24,7 @@ def get_eligible_cases(cases: List[QuestionnaireCaseModel]) -> List[Questionnair
     return filtered_cases
 
 
-def telephone_number_is_empty(case: QuestionnaireCaseModel) -> bool:
+def telephone_number_is_empty(case: GetBlaiseCaseModel) -> bool:
     if case.contact_details.telephone_number_1 == "":
         return True
 
@@ -33,7 +33,7 @@ def telephone_number_is_empty(case: QuestionnaireCaseModel) -> bool:
     return False
 
 
-def telephone_number_2_is_empty(case: QuestionnaireCaseModel) -> bool:
+def telephone_number_2_is_empty(case: GetBlaiseCaseModel) -> bool:
     if case.contact_details.telephone_number_2 == "":
         return True
 
@@ -42,7 +42,7 @@ def telephone_number_2_is_empty(case: QuestionnaireCaseModel) -> bool:
     return False
 
 
-def appointment_telephone_number_is_empty(case: QuestionnaireCaseModel) -> bool:
+def appointment_telephone_number_is_empty(case: GetBlaiseCaseModel) -> bool:
     if case.contact_details.appointment_telephone_number == "":
         return True
 
@@ -51,7 +51,7 @@ def appointment_telephone_number_is_empty(case: QuestionnaireCaseModel) -> bool:
     return False
 
 
-def case_is_part_of_wave_1(case: QuestionnaireCaseModel) -> bool:
+def case_is_part_of_wave_1(case: GetBlaiseCaseModel) -> bool:
     value_range = ["1"]
     if case.wave in value_range:
         return True
@@ -61,7 +61,7 @@ def case_is_part_of_wave_1(case: QuestionnaireCaseModel) -> bool:
     return False
 
 
-def case_has_field_case_of_y(case: QuestionnaireCaseModel) -> bool:
+def case_has_field_case_of_y(case: GetBlaiseCaseModel) -> bool:
     if case.field_case == "Y" or case.field_case == "y":
         return True
 
@@ -70,7 +70,7 @@ def case_has_field_case_of_y(case: QuestionnaireCaseModel) -> bool:
     return False
 
 
-def case_has_a_desired_outcome_code_of_blank_0_or_310_or_320(case: QuestionnaireCaseModel) -> bool:
+def case_has_a_desired_outcome_code_of_blank_0_or_310_or_320(case: GetBlaiseCaseModel) -> bool:
     value_range = ["", "0", "310", "320"]
     if case.outcome_code in value_range:
         return True
