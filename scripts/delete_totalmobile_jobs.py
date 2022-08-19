@@ -1,5 +1,5 @@
-import asyncio
 from appconfig import Config
+from concurrent import futures
 from services import totalmobile_service
 from typing import List, Dict
 
@@ -22,6 +22,7 @@ def get_list_of_world_ids_and_job_references(config: Config, world_ids: List[str
     for world_id in world_ids:
         print(f"Retrieving job references for {world_id}")
         jobs = totalmobile_service.get_jobs(config, world_id)
+        print(f"Retrieved {len(jobs)} for {world_id}")
         for job in jobs:
             my_dict = {"world_id": world_id, "reference": job["identity"]["reference"]}
             list_of_jobs.append(my_dict)
@@ -29,14 +30,14 @@ def get_list_of_world_ids_and_job_references(config: Config, world_ids: List[str
     return list_of_jobs
 
 
-def delete_job(config: Config, list_of_jobs: List[Dict[str, str]]) -> str:
-    for job in list_of_jobs:
-        try:
-            print(f"Deleting job id {job['reference']} from world {job['world_id']}")
-            totalmobile_service.delete_job(config, job["world_id"], job["reference"])
-        except:
-            print(f"Error deleting job id {job['reference']} from world {job['world_id']}")
-    return "Done!"
+def delete_job(config: Config, job: Dict[str, str]) -> None:
+    try:
+        print(f"Deleting job id {job['reference']} from world {job['world_id']}")
+        totalmobile_service.delete_job(config, job["world_id"], job["reference"])
+    except:
+        print(
+            f"Could not delete job id {job['reference']} from world {job['world_id']} as it has a status of 'completed'"
+        )
 
 
 if __name__ == "__main__":
@@ -47,8 +48,8 @@ if __name__ == "__main__":
         list_of_active_world_ids = get_list_of_active_world_ids(config)
         list_of_jobs = get_list_of_world_ids_and_job_references(config, list_of_active_world_ids)
 
-        # TODO: Get asyncio working
-        asyncio.run(delete_job(config, list_of_jobs))
-
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            executor.map(delete_job, config, list_of_jobs)
+        print("Done!")
     else:
-        print("Totalmobile URL was not pointing at 'dev'")
+        print("Did not delete Totalmobile jobs as 'Totalmobile URL' was not pointing at 'dev'")
