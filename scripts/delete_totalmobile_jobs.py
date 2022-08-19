@@ -48,7 +48,7 @@ if __name__ == "__main__":
         list_of_jobs = get_list_of_world_ids_and_job_references(config, list_of_active_world_ids)
 
         # TODO: Get asyncio working
-        asyncio.run(delete_totalmobile_job(config, list_of_jobs))
+        asyncio.run(delete_job(config, list_of_jobs))
 
     else:
         print("Totalmobile URL was not pointing at 'dev'")
