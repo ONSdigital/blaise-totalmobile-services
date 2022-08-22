@@ -46,7 +46,7 @@ if __name__ == "__main__":
     config = Config.from_env()
     print(config)
 
-    if config.totalmobile_url.lower().__contains__("dev"):
+    if "dev" in config.totalmobile_url.lower():
         active_world_ids = __get_active_world_ids(config)
         list_of_world_ids_and_job_references = __map_world_id_to_job_reference(config, active_world_ids)
 
@@ -55,7 +55,7 @@ if __name__ == "__main__":
         print("Done!")
     else:
         print("Did not run the 'Delete job' method as 'Totalmobile URL' was not pointing to 'dev'")
-
+        exit(1)
 
 # TODO:
 # add custom exceptions to catch when a case has a status of 'completed'
