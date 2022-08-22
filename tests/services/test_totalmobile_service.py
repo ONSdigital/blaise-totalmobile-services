@@ -119,7 +119,7 @@ def test_create_job_auth_error():
 
     # act & assert
     with pytest.raises(AuthException):
-        totalmobile_service.create_job(config, totalmobile_job_model)
+        totalmobile_service.create_job(totalmobile_job_model)
 
 
 def test_get_jobs_calls_the_rest_api_client_with_the_correct_parameters():

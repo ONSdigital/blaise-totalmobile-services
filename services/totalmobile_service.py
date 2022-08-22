@@ -1,6 +1,6 @@
 from client.optimise import OptimiseClient
-from models.totalmobile_outgoing_job_model import TotalmobileJobModel
-from models.totalmobile_world_model import TotalmobileWorldModel
+from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
+from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 from typing import Dict
 
 
