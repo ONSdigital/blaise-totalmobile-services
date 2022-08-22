@@ -5,7 +5,7 @@ from client import AuthException
 from client.optimise import OptimiseClient
 from models.totalmobile_job_model import TotalmobileJobModel
 from tests.helpers import config_helper
-from services.totalmobile_service import get_worlds, create_job
+from services.totalmobile_service import get_worlds, create_job, get_jobs, delete_job
 from models.totalmobile_world_model import TotalmobileWorldModel, World
 
 
@@ -117,3 +117,30 @@ def test_create_job_auth_error(_mock_create_job):
 
     with pytest.raises(AuthException):
         create_job(config, totalmobile_job_model)
+
+
+@mock.patch.object(OptimiseClient, "get_jobs")
+def test_get_jobs_calls_the_rest_api_client_with_the_correct_parameters(_mock_get_jobs):
+    # arrange
+    config = config_helper.get_default_config()
+    world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
+
+    # act
+    get_jobs(config, world_id)
+
+    # assert
+    _mock_get_jobs.assert_called_with(world_id)
+
+
+@mock.patch.object(OptimiseClient, "delete_job")
+def test_delete_jobs_calls_the_rest_api_client_with_the_correct_parameters(_mock_delete_job):
+    # arrange
+    config = config_helper.get_default_config()
+    world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
+    job = "1234"
+
+    # act
+    delete_job(config, world_id, job)
+
+    # assert
+    _mock_delete_job.assert_called_with(world_id, job)
