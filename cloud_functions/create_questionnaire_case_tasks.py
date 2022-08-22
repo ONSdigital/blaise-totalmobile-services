@@ -30,7 +30,7 @@ def validate_request(request_json: Dict) -> None:
         )
 
 
-def get_cases_with_valid_world_ids(filtered_cases: List[GetBlaiseCaseModel], world_model: TotalmobileWorldModel) -> List[str]:
+def get_cases_with_valid_world_ids(filtered_cases: List[GetBlaiseCaseModel], world_model: TotalmobileWorldModel) -> List[GetBlaiseCaseModel]:
     cases_with_valid_world_ids = []
     for case in filtered_cases:
         if case.field_region == "":

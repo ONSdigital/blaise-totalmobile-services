@@ -58,6 +58,25 @@ def step_impl(context, reference):
     context.response = response
 
 
+@when('Totalmobile sends an update for reference "{reference}" with an outcome of 300 but no contact information')
+def step_impl(context, reference):
+    valid_credentials = base64.b64encode(b"test_username:test_password").decode("utf-8")
+    request = incoming_request_helper.get_populated_update_case_request(
+        reference=reference,
+        outcome_code=300,
+        contact_name=None,
+        home_phone_number=None,
+        mobile_phone_number=None)
+
+    response = context.test_client.post(
+        "/bts/submitformresultrequest",
+        headers={"Authorization": f"Basic {valid_credentials}"},
+        json=request
+    )
+
+    context.response = response
+
+
 @when(u'Totalmobile sends an update with missing reference')
 def step_impl(context):
     valid_credentials = base64.b64encode(b"test_username:test_password").decode("utf-8")

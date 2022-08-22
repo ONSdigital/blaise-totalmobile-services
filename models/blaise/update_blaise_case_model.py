@@ -20,11 +20,18 @@ class UpdateBlaiseCaseModel:
         }
 
     def get_contact_details(self):
-        return {
-            "dMktnName": self.contact_name,
-            "qDataBag.TelNo": self.home_phone_number,
-            "qDataBag.TelNo2": self.mobile_phone_number
-        }
+        contact_information = {}
+
+        if self.contact_name != "" and self.contact_name is not None:
+            contact_information["dMktnName"] = self.contact_name
+
+        if self.home_phone_number != "" and self.home_phone_number is not None:
+            contact_information["qDataBag.TelNo"] = self.home_phone_number
+
+        if self.mobile_phone_number != "" and self.mobile_phone_number is not None:
+            contact_information["qDataBag.TelNo2"] = self.mobile_phone_number
+
+        return contact_information
 
     @classmethod
     def import_case(cls: Type[T], totalmobile_request: TotalMobileIncomingUpdateRequestModel) -> T:
