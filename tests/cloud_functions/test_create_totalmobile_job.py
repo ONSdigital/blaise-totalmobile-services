@@ -1,29 +1,24 @@
 import flask
 import pytest
 
-from unittest import mock
-from client import AuthException, OptimiseClient
+from unittest.mock import create_autospec
+from client import AuthException
 from cloud_functions.create_totalmobile_job import (
     create_totalmobile_job,
 )
+from services.totalmobile_service import TotalmobileService
 
 
-@mock.patch.object(OptimiseClient, "create_job")
-def test_create_totalmobile_job(
-        _mock_create_job,
-        mock_create_job_task
-):
+def test_create_totalmobile_job(mock_create_job_task):
     mock_request = flask.Request.from_values(json=mock_create_job_task)
-    assert create_totalmobile_job(mock_request) == "Done"
+    total_mobile_service_mock = create_autospec(TotalmobileService)
+    assert create_totalmobile_job(mock_request, total_mobile_service_mock) == "Done"
 
 
-@mock.patch.object(OptimiseClient, "create_job")
-def test_create_totalmobile_job_error(
-        mock_create_job,
-        mock_create_job_task
-):
-    mock_create_job.side_effect = AuthException()
+def test_create_totalmobile_job_error(mock_create_job_task):
     mock_request = flask.Request.from_values(json=mock_create_job_task)
+    total_mobile_service_mock = create_autospec(TotalmobileService)
+    total_mobile_service_mock.create_job.side_effect = AuthException()
     with pytest.raises(AuthException):
-        create_totalmobile_job(mock_request)
+        create_totalmobile_job(mock_request, total_mobile_service_mock)
 

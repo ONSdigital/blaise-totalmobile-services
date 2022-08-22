@@ -1,17 +1,14 @@
 import logging
 import flask
 
-from appconfig import Config
 from cloud_functions.logging import setup_logger
 from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
-from services import totalmobile_service
+from services.totalmobile_service import TotalmobileService
 
 setup_logger()
 
 
-def create_totalmobile_job(request: flask.Request) -> str:
-    config = Config.from_env()
-
+def create_totalmobile_job(request: flask.Request, totalmobile_service: TotalmobileService) -> str:
     request_json = request.get_json()
 
     if request_json is None:
@@ -24,6 +21,6 @@ def create_totalmobile_job(request: flask.Request) -> str:
 
     logging.info(
         f"Creating Totalmobile job for questionnaire {totalmobile_job.questionnaire} with case ID {totalmobile_job.case_id}")
-    response = totalmobile_service.create_job(config, totalmobile_job)
+    response = totalmobile_service.create_job(totalmobile_job)
     logging.info(f"Response: {response}")
     return "Done"

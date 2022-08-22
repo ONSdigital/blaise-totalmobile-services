@@ -1,32 +1,17 @@
 import pytest
 
-from unittest import mock
+from unittest.mock import create_autospec
 from client import AuthException
 from client.optimise import OptimiseClient
 from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
-from tests.helpers import config_helper
-from services.totalmobile_service import get_worlds, create_job, get_jobs, delete_job
-from models.totalmobile_world_model import TotalmobileWorldModel, World
+from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
+from services.totalmobile_service import TotalmobileService
 
 
-
-@mock.patch.object(OptimiseClient, "get_worlds")
-def test_get_worlds_calls_the_rest_api_client_with_the_correct_parameters(_mock_get_worlds):
+def test_get_world_model_returns_a_world_model():
     # arrange
-    config = config_helper.get_default_config()
-
-    # act
-    get_worlds(config)
-
-    # assert
-    _mock_get_worlds.assert_called_with()
-
-
-@mock.patch.object(OptimiseClient, "get_worlds")
-def test_get_worlds_calls_returns_a_world_model(_mock_get_worlds):
-    # arrange
-    config = config_helper.get_default_config()
-    _mock_get_worlds.return_value = [
+    optimise_client_mock = create_autospec(OptimiseClient)
+    optimise_client_mock.get_worlds.return_value = [
         {
             "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             "identity": {
@@ -55,10 +40,19 @@ def test_get_worlds_calls_returns_a_world_model(_mock_get_worlds):
             },
             "type": "foo"
         },
+        {
+            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa2",
+            "identity": {
+                "reference": "Region 5"
+            },
+            "type": "foo"
+        },
     ]
 
+    totalmobile_service = TotalmobileService(optimise_client_mock)
+
     # act
-    result = get_worlds(config)
+    result = totalmobile_service.get_world_model()
 
     # assert
     print(result)
@@ -79,14 +73,17 @@ def test_get_worlds_calls_returns_a_world_model(_mock_get_worlds):
             World(
                 region="Region 4",
                 id="3fa85f64-5717-4562-b3fc-2c963f66afa9"
+            ),
+            World(
+                region="Region 5",
+                id="3fa85f64-5717-4562-b3fc-2c963f66afa2"
             )
         ])
 
 
-@mock.patch.object(OptimiseClient, "create_job")
-def test_create_job_calls_the_rest_api_client_with_the_correct_parameters(_mock_create_job):
+def test_create_job_calls_the_client_with_the_correct_parameters():
     # arrange
-    config = config_helper.get_default_config()
+    optimise_client_mock = create_autospec(OptimiseClient)
     totalmobile_job_model = TotalmobileJobModel(
         questionnaire="LMS2101_AA1",
         case_id="900001",
@@ -94,54 +91,61 @@ def test_create_job_calls_the_rest_api_client_with_the_correct_parameters(_mock_
         payload="{}"
     )
 
+    totalmobile_service = TotalmobileService(optimise_client_mock)
+
     # act
-    create_job(config, totalmobile_job_model)
+    totalmobile_service.create_job(totalmobile_job_model)
 
     # assert
-    _mock_create_job.assert_called_with(
+    optimise_client_mock.create_job.assert_called_with(
         "3fa85f64-5717-4562-b3fc-2c963f66afa7",
         "{}"
     )
 
 
-@mock.patch.object(OptimiseClient, "create_job")
-def test_create_job_auth_error(_mock_create_job):
+def test_create_job_auth_error():
     # arrange
-    config = config_helper.get_default_config()
+    optimise_client_mock = create_autospec(OptimiseClient)
+    optimise_client_mock.create_job.side_effect = AuthException()
+
     totalmobile_job_model = TotalmobileJobModel(
         questionnaire="LMS2101_AA1",
         case_id="900001",
         world_id="3fa85f64-5717-4562-b3fc-2c963f66afa7",
         payload="{}"
     )
-    _mock_create_job.side_effect = AuthException()
 
+    totalmobile_service = TotalmobileService(optimise_client_mock)
+
+    # act & assert
     with pytest.raises(AuthException):
-        create_job(config, totalmobile_job_model)
+        totalmobile_service.create_job(config, totalmobile_job_model)
 
 
-@mock.patch.object(OptimiseClient, "get_jobs")
-def test_get_jobs_calls_the_rest_api_client_with_the_correct_parameters(_mock_get_jobs):
+def test_get_jobs_calls_the_rest_api_client_with_the_correct_parameters():
     # arrange
-    config = config_helper.get_default_config()
+    optimise_client_mock = create_autospec(OptimiseClient)
+    optimise_client_mock.get_jobs.return_value = {}
     world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
+    totalmobile_service = TotalmobileService(optimise_client_mock)
 
     # act
-    get_jobs(config, world_id)
+    totalmobile_service.get_jobs(world_id)
 
     # assert
-    _mock_get_jobs.assert_called_with(world_id)
+    optimise_client_mock.get_jobs.assert_called_with(world_id)
 
 
-@mock.patch.object(OptimiseClient, "delete_job")
-def test_delete_jobs_calls_the_rest_api_client_with_the_correct_parameters(_mock_delete_job):
+def test_delete_jobs_calls_the_rest_api_client_with_the_correct_parameters():
     # arrange
-    config = config_helper.get_default_config()
+    optimise_client_mock = create_autospec(OptimiseClient)
+    optimise_client_mock.get_jobs.return_value = {}
     world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
     job = "1234"
+    totalmobile_service = TotalmobileService(optimise_client_mock)
 
     # act
-    delete_job(config, world_id, job)
+    totalmobile_service.delete_job(world_id, job)
 
     # assert
-    _mock_delete_job.assert_called_with(world_id, job)
+    optimise_client_mock.delete_job.assert_called_with(world_id, job)

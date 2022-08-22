@@ -1,7 +1,6 @@
 import asyncio
 import logging
 from typing import Dict, List, Tuple
-from uuid import uuid4
 
 import flask
 
@@ -10,9 +9,10 @@ from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
 from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
 from models.blaise.get_blaise_case_model import GetBlaiseCaseModel
-from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingCreateRequestModel
+from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingJobPayloadModel
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from services import questionnaire_service, totalmobile_service
+from services import questionnaire_service
+from services.totalmobile_service import TotalmobileService
 
 setup_logger()
 
@@ -45,13 +45,7 @@ def get_cases_with_valid_world_ids(filtered_cases: List[GetBlaiseCaseModel], wor
 def map_totalmobile_job_models(
         cases: List[GetBlaiseCaseModel], world_model: TotalmobileWorldModel, questionnaire_name: str
 ) -> List[TotalmobileJobModel]:
-    return [TotalmobileJobModel(questionnaire_name, world_model.get_world_id(case.field_region), case.case_id, TotalMobileOutgoingCreateRequestModel.import_case(questionnaire_name, case).to_payload()) for case in cases]
-
-
-def create_task_name(job_model: TotalmobileJobModel) -> str:
-    return (
-        f"{job_model.questionnaire}-{job_model.case_id}-{str(uuid4())}"
-    )
+    return [TotalmobileJobModel(questionnaire_name, world_model.get_world_id(case.field_region), case.case_id, TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, case).to_payload()) for case in cases]
 
 
 def run_async_tasks(tasks: List[Tuple[str, str]], queue_id: str, cloud_function: str):
@@ -64,7 +58,7 @@ def run_async_tasks(tasks: List[Tuple[str, str]], queue_id: str, cloud_function:
     asyncio.run(run(task_requests))
 
 
-def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> str:
+def create_questionnaire_case_tasks(request: flask.Request, config: Config, totalmobile_service: TotalmobileService) -> str:
     logging.info("Started creating questionnaire case tasks")
 
     request_json = request.get_json()
@@ -91,7 +85,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
         return f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}"
     logging.info(f"{len(eligible_cases)} eligible cases found")
 
-    world_model = totalmobile_service.get_worlds(config)
+    world_model = totalmobile_service.get_world_model()
     logging.info(f"Retrieved world id model")
 
     cases_with_valid_world_ids = get_cases_with_valid_world_ids(eligible_cases, world_model)
@@ -103,7 +97,7 @@ def create_questionnaire_case_tasks(request: flask.Request, config: Config) -> s
     logging.info(f"Finished mapping Totalmobile jobs for questionnaire {questionnaire_name}")
 
     tasks = [
-        (create_task_name(job_model), job_model.json().encode())
+        (job_model.create_task_name(), job_model.json().encode())
         for job_model in totalmobile_job_models
     ]
     logging.info(f"Creating {len(tasks)} cloud tasks for questionnaire {questionnaire_name}")

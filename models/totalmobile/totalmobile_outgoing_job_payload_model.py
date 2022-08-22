@@ -57,7 +57,7 @@ class AdditionalProperty:
 
 
 @dataclass
-class TotalMobileOutgoingCreateRequestModel:
+class TotalMobileOutgoingJobPayloadModel:
     identity: Reference
     description: str
     origin: str
@@ -86,7 +86,7 @@ class TotalMobileOutgoingCreateRequestModel:
 
     @classmethod
     def import_case(cls: Type[T], questionnaire_name: str, questionnaire_case: GetBlaiseCaseModel) -> T:
-        total_mobile_case = TotalMobileOutgoingCreateRequestModel(
+        total_mobile_case = TotalMobileOutgoingJobPayloadModel(
             identity=Reference(reference=cls.create_job_reference(questionnaire_name, questionnaire_case.case_id)),
             description=cls.create_description(questionnaire_name, questionnaire_case.case_id),
             origin="ONS",
