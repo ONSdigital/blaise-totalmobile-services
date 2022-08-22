@@ -23,7 +23,7 @@ def test_import_case_returns_a_populated_model():
         telephone_number_1="07900990901",
         telephone_number_2="07900990902",
         appointment_telephone_number="07900990903",
-        outcome_code="301",
+        outcome_code=301,
         latitude="10020202",
         longitude="34949494",
         priority="1",

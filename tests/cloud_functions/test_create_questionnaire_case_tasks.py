@@ -26,9 +26,9 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     questionnaire_name = "LMS2101_AA1"
 
     case_data = [
-        get_populated_case_model(case_id="10010", outcome_code="110", field_region="region1"),
-        get_populated_case_model(case_id="10020", outcome_code="120", field_region="region2"),
-        get_populated_case_model(case_id="10030", outcome_code="130", field_region="region3")
+        get_populated_case_model(case_id="10010", outcome_code=110, field_region="region1"),
+        get_populated_case_model(case_id="10020", outcome_code=120, field_region="region2"),
+        get_populated_case_model(case_id="10030", outcome_code=130, field_region="region3")
     ]
 
     world_model = TotalmobileWorldModel(
@@ -100,7 +100,7 @@ def test_create_case_tasks_for_questionnaire(
             appointment_telephone_number="",
             wave="1",
             priority="1",
-            outcome_code="310",
+            outcome_code=310,
             uac_chunks=UacChunks(
                 uac1="8176",
                 uac2="4726",
@@ -120,7 +120,7 @@ def test_create_case_tasks_for_questionnaire(
             appointment_telephone_number="",
             wave="1",
             priority="1",
-            outcome_code="310",
+            outcome_code=310,
             uac_chunks=UacChunks(
                 uac1="8176",
                 uac2="4726",

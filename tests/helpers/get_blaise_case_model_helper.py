@@ -20,7 +20,7 @@ def get_populated_case_model(
         telephone_number_1: str = "07900990901",
         telephone_number_2: str = "07900990902",
         appointment_telephone_number: str = "07900990903",
-        outcome_code: str = "301",
+        outcome_code: int = 301,
         latitude: str = "10020202",
         longitude: str = "34949494",
         priority: str = "1",
