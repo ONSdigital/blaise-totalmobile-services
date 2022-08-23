@@ -80,15 +80,19 @@ class TotalMobileOutgoingJobPayloadModel:
         return reference_model.create_reference()
 
     @staticmethod
-    def create_description(questionnaire_name: str, case_id: str) -> str:
-        return f"Study: {questionnaire_name}\nCase ID: {case_id}"
-
+    def create_description(questionnaire_name: str, questionnaire_case: GetBlaiseCaseModel) -> str:
+        return (
+            f"UAC: {questionnaire_case.uac_chunks.uac1} {questionnaire_case.uac_chunks.uac2} {questionnaire_case.uac_chunks.uac3}"
+            f"Due Date: {questionnaire_case.wave_com_dte.strftime('%d/%m/%Y')}"
+            f"Study: {questionnaire_name}"
+            f"Case ID: {questionnaire_case.case_id}"
+        )
 
     @classmethod
     def import_case(cls: Type[T], questionnaire_name: str, questionnaire_case: GetBlaiseCaseModel) -> T:
         total_mobile_case = TotalMobileOutgoingJobPayloadModel(
             identity=Reference(reference=cls.create_job_reference(questionnaire_name, questionnaire_case.case_id)),
-            description=cls.create_description(questionnaire_name, questionnaire_case.case_id),
+            description=cls.create_description(questionnaire_name, questionnaire_case),
             origin="ONS",
             duration=15,
             workType=questionnaire_case.survey_type,

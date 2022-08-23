@@ -1,4 +1,5 @@
-from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingJobPayloadModel, Reference, Skill, AddressDetails, Address, \
+from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingJobPayloadModel, Reference, \
+    Skill, AddressDetails, Address, \
     AddressCoordinates, ContactDetails, AdditionalProperty, DueDate
 from models.blaise.uac_model import UacChunks
 from tests.helpers import get_blaise_case_model_helper
@@ -238,3 +239,23 @@ def test_to_payload_sends_an_empty_string_to_totalmobile_if_the_due_date_is_miss
     result = case.to_payload()
 
     assert result["dueDate"]["end"] == ""
+
+
+def test_create_description_returns_a_correctly_formatted_description():
+    # Arrange
+    questionnaire_name = "LMS2201_AA1"
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+        case_id="12345",
+        data_model_name="LMS2201_AA1",
+        wave_com_dte=datetime(2022, 1, 31),
+        uac_chunks=UacChunks(uac1="1234", uac2="1235", uac3="1236")
+    )
+
+    # Act
+    case = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
+
+    # Assert
+    assert case.description == ("UAC: 1234 1235 1236"
+                                "Due Date: 31/01/2022"
+                                "Study: LMS2201_AA1"
+                                "Case ID: 12345")
