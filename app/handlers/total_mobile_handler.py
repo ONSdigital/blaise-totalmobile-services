@@ -15,6 +15,7 @@ def submit_form_result_request_handler(request, questionnaire_service):
     config = Config.from_env()
     data = request.get_json()
     validate_data(data)
+    logging.info(f"Incoming request via 'submitformresultrequest' - {data}")
 
     totalmobile_case = TotalMobileIncomingUpdateRequestModel.import_request(data)
 
