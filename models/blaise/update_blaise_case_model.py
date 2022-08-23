@@ -16,7 +16,8 @@ class UpdateBlaiseCaseModel:
 
     def get_outcome_details(self):
         return {
-            "hOut": f"{self.outcome_code}"
+            "hOut": f"{self.outcome_code}",
+            "DMktnIND": "Y"
         }
 
     def get_contact_details(self):
@@ -30,6 +31,9 @@ class UpdateBlaiseCaseModel:
 
         if self.mobile_phone_number != "" and self.mobile_phone_number is not None:
             contact_information["qDataBag.TelNo2"] = self.mobile_phone_number
+
+        if len(contact_information) > 0:
+            contact_information["DMktnIND"] = "Y"
 
         return contact_information
 
