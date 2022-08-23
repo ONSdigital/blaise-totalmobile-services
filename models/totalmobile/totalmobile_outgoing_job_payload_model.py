@@ -92,7 +92,6 @@ class TotalMobileOutgoingJobPayloadModel:
 
     @classmethod
     def import_case(cls: Type[T], questionnaire_name: str, questionnaire_case: GetBlaiseCaseModel) -> T:
-       # due_date = None if questionnaire_case.wave_com_dte is None else questionnaire_case.wave_com_dte.strftime("%d-%m-%Y")
         total_mobile_case = TotalMobileOutgoingJobPayloadModel(
             identity=Reference(reference=cls.create_job_reference(questionnaire_name, questionnaire_case.case_id)),
             description=cls.create_description(questionnaire_name, questionnaire_case),
