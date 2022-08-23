@@ -2,8 +2,8 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 from typing import Type, TypeVar, List, Optional
 
-from models.questionnaire_case_model import QuestionnaireCaseModel
-from models.totalmobile_reference_model import TotalmobileReferenceModel
+from models.blaise.get_blaise_case_model import GetBlaiseCaseModel
+from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
 
 T = TypeVar('T')
 
@@ -57,7 +57,7 @@ class AdditionalProperty:
 
 
 @dataclass
-class TotalMobileOutgoingCaseModel:
+class TotalMobileOutgoingJobPayloadModel:
     identity: Reference
     description: str
     origin: str
@@ -85,8 +85,8 @@ class TotalMobileOutgoingCaseModel:
 
 
     @classmethod
-    def import_case(cls: Type[T], questionnaire_name: str, questionnaire_case: QuestionnaireCaseModel) -> T:
-        total_mobile_case = TotalMobileOutgoingCaseModel(
+    def import_case(cls: Type[T], questionnaire_name: str, questionnaire_case: GetBlaiseCaseModel) -> T:
+        total_mobile_case = TotalMobileOutgoingJobPayloadModel(
             identity=Reference(reference=cls.create_job_reference(questionnaire_name, questionnaire_case.case_id)),
             description=cls.create_description(questionnaire_name, questionnaire_case.case_id),
             origin="ONS",

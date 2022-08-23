@@ -1,8 +1,9 @@
 import concurrent.futures
 
 from appconfig import Config
+from client import OptimiseClient
 from itertools import repeat
-from services import totalmobile_service
+from services.totalmobile_service import TotalmobileService
 from typing import List, Dict
 
 
@@ -12,18 +13,18 @@ def __remove_default_world_id(list_of_active_world_ids: List[str]) -> List[str]:
     return [world_id for world_id in list_of_active_world_ids if world_id != default_world_id]
 
 
-def __get_active_world_ids(config: Config) -> List[str]:
+def __get_active_world_ids(totalmobile_service_local: TotalmobileService) -> List[str]:
     print("Retrieving world ids")
     return __remove_default_world_id(
-        totalmobile_service.get_worlds(config).get_available_ids()
+        totalmobile_service_local.get_world_model().get_available_ids()
     )
 
 
-def __map_world_id_to_job_reference(config: Config, world_ids: List[str]) -> List[Dict[str, str]]:
+def __map_world_id_to_job_reference(totalmobile_service_local: TotalmobileService, world_ids: List[str]) -> List[Dict[str, str]]:
     list_of_jobs = []
     for world_id in world_ids:
         print(f"Retrieving job references for {world_id}")
-        jobs = totalmobile_service.get_jobs(config, world_id)
+        jobs = totalmobile_service_local.get_jobs(world_id)
         print(f"Retrieved {len(jobs)} for {world_id}")
         for job in jobs:
             my_dict = {"world_id": world_id, "reference": job["identity"]["reference"]}
@@ -32,9 +33,9 @@ def __map_world_id_to_job_reference(config: Config, world_ids: List[str]) -> Lis
     return list_of_jobs
 
 
-def __delete_job(config: Config, job: Dict[str, str]) -> None:
+def __delete_job(job: Dict[str, str]) -> None:
     try:
-        totalmobile_service.delete_job(config, job["world_id"], job["reference"])
+        totalmobile_service.delete_job(job["world_id"], job["reference"])
         print(f"Deleted job id {job['reference']} from world {job['world_id']}")
     except:
         print(
@@ -44,14 +45,20 @@ def __delete_job(config: Config, job: Dict[str, str]) -> None:
 
 if __name__ == "__main__":
     config = Config.from_env()
-    print(config)
+    optimise_client = OptimiseClient(
+        config.totalmobile_url,
+        config.totalmobile_instance,
+        config.totalmobile_client_id,
+        config.totalmobile_client_secret,
+    )
+    totalmobile_service = TotalmobileService(optimise_client)
 
     if "dev" in config.totalmobile_url.lower():
-        active_world_ids = __get_active_world_ids(config)
-        list_of_world_ids_and_job_references = __map_world_id_to_job_reference(config, active_world_ids)
+        active_world_ids = __get_active_world_ids(totalmobile_service)
+        list_of_world_ids_and_job_references = __map_world_id_to_job_reference(totalmobile_service, active_world_ids)
 
         with concurrent.futures.ProcessPoolExecutor() as executor:
-            executor.map(__delete_job, repeat(config), list_of_world_ids_and_job_references)
+            executor.map(__delete_job, list_of_world_ids_and_job_references)
         print("Done!")
     else:
         print("Did not run the 'Delete job' method as 'Totalmobile URL' was not pointing to 'dev'")

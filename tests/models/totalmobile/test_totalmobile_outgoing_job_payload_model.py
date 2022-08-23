@@ -1,7 +1,7 @@
-from models.totalmobile_outgoing_case_model import TotalMobileOutgoingCaseModel, Reference, Skill, AddressDetails, Address, \
+from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingJobPayloadModel, Reference, Skill, AddressDetails, Address, \
     AddressCoordinates, ContactDetails, AdditionalProperty, DueDate
-from models.uac_model import UacChunks
-from tests.helpers import questionnaire_case_model_helper
+from models.blaise.uac_model import UacChunks
+from tests.helpers import get_blaise_case_model_helper
 from datetime import datetime
 
 
@@ -9,7 +9,7 @@ def test_import_case_returns_a_populated_model():
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
-    questionnaire_case = questionnaire_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
         case_id="90001",
         data_model_name="LM2007",
         survey_type="LMS",
@@ -23,7 +23,7 @@ def test_import_case_returns_a_populated_model():
         telephone_number_1="07900990901",
         telephone_number_2="07900990902",
         appointment_telephone_number="07900990903",
-        outcome_code="301",
+        outcome_code=301,
         latitude="10020202",
         longitude="34949494",
         priority="1",
@@ -34,7 +34,7 @@ def test_import_case_returns_a_populated_model():
     )
 
     # act
-    result = TotalMobileOutgoingCaseModel.import_case(questionnaire_name, questionnaire_case)
+    result = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
 
     # assert
     assert result.identity.reference == "LMS2101-AA1.90001"
@@ -83,12 +83,12 @@ def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uac
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
-    questionnaire_case = questionnaire_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
         uac_chunks=None
     )
 
     # act
-    result = TotalMobileOutgoingCaseModel.import_case(questionnaire_name, questionnaire_case)
+    result = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
 
     # assert
     for additional_property in result.additionalProperties:
@@ -96,7 +96,7 @@ def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uac
 
 
 def test_to_payload_returns_a_correctly_formatted_payload():
-    totalmobile_case = TotalMobileOutgoingCaseModel(
+    totalmobile_case = TotalMobileOutgoingJobPayloadModel(
         identity=Reference("LMS2101-AA1.90001"),
         description="Study: LMS2101_AA1\nCase ID: 90001",
         origin="ONS",
@@ -230,11 +230,11 @@ def test_to_payload_returns_a_correctly_formatted_payload():
 def test_to_payload_sends_an_empty_string_to_totalmobile_if_the_due_date_is_missing():
     questionnaire_name = "LMS2101_AA1"
 
-    questionnaire_case = questionnaire_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
         wave_com_dte=None
     )
 
-    case = TotalMobileOutgoingCaseModel.import_case(questionnaire_name, questionnaire_case)
+    case = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
     result = case.to_payload()
 
     assert result["dueDate"]["end"] == ""

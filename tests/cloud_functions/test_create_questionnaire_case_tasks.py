@@ -1,44 +1,24 @@
 import json
 from unittest import mock
+from unittest.mock import create_autospec
 
 import flask
 import pytest
 import logging
-from models.questionnaire_case_model import UacChunks
-from models.totalmobile_outgoing_case_model import TotalMobileOutgoingCaseModel
-from models.totalmobile_world_model import TotalmobileWorldModel, World
+from models.blaise.get_blaise_case_model import UacChunks
+from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingJobPayloadModel
+from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
+from services.totalmobile_service import TotalmobileService
 
 from tests.helpers import config_helper
 from client.optimise import OptimiseClient
 from cloud_functions.create_questionnaire_case_tasks import (
     create_questionnaire_case_tasks,
-    create_task_name,
     map_totalmobile_job_models,
     validate_request,
     get_cases_with_valid_world_ids
 )
-from models.totalmobile_job_model import TotalmobileJobModel
-from tests.helpers.questionnaire_case_model_helper import get_populated_case_model
-
-
-def test_create_task_name_returns_correct_name_when_called():
-    questionnaire_case_model = get_populated_case_model()
-    questionnaire_case_model.case_id = "90001"
-    questionnaire_name = "LMS2101_AA1"
-    totalmobile_case_model = TotalMobileOutgoingCaseModel.import_case(questionnaire_name, questionnaire_case_model)
-    model = TotalmobileJobModel("LMS2101_AA1", "world", "90001", totalmobile_case_model.to_payload())
-
-    assert create_task_name(model).startswith("LMS2101_AA1-90001-")
-
-
-def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_model():
-    questionnaire_case_model = get_populated_case_model()
-    questionnaire_case_model.case_id = "90001"
-    questionnaire_name = "LMS2101_AA1"
-    totalmobile_case_model = TotalMobileOutgoingCaseModel.import_case(questionnaire_name, questionnaire_case_model)
-    model = TotalmobileJobModel("LMS2101_AA1", "world", "90001", totalmobile_case_model.to_payload())
-
-    assert create_task_name(model) != create_task_name(model)
+from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
 
 def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
@@ -46,9 +26,9 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     questionnaire_name = "LMS2101_AA1"
 
     case_data = [
-        get_populated_case_model(case_id="10010", outcome_code="110", field_region="region1"),
-        get_populated_case_model(case_id="10020", outcome_code="120", field_region="region2"),
-        get_populated_case_model(case_id="10030", outcome_code="130", field_region="region3")
+        get_populated_case_model(case_id="10010", outcome_code=110, field_region="region1"),
+        get_populated_case_model(case_id="10020", outcome_code=120, field_region="region2"),
+        get_populated_case_model(case_id="10030", outcome_code=130, field_region="region3")
     ]
 
     world_model = TotalmobileWorldModel(
@@ -68,17 +48,17 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     assert result[0].questionnaire == "LMS2101_AA1"
     assert result[0].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     assert result[0].case_id == "10010"
-    assert result[0].payload == TotalMobileOutgoingCaseModel.import_case(questionnaire_name, case_data[0]).to_payload()
+    assert result[0].payload == TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, case_data[0]).to_payload()
 
     assert result[1].questionnaire == "LMS2101_AA1"
     assert result[1].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa7"
     assert result[1].case_id == "10020"
-    assert result[1].payload == TotalMobileOutgoingCaseModel.import_case(questionnaire_name, case_data[1]).to_payload()
+    assert result[1].payload == TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, case_data[1]).to_payload()
 
     assert result[2].questionnaire == "LMS2101_AA1"
     assert result[2].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
     assert result[2].case_id == "10030"
-    assert result[2].payload == TotalMobileOutgoingCaseModel.import_case(questionnaire_name, case_data[2]).to_payload()
+    assert result[2].payload == TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, case_data[2]).to_payload()
 
 
 def test_validate_request(mock_create_job_task):
@@ -93,7 +73,6 @@ def test_validate_request_when_missing_fields():
     )
 
 
-@mock.patch("services.totalmobile_service.get_worlds")
 @mock.patch("services.questionnaire_service.get_eligible_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.get_cases_with_valid_world_ids")
@@ -101,11 +80,17 @@ def test_create_case_tasks_for_questionnaire(
         mock_get_cases_with_valid_world_ids,
         mock_run_async_tasks,
         mock_get_eligible_cases,
-        mock_get_worlds,
 ):
     # arrange
     config = config_helper.get_default_config()
-    mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
+    total_mobile_service_mock = create_autospec(TotalmobileService)
+    total_mobile_service_mock.get_world_model.return_value = TotalmobileWorldModel(
+        worlds=[
+            World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")
+        ]
+    )
+
+    request_mock = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
 
     questionnaire_cases = [
         get_populated_case_model(
@@ -115,7 +100,7 @@ def test_create_case_tasks_for_questionnaire(
             appointment_telephone_number="",
             wave="1",
             priority="1",
-            outcome_code="310",
+            outcome_code=310,
             uac_chunks=UacChunks(
                 uac1="8176",
                 uac2="4726",
@@ -127,12 +112,6 @@ def test_create_case_tasks_for_questionnaire(
 
     mock_get_eligible_cases.return_value = questionnaire_cases
 
-    mock_get_worlds.return_value = TotalmobileWorldModel(
-        worlds=[
-            World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")
-        ]
-    )
-
     mock_get_cases_with_valid_world_ids.return_value = [
         get_populated_case_model(
             case_id="10010",
@@ -141,7 +120,7 @@ def test_create_case_tasks_for_questionnaire(
             appointment_telephone_number="",
             wave="1",
             priority="1",
-            outcome_code="310",
+            outcome_code=310,
             uac_chunks=UacChunks(
                 uac1="8176",
                 uac2="4726",
@@ -151,10 +130,9 @@ def test_create_case_tasks_for_questionnaire(
         )]
 
     # act
-    result = create_questionnaire_case_tasks(mock_request, config)
+    result = create_questionnaire_case_tasks(request_mock, config, total_mobile_service_mock)
 
     # assert
-    mock_get_worlds.assert_called_with(config)
     mock_get_eligible_cases.assert_called_with("LMS2101_AA1", config)
 
     mock_run_async_tasks.assert_called_once()
@@ -169,7 +147,7 @@ def test_create_case_tasks_for_questionnaire(
         'questionnaire': 'LMS2101_AA1',
         'world_id': '3fa85f64-5717-4562-b3fc-2c963f66afa6',
         'case_id': '10010',
-        'payload': TotalMobileOutgoingCaseModel.import_case("LMS2101_AA1", questionnaire_cases[0]).to_payload()
+        'payload': TotalMobileOutgoingJobPayloadModel.import_case("LMS2101_AA1", questionnaire_cases[0]).to_payload()
     }
     assert result == "Done"
 
@@ -181,25 +159,29 @@ def test_create_questionnaire_case_tasks_when_no_eligible_cases(
         mock_get_eligible_cases
 ):
     # arrange
-    mock_request = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
+    request_mock = flask.Request.from_values(json={"questionnaire": "LMS2101_AA1"})
+    total_mobile_service_mock = create_autospec(TotalmobileService)
+
     config = config_helper.get_default_config()
     mock_get_eligible_cases.return_value = []
 
     # act
-    result = create_questionnaire_case_tasks(mock_request, config)
+    result = create_questionnaire_case_tasks(request_mock, config, total_mobile_service_mock)
 
     # assert
     mock_run_async_tasks.assert_not_called()
     assert result == "Exiting as no eligible cases to send for questionnaire LMS2101_AA1"
 
 
-def test_create_questionnaire_case_tasks_errors_if_misssing_questionnaire():
+def test_create_questionnaire_case_tasks_errors_if_missing_questionnaire():
     # arrange
-    mock_request = flask.Request.from_values(json={"blah": "blah"})
+    request_mock = flask.Request.from_values(json={"blah": "blah"})
+    total_mobile_service_mock = create_autospec(TotalmobileService)
+
     config = config_helper.get_default_config()
     # assert
     with pytest.raises(Exception) as err:
-        create_questionnaire_case_tasks(mock_request, config)
+        create_questionnaire_case_tasks(request_mock, config, total_mobile_service_mock)
     assert (
             str(err.value) == "Required fields missing from request payload: ['questionnaire']"
     )
