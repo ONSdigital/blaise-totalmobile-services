@@ -92,7 +92,7 @@ class TotalMobileOutgoingJobPayloadModel:
 
     @classmethod
     def import_case(cls: Type[T], questionnaire_name: str, questionnaire_case: GetBlaiseCaseModel) -> T:
-        due_date = None if questionnaire_case.wave_com_dte is None else questionnaire_case.wave_com_dte.strftime("%d-%m-%Y")
+       # due_date = None if questionnaire_case.wave_com_dte is None else questionnaire_case.wave_com_dte.strftime("%d-%m-%Y")
         total_mobile_case = TotalMobileOutgoingJobPayloadModel(
             identity=Reference(reference=cls.create_job_reference(questionnaire_name, questionnaire_case.case_id)),
             description=cls.create_description(questionnaire_name, questionnaire_case),
@@ -100,7 +100,7 @@ class TotalMobileOutgoingJobPayloadModel:
             duration=15,
             workType=questionnaire_case.survey_type,
             skills=[Skill(identity=Reference(reference=questionnaire_case.survey_type))],
-            dueDate=DueDate(end=due_date),
+            dueDate=DueDate(end=questionnaire_case.wave_com_dte),
             location=AddressDetails(addressDetail=Address(
                 addressLine1=questionnaire_case.address_details.address.address_line_1,
                 addressLine2=questionnaire_case.address_details.address.address_line_2,

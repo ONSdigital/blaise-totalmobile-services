@@ -48,7 +48,7 @@ def test_import_case_returns_a_populated_model():
     assert result.duration == 15
     assert result.workType == "LMS"
     assert result.skills[0].identity.reference == "LMS"
-    assert result.dueDate.end == "31-01-2023"
+    assert result.dueDate.end == datetime(2023, 1, 31)
     assert result.location.addressDetail.addressLine1 == "12 Blaise Street"
     assert result.location.addressDetail.addressLine2 == "Blaise Hill"
     assert result.location.addressDetail.addressLine3 == "Blaiseville"
