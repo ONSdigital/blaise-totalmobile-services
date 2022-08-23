@@ -44,7 +44,7 @@ def test_get_outcome_details_returns_an_expected_dictionary():
     # assert
     assert result == {
             "hOut": "300",
-            "DMktnIND": "Y"
+            "DMktnIND": "1"
         }
 
 
@@ -67,7 +67,7 @@ def test_get_contact_details_returns_an_expected_dictionary():
             "dMktnName": "Joe Bloggs",
             "qDataBag.TelNo": "01234567890",
             "qDataBag.TelNo2": "07123123123",
-            "DMktnIND": "Y"
+            "DMktnIND": "1"
         }
 
 
@@ -90,7 +90,7 @@ def test_get_contact_details_returns_an_expected_dictionary_if_contact_name_not_
     assert result == {
             "qDataBag.TelNo": "01234567890",
             "qDataBag.TelNo2": "07123123123",
-            "DMktnIND": "Y"
+            "DMktnIND": "1"
         }
 
 
@@ -113,7 +113,7 @@ def test_get_contact_details_returns_an_expected_dictionary_if_home_number_not_p
     assert result == {
             "dMktnName": "Joe Bloggs",
             "qDataBag.TelNo2": "07123123123",
-            "DMktnIND": "Y"
+            "DMktnIND": "1"
         }
 
 
@@ -136,7 +136,7 @@ def test_get_contact_details_returns_an_expected_dictionary_if_mobile_number_not
     assert result == {
             "dMktnName": "Joe Bloggs",
             "qDataBag.TelNo": "01234567890",
-            "DMktnIND": "Y"
+            "DMktnIND": "1"
         }
 
 
