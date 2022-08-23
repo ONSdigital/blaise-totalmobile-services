@@ -30,7 +30,7 @@ def test_import_case_returns_a_populated_model():
         priority="1",
         field_region="gwent",
         field_team="B-Team",
-        wave_com_dte="01-01-2023",
+        wave_com_dte=datetime(2023, 1, 31),
         uac_chunks=UacChunks(uac1="3456", uac2="3453", uac3="4546")
     )
 
@@ -39,12 +39,16 @@ def test_import_case_returns_a_populated_model():
 
     # assert
     assert result.identity.reference == "LMS2101-AA1.90001"
-    assert result.description == "Study: LMS2101_AA1\nCase ID: 90001"
+    assert result.description == (
+        "UAC: 3456 3453 4546\n"
+        "Due Date: 31/01/2023\n"
+        "Study: LMS2101_AA1\n"
+        "Case ID: 90001")
     assert result.origin == "ONS"
     assert result.duration == 15
     assert result.workType == "LMS"
     assert result.skills[0].identity.reference == "LMS"
-    assert result.dueDate.end == "01-01-2023"
+    assert result.dueDate.end == "31-01-2023"
     assert result.location.addressDetail.addressLine1 == "12 Blaise Street"
     assert result.location.addressDetail.addressLine2 == "Blaise Hill"
     assert result.location.addressDetail.addressLine3 == "Blaiseville"
@@ -255,7 +259,31 @@ def test_create_description_returns_a_correctly_formatted_description():
     case = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
 
     # Assert
-    assert case.description == ("UAC: 1234 1235 1236"
-                                "Due Date: 31/01/2022"
-                                "Study: LMS2201_AA1"
-                                "Case ID: 12345")
+    assert case.description == (
+        "UAC: 1234 1235 1236\n"
+        "Due Date: 31/01/2022\n"
+        "Study: LMS2201_AA1\n"
+        "Case ID: 12345"
+    )
+
+
+def test_create_description_returns_a_correctly_formatted_description_when_all_values_are_empty():
+    # Arrange
+    questionnaire_name = "LMS2201_AA1"
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+        case_id="1234",
+        data_model_name="",
+        wave_com_dte=None,
+        uac_chunks=None
+    )
+
+    # Act
+    case = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
+
+    # Assert
+    assert case.description == (
+        "UAC: \n"
+        "Due Date: \n"
+        "Study: LMS2201_AA1\n"
+        "Case ID: 1234"
+    )

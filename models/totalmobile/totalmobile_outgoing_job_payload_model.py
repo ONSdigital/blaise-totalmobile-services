@@ -81,15 +81,18 @@ class TotalMobileOutgoingJobPayloadModel:
 
     @staticmethod
     def create_description(questionnaire_name: str, questionnaire_case: GetBlaiseCaseModel) -> str:
+        uac_string = "" if questionnaire_case.uac_chunks is None else f"{questionnaire_case.uac_chunks.uac1} {questionnaire_case.uac_chunks.uac2} {questionnaire_case.uac_chunks.uac3}"
+        due_date_string = "" if questionnaire_case.wave_com_dte is None else questionnaire_case.wave_com_dte.strftime('%d/%m/%Y')
         return (
-            f"UAC: {questionnaire_case.uac_chunks.uac1} {questionnaire_case.uac_chunks.uac2} {questionnaire_case.uac_chunks.uac3}"
-            f"Due Date: {questionnaire_case.wave_com_dte.strftime('%d/%m/%Y')}"
-            f"Study: {questionnaire_name}"
+            f"UAC: {uac_string}\n"
+            f"Due Date: {due_date_string}\n"
+            f"Study: {questionnaire_name}\n"
             f"Case ID: {questionnaire_case.case_id}"
         )
 
     @classmethod
     def import_case(cls: Type[T], questionnaire_name: str, questionnaire_case: GetBlaiseCaseModel) -> T:
+        due_date = None if questionnaire_case.wave_com_dte is None else questionnaire_case.wave_com_dte.strftime("%d-%m-%Y")
         total_mobile_case = TotalMobileOutgoingJobPayloadModel(
             identity=Reference(reference=cls.create_job_reference(questionnaire_name, questionnaire_case.case_id)),
             description=cls.create_description(questionnaire_name, questionnaire_case),
@@ -97,7 +100,7 @@ class TotalMobileOutgoingJobPayloadModel:
             duration=15,
             workType=questionnaire_case.survey_type,
             skills=[Skill(identity=Reference(reference=questionnaire_case.survey_type))],
-            dueDate=DueDate(end=questionnaire_case.wave_com_dte),
+            dueDate=DueDate(end=due_date),
             location=AddressDetails(addressDetail=Address(
                 addressLine1=questionnaire_case.address_details.address.address_line_1,
                 addressLine2=questionnaire_case.address_details.address.address_line_2,
