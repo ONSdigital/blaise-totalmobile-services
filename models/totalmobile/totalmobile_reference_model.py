@@ -49,12 +49,12 @@ class TotalmobileReferenceModel:
     def get_reference_from_incoming_request(incoming_request: Dict[str, str]):
 
         if (
-                "Result" not in incoming_request
-                or "Association" not in incoming_request["Result"]
-                or "Reference" not in incoming_request["Result"]["Association"]
-                or incoming_request["Result"]["Association"]["Reference"] == ""
+                "result" not in incoming_request
+                or "association" not in incoming_request["result"]
+                or "reference" not in incoming_request["result"]["association"]
+                or incoming_request["result"]["association"]["reference"] == ""
         ):
             logging.error("Unique reference is missing from totalmobile payload")
             raise MissingReferenceError()
 
-        return incoming_request["Result"]["Association"]["Reference"]
+        return incoming_request["result"]["association"]["reference"]

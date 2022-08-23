@@ -31,17 +31,17 @@ class TotalMobileIncomingUpdateRequestModel:
         return total_mobile_case
 
     @staticmethod
-    def get_outcome_code(incoming_request: Dict[str, str]) -> str:
-        return int(incoming_request["Result"]["Responses"][0]["Responses"][1]["Value"])
+    def get_outcome_code(incoming_request: Dict[str, str]) -> int:
+        return int(incoming_request["result"]["responses"][0]["responses"][1]["value"])
 
     @staticmethod
     def get_contact_name(incoming_request: Dict[str, str]) -> str:
-        return incoming_request["Result"]["Responses"][1]["Responses"][0]["Value"]
+        return incoming_request["result"]["responses"][1]["responses"][0]["value"]
 
     @staticmethod
     def get_home_phone_number(incoming_request: Dict[str, str]) -> str:
-        return incoming_request["Result"]["Responses"][1]["Responses"][1]["Value"]
+        return incoming_request["result"]["responses"][1]["responses"][1]["value"]
 
     @staticmethod
     def get_mobile_phone_number(incoming_request: Dict[str, str]) -> str:
-        return incoming_request["Result"]["Responses"][1]["Responses"][2]["Value"]
+        return incoming_request["result"]["responses"][1]["responses"][2]["value"]
