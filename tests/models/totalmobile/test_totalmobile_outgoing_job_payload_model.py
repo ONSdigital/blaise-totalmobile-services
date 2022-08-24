@@ -287,3 +287,22 @@ def test_create_description_returns_a_correctly_formatted_description_when_all_v
         "Study: LMS2201_AA1\n"
         "Case ID: 1234"
     )
+
+def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_all_fields_are_populated():
+    # Arrange
+    questionnaire_name = "LMS2201_AA1"
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+        case_id="1234",
+        address_line_1="123 Blaise Street",
+        address_line_2="Blaisville",
+        address_line_3="Upper Blaise",
+        county="BlaiseShire",
+        town="Blaisingdom",
+        postcode="BS1 1BS",
+    )
+
+    # Act
+    case = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
+
+    # Assert
+    assert case.location.address == "123 Blaise Street, Blaisville, Upper Blaise, BlaiseShire, Blaisingdom, BS1 1BS"
