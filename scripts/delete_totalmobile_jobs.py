@@ -33,14 +33,13 @@ def __map_world_id_to_job_reference(totalmobile_service_local: TotalmobileServic
     return list_of_jobs
 
 
-def __delete_job(job: Dict[str, str]) -> None:
+def __delete_job(totalmobile_service_local: TotalmobileService, job: Dict[str, str]) -> None:
     try:
-        totalmobile_service.delete_job(job["world_id"], job["reference"])
+        totalmobile_service_local.delete_job(job["world_id"], job["reference"])
         print(f"Deleted job id {job['reference']} from world {job['world_id']}")
-    except:
-        print(
-            f"Could not delete job id {job['reference']} from world {job['world_id']} as it has a status of 'completed'"
-        )
+    except Exception as e:
+        print(f"Could not delete job id {job['reference']} from world {job['world_id']}")
+        print(e)
 
 
 if __name__ == "__main__":
@@ -58,10 +57,10 @@ if __name__ == "__main__":
         list_of_world_ids_and_job_references = __map_world_id_to_job_reference(totalmobile_service, active_world_ids)
 
         with concurrent.futures.ProcessPoolExecutor() as executor:
-            executor.map(__delete_job, list_of_world_ids_and_job_references)
+            executor.map(__delete_job, repeat(totalmobile_service), list_of_world_ids_and_job_references)
         print("Done!")
     else:
-        print("Did not run the 'Delete job' method as 'Totalmobile URL' was not pointing to 'dev'")
+        print("Did not run 'delete_job' as 'totalmobile_url' was not pointing to 'dev'")
         exit(1)
 
 # TODO:
