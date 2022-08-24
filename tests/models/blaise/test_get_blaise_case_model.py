@@ -12,7 +12,6 @@ def test_import_case_returns_a_populated_model():
     case_data_dictionary = {
         "qiD.Serial_Number": "90000000",
         "dataModelName": "LM2007",
-        "qDataBag.TLA": "LMS",
         "qDataBag.Wave": "1",
         "qDataBag.Prem1": "12 Blaise Street",
         "qDataBag.Prem2": "Blaise Hill",
@@ -38,7 +37,6 @@ def test_import_case_returns_a_populated_model():
     assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id == "90000000"
     assert result.data_model_name == "LM2007"
-    assert result.survey_type == "LMS"
     assert result.wave == "1"
     assert result.address_details.address.address_line_1 == "12 Blaise Street"
     assert result.address_details.address.address_line_2 == "Blaise Hill"
@@ -65,7 +63,6 @@ def test_import_case_returns_a_valid_object_when_a_blaise_field_is_incorrectly_t
     case_data_dictionary = {
         "qdatabag.Serial_Number": "90000000",
         "dataModelName": "LM2007",
-        "qDataBag.TLA": "LMS",
         "qDataBag.Wave": "1",
         "qDataBag.Prem1": "12 Blaise Street",
         "qDataBag.Prem2": "Blaise Hill",
@@ -90,7 +87,6 @@ def test_import_case_returns_a_valid_object_when_a_blaise_field_is_incorrectly_t
     assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id is None
     assert result.data_model_name == "LM2007"
-    assert result.survey_type == "LMS"
     assert result.wave == "1"
     assert result.address_details.address.address_line_1 == "12 Blaise Street"
     assert result.address_details.address.address_line_2 == "Blaise Hill"
@@ -140,7 +136,6 @@ def test_import_case_returns_a_valid_object_when_an_optional_blaise_field_is_mis
 
     case_data_dictionary = {
         "dataModelName": "LM2007",
-        "qDataBag.TLA": "LMS",
         "qDataBag.Wave": "1",
         "qDataBag.Prem1": "12 Blaise Street",
         "qDataBag.Prem2": "Blaise Hill",
@@ -165,7 +160,6 @@ def test_import_case_returns_a_valid_object_when_an_optional_blaise_field_is_mis
     assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id is None
     assert result.data_model_name == "LM2007"
-    assert result.survey_type == "LMS"
     assert result.wave == "1"
     assert result.address_details.address.address_line_1 == "12 Blaise Street"
     assert result.address_details.address.address_line_2 == "Blaise Hill"

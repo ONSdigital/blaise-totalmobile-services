@@ -13,7 +13,6 @@ def test_import_case_returns_a_populated_model():
     questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
         case_id="90001",
         data_model_name="LM2007",
-        survey_type="LMS",
         wave="1",
         address_line_1="12 Blaise Street",
         address_line_2="Blaise Hill",
