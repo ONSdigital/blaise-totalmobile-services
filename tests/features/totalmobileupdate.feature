@@ -241,36 +241,44 @@ Feature: Totalmobile update
 
 #  TODO: ------------------------
 
-  Scenario: Totalmobile sends a request with an outcome code of 460 (hard refusal) when case has no pre-existing records for CatiMana.CatiCalls.RegsCalls
+  Scenario Outline: Totalmobile sends a request with an outcome code of 460 (hard refusal) when case has no pre-existing call history
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
-    And the case has an outcome code of 460
-#    When the update call history record process runs
+    And the case has an outcome code of <outcome_code>
+    And the case has no pre-existing call history
     When Totalmobile sends an update for reference "LMS2206-AA1.12345"
       | field_name   | value |
       | outcome_code | 460   |
-    Then records with index 1 and 5 in CatiMana.CatiCalls.RegsCalls will be updated with
-      | field_name  | value |
-      | WhoMade1    | KTN   |
-      | WhoMade5    | KTN   |
-      | DialResult1 | 5     |
-      | DialResult5 | 5     |
+    Then the first and last records in the call history will be updated with
+      | field_name | value |
+      | WhoMade    | KTN   |
+      | DialResult | 5     |
     And "CATI call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, CATI WhoMade=KTN, DialResult=5, TM hOut=460)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
+    Examples:
+      | outcome_code |
+      | 0            |
+      | 310          |
+      | 320          |
 
 
-  Scenario: Totalmobile sends a request with an outcome code of 460 (hard refusal) when case has pre-existing records for CatiMana.CatiCalls.RegsCalls
+  Scenario Outline: Totalmobile sends a request with an outcome code of 460 (hard refusal) when case has call history
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
-    And the case has an outcome code of 460
-#    When the update call history record process runs
+    And the case has an outcome code of <outcome_code>
+    And the case has call history
     When Totalmobile sends an update for reference "LMS2206-AA1.12345"
       | field_name   | value |
       | outcome_code | 460   |
-    Then records with index 1 in CatiMana.CatiCalls.RegsCalls will be updated with
-      | field_name  | value |
-      | WhoMade1    | KTN   |
-      | DialResult1 | 5     |
+    Then the first record in the call history will be updated with
+      | field_name | value |
+      | WhoMade    | KTN   |
+      | DialResult | 5     |
     And "CATI call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, CATI WhoMade=KTN, DialResult=5, TM hOut=460)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
+    Examples:
+      | outcome_code |
+      | 0            |
+      | 310          |
+      | 320          |
 
 #  TODO: ------------------------
 
