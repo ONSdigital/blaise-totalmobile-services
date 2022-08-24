@@ -28,7 +28,7 @@ def update_case(totalmobile_request: TotalMobileIncomingUpdateRequestModel, conf
 
 
 def _update_case_contact_information(blaise_case, update_blaise_case_model, config, questionnaire_service) -> None:
-    contact_fields = update_blaise_case_model.get_contact_details()
+    contact_fields = update_blaise_case_model.contact_details()
     if len(contact_fields) == 0:
         logging.info(
             f"Contact information has not been updated as no contact information was provided (Questionnaire={blaise_case.questionnaire_name}, "
@@ -53,7 +53,7 @@ def _update_case_outcome_code(blaise_case, update_blaise_case_model, config, que
     questionnaire_service.update_case(
         blaise_case.questionnaire_name,
         blaise_case.case_id,
-        update_blaise_case_model.get_outcome_details(),
+        update_blaise_case_model.outcome_details(),
         config
     )
 
