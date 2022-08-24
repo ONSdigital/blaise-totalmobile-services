@@ -241,7 +241,7 @@ Feature: Totalmobile update
 
 #  TODO: ------------------------
 
-  Scenario Outline: Totalmobile sends a request with an outcome code of 460 (hard refusal) when case has no pre-existing call history
+  Scenario Outline: Totalmobile sends a request with an outcome code of 460 (hard refusal) when the case has no pre-existing call history
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
     And the case has an outcome code of <outcome_code>
     And the case has no pre-existing call history
@@ -261,7 +261,7 @@ Feature: Totalmobile update
       | 320          |
 
 
-  Scenario Outline: Totalmobile sends a request with an outcome code of 460 (hard refusal) when case has call history
+  Scenario Outline: Totalmobile sends a request with an outcome code of 460 (hard refusal) when the case has call history
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
     And the case has an outcome code of <outcome_code>
     And the case has call history
