@@ -1,6 +1,7 @@
 import pytest
 
-from app.exceptions.custom_exceptions import MissingReferenceError, BadReferenceError
+from app.exceptions.custom_exceptions import MissingReferenceError, BadReferenceError, \
+    InvalidTotalmobileUpdateRequestException
 from models.totalmobile.totalmobile_incoming_update_request_model import TotalMobileIncomingUpdateRequestModel
 from tests.helpers import incoming_request_helper
 
@@ -32,13 +33,41 @@ def test_import_case_returns_a_populated_model():
     assert result.mobile_phone_number == mobile_phone_number
 
 
-def test_import_case_raises_a_missing_reference_error_if_the_request_does_not_have_expected_root_element():
+def test_import_case_raises_an_invalid_request_error_if_the_request_does_not_have_expected_root_element():
     # arrange
 
     update_case_request = {}
 
     # assert
-    with pytest.raises(MissingReferenceError):
+    with pytest.raises(InvalidTotalmobileUpdateRequestException):
+        TotalMobileIncomingUpdateRequestModel.import_request(update_case_request)
+
+
+def test_import_case_raises_an_invalid_request_error_if_the_request_does_not_have_expected_root_responses_element():
+    # arrange
+    update_case_request = {
+        "result": {
+            "user": {
+                "id": 1191,
+                "name": "richmond.rice",
+                "deviceID": "NOKIA8.35G9b080ab9-33a4-4824-b882-6019732b9dfa"
+            },
+            "date": "2022-08-23T16:55:44.967",
+            "form": {
+                "reference": "LMS-Property Details",
+                "version": 6
+            },
+            "association": {
+                "workType": "LMS",
+                "reference": "LMS2208-EJ1.801073",
+                "propertyReference": "zz00zzons",
+                "clientReference": ""
+            }
+        }
+    }
+
+    # assert
+    with pytest.raises(InvalidTotalmobileUpdateRequestException):
         TotalMobileIncomingUpdateRequestModel.import_request(update_case_request)
 
 
