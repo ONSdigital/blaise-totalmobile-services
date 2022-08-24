@@ -27,7 +27,7 @@ def test_import_case_returns_a_populated_model():
         latitude="10020202",
         longitude="34949494",
         priority="1",
-        field_region="gwent",
+        field_region="Gwent",
         field_team="B-Team",
         wave_com_dte=datetime(2023, 1, 31),
         uac_chunks=UacChunks(uac1="3456", uac2="3453", uac3="4546")
@@ -70,17 +70,20 @@ def test_import_case_returns_a_populated_model():
     assert result.additionalProperties[3].name == "priority"
     assert result.additionalProperties[3].value == "1"
 
-    assert result.additionalProperties[4].name == "fieldTeam"
-    assert result.additionalProperties[4].value == "B-Team"
+    assert result.additionalProperties[4].name == "fieldRegion"
+    assert result.additionalProperties[4].value == "Gwent"
 
-    assert result.additionalProperties[5].name == "uac1"
-    assert result.additionalProperties[5].value == "3456"
+    assert result.additionalProperties[5].name == "fieldTeam"
+    assert result.additionalProperties[5].value == "B-Team"
 
-    assert result.additionalProperties[6].name == "uac2"
-    assert result.additionalProperties[6].value == "3453"
+    assert result.additionalProperties[6].name == "uac1"
+    assert result.additionalProperties[6].value == "3456"
 
-    assert result.additionalProperties[7].name == "uac3"
-    assert result.additionalProperties[7].value == "4546"
+    assert result.additionalProperties[7].name == "uac2"
+    assert result.additionalProperties[7].value == "3453"
+
+    assert result.additionalProperties[8].name == "uac3"
+    assert result.additionalProperties[8].value == "4546"
 
 
 def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uacs_are_set():
@@ -137,6 +140,10 @@ def test_to_payload_returns_a_correctly_formatted_payload():
             AdditionalProperty(
                 name="priority",
                 value="1"
+            ),
+            AdditionalProperty(
+                name="fieldRegion",
+                value="Gwent"
             ),
             AdditionalProperty(
                 name="fieldTeam",
@@ -212,6 +219,10 @@ def test_to_payload_returns_a_correctly_formatted_payload():
             {
                 "name": "priority",
                 "value": "1"
+            },
+            {
+                "name": "fieldRegion",
+                "value": "Gwent"
             },
             {
                 "name": "fieldTeam",

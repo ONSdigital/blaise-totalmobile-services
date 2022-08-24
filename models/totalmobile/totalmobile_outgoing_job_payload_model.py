@@ -146,6 +146,10 @@ class TotalMobileOutgoingJobPayloadModel:
                     value=questionnaire_case.priority
                 ),
                 AdditionalProperty(
+                    name="fieldRegion",
+                    value=questionnaire_case.field_region
+                ),
+                AdditionalProperty(
                     name="fieldTeam",
                     value=questionnaire_case.field_team
                 ),
