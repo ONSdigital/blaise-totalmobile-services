@@ -1,6 +1,6 @@
 from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingJobPayloadModel, Reference, \
     Skill, AddressDetails, Address, \
-    AddressCoordinates, ContactDetails, AdditionalProperty, DueDate
+    AddressCoordinates, ContactDetails, Attribute, DueDate
 from models.blaise.uac_model import UacChunks
 from tests.helpers import get_blaise_case_model_helper
 from datetime import datetime
@@ -58,32 +58,32 @@ def test_import_case_returns_a_populated_model():
     assert result.location.addressDetail.coordinates.longitude == "34949494"
     assert result.contact.name == "FML134D"
 
-    assert result.additionalProperties[0].name == "surveyName"
-    assert result.additionalProperties[0].value == "LM2007"
+    assert result.attributes[0].name == "surveyName"
+    assert result.attributes[0].value == "LM2007"
 
-    assert result.additionalProperties[1].name == "tla"
-    assert result.additionalProperties[1].value == "LMS"
+    assert result.attributes[1].name == "tla"
+    assert result.attributes[1].value == "LMS"
 
-    assert result.additionalProperties[2].name == "wave"
-    assert result.additionalProperties[2].value == "1"
+    assert result.attributes[2].name == "wave"
+    assert result.attributes[2].value == "1"
 
-    assert result.additionalProperties[3].name == "priority"
-    assert result.additionalProperties[3].value == "1"
+    assert result.attributes[3].name == "priority"
+    assert result.attributes[3].value == "1"
 
-    assert result.additionalProperties[4].name == "fieldRegion"
-    assert result.additionalProperties[4].value == "Gwent"
+    assert result.attributes[4].name == "fieldRegion"
+    assert result.attributes[4].value == "Gwent"
 
-    assert result.additionalProperties[5].name == "fieldTeam"
-    assert result.additionalProperties[5].value == "B-Team"
+    assert result.attributes[5].name == "fieldTeam"
+    assert result.attributes[5].value == "B-Team"
 
-    assert result.additionalProperties[6].name == "uac1"
-    assert result.additionalProperties[6].value == "3456"
+    assert result.attributes[6].name == "uac1"
+    assert result.attributes[6].value == "3456"
 
-    assert result.additionalProperties[7].name == "uac2"
-    assert result.additionalProperties[7].value == "3453"
+    assert result.attributes[7].name == "uac2"
+    assert result.attributes[7].value == "3453"
 
-    assert result.additionalProperties[8].name == "uac3"
-    assert result.additionalProperties[8].value == "4546"
+    assert result.attributes[8].name == "uac3"
+    assert result.attributes[8].value == "4546"
 
 
 def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uacs_are_set():
@@ -98,8 +98,8 @@ def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uac
     result = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
 
     # assert
-    for additional_property in result.additionalProperties:
-        assert additional_property.name.startswith('uac') is False
+    for attribute in result.attributes:
+        assert attribute.name.startswith('uac') is False
 
 
 def test_to_payload_returns_a_correctly_formatted_payload():
@@ -124,40 +124,40 @@ def test_to_payload_returns_a_correctly_formatted_payload():
                                         longitude="34949494")
                                 )),
         contact=ContactDetails(name="FML134D"),
-        additionalProperties=[
-            AdditionalProperty(
+        attributes=[
+            Attribute(
                 name="surveyName",
                 value="LM2007"
             ),
-            AdditionalProperty(
+            Attribute(
                 name="tla",
                 value="LMS"
             ),
-            AdditionalProperty(
+            Attribute(
                 name="wave",
                 value="1"
             ),
-            AdditionalProperty(
+            Attribute(
                 name="priority",
                 value="1"
             ),
-            AdditionalProperty(
+            Attribute(
                 name="fieldRegion",
                 value="Gwent"
             ),
-            AdditionalProperty(
+            Attribute(
                 name="fieldTeam",
                 value="B-Team"
             ),
-            AdditionalProperty(
+            Attribute(
                 name="uac1",
                 value="3456"
             ),
-            AdditionalProperty(
+            Attribute(
                 name="uac2",
                 value="3453"
             ),
-            AdditionalProperty(
+            Attribute(
                 name="uac3",
                 value="4546"
             )
@@ -203,7 +203,7 @@ def test_to_payload_returns_a_correctly_formatted_payload():
         "contact": {
             "name": "FML134D",
         },
-        "additionalProperties": [
+        "attributes": [
             {
                 "name": "surveyName",
                 "value": "LM2007"

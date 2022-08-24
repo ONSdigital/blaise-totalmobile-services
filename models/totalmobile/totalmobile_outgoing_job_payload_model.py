@@ -52,7 +52,7 @@ class ContactDetails:
 
 
 @dataclass
-class AdditionalProperty:
+class Attribute:
     name: str
     value: str
 
@@ -68,7 +68,7 @@ class TotalMobileOutgoingJobPayloadModel:
     dueDate: DueDate
     location: AddressDetails
     contact: ContactDetails
-    additionalProperties: List[AdditionalProperty]
+    attributes: List[Attribute]
 
     def to_payload(self) -> dict[str, str]:
         payload = asdict(self)
@@ -128,45 +128,45 @@ class TotalMobileOutgoingJobPayloadModel:
                                         ))
                                     ),
             contact=ContactDetails(name=questionnaire_case.address_details.address.postcode),
-            additionalProperties=[
-                AdditionalProperty(
+            attributes=[
+                Attribute(
                     name="surveyName",
                     value=questionnaire_case.data_model_name
                 ),
-                AdditionalProperty(
+                Attribute(
                     name="tla",
                     value="LMS"
                 ),
-                AdditionalProperty(
+                Attribute(
                     name="wave",
                     value=questionnaire_case.wave
                 ),
-                AdditionalProperty(
+                Attribute(
                     name="priority",
                     value=questionnaire_case.priority
                 ),
-                AdditionalProperty(
+                Attribute(
                     name="fieldRegion",
                     value=questionnaire_case.field_region
                 ),
-                AdditionalProperty(
+                Attribute(
                     name="fieldTeam",
                     value=questionnaire_case.field_team
                 ),
             ])
 
         if questionnaire_case.uac_chunks is not None:
-            total_mobile_case.additionalProperties.extend(
+            total_mobile_case.attributes.extend(
                 [
-                    AdditionalProperty(
+                    Attribute(
                         name="uac1",
                         value=questionnaire_case.uac_chunks.uac1
                     ),
-                    AdditionalProperty(
+                    Attribute(
                         name="uac2",
                         value=questionnaire_case.uac_chunks.uac2
                     ),
-                    AdditionalProperty(
+                    Attribute(
                         name="uac3",
                         value=questionnaire_case.uac_chunks.uac3
                     )]
