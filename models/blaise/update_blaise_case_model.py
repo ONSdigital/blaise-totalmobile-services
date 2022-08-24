@@ -14,13 +14,17 @@ class UpdateBlaiseCaseModel:
     home_phone_number: str
     mobile_phone_number: str
 
-    def get_outcome_details(self):
-        return {
-            "hOut": f"{self.outcome_code}",
-            "DMktnIND": "Y"
-        }
+    @staticmethod
+    def __knock_to_nudge_indicator_flag():
+        return {"DMktnIND": "1"}  # this is an yes/no enum in Blaise. 1 is yes, 2 is no
 
-    def get_contact_details(self):
+    def outcome_details(self):
+        outcome_details = {"hOut": f"{self.outcome_code}"}
+        outcome_details.update(self.__knock_to_nudge_indicator_flag())
+
+        return outcome_details
+
+    def contact_details(self):
         contact_information = {}
 
         if self.contact_name != "" and self.contact_name is not None:
@@ -32,8 +36,10 @@ class UpdateBlaiseCaseModel:
         if self.mobile_phone_number != "" and self.mobile_phone_number is not None:
             contact_information["qDataBag.TelNo2"] = self.mobile_phone_number
 
-        if len(contact_information) > 0:
-            contact_information["DMktnIND"] = "Y"
+        if len(contact_information) == 0:
+            return {}  # we dont want to update the knock to nudge indicator as we have no details to update
+
+        contact_information.update(self.__knock_to_nudge_indicator_flag())
 
         return contact_information
 

@@ -39,12 +39,12 @@ def test_get_outcome_details_returns_an_expected_dictionary():
     )
 
     # act
-    result = blaise_case.get_outcome_details()
+    result = blaise_case.outcome_details()
 
     # assert
     assert result == {
             "hOut": "300",
-            "DMktnIND": "Y"
+            "DMktnIND": "1"
         }
 
 
@@ -60,14 +60,14 @@ def test_get_contact_details_returns_an_expected_dictionary():
     )
 
     # act
-    result = blaise_case.get_contact_details()
+    result = blaise_case.contact_details()
 
     # assert
     assert result == {
             "dMktnName": "Joe Bloggs",
             "qDataBag.TelNo": "01234567890",
             "qDataBag.TelNo2": "07123123123",
-            "DMktnIND": "Y"
+            "DMktnIND": "1"
         }
 
 
@@ -84,13 +84,13 @@ def test_get_contact_details_returns_an_expected_dictionary_if_contact_name_not_
     )
 
     # act
-    result = blaise_case.get_contact_details()
+    result = blaise_case.contact_details()
 
     # assert
     assert result == {
             "qDataBag.TelNo": "01234567890",
             "qDataBag.TelNo2": "07123123123",
-            "DMktnIND": "Y"
+            "DMktnIND": "1"
         }
 
 
@@ -107,13 +107,13 @@ def test_get_contact_details_returns_an_expected_dictionary_if_home_number_not_p
     )
 
     # act
-    result = blaise_case.get_contact_details()
+    result = blaise_case.contact_details()
 
     # assert
     assert result == {
             "dMktnName": "Joe Bloggs",
             "qDataBag.TelNo2": "07123123123",
-            "DMktnIND": "Y"
+            "DMktnIND": "1"
         }
 
 
@@ -130,13 +130,13 @@ def test_get_contact_details_returns_an_expected_dictionary_if_mobile_number_not
     )
 
     # act
-    result = blaise_case.get_contact_details()
+    result = blaise_case.contact_details()
 
     # assert
     assert result == {
             "dMktnName": "Joe Bloggs",
             "qDataBag.TelNo": "01234567890",
-            "DMktnIND": "Y"
+            "DMktnIND": "1"
         }
 
 
@@ -153,7 +153,7 @@ def test_get_contact_details_returns_an_empty_dictionary_if_no_contact_details_p
     )
 
     # act
-    result = blaise_case.get_contact_details()
+    result = blaise_case.contact_details()
 
     # assert
     assert result == {
