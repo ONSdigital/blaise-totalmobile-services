@@ -43,9 +43,10 @@ def test_get_outcome_details_returns_an_expected_dictionary():
 
     # assert
     assert result == {
-            "hOut": "300",
-            "DMktnIND": "1"
-        }
+        "hOut": "300",
+        "qhAdmin.HOut": "300",
+        "DMktnIND": "1"
+    }
 
 
 def test_get_contact_details_returns_an_expected_dictionary():
@@ -64,11 +65,11 @@ def test_get_contact_details_returns_an_expected_dictionary():
 
     # assert
     assert result == {
-            "dMktnName": "Joe Bloggs",
-            "qDataBag.TelNo": "01234567890",
-            "qDataBag.TelNo2": "07123123123",
-            "DMktnIND": "1"
-        }
+        "dMktnName": "Joe Bloggs",
+        "qDataBag.TelNo": "01234567890",
+        "qDataBag.TelNo2": "07123123123",
+        "DMktnIND": "1"
+    }
 
 
 @pytest.mark.parametrize("test_input", ["", None])
@@ -88,10 +89,10 @@ def test_get_contact_details_returns_an_expected_dictionary_if_contact_name_not_
 
     # assert
     assert result == {
-            "qDataBag.TelNo": "01234567890",
-            "qDataBag.TelNo2": "07123123123",
-            "DMktnIND": "1"
-        }
+        "qDataBag.TelNo": "01234567890",
+        "qDataBag.TelNo2": "07123123123",
+        "DMktnIND": "1"
+    }
 
 
 @pytest.mark.parametrize("test_input", ["", None])
@@ -111,10 +112,10 @@ def test_get_contact_details_returns_an_expected_dictionary_if_home_number_not_p
 
     # assert
     assert result == {
-            "dMktnName": "Joe Bloggs",
-            "qDataBag.TelNo2": "07123123123",
-            "DMktnIND": "1"
-        }
+        "dMktnName": "Joe Bloggs",
+        "qDataBag.TelNo2": "07123123123",
+        "DMktnIND": "1"
+    }
 
 
 @pytest.mark.parametrize("test_input", ["", None])
@@ -134,10 +135,10 @@ def test_get_contact_details_returns_an_expected_dictionary_if_mobile_number_not
 
     # assert
     assert result == {
-            "dMktnName": "Joe Bloggs",
-            "qDataBag.TelNo": "01234567890",
-            "DMktnIND": "1"
-        }
+        "dMktnName": "Joe Bloggs",
+        "qDataBag.TelNo": "01234567890",
+        "DMktnIND": "1"
+    }
 
 
 @pytest.mark.parametrize("test_input", ["", None])
@@ -157,5 +158,4 @@ def test_get_contact_details_returns_an_empty_dictionary_if_no_contact_details_p
 
     # assert
     assert result == {
-        }
-
+    }
