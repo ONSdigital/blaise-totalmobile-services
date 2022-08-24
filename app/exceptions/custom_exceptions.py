@@ -12,3 +12,7 @@ class MissingReferenceError(Exception):
 
 class BadReferenceError(Exception):
     pass
+
+
+class InvalidTotalmobileUpdateRequestException(Exception):
+    pass
