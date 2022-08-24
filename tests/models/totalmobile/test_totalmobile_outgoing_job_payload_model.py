@@ -109,17 +109,18 @@ def test_to_payload_returns_a_correctly_formatted_payload():
         workType="LMS",
         skills=[Skill(identity=Reference("LMS"))],
         dueDate=DueDate(end=datetime(2023, 1, 31)),
-        location=AddressDetails(addressDetail=Address(
-            addressLine1="12 Blaise Street",
-            addressLine2="Blaise Hill",
-            addressLine3="Blaiseville",
-            addressLine4="Gwent",
-            addressLine5="Newport",
-            postCode="FML134D",
-            coordinates=AddressCoordinates(
-                latitude="10020202",
-                longitude="34949494")
-        )),
+        location=AddressDetails(address="12 Blaise Street, Blaise Hill, Blaiseville, Newport, FML134D",
+                                addressDetail=Address(
+                                    addressLine1="12 Blaise Street",
+                                    addressLine2="Blaise Hill",
+                                    addressLine3="Blaiseville",
+                                    addressLine4="Gwent",
+                                    addressLine5="Newport",
+                                    postCode="FML134D",
+                                    coordinates=AddressCoordinates(
+                                        latitude="10020202",
+                                        longitude="34949494")
+                                )),
         contact=ContactDetails(name="FML134D"),
         additionalProperties=[
             AdditionalProperty(
@@ -179,6 +180,7 @@ def test_to_payload_returns_a_correctly_formatted_payload():
             "end": "2023-01-31",
         },
         "location": {
+            "address": "12 Blaise Street, Blaise Hill, Blaiseville, Newport, FML134D",
             "addressDetail": {
                 "addressLine1": "12 Blaise Street",
                 "addressLine2": "Blaise Hill",
@@ -288,6 +290,7 @@ def test_create_description_returns_a_correctly_formatted_description_when_all_v
         "Case ID: 1234"
     )
 
+
 def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_all_fields_are_populated():
     # Arrange
     questionnaire_name = "LMS2201_AA1"
@@ -296,7 +299,6 @@ def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_all
         address_line_1="123 Blaise Street",
         address_line_2="Blaisville",
         address_line_3="Upper Blaise",
-        county="BlaiseShire",
         town="Blaisingdom",
         postcode="BS1 1BS",
     )
@@ -305,4 +307,23 @@ def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_all
     case = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
 
     # Assert
-    assert case.location.address == "123 Blaise Street, Blaisville, Upper Blaise, BlaiseShire, Blaisingdom, BS1 1BS"
+    assert case.location.address == "123 Blaise Street, Blaisville, Upper Blaise, Blaisingdom, BS1 1BS"
+
+
+def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_not_all_fields_are_populated():
+    # Arrange
+    questionnaire_name = "LMS2201_AA1"
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+        case_id="1234",
+        address_line_1="123 Blaise Street",
+        address_line_2="",
+        address_line_3=None,
+        town="Blaisingdom",
+        postcode="BS1 1BS",
+    )
+
+    # Act
+    case = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
+
+    # Assert
+    assert case.location.address == "123 Blaise Street, Blaisingdom, BS1 1BS"

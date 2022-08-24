@@ -42,6 +42,7 @@ class Address:
 
 @dataclass
 class AddressDetails:
+    address: str
     addressDetail: Address
 
 
@@ -82,13 +83,26 @@ class TotalMobileOutgoingJobPayloadModel:
     @staticmethod
     def create_description(questionnaire_name: str, questionnaire_case: GetBlaiseCaseModel) -> str:
         uac_string = "" if questionnaire_case.uac_chunks is None else f"{questionnaire_case.uac_chunks.uac1} {questionnaire_case.uac_chunks.uac2} {questionnaire_case.uac_chunks.uac3}"
-        due_date_string = "" if questionnaire_case.wave_com_dte is None else questionnaire_case.wave_com_dte.strftime('%d/%m/%Y')
+        due_date_string = "" if questionnaire_case.wave_com_dte is None else questionnaire_case.wave_com_dte.strftime(
+            '%d/%m/%Y')
         return (
             f"UAC: {uac_string}\n"
             f"Due Date: {due_date_string}\n"
             f"Study: {questionnaire_name}\n"
             f"Case ID: {questionnaire_case.case_id}"
         )
+
+    @staticmethod
+    def concatenate_address_line(questionnaire_case: GetBlaiseCaseModel) -> str:
+        fields = [
+            questionnaire_case.address_details.address.address_line_1,
+            questionnaire_case.address_details.address.address_line_2,
+            questionnaire_case.address_details.address.address_line_3,
+            questionnaire_case.address_details.address.town,
+            questionnaire_case.address_details.address.postcode
+        ]
+        concatenated_address = ", ".join([str(i) for i in fields if i != "" and i is not None])
+        return concatenated_address
 
     @classmethod
     def import_case(cls: Type[T], questionnaire_name: str, questionnaire_case: GetBlaiseCaseModel) -> T:
@@ -100,18 +114,19 @@ class TotalMobileOutgoingJobPayloadModel:
             workType=questionnaire_case.survey_type,
             skills=[Skill(identity=Reference(reference=questionnaire_case.survey_type))],
             dueDate=DueDate(end=questionnaire_case.wave_com_dte),
-            location=AddressDetails(addressDetail=Address(
-                addressLine1=questionnaire_case.address_details.address.address_line_1,
-                addressLine2=questionnaire_case.address_details.address.address_line_2,
-                addressLine3=questionnaire_case.address_details.address.address_line_3,
-                addressLine4=questionnaire_case.address_details.address.county,
-                addressLine5=questionnaire_case.address_details.address.town,
-                postCode=questionnaire_case.address_details.address.postcode,
-                coordinates=AddressCoordinates(
-                    latitude=questionnaire_case.address_details.address.coordinates.latitude,
-                    longitude=questionnaire_case.address_details.address.coordinates.longitude
-                ))
-            ),
+            location=AddressDetails(address=cls.concatenate_address_line(questionnaire_case),
+                                    addressDetail=Address(
+                                        addressLine1=questionnaire_case.address_details.address.address_line_1,
+                                        addressLine2=questionnaire_case.address_details.address.address_line_2,
+                                        addressLine3=questionnaire_case.address_details.address.address_line_3,
+                                        addressLine4=questionnaire_case.address_details.address.county,
+                                        addressLine5=questionnaire_case.address_details.address.town,
+                                        postCode=questionnaire_case.address_details.address.postcode,
+                                        coordinates=AddressCoordinates(
+                                            latitude=questionnaire_case.address_details.address.coordinates.latitude,
+                                            longitude=questionnaire_case.address_details.address.coordinates.longitude
+                                        ))
+                                    ),
             contact=ContactDetails(name=questionnaire_case.address_details.address.postcode),
             additionalProperties=[
                 AdditionalProperty(
