@@ -111,8 +111,8 @@ class TotalMobileOutgoingJobPayloadModel:
             description=cls.create_description(questionnaire_name, questionnaire_case),
             origin="ONS",
             duration=15,
-            workType=questionnaire_case.survey_type,
-            skills=[Skill(identity=Reference(reference=questionnaire_case.survey_type))],
+            workType="LMS",
+            skills=[Skill(identity=Reference(reference="LMS"))],
             dueDate=DueDate(end=questionnaire_case.wave_com_dte),
             location=AddressDetails(address=cls.concatenate_address_line(questionnaire_case),
                                     addressDetail=Address(
@@ -135,7 +135,7 @@ class TotalMobileOutgoingJobPayloadModel:
                 ),
                 AdditionalProperty(
                     name="tla",
-                    value=questionnaire_case.survey_type
+                    value="LMS"
                 ),
                 AdditionalProperty(
                     name="wave",
