@@ -9,7 +9,6 @@ def get_populated_case_model(
         questionnaire_name: str = "LMS2101_AA1",
         case_id: str = "90000",
         data_model_name: str = "LM2007",
-        survey_type: str = "LMS",
         wave: str = "1",
         address_line_1: str = "12 Blaise Street",
         address_line_2: str = "Blaise Hill",
@@ -33,7 +32,6 @@ def get_populated_case_model(
         questionnaire_name=questionnaire_name,
         case_id=case_id,
         data_model_name=data_model_name,
-        survey_type=survey_type,
         wave=wave,
         address_details=AddressDetails(
             address=Address(

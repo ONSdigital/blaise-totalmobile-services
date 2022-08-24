@@ -41,7 +41,7 @@ class GetBlaiseCaseModel(BaseModel):
     questionnaire_name: str
     case_id: str
     data_model_name: str
-    survey_type: str
+    # survey_type: str
     wave: str
     address_details: AddressDetails
     contact_details: ContactDetails
@@ -68,7 +68,7 @@ class GetBlaiseCaseModel(BaseModel):
             questionnaire_name=questionnaire_name,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
             data_model_name=case_data_dictionary.get("dataModelName"),
-            survey_type=case_data_dictionary.get("qDataBag.TLA"),
+            # survey_type=case_data_dictionary.get("qDataBag.TLA"),
             wave=case_data_dictionary.get("qDataBag.Wave"),
             address_details=AddressDetails(
                 address=Address(
