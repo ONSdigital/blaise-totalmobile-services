@@ -96,7 +96,7 @@ Feature: Totalmobile update
     Then the case "12345" for questionnaire "LMS2206_AA1" has been updated with
       | field_name   | value |
       | hOut         | 460   |
-      | qhAdmin.HOut | 460     |
+      | qhAdmin.HOut | 460   |
       | DMktnIND     | 1     |
     And "Outcome code updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=460)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
