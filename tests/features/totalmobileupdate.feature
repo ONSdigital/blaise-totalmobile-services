@@ -248,7 +248,7 @@ Feature: Totalmobile update
     When Totalmobile sends an update for reference "LMS2206-AA1.12345"
       | field_name   | value |
       | outcome_code | 460   |
-    Then the first and last records in the call history will be updated with
+    Then the first and last records in the call history for the case will be updated with
       | field_name | value |
       | WhoMade    | KTN   |
       | DialResult | 5     |
@@ -268,7 +268,7 @@ Feature: Totalmobile update
     When Totalmobile sends an update for reference "LMS2206-AA1.12345"
       | field_name   | value |
       | outcome_code | 460   |
-    Then the first record in the call history will be updated with
+    Then the first record in the call history for the case will be updated with
       | field_name | value |
       | WhoMade    | KTN   |
       | DialResult | 5     |
