@@ -19,7 +19,10 @@ class UpdateBlaiseCaseModel:
         return {"DMktnIND": "1"}  # this is an yes/no enum in Blaise. 1 is yes, 2 is no
 
     def outcome_details(self):
-        outcome_details = {"hOut": f"{self.outcome_code}"}
+        outcome_details = {
+            "hOut": f"{self.outcome_code}",
+            "qhAdmin.HOut": f"{self.outcome_code}"
+        }
         outcome_details.update(self.__knock_to_nudge_indicator_flag())
 
         return outcome_details
