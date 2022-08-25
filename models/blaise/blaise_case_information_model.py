@@ -37,7 +37,7 @@ class ContactDetails:
 
 
 @dataclass
-class GetBlaiseCaseModel(BaseModel):
+class BlaiseCaseInformationModel(BaseModel):
     questionnaire_name: str
     case_id: str
     data_model_name: str
@@ -52,6 +52,7 @@ class GetBlaiseCaseModel(BaseModel):
     field_team: str
     wave_com_dte: Optional[datetime]
     uac_chunks: UacChunks
+    has_call_history: bool
 
     def populate_uac_data(self, uac_model: UacModel):
         if uac_model is None:
@@ -64,7 +65,7 @@ class GetBlaiseCaseModel(BaseModel):
     def import_case(cls: Type[T], questionnaire_name: str, case_data_dictionary: Dict[str, str]) -> T:
         wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE")
         wave_com_dte = datetime.strptime(wave_com_dte_str, "%d-%m-%Y") if wave_com_dte_str != '' else None
-        return GetBlaiseCaseModel(
+        return BlaiseCaseInformationModel(
             questionnaire_name=questionnaire_name,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
             data_model_name=case_data_dictionary.get("dataModelName"),
@@ -95,7 +96,8 @@ class GetBlaiseCaseModel(BaseModel):
             field_region=case_data_dictionary.get("qDataBag.FieldRegion"),
             field_team=case_data_dictionary.get("qDataBag.FieldTeam"),
             wave_com_dte=wave_com_dte,
-            uac_chunks=UacChunks(uac1="", uac2="", uac3="")
+            uac_chunks=UacChunks(uac1="", uac2="", uac3=""),
+            has_call_history=cls.has_call_history(case_data_dictionary.get("catiMana.CatiCall.RegsCalls[1].DialResult"))
         )
 
     @staticmethod
@@ -103,3 +105,9 @@ class GetBlaiseCaseModel(BaseModel):
         if value == "":
             return 0
         return int(value)
+
+    @staticmethod
+    def has_call_history(value: str) -> bool:
+        if value == "" or value is None:
+            return False
+        return True

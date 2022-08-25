@@ -2,16 +2,16 @@ import logging
 from typing import List, Dict
 from appconfig import Config
 from services import blaise_service, uac_service, eligible_case_service
-from models.blaise.get_blaise_case_model import GetBlaiseCaseModel
+from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 
 
-def get_eligible_cases(questionnaire_name: str, config: Config) -> List[GetBlaiseCaseModel]:
+def get_eligible_cases(questionnaire_name: str, config: Config) -> List[BlaiseCaseInformationModel]:
     questionnaire_cases = get_cases(questionnaire_name, config)
 
     return eligible_case_service.get_eligible_cases(questionnaire_cases)
 
 
-def get_cases(questionnaire_name: str, config: Config) -> List[GetBlaiseCaseModel]:
+def get_cases(questionnaire_name: str, config: Config) -> List[BlaiseCaseInformationModel]:
     questionnaire_cases = blaise_service.get_cases(questionnaire_name, config)
     questionnaire_uacs = uac_service.get_uacs(questionnaire_name, config)
 
@@ -23,7 +23,7 @@ def get_cases(questionnaire_name: str, config: Config) -> List[GetBlaiseCaseMode
     return questionnaire_cases
 
 
-def get_case(questionnaire_name: str, case_id: str, config: Config) -> GetBlaiseCaseModel:
+def get_case(questionnaire_name: str, case_id: str, config: Config) -> BlaiseCaseInformationModel:
     return blaise_service.get_case(questionnaire_name, case_id, config)
 
 
