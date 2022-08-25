@@ -27,7 +27,12 @@ def test_import_case_returns_a_populated_model():
     assert result.mobile_phone_number == "07123123123"
 
 
-def test_get_outcome_details_returns_an_expected_dictionary():
+def test_knock_to_nudge_indicator_flag_returns_expected_dictionary():
+    # act & assert
+    assert BlaiseCaseUpdateModel.knock_to_nudge_indicator_flag() == {"DMktnIND": "1"}
+
+
+def test_outcome_details_returns_an_expected_dictionary():
     # arrange
     blaise_case = BlaiseCaseUpdateModel(
         questionnaire_name="LMS2101_AA1",
@@ -48,7 +53,7 @@ def test_get_outcome_details_returns_an_expected_dictionary():
     }
 
 
-def test_get_contact_details_returns_an_expected_dictionary():
+def test_contact_details_returns_an_expected_dictionary():
     # arrange
     blaise_case = BlaiseCaseUpdateModel(
         questionnaire_name="LMS2101_AA1",
@@ -71,7 +76,7 @@ def test_get_contact_details_returns_an_expected_dictionary():
 
 
 @pytest.mark.parametrize("test_input", ["", None])
-def test_get_contact_details_returns_an_expected_dictionary_if_contact_name_not_provided(test_input):
+def test_contact_details_returns_an_expected_dictionary_if_contact_name_not_provided(test_input):
     # arrange
     blaise_case = BlaiseCaseUpdateModel(
         questionnaire_name="LMS2101_AA1",
@@ -93,7 +98,7 @@ def test_get_contact_details_returns_an_expected_dictionary_if_contact_name_not_
 
 
 @pytest.mark.parametrize("test_input", ["", None])
-def test_get_contact_details_returns_an_expected_dictionary_if_home_number_not_provided(test_input):
+def test_contact_details_returns_an_expected_dictionary_if_home_number_not_provided(test_input):
     # arrange
     blaise_case = BlaiseCaseUpdateModel(
         questionnaire_name="LMS2101_AA1",
@@ -115,7 +120,7 @@ def test_get_contact_details_returns_an_expected_dictionary_if_home_number_not_p
 
 
 @pytest.mark.parametrize("test_input", ["", None])
-def test_get_contact_details_returns_an_expected_dictionary_if_mobile_number_not_provided(test_input):
+def test_contact_details_returns_an_expected_dictionary_if_mobile_number_not_provided(test_input):
     # arrange
     blaise_case = BlaiseCaseUpdateModel(
         questionnaire_name="LMS2101_AA1",
@@ -137,7 +142,7 @@ def test_get_contact_details_returns_an_expected_dictionary_if_mobile_number_not
 
 
 @pytest.mark.parametrize("test_input", ["", None])
-def test_get_contact_details_returns_an_empty_dictionary_if_no_contact_details_provided(test_input):
+def test_contact_details_returns_an_empty_dictionary_if_no_contact_details_provided(test_input):
     # arrange
     blaise_case = BlaiseCaseUpdateModel(
         questionnaire_name="LMS2101_AA1",
