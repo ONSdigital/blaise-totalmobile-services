@@ -6,15 +6,15 @@ from models.totalmobile.totalmobile_incoming_update_request_model import TotalMo
 from tests.helpers import incoming_request_helper
 
 
-def test_import_case_returns_a_populated_model():
+def test_import_case_returns_a_populated_model_for_contact_made():
     # arrange
     reference = "LMS2101_AA1.90001"
-    outcome_code = 300
+    outcome_code = 460
     contact_name = "Duncan Bell"
     home_phone_number = "01234567890"
     mobile_phone_number = "07123123123"
 
-    update_case_request = incoming_request_helper.get_populated_update_case_request(
+    update_case_request = incoming_request_helper.get_populated_update_case_request_for_contact_made(
         reference=reference,
         outcome_code=outcome_code,
         contact_name=contact_name,
@@ -31,6 +31,43 @@ def test_import_case_returns_a_populated_model():
     assert result.contact_name == contact_name
     assert result.home_phone_number == home_phone_number
     assert result.mobile_phone_number == mobile_phone_number
+
+
+def test_import_case_returns_a_populated_model_for_refusal():
+    # arrange
+    reference = "LMS2101-AA1.90001"
+    outcome_code = 460
+
+    update_case_request = incoming_request_helper.get_populated_update_case_refusal_request(
+        reference=reference,
+        outcome_code=outcome_code)
+
+    # act
+    result = TotalMobileIncomingUpdateRequestModel.import_request(update_case_request)
+
+    # assert
+    assert result.questionnaire_name == "LMS2101_AA1"
+    assert result.case_id == "90001"
+    assert result.outcome_code == 460
+
+
+@pytest.mark.parametrize("outcome_code", ["460", 460])
+def test_import_case_always_sets_outcome_code_to_an_int(outcome_code):
+    # arrange
+    reference = "LMS2101-AA1.90001"
+    outcome_code = outcome_code
+
+    update_case_request = incoming_request_helper.get_populated_update_case_refusal_request(
+        reference=reference,
+        outcome_code=outcome_code)
+
+    # act
+    result = TotalMobileIncomingUpdateRequestModel.import_request(update_case_request)
+
+    # assert
+    assert result.questionnaire_name == "LMS2101_AA1"
+    assert result.case_id == "90001"
+    assert result.outcome_code == 460
 
 
 def test_import_case_raises_an_invalid_request_error_if_the_request_does_not_have_expected_root_element():
@@ -94,7 +131,7 @@ def test_import_case_raises_a_missing_reference_error_if_the_request_does_not_ha
 def test_import_case_raises_a_missing_reference_error_if_the_request_has_an_empty_reference():
     # arrange
     reference = ""
-    update_case_request = incoming_request_helper.get_populated_update_case_request(reference=reference)
+    update_case_request = incoming_request_helper.get_populated_update_case_request_for_contact_made(reference=reference)
 
     # assert
     with pytest.raises(MissingReferenceError):
@@ -105,7 +142,7 @@ def test_import_case_raises_a_missing_reference_error_if_the_request_has_an_empt
 def test_import_case_raises_a_bad_reference_error_if_the_request_does_not_have_a_correctly_formatted_reference(
         reference):
     # arrange
-    update_case_request = incoming_request_helper.get_populated_update_case_request(reference=reference)
+    update_case_request = incoming_request_helper.get_populated_update_case_request_for_contact_made(reference=reference)
 
     # assert
     with pytest.raises(BadReferenceError):
