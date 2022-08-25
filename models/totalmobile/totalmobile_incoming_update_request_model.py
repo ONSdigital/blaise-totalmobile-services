@@ -37,7 +37,7 @@ class TotalMobileIncomingUpdateRequestModel(BaseModel):
         return total_mobile_case
 
     @staticmethod
-    def get_dictionary_of_response_elements(responses) -> Dict[str, str]:
+    def get_dictionary_of_response_elements(responses) -> Dict[str, any]:
         response_elements = {}
 
         if isinstance(responses, list):
@@ -51,17 +51,18 @@ class TotalMobileIncomingUpdateRequestModel(BaseModel):
         return response_elements
 
     @staticmethod
-    def get_outcome_code(responses_dictionary: Dict[str, str]) -> int:
-        return responses_dictionary.get("Primary_Outcome")
+    def get_outcome_code(responses_dictionary: Dict[str, any]) -> int:
+        outcome_code = responses_dictionary.get("Primary_Outcome")
+        return None if outcome_code is None else int(outcome_code)
 
     @staticmethod
-    def get_contact_name(responses_dictionary: Dict[str, str]) -> str:
+    def get_contact_name(responses_dictionary: Dict[str, any]) -> str:
         return responses_dictionary.get("Contact_Name")
 
     @staticmethod
-    def get_home_phone_number(responses_dictionary: Dict[str, str]) -> str:
+    def get_home_phone_number(responses_dictionary: Dict[str, any]) -> str:
         return responses_dictionary.get("Contact_Tel1")
 
     @staticmethod
-    def get_mobile_phone_number(responses_dictionary: Dict[str, str]) -> str:
+    def get_mobile_phone_number(responses_dictionary: Dict[str, any]) -> str:
         return responses_dictionary.get("Contact_Tel2")

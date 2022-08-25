@@ -45,7 +45,7 @@ def step_impl(context, reference):
         fields = {row["field_name"]: row["value"] for row in context.table}
         fields["outcome_code"] = int(fields["outcome_code"])
 
-    request = incoming_request_helper.get_populated_update_case_request(
+    request = incoming_request_helper.get_populated_update_case_request_for_contact_made(
         reference=reference,
         **fields)
 
@@ -61,7 +61,7 @@ def step_impl(context, reference):
 @when('Totalmobile sends an update for reference "{reference}" with an outcome of 300 but no contact information')
 def step_impl(context, reference):
     valid_credentials = base64.b64encode(b"test_username:test_password").decode("utf-8")
-    request = incoming_request_helper.get_populated_update_case_request(
+    request = incoming_request_helper.get_populated_update_case_request_for_contact_made(
         reference=reference,
         outcome_code=300,
         contact_name=None,
