@@ -241,9 +241,9 @@ Feature: Totalmobile update
 
 #  TODO: ------------------------
 
-#  Scenario Outline: Totalmobile sends a request with an outcome code of 460 (hard refusal) when the case has no pre-existing call history
+#  Scenario: Totalmobile sends a request with an outcome code of 460 (hard refusal) when the case has no pre-existing call history
 #    Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
-#    And the case has an outcome code of <outcome_code>
+#    And the case has an outcome code of 460
 #    And the case has no pre-existing call history
 #    When Totalmobile sends an update for reference "LMS2206-AA1.12345"
 #      | field_name   | value |
@@ -254,13 +254,8 @@ Feature: Totalmobile update
 #      | DialResult | 5     |
 #    And "CATI call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, CATI WhoMade=KTN, DialResult=5, TM hOut=460)" is logged as an information message
 #    And a "200 OK" response is sent back to Totalmobile
-#    Examples:
-#      | outcome_code |
-#      | 0            |
-#      | 310          |
-#      | 320          |
-#
-#
+
+
 #  Scenario Outline: Totalmobile sends a request with an outcome code of 460 (hard refusal) when the case has call history
 #    Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
 #    And the case has an outcome code of <outcome_code>

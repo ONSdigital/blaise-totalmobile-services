@@ -28,6 +28,8 @@ def update_case(totalmobile_request: TotalMobileIncomingUpdateRequestModel, conf
 
 
 def _update_case_contact_information(blaise_case, update_blaise_case_model, config, questionnaire_service) -> None:
+    fields_to_update = {}
+
     contact_fields = update_blaise_case_model.contact_details()
     if len(contact_fields) == 0:
         logging.info(
@@ -36,10 +38,13 @@ def _update_case_contact_information(blaise_case, update_blaise_case_model, conf
             f"TM hOut={update_blaise_case_model.outcome_code})")
         return
 
+    fields_to_update.update(contact_fields)
+    fields_to_update.update(update_blaise_case_model.knock_to_nudge_indicator_flag())
+
     questionnaire_service.update_case(
         blaise_case.questionnaire_name,
         blaise_case.case_id,
-        contact_fields,
+        fields_to_update,
         config
     )
 
@@ -50,10 +55,14 @@ def _update_case_contact_information(blaise_case, update_blaise_case_model, conf
 
 
 def _update_case_outcome_code(blaise_case, update_blaise_case_model, config, questionnaire_service) -> None:
+    fields_to_update = {}
+    fields_to_update.update(update_blaise_case_model.outcome_details())
+    fields_to_update.update(update_blaise_case_model.knock_to_nudge_indicator_flag())
+
     questionnaire_service.update_case(
         blaise_case.questionnaire_name,
         blaise_case.case_id,
-        update_blaise_case_model.outcome_details(),
+        fields_to_update,
         config
     )
 
