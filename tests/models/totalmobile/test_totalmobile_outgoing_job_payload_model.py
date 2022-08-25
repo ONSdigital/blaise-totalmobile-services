@@ -58,6 +58,12 @@ def test_import_case_returns_a_populated_model():
     assert result.location.addressDetail.coordinates.longitude == "34949494"
     assert result.contact.name == "FML134D"
 
+    assert result.attributes[0].name == "Region"
+    assert result.attributes[0].value == "Gwent"
+
+    assert result.attributes[1].name == "Team"
+    assert result.attributes[1].value == "B-Team"
+
     assert result.additionalProperties[0].name == "surveyName"
     assert result.additionalProperties[0].value == "LM2007"
 
@@ -124,6 +130,16 @@ def test_to_payload_returns_a_correctly_formatted_payload():
                                         longitude="34949494")
                                 )),
         contact=ContactDetails(name="FML134D"),
+        attributes=[
+            AdditionalProperty(
+                name="Region",
+                value="Gwent"
+            ),
+            AdditionalProperty(
+                name="Team",
+                value="B-Team"
+            ),
+        ],
         additionalProperties=[
             AdditionalProperty(
                 name="surveyName",
@@ -203,6 +219,16 @@ def test_to_payload_returns_a_correctly_formatted_payload():
         "contact": {
             "name": "FML134D",
         },
+        "attributes": [
+            {
+                "name": "Region",
+                "value": "Gwent"
+            },
+            {
+                "name": "Team",
+                "value": "B-Team"
+            },
+        ],
         "additionalProperties": [
             {
                 "name": "surveyName",
