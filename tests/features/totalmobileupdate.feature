@@ -98,7 +98,7 @@ Feature: Totalmobile update
       | hOut         | 460   |
       | qhAdmin.HOut | 460   |
       | DMktnIND     | 1     |
-    And "Outcome code updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=460)" is logged as an information message
+    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=460)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
     Examples:
       | outcome_code |
@@ -117,7 +117,7 @@ Feature: Totalmobile update
       | hOut         | 461   |
       | qhAdmin.HOut | 461   |
       | DMktnIND     | 1     |
-    And "Outcome code updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=461)" is logged as an information message
+    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=461)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
     Examples:
       | outcome_code |
@@ -136,7 +136,7 @@ Feature: Totalmobile update
       | hOut         | 510   |
       | qhAdmin.HOut | 510   |
       | DMktnIND     | 1     |
-    And "Outcome code updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=510)" is logged as an information message
+    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=510)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
     Examples:
       | outcome_code |
@@ -155,7 +155,7 @@ Feature: Totalmobile update
       | hOut         | 540   |
       | qhAdmin.HOut | 540   |
       | DMktnIND     | 1     |
-    And "Outcome code updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=540)" is logged as an information message
+    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=540)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
     Examples:
       | outcome_code |
@@ -174,7 +174,7 @@ Feature: Totalmobile update
       | hOut         | 551   |
       | qhAdmin.HOut | 551   |
       | DMktnIND     | 1     |
-    And "Outcome code updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=551)" is logged as an information message
+    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=551)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
     Examples:
       | outcome_code |
@@ -193,7 +193,7 @@ Feature: Totalmobile update
       | hOut         | 560   |
       | qhAdmin.HOut | 560   |
       | DMktnIND     | 1     |
-    And "Outcome code updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=560)" is logged as an information message
+    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=560)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
     Examples:
       | outcome_code |
@@ -212,7 +212,7 @@ Feature: Totalmobile update
       | hOut         | 580   |
       | qhAdmin.HOut | 580   |
       | DMktnIND     | 1     |
-    And "Outcome code updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=580)" is logged as an information message
+    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=580)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
     Examples:
       | outcome_code |
@@ -231,7 +231,7 @@ Feature: Totalmobile update
       | hOut         | 640   |
       | qhAdmin.HOut | 640   |
       | DMktnIND     | 1     |
-    And "Outcome code updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=640)" is logged as an information message
+    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=640)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
     Examples:
       | outcome_code |
@@ -239,42 +239,46 @@ Feature: Totalmobile update
       | 310          |
       | 320          |
 
-  Scenario: Totalmobile sends a request with an outcome code of 460 (hard refusal) when the case has no pre-existing call history
+  Scenario Outline: Totalmobile sends a request with an outcome code of 460 (hard refusal) when the case has no pre-existing call history
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
-    And the case has an outcome code of 460
+    And the case has an outcome code of <outcome_code>
     And the case has no pre-existing call history
     When Totalmobile sends an update for reference "LMS2206-AA1.12345"
       | field_name   | value |
       | outcome_code | 460   |
     Then the case "12345" for questionnaire "LMS2206_AA1" has been updated with call history
-      | field_name | value |
-      | WhoMade    | KTN   |
-      | DialResult | 5     |
-    And "CATI call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, CATI WhoMade=KTN, DialResult=5, TM hOut=460)" is logged as an information message
+      | field_name                                | value |
+      | catiMana.CatiCall.RegsCalls[1].WhoMade    | KTN   |
+      | catiMana.CatiCall.RegsCalls[1].DialResult | 5     |
+      | catiMana.CatiCall.RegsCalls[5].WhoMade    | KTN   |
+      | catiMana.CatiCall.RegsCalls[5].DialResult | 5     |
+    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=460)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
+    Examples:
+      | outcome_code |
+      | 0            |
+      | 310          |
+      | 320          |
 
 
-#  Scenario Outline: Totalmobile sends a request with an outcome code of 460 (hard refusal) when the case has call history
-#    Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
-#    And the case has an outcome code of <outcome_code>
-#    And the case has call history
-#    When Totalmobile sends an update for reference "LMS2206-AA1.12345"
-#      | field_name   | value |
-#      | outcome_code | 460   |
-#    Then the first record in the call history for the case will be updated with
-#      | field_name | value |
-#      | WhoMade    | KTN   |
-#      | DialResult | 5     |
-#    And "CATI call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, CATI WhoMade=KTN, DialResult=5, TM hOut=460)" is logged as an information message
-#    And a "200 OK" response is sent back to Totalmobile
-#    Examples:
-#      | outcome_code |
-#      | 0            |
-#      | 310          |
-#      | 320          |
-
-##  TODO: ------------------------
-
+  Scenario Outline: Totalmobile sends a request with an outcome code of 460 (hard refusal) when the case has call history
+    Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
+    And the case has an outcome code of <outcome_code>
+    And the case has call history
+    When Totalmobile sends an update for reference "LMS2206-AA1.12345"
+      | field_name   | value |
+      | outcome_code | 460   |
+    Then the case "12345" for questionnaire "LMS2206_AA1" has been updated with call history
+      | field_name                                | value |
+      | catiMana.CatiCall.RegsCalls[1].WhoMade    | KTN   |
+      | catiMana.CatiCall.RegsCalls[1].DialResult | 5     |
+    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=460)" is logged as an information message
+    And a "200 OK" response is sent back to Totalmobile
+    Examples:
+      | outcome_code |
+      | 0            |
+      | 310          |
+      | 320          |
 
   Scenario: Questionnaire and case is found in Blaise
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise

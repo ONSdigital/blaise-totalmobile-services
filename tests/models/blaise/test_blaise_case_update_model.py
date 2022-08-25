@@ -159,3 +159,13 @@ def test_contact_details_returns_an_empty_dictionary_if_no_contact_details_provi
     # assert
     assert result == {
     }
+
+
+@pytest.mark.parametrize("record_number", [1, 5])
+def test_contact_details_returns_an_empty_dictionary_if_no_contact_details_provided(record_number):
+    # act
+    result = BlaiseCaseUpdateModel.call_history_record(record_number)
+
+    # assert
+    assert result == {f"catiMana.CatiCall.RegsCalls[{record_number}].WhoMade": "KTN",
+                      f"catiMana.CatiCall.RegsCalls[{record_number}].DialResult": "5"}

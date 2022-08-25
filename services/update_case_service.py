@@ -58,6 +58,10 @@ def _update_case_outcome_code(blaise_case, update_blaise_case_model, config, que
     fields_to_update = {}
     fields_to_update.update(update_blaise_case_model.outcome_details())
     fields_to_update.update(update_blaise_case_model.knock_to_nudge_indicator_flag())
+    fields_to_update.update(update_blaise_case_model.call_history_record(1))
+
+    if not blaise_case.has_call_history:
+        fields_to_update.update(update_blaise_case_model.call_history_record(5))
 
     questionnaire_service.update_case(
         blaise_case.questionnaire_name,
@@ -67,7 +71,7 @@ def _update_case_outcome_code(blaise_case, update_blaise_case_model, config, que
     )
 
     logging.info(
-        f"Outcome code updated (Questionnaire={blaise_case.questionnaire_name}, "
+        f"Outcome code and call history updated (Questionnaire={blaise_case.questionnaire_name}, "
         f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
         f"TM hOut={update_blaise_case_model.outcome_code})")
 

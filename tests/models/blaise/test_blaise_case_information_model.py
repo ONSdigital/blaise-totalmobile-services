@@ -123,8 +123,7 @@ def test_import_case_sets_outcome_code_to_zero_if_empty():
     assert result.outcome_code == 0
 
 
-# TODO
-def test_import_case_sets_outcome_code_to_if_not_supplied():
+def test_import_case_sets_outcome_code_to_zero_if_not_supplied():
     questionnaire_name = "LMS2101_AA1"
 
     case_data_dictionary = {

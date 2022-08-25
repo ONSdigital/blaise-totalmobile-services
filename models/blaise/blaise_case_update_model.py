@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import TypeVar, Type
+
 from models.totalmobile.totalmobile_incoming_update_request_model import TotalMobileIncomingUpdateRequestModel
 
 T = TypeVar('T')
@@ -17,6 +18,11 @@ class BlaiseCaseUpdateModel:
     @staticmethod
     def knock_to_nudge_indicator_flag():
         return {"DMktnIND": "1"}  # this is a yes/no enum in Blaise. 1 is yes, 2 is no
+
+    @staticmethod
+    def call_history_record(record_number: int):
+        return {f"catiMana.CatiCall.RegsCalls[{record_number}].WhoMade": "KTN",
+                f"catiMana.CatiCall.RegsCalls[{record_number}].DialResult": "5"}
 
     def outcome_details(self):
         return {

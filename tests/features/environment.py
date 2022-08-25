@@ -43,9 +43,9 @@ class MockQuestionnaireService:
         case_model = self.get_case_from_questionnaire(questionnaire, case_id)
         case_model.outcome_code = int(outcome_code)
 
-    def set_case_has_no_call_history(self, questionnaire, case_id):
+    def set_case_has_call_history(self, has_case_history, questionnaire, case_id):
         case_model = self.get_case_from_questionnaire(questionnaire, case_id)
-        case_model.has_call_history = False
+        case_model.has_call_history = has_case_history
 
     def add_questionnaire(self, questionnaire):
         self.questionnaires[questionnaire] = []
