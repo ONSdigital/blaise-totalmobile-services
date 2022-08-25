@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     config = Config.from_env()
     cases = questionnaire_service.get_cases(questionnaire_name, config)
-    eligible_cases = eligible_case_service.filter_eligible_cases(cases, questionnaire_name)
+    eligible_cases = eligible_case_service.get_eligible_cases(cases)
 
     eligible_count = 0
     ineligible_count = 0
