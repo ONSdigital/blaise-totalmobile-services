@@ -1,9 +1,11 @@
-from typing import Dict, List, Optional
-from urllib.error import HTTPError
+from typing import Dict, List, Optional, Any
 from app.app import setup_app
 from werkzeug.security import generate_password_hash
 
+from app.exceptions.custom_exceptions import QuestionnaireDoesNotExistError
+from models.blaise.get_blaise_case_model import GetBlaiseCaseModel
 from services.blaise_service import QuestionnaireCaseDoesNotExistError
+from tests.helpers import get_blaise_case_model_helper
 
 
 def before_scenario(context, scenario):
@@ -18,18 +20,41 @@ def before_scenario(context, scenario):
 
 class MockQuestionnaireService:
     def __init__(self):
-        self.questionnaires: Dict[str, List[str]] = {}
+        self.questionnaires: Dict[str, List[GetBlaiseCaseModel]] = {}
+        self.update_case_request: Optional[Dict[str, Any]] = None
 
-    def add_case_to_questionnaire(self, questionnaire, case):
-        self.questionnaires[questionnaire].append(case)
-    
+    # functions for setting up data
+    def add_case_to_questionnaire(self, questionnaire, case_id):
+        case_model = get_blaise_case_model_helper.get_populated_case_model(
+            case_id=case_id, questionnaire_name=questionnaire)
+        self.questionnaires[questionnaire].append(case_model)
+
+    def get_case_from_questionnaire(self, questionnaire, case_id):
+        if not (questionnaire in self.questionnaires):
+            raise QuestionnaireDoesNotExistError()
+
+        for case in self.questionnaires[questionnaire]:
+            if case.case_id == case_id:
+                return case
+
+        raise QuestionnaireCaseDoesNotExistError()
+
+    def update_outcome_code_of_case_in_questionnaire(self, questionnaire, case_id, outcome_code):
+        case_model = self.get_case_from_questionnaire(questionnaire, case_id)
+        case_model.outcome_code = int(outcome_code)
+
     def add_questionnaire(self, questionnaire):
         self.questionnaires[questionnaire] = []
 
+    # service function mocks
     def questionnaire_exists(self, questionnaire_name, config):
         return questionnaire_name in self.questionnaires
-    
+
     def get_case(self, questionnaire_name, case_id, config):
-        if not (questionnaire_name in self.questionnaires and case_id in self.questionnaires[questionnaire_name]):
-            raise QuestionnaireCaseDoesNotExistError()
-        return {}
+        return self.get_case_from_questionnaire(questionnaire_name, case_id)
+
+    def update_case(self, questionnaire_name, case_id, data_fields, config):
+        self.update_case_request = {
+            "data_fields": data_fields,
+            "questionnaire_name": questionnaire_name,
+            "case_id": case_id}

@@ -2,7 +2,7 @@ from dataclasses import dataclass, fields
 from datetime import datetime
 from typing import Dict, Type, TypeVar, Optional
 from models.base_model import BaseModel
-from models.uac_model import UacChunks, UacModel
+from models.blaise.uac_model import UacChunks, UacModel
 
 T = TypeVar('T')
 
@@ -37,15 +37,15 @@ class ContactDetails:
 
 
 @dataclass
-class QuestionnaireCaseModel(BaseModel):
+class GetBlaiseCaseModel(BaseModel):
     questionnaire_name: str
     case_id: str
     data_model_name: str
-    survey_type: str
+    # survey_type: str
     wave: str
     address_details: AddressDetails
     contact_details: ContactDetails
-    outcome_code: str
+    outcome_code: int
     priority: str
     field_case: str
     field_region: str
@@ -60,22 +60,15 @@ class QuestionnaireCaseModel(BaseModel):
 
         self.uac_chunks = uac_model.uac_chunks
 
-    def is_fully_populated(self) -> bool:
-        return (self.validate_dataclass_model_fields_are_populated(self) and
-                self.validate_dataclass_model_fields_are_populated(self.address_details.address) and
-                self.validate_dataclass_model_fields_are_populated(self.address_details.address.coordinates) and
-                self.validate_dataclass_model_fields_are_populated(self.contact_details))
-
     @classmethod
     def import_case(cls: Type[T], questionnaire_name: str, case_data_dictionary: Dict[str, str]) -> T:
-        print(case_data_dictionary)
         wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE")
         wave_com_dte = datetime.strptime(wave_com_dte_str, "%d-%m-%Y") if wave_com_dte_str != '' else None
-        return QuestionnaireCaseModel(
+        return GetBlaiseCaseModel(
             questionnaire_name=questionnaire_name,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
             data_model_name=case_data_dictionary.get("dataModelName"),
-            survey_type=case_data_dictionary.get("qDataBag.TLA"),
+            # survey_type=case_data_dictionary.get("qDataBag.TLA"),
             wave=case_data_dictionary.get("qDataBag.Wave"),
             address_details=AddressDetails(
                 address=Address(
@@ -96,7 +89,7 @@ class QuestionnaireCaseModel(BaseModel):
                 telephone_number_2=case_data_dictionary.get("qDataBag.TelNo2"),
                 appointment_telephone_number=case_data_dictionary.get("telNoAppt"),
             ),
-            outcome_code=case_data_dictionary.get("hOut"),
+            outcome_code=cls.convert_string_to_integer(case_data_dictionary.get("hOut", 0)),
             priority=case_data_dictionary.get("qDataBag.Priority"),
             field_case=case_data_dictionary.get("qDataBag.FieldCase"),
             field_region=case_data_dictionary.get("qDataBag.FieldRegion"),
@@ -104,3 +97,9 @@ class QuestionnaireCaseModel(BaseModel):
             wave_com_dte=wave_com_dte,
             uac_chunks=UacChunks(uac1="", uac2="", uac3="")
         )
+
+    @staticmethod
+    def convert_string_to_integer(value: str) -> int:
+        if value == "":
+            return 0
+        return int(value)

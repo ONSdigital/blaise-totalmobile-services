@@ -1,7 +1,7 @@
 import pytest
 
 from app.exceptions.custom_exceptions import MissingReferenceError, BadReferenceError
-from models.totalmobile_reference_model import TotalmobileReferenceModel
+from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
 from tests.helpers import incoming_request_helper
 
 
@@ -33,7 +33,7 @@ def test_model_raises_a_missing_reference_error_when_given_an_invalid_questionna
 def test_questionnaire_name_and_case_id_properties_are_set_correctly_when_given_a_valid_incoming_request():
     # arrange
     reference = "LMS2101-AA1.90001"
-    incoming_case_request = incoming_request_helper.get_populated_update_case_request(reference=reference)
+    incoming_case_request = incoming_request_helper.get_populated_update_case_request_for_contact_made(reference=reference)
     reference_model = TotalmobileReferenceModel(incoming_case_request)
 
     # act & assert
@@ -73,7 +73,7 @@ def test_model_raises_a_missing_reference_error_if_the_request_does_not_have_exp
 def test_model_raises_a_missing_reference_error_if_the_request_has_an_empty_reference():
     # arrange
     reference = ""
-    incoming_case_request = incoming_request_helper.get_populated_update_case_request(reference=reference)
+    incoming_case_request = incoming_request_helper.get_populated_update_case_request_for_contact_made(reference=reference)
 
     # act & assert
     with pytest.raises(MissingReferenceError):
@@ -83,7 +83,7 @@ def test_model_raises_a_missing_reference_error_if_the_request_has_an_empty_refe
 @pytest.mark.parametrize("reference", [" ", "LMS2101_AA1-90001", "LMS2101_AA1:90001", "LMS2101_AA1.", ".90001"])
 def test_model_raises_a_bad_reference_error_if_the_request_does_not_have_a_correctly_formatted_reference(reference):
     # arrange
-    incoming_case_request = incoming_request_helper.get_populated_update_case_request(reference=reference)
+    incoming_case_request = incoming_request_helper.get_populated_update_case_request_for_contact_made(reference=reference)
 
     # assert
     with pytest.raises(BadReferenceError):

@@ -6,10 +6,11 @@ from cloud_functions.check_questionnaire_release_date import (
     check_questionnaire_release_date,
     get_questionnaires_with_release_date_of_today,
     map_questionnaire_case_task_models,
-    QuestionnaireCaseTaskModel,
     create_questionnaire_case_task_name,
 )
 from google.cloud import datastore
+
+from models.cloud_tasks.questionnaire_case_cloud_task_model import QuestionnaireCaseTaskModel
 
 
 def entity_builder(key, questionnaire, tmreleasedate):

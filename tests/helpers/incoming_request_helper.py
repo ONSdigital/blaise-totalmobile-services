@@ -1,125 +1,171 @@
-def get_populated_update_case_request(
+def get_populated_update_case_request_for_contact_made(
         reference="LMS2101-AA1.90001",
-        outcome_code="300",
+        outcome_code=300,
+        contact_name="Duncan Bell",
         home_phone_number="01234567890",
         mobile_phone_number="07123123123"
 ):
     return {
-        "Result": {
-            "User": {
-                "ID": 263,
-                "IDSpecified": True,
-                "Name": "Test.INT.NW2.01",
-                "DeviceID": "DUNCANFIELDSIPHONEc2e1238c-12d4-4e3a-962b-9c95a8be",
-                "UserAttributes": [
-                    {
-                        "Name": "AuthNo",
-                        "Value": "INT.NW2.01"
-                    },
-                    {
-                        "Name": "Region",
-                        "Value": "North West"
-                    },
-                    {
-                        "Name": "Skill",
-                        "Value": "LMS"
-                    },
-                    {
-                        "Name": "Team",
-                        "Value": "North West 2"
-                    }
-                ]
+        "result": {
+            "user": {
+                "id": 1191,
+                "name": "richmond.rice",
+                "deviceID": "NOKIA8.35G9b080ab9-33a4-4824-b882-6019732b9dfa"
             },
-            "Date": "2022-08-15T11:31:09.94",
-            "Form": {
-                "Reference": "LMS-Contact Made No Visit",
-                "Version": 1
+            "date": "2022-08-23T15: 54: 23.323",
+            "form": {
+                "reference": "LMS-Contact Made No Visit",
+                "version": 10
             },
-            "Association": {
-                "WorkType": "LMS",
-                "Reference": reference,
-                "PropertyReference": "L98BN68OnsStreet",
-                "ClientReference": ""
+            "association": {
+                "workType": "LMS",
+                "reference": reference,
+                "propertyReference": "zz00zzons",
+                "clientReference": ""
             },
-            "Responses": [
+            "responses": [
                 {
-                    "Instance": 0,
-                    "Responses": [
+                    "instance": 0,
+                    "responses": [
                         {
-                            "Value": "300-10",
-                            "Description": None,
-                            "Element": {
-                                "Reference": "Secondary_Outcome",
-                                "Text": "Contact Made Detail",
-                                "EnrichContentSpecified": False
+                            "value": "300-10",
+                            "element": {
+                                "reference": "Secondary_Outcome",
+                                "text": "Contact Made Detail"
                             }
                         },
                         {
-                            "Value": outcome_code,
-                            "Description": None,
-                            "Element": {
-                                "Reference": "Primary_Outcome",
-                                "Text": "Primary Outcome (Hidden)",
-                                "EnrichContentSpecified": False
+                            "value": outcome_code,
+                            "element": {
+                                "reference": "Primary_Outcome",
+                                "text": "Primary Outcome (Hidden)"
                             }
                         }
                     ],
-                    "Element": {
-                        "Reference": "LMS_CMNV",
-                        "Text": "Contact Made No Visits",
-                        "EnrichContentSpecified": False
+                    "element": {
+                        "reference": "LMS_CMNV",
+                        "text": "Contact Made No Visits"
                     }
                 },
                 {
-                    "Instance": 0,
-                    "Responses": [
+                    "instance": 0,
+                    "responses": [
                         {
-                            "Value": "Duncan",
-                            "Description": None,
-                            "Element": {
-                                "Reference": "Contact_Name",
-                                "Text": "Name:",
-                                "EnrichContentSpecified": False
+                            "value": contact_name,
+                            "element": {
+                                "reference": "Contact_Name",
+                                "text": "Name:"
                             }
                         },
                         {
-                            "Value": home_phone_number,
-                            "Description": None,
-                            "Element": {
-                                "Reference": "Contact_Tel1",
-                                "Text": "Tel no 1:",
-                                "EnrichContentSpecified": False
+                            "value": home_phone_number,
+                            "element": {
+                                "reference": "Contact_Tel1",
+                                "text": "Tel no 1:"
                             }
                         },
                         {
-                            "Value": mobile_phone_number,
-                            "Description": None,
-                            "Element": {
-                                "Reference": "Contact_Tel2",
-                                "Text": "Tel no 2:",
-                                "EnrichContentSpecified": None
+                            "value": mobile_phone_number,
+                            "element": {
+                                "reference": "Contact_Tel2",
+                                "text": "Tel no 2:"
                             }
                         }
                     ],
-                    "Element": {
-                        "Reference": "LMS_CD",
-                        "Text": "Contact Details",
-                        "EnrichContentSpecified": None
+                    "element": {
+                        "reference": "LMS_CD",
+                        "text": "Contact Details"
                     }
                 }
             ],
-            "ResultGuid": "f1bbda42-f21f-4775-8e34-c474119028ef"
+            "resultGuid": "428f2b9f-ee9d-43cc-ba59-afa4fcd31529"
+        }
+    }
+
+
+def get_populated_update_case_refusal_request(
+        reference="LMS2101-AA1.90001",
+        outcome_code=460
+):
+    return {
+        "result": {
+            "user": {
+                "id": 1191,
+                "name": "richmond.rice",
+                "deviceID": "NOKIA8.35G9b080ab9-33a4-4824-b882-6019732b9dfa"
+            },
+            "date": "2022-08-25T11:00:28.7",
+            "form": {
+                "reference": "LMS-Refusal",
+                "version": 36
+            },
+            "association": {
+                "workType": "LMS",
+                "reference": reference,
+                "propertyReference": "postcodeprem1",
+                "clientReference": ""
+            },
+            "responses": [
+                {
+                    "instance": 0,
+                    "responses": [
+                        {
+                            "value": "460",
+                            "element": {
+                                "reference": "Secondary_Outcome",
+                                "text": "Refusal Reason"
+                            }
+                        },
+                        {
+                            "value": outcome_code,
+                            "element": {
+                                "reference": "Primary_Outcome",
+                                "text": "Primary Outcome (Hidden)"
+                            }
+                        }
+                    ],
+                    "element": {
+                        "reference": "LMS_Refusal",
+                        "text": "Refusal"
+                    }
+                },
+                {
+                    "instance": 0,
+                    "responses": [
+                        {
+                            "value": "",
+                            "element": {
+                                "reference": "Important_Advice",
+                                "text": "IMPORTANT: Recording this outcome will remove the case from the workload and will not be included in future Waves"
+                            }
+                        },
+                        {
+                            "value": "Reason not known",
+                            "description": "Reason not known",
+                            "element": {
+                                "reference": "Outright_Refusal_Reason",
+                                "text": "Select one of the options below"
+                            }
+                        }
+                    ],
+                    "element": {
+                        "reference": "Outright_Refusal",
+                        "text": "Outright Refusal"
+                    }
+                }
+            ],
+            "resultGuid": "8b0c2c69-9b2c-4fa3-8825-e3f3a2743e50"
         }
     }
 
 
 def get_update_case_request_without_association_element():
-    update_request = get_populated_update_case_request()
-    del update_request["Result"]["Association"]
+    update_request = get_populated_update_case_request_for_contact_made()
+    del update_request["result"]["association"]
     return update_request
 
 
 def get_update_case_request_without_reference_element():
-    update_request = get_populated_update_case_request()
-    del update_request["Result"]["Association"]["Reference"]
+    update_request = get_populated_update_case_request_for_contact_made()
+    del update_request["result"]["association"]["reference"]
     return update_request
