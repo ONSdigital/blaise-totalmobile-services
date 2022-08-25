@@ -5,7 +5,7 @@ from unittest.mock import create_autospec
 import flask
 import pytest
 import logging
-from models.blaise.get_blaise_case_model import UacChunks
+from models.blaise.blaise_case_information_model import UacChunks
 from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingJobPayloadModel
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.totalmobile_service import TotalmobileService

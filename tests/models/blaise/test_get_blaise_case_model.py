@@ -1,7 +1,7 @@
 import pytest
 
 from datetime import datetime
-from models.blaise.get_blaise_case_model import GetBlaiseCaseModel
+from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from models.blaise.uac_model import UacModel, UacChunks
 from tests.helpers import get_blaise_case_model_helper
 
@@ -33,7 +33,7 @@ def test_import_case_returns_a_populated_model():
         "catiMana.CatiCall.RegsCalls[1].DialResult": ""
     }
 
-    result = GetBlaiseCaseModel.import_case(questionnaire_name, case_data_dictionary)
+    result = BlaiseCaseInformationModel.import_case(questionnaire_name, case_data_dictionary)
 
     assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id == "90000000"
@@ -85,7 +85,7 @@ def test_import_case_returns_a_valid_object_when_a_blaise_field_is_incorrectly_t
         "catiMana.CatiCall.RegsCalls[1].DialResult": "1"
     }
 
-    result = GetBlaiseCaseModel.import_case(questionnaire_name, case_data_dictionary)
+    result = BlaiseCaseInformationModel.import_case(questionnaire_name, case_data_dictionary)
 
     assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id is None
@@ -118,7 +118,7 @@ def test_import_case_sets_outcome_code_to_zero_if_empty():
         "qDataBag.WaveComDTE": "31-01-2023"
     }
 
-    result = GetBlaiseCaseModel.import_case(questionnaire_name, case_data_dictionary)
+    result = BlaiseCaseInformationModel.import_case(questionnaire_name, case_data_dictionary)
 
     assert result.outcome_code == 0
 
@@ -131,7 +131,7 @@ def test_import_case_sets_outcome_code_to_if_not_supplied():
         "qDataBag.WaveComDTE": "31-01-2023"
     }
 
-    result = GetBlaiseCaseModel.import_case(questionnaire_name, case_data_dictionary)
+    result = BlaiseCaseInformationModel.import_case(questionnaire_name, case_data_dictionary)
 
     assert result.outcome_code == 0
 
@@ -161,7 +161,7 @@ def test_import_case_returns_a_valid_object_when_an_optional_blaise_field_is_mis
         "catiMana.CatiCall.RegsCalls[1].DialResult": ""
     }
 
-    result = GetBlaiseCaseModel.import_case(questionnaire_name, case_data_dictionary)
+    result = BlaiseCaseInformationModel.import_case(questionnaire_name, case_data_dictionary)
 
     assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id is None
@@ -194,7 +194,7 @@ def test_import_case_sets_has_call_history_to_true_when_blaise_case_has_call_his
         "catiMana.CatiCall.RegsCalls[1].DialResult": "1"
     }
 
-    result = GetBlaiseCaseModel.import_case(questionnaire_name, case_data_dictionary)
+    result = BlaiseCaseInformationModel.import_case(questionnaire_name, case_data_dictionary)
 
     assert result.has_call_history is True
 
@@ -207,7 +207,7 @@ def test_import_case_sets_has_call_history_to_false_when_blaise_case_has_no_call
         "catiMana.CatiCall.RegsCalls[1].DialResult": ""
     }
 
-    result = GetBlaiseCaseModel.import_case(questionnaire_name, case_data_dictionary)
+    result = BlaiseCaseInformationModel.import_case(questionnaire_name, case_data_dictionary)
 
     assert result.has_call_history is False
 
@@ -219,7 +219,7 @@ def test_import_case_sets_has_call_history_to_false_when_blaise_case_is_missing_
         "qDataBag.WaveComDTE": "31-01-2023",
     }
 
-    result = GetBlaiseCaseModel.import_case(questionnaire_name, case_data_dictionary)
+    result = BlaiseCaseInformationModel.import_case(questionnaire_name, case_data_dictionary)
 
     assert result.has_call_history is False
 
@@ -275,6 +275,6 @@ def test_populate_uac_data_sets_date_to_none_if_date_is_an_empty_string():
         "qDataBag.WaveComDTE": ""
     }
 
-    result = GetBlaiseCaseModel.import_case("LMS", case_data_dictionary)
+    result = BlaiseCaseInformationModel.import_case("LMS", case_data_dictionary)
 
     assert result.wave_com_dte is None

@@ -1,6 +1,6 @@
 import pytest
 
-from models.blaise.update_blaise_case_model import UpdateBlaiseCaseModel
+from models.blaise.blaise_case_update_model import BlaiseCaseUpdateModel
 from models.totalmobile.totalmobile_incoming_update_request_model import TotalMobileIncomingUpdateRequestModel
 
 
@@ -16,7 +16,7 @@ def test_import_case_returns_a_populated_model():
     )
 
     # act
-    result = UpdateBlaiseCaseModel.import_case(totalmobile_request)
+    result = BlaiseCaseUpdateModel.import_case(totalmobile_request)
 
     # assert
     assert result.questionnaire_name == "LMS2101_AA1"
@@ -29,7 +29,7 @@ def test_import_case_returns_a_populated_model():
 
 def test_get_outcome_details_returns_an_expected_dictionary():
     # arrange
-    blaise_case = UpdateBlaiseCaseModel(
+    blaise_case = BlaiseCaseUpdateModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
         outcome_code=300,
@@ -50,7 +50,7 @@ def test_get_outcome_details_returns_an_expected_dictionary():
 
 def test_get_contact_details_returns_an_expected_dictionary():
     # arrange
-    blaise_case = UpdateBlaiseCaseModel(
+    blaise_case = BlaiseCaseUpdateModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
         outcome_code=300,
@@ -73,7 +73,7 @@ def test_get_contact_details_returns_an_expected_dictionary():
 @pytest.mark.parametrize("test_input", ["", None])
 def test_get_contact_details_returns_an_expected_dictionary_if_contact_name_not_provided(test_input):
     # arrange
-    blaise_case = UpdateBlaiseCaseModel(
+    blaise_case = BlaiseCaseUpdateModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
         outcome_code=300,
@@ -95,7 +95,7 @@ def test_get_contact_details_returns_an_expected_dictionary_if_contact_name_not_
 @pytest.mark.parametrize("test_input", ["", None])
 def test_get_contact_details_returns_an_expected_dictionary_if_home_number_not_provided(test_input):
     # arrange
-    blaise_case = UpdateBlaiseCaseModel(
+    blaise_case = BlaiseCaseUpdateModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
         outcome_code=300,
@@ -117,7 +117,7 @@ def test_get_contact_details_returns_an_expected_dictionary_if_home_number_not_p
 @pytest.mark.parametrize("test_input", ["", None])
 def test_get_contact_details_returns_an_expected_dictionary_if_mobile_number_not_provided(test_input):
     # arrange
-    blaise_case = UpdateBlaiseCaseModel(
+    blaise_case = BlaiseCaseUpdateModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
         outcome_code=300,
@@ -139,7 +139,7 @@ def test_get_contact_details_returns_an_expected_dictionary_if_mobile_number_not
 @pytest.mark.parametrize("test_input", ["", None])
 def test_get_contact_details_returns_an_empty_dictionary_if_no_contact_details_provided(test_input):
     # arrange
-    blaise_case = UpdateBlaiseCaseModel(
+    blaise_case = BlaiseCaseUpdateModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
         outcome_code=300,

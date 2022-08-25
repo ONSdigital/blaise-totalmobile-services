@@ -2,7 +2,7 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 from typing import Type, TypeVar, List, Optional
 
-from models.blaise.get_blaise_case_model import GetBlaiseCaseModel
+from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
 
 T = TypeVar('T')
@@ -82,7 +82,7 @@ class TotalMobileOutgoingJobPayloadModel:
         return reference_model.create_reference()
 
     @staticmethod
-    def create_description(questionnaire_name: str, questionnaire_case: GetBlaiseCaseModel) -> str:
+    def create_description(questionnaire_name: str, questionnaire_case: BlaiseCaseInformationModel) -> str:
         uac_string = "" if questionnaire_case.uac_chunks is None else f"{questionnaire_case.uac_chunks.uac1} {questionnaire_case.uac_chunks.uac2} {questionnaire_case.uac_chunks.uac3}"
         due_date_string = "" if questionnaire_case.wave_com_dte is None else questionnaire_case.wave_com_dte.strftime(
             '%d/%m/%Y')
@@ -94,7 +94,7 @@ class TotalMobileOutgoingJobPayloadModel:
         )
 
     @staticmethod
-    def concatenate_address_line(questionnaire_case: GetBlaiseCaseModel) -> str:
+    def concatenate_address_line(questionnaire_case: BlaiseCaseInformationModel) -> str:
         fields = [
             questionnaire_case.address_details.address.address_line_1,
             questionnaire_case.address_details.address.address_line_2,
@@ -106,7 +106,7 @@ class TotalMobileOutgoingJobPayloadModel:
         return concatenated_address
 
     @classmethod
-    def import_case(cls: Type[T], questionnaire_name: str, questionnaire_case: GetBlaiseCaseModel) -> T:
+    def import_case(cls: Type[T], questionnaire_name: str, questionnaire_case: BlaiseCaseInformationModel) -> T:
         total_mobile_case = TotalMobileOutgoingJobPayloadModel(
             identity=Reference(reference=cls.create_job_reference(questionnaire_name, questionnaire_case.case_id)),
             description=cls.create_description(questionnaire_name, questionnaire_case),

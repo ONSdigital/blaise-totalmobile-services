@@ -37,7 +37,7 @@ class ContactDetails:
 
 
 @dataclass
-class GetBlaiseCaseModel(BaseModel):
+class BlaiseCaseInformationModel(BaseModel):
     questionnaire_name: str
     case_id: str
     data_model_name: str
@@ -65,7 +65,7 @@ class GetBlaiseCaseModel(BaseModel):
     def import_case(cls: Type[T], questionnaire_name: str, case_data_dictionary: Dict[str, str]) -> T:
         wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE")
         wave_com_dte = datetime.strptime(wave_com_dte_str, "%d-%m-%Y") if wave_com_dte_str != '' else None
-        return GetBlaiseCaseModel(
+        return BlaiseCaseInformationModel(
             questionnaire_name=questionnaire_name,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
             data_model_name=case_data_dictionary.get("dataModelName"),

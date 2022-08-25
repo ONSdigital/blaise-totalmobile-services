@@ -6,7 +6,7 @@ T = TypeVar('T')
 
 
 @dataclass
-class UpdateBlaiseCaseModel:
+class BlaiseCaseUpdateModel:
     questionnaire_name: str
     case_id: str
     outcome_code: int
@@ -43,7 +43,7 @@ class UpdateBlaiseCaseModel:
 
     @classmethod
     def import_case(cls: Type[T], totalmobile_request: TotalMobileIncomingUpdateRequestModel) -> T:
-        return UpdateBlaiseCaseModel(
+        return BlaiseCaseUpdateModel(
             questionnaire_name=totalmobile_request.questionnaire_name,
             case_id=totalmobile_request.case_id,
             outcome_code=totalmobile_request.outcome_code,
