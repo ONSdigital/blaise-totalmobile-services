@@ -5,7 +5,7 @@ from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
 from appconfig import Config
 from typing import List, Dict
 
-from models.blaise.get_blaise_case_model import GetBlaiseCaseModel
+from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 
 required_fields_from_blaise = [
     "qiD.Serial_Number",
@@ -29,10 +29,11 @@ required_fields_from_blaise = [
     "qDataBag.FieldRegion",
     "qDataBag.FieldTeam",
     "qDataBag.WaveComDTE",
+    "catiMana.CatiCall.RegsCalls[1].DialResult"
 ]
 
 
-def get_cases(questionnaire_name: str, config: Config) -> [List[GetBlaiseCaseModel]]:
+def get_cases(questionnaire_name: str, config: Config) -> [List[BlaiseCaseInformationModel]]:
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
 
     questionnaire_case_data = restapi_client.get_questionnaire_data(
@@ -41,11 +42,11 @@ def get_cases(questionnaire_name: str, config: Config) -> [List[GetBlaiseCaseMod
         required_fields_from_blaise
     )
 
-    return [GetBlaiseCaseModel.import_case(questionnaire_name, case_data_item) for case_data_item in
+    return [BlaiseCaseInformationModel.import_case(questionnaire_name, case_data_item) for case_data_item in
             questionnaire_case_data["reportingData"]]
 
 
-def get_case(questionnaire_name: str, case_id: str, config: Config) -> GetBlaiseCaseModel:
+def get_case(questionnaire_name: str, case_id: str, config: Config) -> BlaiseCaseInformationModel:
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
 
     try:
@@ -57,7 +58,7 @@ def get_case(questionnaire_name: str, case_id: str, config: Config) -> GetBlaise
     except HTTPError:
         raise QuestionnaireCaseDoesNotExistError()
 
-    return GetBlaiseCaseModel.import_case(questionnaire_name, questionnaire_case_data["fieldData"])
+    return BlaiseCaseInformationModel.import_case(questionnaire_name, questionnaire_case_data["fieldData"])
 
 
 def questionnaire_exists(questionnaire_name: str, config: Config) -> bool:

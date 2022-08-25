@@ -3,7 +3,7 @@ from app.app import setup_app
 from werkzeug.security import generate_password_hash
 
 from app.exceptions.custom_exceptions import QuestionnaireDoesNotExistError
-from models.blaise.get_blaise_case_model import GetBlaiseCaseModel
+from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from services.blaise_service import QuestionnaireCaseDoesNotExistError
 from tests.helpers import get_blaise_case_model_helper
 
@@ -20,7 +20,7 @@ def before_scenario(context, scenario):
 
 class MockQuestionnaireService:
     def __init__(self):
-        self.questionnaires: Dict[str, List[GetBlaiseCaseModel]] = {}
+        self.questionnaires: Dict[str, List[BlaiseCaseInformationModel]] = {}
         self.update_case_request: Optional[Dict[str, Any]] = None
 
     # functions for setting up data
@@ -42,6 +42,10 @@ class MockQuestionnaireService:
     def update_outcome_code_of_case_in_questionnaire(self, questionnaire, case_id, outcome_code):
         case_model = self.get_case_from_questionnaire(questionnaire, case_id)
         case_model.outcome_code = int(outcome_code)
+
+    def set_case_has_call_history(self, has_case_history, questionnaire, case_id):
+        case_model = self.get_case_from_questionnaire(questionnaire, case_id)
+        case_model.has_call_history = has_case_history
 
     def add_questionnaire(self, questionnaire):
         self.questionnaires[questionnaire] = []

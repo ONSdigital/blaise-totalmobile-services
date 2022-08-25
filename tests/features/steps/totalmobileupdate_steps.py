@@ -20,6 +20,16 @@ def step_impl(context, outcome_code):
         context.questionnaire_name, context.case_id, outcome_code)
 
 
+@given("the case has no pre-existing call history")
+def step_impl(context):
+    context.questionnaire_service.set_case_has_call_history(False, context.questionnaire_name, context.case_id)
+
+
+@given("the case has call history")
+def step_impl(context):
+    context.questionnaire_service.set_case_has_call_history(True, context.questionnaire_name, context.case_id)
+
+
 @given(u'there is no questionnaire "{questionnaire}" in Blaise')
 def step_impl(context, questionnaire):
     # State is reset before every scenario - leaving test empty to ensure no questionnaires are added
@@ -91,12 +101,25 @@ def step_impl(context):
 @then('the case "{case_id}" for questionnaire "{questionnaire}" has been updated with')
 def step_impl(context, questionnaire, case_id):
     fields_to_update = {row["field_name"]: row["value"] for row in context.table}
+    actual_fields_updated = context.questionnaire_service.update_case_request['data_fields']
 
     assert context.questionnaire_service.update_case_request is not None, f"update service has not been called"
     assert questionnaire == context.questionnaire_service.update_case_request["questionnaire_name"]
     assert case_id == context.questionnaire_service.update_case_request["case_id"]
-    assert fields_to_update == context.questionnaire_service.update_case_request['data_fields'], \
-        f"{fields_to_update} != {context.questionnaire_service.update_case_request['data_fields']} "
+    for item in fields_to_update.keys():
+        assert item in actual_fields_updated and actual_fields_updated[item] == fields_to_update[item]
+
+
+@then('the case "{case_id}" for questionnaire "{questionnaire}" has been updated with call history')
+def step_impl(context, questionnaire, case_id):
+    fields_to_update = {row["field_name"]: row["value"] for row in context.table}
+    actual_fields_updated = context.questionnaire_service.update_case_request['data_fields']
+
+    assert context.questionnaire_service.update_case_request is not None, f"update service has not been called"
+    assert questionnaire == context.questionnaire_service.update_case_request["questionnaire_name"]
+    assert case_id == context.questionnaire_service.update_case_request["case_id"]
+    for item in fields_to_update.keys():
+        assert item in actual_fields_updated and actual_fields_updated[item] == fields_to_update[item]
 
 
 @then('the case "{case_id}" for questionnaire "{questionnaire}" has not been updated')
