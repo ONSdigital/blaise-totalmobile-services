@@ -68,6 +68,7 @@ class TotalMobileOutgoingJobPayloadModel:
     dueDate: DueDate
     location: AddressDetails
     contact: ContactDetails
+    attributes: List[AdditionalProperty]
     additionalProperties: List[AdditionalProperty]
 
     def to_payload(self) -> dict[str, str]:
@@ -128,6 +129,16 @@ class TotalMobileOutgoingJobPayloadModel:
                                         ))
                                     ),
             contact=ContactDetails(name=questionnaire_case.address_details.address.postcode),
+            attributes=[
+                AdditionalProperty(
+                    name="Region",
+                    value=questionnaire_case.field_region
+                ),
+                AdditionalProperty(
+                    name="Team",
+                    value=questionnaire_case.field_team
+                ),
+            ],
             additionalProperties=[
                 AdditionalProperty(
                     name="surveyName",
