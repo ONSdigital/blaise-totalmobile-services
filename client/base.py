@@ -45,6 +45,14 @@ class BaseClient:
         self.__check_response(response)
         return response
 
+    def _delete(self, path: str) -> requests.Response:
+        response = requests.delete(
+            f"{self._url}/{self._instance}/{path}",
+            headers=self.__auth_header(),
+        )
+        self.__check_response(response)
+        return response
+
     def __get_token(self) -> str:
         if self.__token_expired():
             response = requests.post(

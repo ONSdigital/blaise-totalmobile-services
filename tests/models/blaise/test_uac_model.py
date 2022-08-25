@@ -1,4 +1,4 @@
-from models.uac_model import UacModel
+from models.blaise.uac_model import UacModel
 
 
 def test_import_case_data_returns_a_populated_model():

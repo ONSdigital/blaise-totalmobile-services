@@ -2,8 +2,8 @@ import logging
 
 import pytest
 
-from services import eligible_blaise_case_service
-from tests.helpers.questionnaire_case_model_helper import get_populated_case_model
+from services import eligible_case_service
+from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
 
 def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
@@ -17,7 +17,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             appointment_telephone_number="",
             wave="1",
             field_case="Y",
-            outcome_code="310"
+            outcome_code=310
         ),
         # should not return
         get_populated_case_model(
@@ -27,7 +27,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             appointment_telephone_number="",
             wave="1",
             field_case="Y",
-            outcome_code="310"
+            outcome_code=310
         ),
         # should not return
         get_populated_case_model(
@@ -37,7 +37,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             appointment_telephone_number="",
             wave="1",
             field_case="Y",
-            outcome_code="310"
+            outcome_code=310
         ),
         # should not return
         get_populated_case_model(
@@ -47,7 +47,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             appointment_telephone_number="123435",
             wave="1",
             field_case="Y",
-            outcome_code="310"
+            outcome_code=310
         ),
         # should not return
         get_populated_case_model(
@@ -57,7 +57,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             appointment_telephone_number="",
             wave="2",
             field_case="Y",
-            outcome_code="310"
+            outcome_code=310
         ),
         # should not return
         get_populated_case_model(
@@ -67,7 +67,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             appointment_telephone_number="",
             wave="1",
             field_case="N",
-            outcome_code="310"
+            outcome_code=310
         ),
         # should not return
         get_populated_case_model(
@@ -77,7 +77,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             appointment_telephone_number="",
             wave="1",
             field_case="Y",
-            outcome_code="410"
+            outcome_code=410
         ),
         # should return
         get_populated_case_model(
@@ -87,12 +87,12 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             appointment_telephone_number="",
             wave="1",
             field_case="y",
-            outcome_code="0"
+            outcome_code=0
         ),
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 2
@@ -106,7 +106,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             appointment_telephone_number="",
             wave="1",
             field_case="Y",
-            outcome_code="310"
+            outcome_code=310
         ),
         # should return
         get_populated_case_model(
@@ -116,12 +116,12 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             appointment_telephone_number="",
             wave="1",
             field_case="y",
-            outcome_code="0"
+            outcome_code=0
         ),
     ]
 
 
-def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
+def test_get_eligible_cases_logs_all_cases_appropriately(caplog):
     # arrange
     cases = [
         # should return
@@ -132,7 +132,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             appointment_telephone_number="",
             wave="1",
             field_case="Y",
-            outcome_code="310"
+            outcome_code=310
         ),
         # should not return
         get_populated_case_model(
@@ -142,7 +142,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             appointment_telephone_number="",
             wave="1",
             field_case="Y",
-            outcome_code="310"
+            outcome_code=310
         ),
         # should not return
         get_populated_case_model(
@@ -152,7 +152,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             appointment_telephone_number="",
             wave="1",
             field_case="Y",
-            outcome_code="310"
+            outcome_code=310
         ),
         # should not return
         get_populated_case_model(
@@ -162,7 +162,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             appointment_telephone_number="123435",
             wave="1",
             field_case="Y",
-            outcome_code="310"
+            outcome_code=310
         ),
         # should not return
         get_populated_case_model(
@@ -172,7 +172,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             appointment_telephone_number="",
             wave="2",
             field_case="Y",
-            outcome_code="310"
+            outcome_code=310
         ),
         # should not return
         get_populated_case_model(
@@ -182,7 +182,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             appointment_telephone_number="",
             wave="1",
             field_case="N",
-            outcome_code="310"
+            outcome_code=310
         ),
         # should not return
         get_populated_case_model(
@@ -192,7 +192,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             appointment_telephone_number="",
             wave="1",
             field_case="Y",
-            outcome_code="410"
+            outcome_code=410
         ),
         # should return
         get_populated_case_model(
@@ -202,12 +202,12 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
             appointment_telephone_number="",
             wave="1",
             field_case="y",
-            outcome_code="0"
+            outcome_code=0
         ),
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 2
@@ -218,7 +218,7 @@ def test_filter_eligible_cases_logs_all_cases_appropriately(caplog):
     assert ('root', logging.INFO, "Case '90004' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value set for the field 'appointment_telephone_number'") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90005' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '2' outside of the range '['1']' set for the field 'wave'") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90006' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a field case value of 'N', not 'Y'") in caplog.record_tuples
-    assert ('root', logging.INFO, "Case '90007' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '410' outside of the range '['', '0', '310', '320']' set for the field 'outcome_code'") in caplog.record_tuples
+    assert ('root', logging.INFO, "Case '90007' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '410' outside of the range '[0, 310, 320]' set for the field 'outcome_code'") in caplog.record_tuples
     assert ('root', logging.INFO, "Case '90008' in questionnaire 'LMS2101_AA1' was eligible and will be included") in caplog.record_tuples
 
 
@@ -234,12 +234,12 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_teleph
             appointment_telephone_number="",
             wave="1",
             priority="1",
-            outcome_code="310"
+            outcome_code=310
         )
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -257,12 +257,12 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_teleph
             appointment_telephone_number="",
             wave="1",
             priority="1",
-            outcome_code="310"
+            outcome_code=310
         )
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -280,12 +280,12 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_appoin
             appointment_telephone_number="2221221",
             wave="1",
             priority="1",
-            outcome_code="310"
+            outcome_code=310
         )
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -306,12 +306,12 @@ def test_get_eligible_cases_logs_a_message_when_a_wave_is_not_in_range(test_inpu
             appointment_telephone_number="",
             wave=test_input,
             priority="1",
-            outcome_code="310"
+            outcome_code=310
         )
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -319,10 +319,10 @@ def test_get_eligible_cases_logs_a_message_when_a_wave_is_not_in_range(test_inpu
     assert ('root', logging.INFO, f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '{test_input}' outside of the range '{value_range}' set for the field 'wave'") in caplog.record_tuples
 
 
-@pytest.mark.parametrize("test_input", ["110", "210", "410"])
-def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(test_input, caplog):
+@pytest.mark.parametrize("test_input", [110, 210, 410])
+def test_get_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(test_input, caplog):
     # arrange
-    value_range = ["", "0", "310", "320"]
+    value_range = [0, 310, 320]
 
     cases = [
         get_populated_case_model(
@@ -337,7 +337,7 @@ def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(te
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -345,7 +345,7 @@ def test_filter_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(te
     assert ('root', logging.INFO, f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '{test_input}' outside of the range '{value_range}' set for the field 'outcome_code'") in caplog.record_tuples
 
 
-def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_N(caplog):
+def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_N(caplog):
     # arrange
 
     cases = [
@@ -357,12 +357,12 @@ def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_N(caplog
             wave="1",
             field_case="N",
             priority="1",
-            outcome_code=test_input
+            outcome_code=310
         )
     ]
 
     # act
-    result = eligible_case_service.filter_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -370,7 +370,7 @@ def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_N(caplog
     assert ('root', logging.INFO, f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '{test_input}' outside of the range '{value_range}' set for the field 'outcome_code'") in caplog.record_tuples
 
 
-def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_N(caplog):
+def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_N(caplog):
     # arrange
 
     cases = [
@@ -381,12 +381,12 @@ def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_N(caplog
             appointment_telephone_number="",
             wave="1",
             field_case="N",
-            outcome_code="310"
+            outcome_code=310
         )
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -394,7 +394,7 @@ def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_N(caplog
     assert ('root', logging.INFO, f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a field case value of 'N', not 'Y'") in caplog.record_tuples
 
 
-def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_an_empty_string(caplog):
+def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_an_empty_string(caplog):
     # arrange
 
     cases = [
@@ -405,12 +405,12 @@ def test_filter_eligible_cases_logs_a_message_when_field_case_is_set_to_an_empty
             appointment_telephone_number="",
             wave="1",
             field_case="",
-            outcome_code="310"
+            outcome_code=310
         )
     ]
 
     # act
-    result = eligible_blaise_case_service.get_eligible_cases(cases)
+    result = eligible_case_service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0

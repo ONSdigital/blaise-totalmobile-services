@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import List
 from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
-from models.questionnaire_case_task_model import QuestionnaireCaseTaskModel
+from models.cloud_tasks.questionnaire_case_cloud_task_model import QuestionnaireCaseTaskModel
 from appconfig import Config
 from uuid import uuid4
 

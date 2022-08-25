@@ -1,6 +1,6 @@
-from models.questionnaire_case_model import QuestionnaireCaseModel, AddressDetails, Address, AddressCoordinates, \
+from models.blaise.get_blaise_case_model import GetBlaiseCaseModel, AddressDetails, Address, AddressCoordinates, \
     ContactDetails
-from models.uac_model import UacChunks
+from models.blaise.uac_model import UacChunks
 from datetime import datetime
 from typing import Optional
 
@@ -9,7 +9,6 @@ def get_populated_case_model(
         questionnaire_name: str = "LMS2101_AA1",
         case_id: str = "90000",
         data_model_name: str = "LM2007",
-        survey_type: str = "LMS",
         wave: str = "1",
         address_line_1: str = "12 Blaise Street",
         address_line_2: str = "Blaise Hill",
@@ -20,7 +19,7 @@ def get_populated_case_model(
         telephone_number_1: str = "07900990901",
         telephone_number_2: str = "07900990902",
         appointment_telephone_number: str = "07900990903",
-        outcome_code: str = "301",
+        outcome_code: int = 301,
         latitude: str = "10020202",
         longitude: str = "34949494",
         priority: str = "1",
@@ -29,11 +28,10 @@ def get_populated_case_model(
         field_team: str = "B-Team",
         wave_com_dte: Optional[datetime] = datetime(2023, 1, 31),
         uac_chunks: UacChunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")):
-    return QuestionnaireCaseModel(
+    return GetBlaiseCaseModel(
         questionnaire_name=questionnaire_name,
         case_id=case_id,
         data_model_name=data_model_name,
-        survey_type=survey_type,
         wave=wave,
         address_details=AddressDetails(
             address=Address(

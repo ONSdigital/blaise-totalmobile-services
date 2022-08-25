@@ -2,9 +2,10 @@ import logging
 from typing import List, Dict, Tuple
 
 from app.exceptions.custom_exceptions import BadReferenceError, MissingReferenceError
+from models.base_model import BaseModel
 
 
-class TotalmobileReferenceModel:
+class TotalmobileReferenceModel(BaseModel):
 
     questionnaire_name: str
     case_id: str
@@ -47,14 +48,10 @@ class TotalmobileReferenceModel:
 
     @staticmethod
     def get_reference_from_incoming_request(incoming_request: Dict[str, str]):
+        reference = TotalmobileReferenceModel.get_dictionary_keys_value_if_they_exist(incoming_request, "result", "association", "reference")
 
-        if (
-                "Result" not in incoming_request
-                or "Association" not in incoming_request["Result"]
-                or "Reference" not in incoming_request["Result"]["Association"]
-                or incoming_request["Result"]["Association"]["Reference"] == ""
-        ):
+        if reference is None:
             logging.error("Unique reference is missing from totalmobile payload")
             raise MissingReferenceError()
 
-        return incoming_request["Result"]["Association"]["Reference"]
+        return reference
