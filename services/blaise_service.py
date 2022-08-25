@@ -29,6 +29,7 @@ required_fields_from_blaise = [
     "qDataBag.FieldRegion",
     "qDataBag.FieldTeam",
     "qDataBag.WaveComDTE",
+    "catiMana.CatiCall.RegsCalls[1].DialResult"
 ]
 
 

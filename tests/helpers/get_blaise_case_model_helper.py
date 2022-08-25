@@ -58,4 +58,5 @@ def get_populated_case_model(
         field_region=field_region,
         field_team=field_team,
         wave_com_dte=wave_com_dte,
-        uac_chunks=uac_chunks)
+        uac_chunks=uac_chunks,
+        has_call_history=False)

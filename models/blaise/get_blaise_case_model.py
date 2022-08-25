@@ -52,6 +52,7 @@ class GetBlaiseCaseModel(BaseModel):
     field_team: str
     wave_com_dte: Optional[datetime]
     uac_chunks: UacChunks
+    has_call_history: bool
 
     def populate_uac_data(self, uac_model: UacModel):
         if uac_model is None:
@@ -95,7 +96,8 @@ class GetBlaiseCaseModel(BaseModel):
             field_region=case_data_dictionary.get("qDataBag.FieldRegion"),
             field_team=case_data_dictionary.get("qDataBag.FieldTeam"),
             wave_com_dte=wave_com_dte,
-            uac_chunks=UacChunks(uac1="", uac2="", uac3="")
+            uac_chunks=UacChunks(uac1="", uac2="", uac3=""),
+            has_call_history=cls.has_call_history(case_data_dictionary.get("catiMana.CatiCall.RegsCalls[1].DialResult"))
         )
 
     @staticmethod
@@ -103,3 +105,9 @@ class GetBlaiseCaseModel(BaseModel):
         if value == "":
             return 0
         return int(value)
+
+    @staticmethod
+    def has_call_history(value: str) -> bool:
+        if value == "" or value is None:
+            return False
+        return True
