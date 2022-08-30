@@ -40,7 +40,7 @@ def mock_create_job_task() -> Dict:
         "questionnaire": "DST2101_AA1",
         "world_id": "test-world-id",
         "case_id": "100100",
-        "payload": {}
+        "payload": {},
     }
 
 
@@ -361,12 +361,7 @@ def mock_questionnaires_from_blaise():
             "status": "Inactive",
             "dataRecordCount": 0,
             "hasData": False,
-            "nodes": [
-                {
-                    "nodeName": "blaise-gusty-mgmt",
-                    "nodeStatus": "Inactive"
-                }
-            ]
+            "nodes": [{"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Inactive"}],
         },
         {
             "name": "DST2108W",
@@ -376,12 +371,7 @@ def mock_questionnaires_from_blaise():
             "status": "Active",
             "dataRecordCount": 0,
             "hasData": False,
-            "nodes": [
-                {
-                    "nodeName": "blaise-gusty-mgmt",
-                    "nodeStatus": "Active"
-                }
-            ]
+            "nodes": [{"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Active"}],
         },
         {
             "name": "LMS2111Z",
@@ -391,12 +381,7 @@ def mock_questionnaires_from_blaise():
             "status": "Active",
             "dataRecordCount": 50,
             "hasData": False,
-            "nodes": [
-                {
-                    "nodeName": "blaise-gusty-mgmt",
-                    "nodeStatus": "Active"
-                }
-            ]
+            "nodes": [{"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Active"}],
         },
         {
             "name": "OPN2203H",
@@ -406,12 +391,7 @@ def mock_questionnaires_from_blaise():
             "status": "Active",
             "dataRecordCount": 0,
             "hasData": False,
-            "nodes": [
-                {
-                    "nodeName": "blaise-gusty-mgmt",
-                    "nodeStatus": "Active"
-                }
-            ]
+            "nodes": [{"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Active"}],
         },
         {
             "name": "NWO2204a",
@@ -421,13 +401,8 @@ def mock_questionnaires_from_blaise():
             "status": "Active",
             "dataRecordCount": 0,
             "hasData": False,
-            "nodes": [
-                {
-                    "nodeName": "blaise-gusty-mgmt",
-                    "nodeStatus": "Active"
-                }
-            ]
-        }
+            "nodes": [{"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Active"}],
+        },
     ]
 
 
@@ -442,12 +417,7 @@ def mock_lms_only_questionnaire_from_blaise():
             "status": "Inactive",
             "dataRecordCount": 0,
             "hasData": False,
-            "nodes": [
-                {
-                    "nodeName": "blaise-gusty-mgmt",
-                    "nodeStatus": "Inactive"
-                }
-            ]
+            "nodes": [{"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Inactive"}],
         }
     ]
 
@@ -463,11 +433,6 @@ def mock_dst_only_questionnaire_from_blaise():
             "status": "Inactive",
             "dataRecordCount": 0,
             "hasData": False,
-            "nodes": [
-                {
-                    "nodeName": "blaise-gusty-mgmt",
-                    "nodeStatus": "Inactive"
-                }
-            ]
+            "nodes": [{"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Inactive"}],
         }
     ]

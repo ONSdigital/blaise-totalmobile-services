@@ -27,7 +27,8 @@ class MockQuestionnaireService:
     # functions for setting up data
     def add_case_to_questionnaire(self, questionnaire, case_id):
         case_model = get_blaise_case_model_helper.get_populated_case_model(
-            case_id=case_id, questionnaire_name=questionnaire)
+            case_id=case_id, questionnaire_name=questionnaire
+        )
         self.questionnaires[questionnaire].append(case_model)
 
     def get_case_from_questionnaire(self, questionnaire, case_id):
@@ -40,7 +41,9 @@ class MockQuestionnaireService:
 
         raise QuestionnaireCaseDoesNotExistError()
 
-    def update_outcome_code_of_case_in_questionnaire(self, questionnaire, case_id, outcome_code):
+    def update_outcome_code_of_case_in_questionnaire(
+        self, questionnaire, case_id, outcome_code
+    ):
         case_model = self.get_case_from_questionnaire(questionnaire, case_id)
         case_model.outcome_code = int(outcome_code)
 
@@ -62,4 +65,5 @@ class MockQuestionnaireService:
         self.update_case_request = {
             "data_fields": data_fields,
             "questionnaire_name": questionnaire_name,
-            "case_id": case_id}
+            "case_id": case_id,
+        }

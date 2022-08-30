@@ -20,4 +20,3 @@ def test_create_totalmobile_job_error(mock_create_job_task):
     total_mobile_service_mock.create_job.side_effect = AuthException()
     with pytest.raises(AuthException):
         create_totalmobile_job(mock_request, total_mobile_service_mock)
-

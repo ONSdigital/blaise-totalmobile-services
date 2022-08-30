@@ -9,9 +9,7 @@ from appconfig import Config
 
 
 def prepare_tasks(
-        tasks: List[Tuple[str, str]],
-        queue_id,
-        cloud_function_name
+    tasks: List[Tuple[str, str]], queue_id, cloud_function_name
 ) -> List[tasks_v2.CreateTaskRequest]:
 
     config = Config.from_env()

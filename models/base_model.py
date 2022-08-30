@@ -3,7 +3,6 @@ from typing import Any
 
 
 class BaseModel:
-
     @staticmethod
     def validate_dataclass_model_fields_are_populated(model) -> bool:
         for field in fields(model):
@@ -14,13 +13,15 @@ class BaseModel:
 
     @staticmethod
     def dictionary_keys_exist(element, *keys) -> bool:
-        '''
+        """
         Check if *keys (nested) exists in `element` (dict).
-        '''
+        """
         if not isinstance(element, dict):
-            raise AttributeError('keys_exists() expects dict as first argument.')
+            raise AttributeError("keys_exists() expects dict as first argument.")
         if len(keys) == 0:
-            raise AttributeError('keys_exists() expects at least two arguments, one given.')
+            raise AttributeError(
+                "keys_exists() expects at least two arguments, one given."
+            )
 
         _element = element
         for key in keys:
@@ -32,13 +33,15 @@ class BaseModel:
 
     @staticmethod
     def get_dictionary_keys_value_if_they_exist(element, *keys) -> Any:
-        '''
+        """
         Check if *keys (nested) exists in `element` (dict).
-        '''
+        """
         if not isinstance(element, dict):
-            raise AttributeError('keys_exists() expects dict as first argument.')
+            raise AttributeError("keys_exists() expects dict as first argument.")
         if len(keys) == 0:
-            raise AttributeError('keys_exists() expects at least two arguments, one given.')
+            raise AttributeError(
+                "keys_exists() expects at least two arguments, one given."
+            )
 
         _element = element
         for key in keys:

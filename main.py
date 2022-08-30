@@ -22,7 +22,9 @@ def create_totalmobile_job(request: flask.Request) -> str:
         config.totalmobile_client_secret,
     )
     totalmobile_service = TotalmobileService(optimise_client)
-    return cloud_functions.create_totalmobile_job.create_totalmobile_job(request, totalmobile_service)
+    return cloud_functions.create_totalmobile_job.create_totalmobile_job(
+        request, totalmobile_service
+    )
 
 
 def create_questionnaire_case_tasks(request: flask.Request) -> str:
@@ -34,11 +36,17 @@ def create_questionnaire_case_tasks(request: flask.Request) -> str:
         config.totalmobile_client_secret,
     )
     totalmobile_service = TotalmobileService(optimise_client)
-    return cloud_functions.create_questionnaire_case_tasks.create_questionnaire_case_tasks(request, config, totalmobile_service)
+    return (
+        cloud_functions.create_questionnaire_case_tasks.create_questionnaire_case_tasks(
+            request, config, totalmobile_service
+        )
+    )
 
 
 def check_questionnaire_release_date(_event, _context) -> str:
-    return cloud_functions.check_questionnaire_release_date.check_questionnaire_release_date()
+    return (
+        cloud_functions.check_questionnaire_release_date.check_questionnaire_release_date()
+    )
 
 
 if os.path.isfile("./.env"):

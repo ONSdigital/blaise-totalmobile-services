@@ -15,38 +15,28 @@ def test_get_world_model_returns_a_world_model():
     optimise_client_mock.get_worlds.return_value = [
         {
             "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            "identity": {
-                "reference": "Region 1"
-            },
-            "type": "foo"
+            "identity": {"reference": "Region 1"},
+            "type": "foo",
         },
         {
             "id": "3fa85f64-5717-4562-b3fc-2c963f66afa7",
-            "identity": {
-                "reference": "Region 2"
-            },
-            "type": "foo"
+            "identity": {"reference": "Region 2"},
+            "type": "foo",
         },
         {
             "id": "3fa85f64-5717-4562-b3fc-2c963f66afa8",
-            "identity": {
-                "reference": "Region 3"
-            },
-            "type": "foo"
+            "identity": {"reference": "Region 3"},
+            "type": "foo",
         },
         {
             "id": "3fa85f64-5717-4562-b3fc-2c963f66afa9",
-            "identity": {
-                "reference": "Region 4"
-            },
-            "type": "foo"
+            "identity": {"reference": "Region 4"},
+            "type": "foo",
         },
         {
             "id": "3fa85f64-5717-4562-b3fc-2c963f66afa2",
-            "identity": {
-                "reference": "Region 5"
-            },
-            "type": "foo"
+            "identity": {"reference": "Region 5"},
+            "type": "foo",
         },
     ]
 
@@ -59,27 +49,13 @@ def test_get_world_model_returns_a_world_model():
     print(result)
     assert result == TotalmobileWorldModel(
         worlds=[
-            World(
-                region="Region 1",
-                id="3fa85f64-5717-4562-b3fc-2c963f66afa6"
-            ),
-            World(
-                region="Region 2",
-                id="3fa85f64-5717-4562-b3fc-2c963f66afa7"
-            ),
-            World(
-                region="Region 3",
-                id="3fa85f64-5717-4562-b3fc-2c963f66afa8"
-            ),
-            World(
-                region="Region 4",
-                id="3fa85f64-5717-4562-b3fc-2c963f66afa9"
-            ),
-            World(
-                region="Region 5",
-                id="3fa85f64-5717-4562-b3fc-2c963f66afa2"
-            )
-        ])
+            World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+            World(region="Region 2", id="3fa85f64-5717-4562-b3fc-2c963f66afa7"),
+            World(region="Region 3", id="3fa85f64-5717-4562-b3fc-2c963f66afa8"),
+            World(region="Region 4", id="3fa85f64-5717-4562-b3fc-2c963f66afa9"),
+            World(region="Region 5", id="3fa85f64-5717-4562-b3fc-2c963f66afa2"),
+        ]
+    )
 
 
 def test_create_job_calls_the_client_with_the_correct_parameters():
@@ -89,7 +65,7 @@ def test_create_job_calls_the_client_with_the_correct_parameters():
         questionnaire="LMS2101_AA1",
         case_id="900001",
         world_id="3fa85f64-5717-4562-b3fc-2c963f66afa7",
-        payload="{}"
+        payload="{}",
     )
 
     totalmobile_service = TotalmobileService(optimise_client_mock)
@@ -99,8 +75,7 @@ def test_create_job_calls_the_client_with_the_correct_parameters():
 
     # assert
     optimise_client_mock.create_job.assert_called_with(
-        "3fa85f64-5717-4562-b3fc-2c963f66afa7",
-        "{}"
+        "3fa85f64-5717-4562-b3fc-2c963f66afa7", "{}"
     )
 
 
@@ -113,7 +88,7 @@ def test_create_job_auth_error():
         questionnaire="LMS2101_AA1",
         case_id="900001",
         world_id="3fa85f64-5717-4562-b3fc-2c963f66afa7",
-        payload="{}"
+        payload="{}",
     )
 
     totalmobile_service = TotalmobileService(optimise_client_mock)

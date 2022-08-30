@@ -9,7 +9,9 @@ from services.totalmobile_service import TotalmobileService
 setup_logger()
 
 
-def create_totalmobile_job(request: flask.Request, totalmobile_service: TotalmobileService) -> str:
+def create_totalmobile_job(
+    request: flask.Request, totalmobile_service: TotalmobileService
+) -> str:
     request_json = request.get_json()
 
     if request_json is None:
@@ -21,7 +23,8 @@ def create_totalmobile_job(request: flask.Request, totalmobile_service: Totalmob
     totalmobile_job = TotalmobileJobModel.import_job(request_json)
 
     logging.info(
-        f"Creating Totalmobile job for questionnaire {totalmobile_job.questionnaire} with case ID {totalmobile_job.case_id}")
+        f"Creating Totalmobile job for questionnaire {totalmobile_job.questionnaire} with case ID {totalmobile_job.case_id}"
+    )
     response = totalmobile_service.create_job(totalmobile_job)
     logging.info(f"Response: {response}")
     return "Done"

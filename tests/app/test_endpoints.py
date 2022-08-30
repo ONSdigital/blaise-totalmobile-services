@@ -19,14 +19,8 @@ load_config(app)
             "/bts/updatevisitstatusrequest",
             "update_visit_status_request",
         ),
-        (
-            "/bts/completevisitrequest",
-            "complete_visit_request"
-        ),
-        (
-            "/bts/<version>/health",
-            "health_check"
-        ),
+        ("/bts/completevisitrequest", "complete_visit_request"),
+        ("/bts/<version>/health", "health_check"),
     ],
 )
 def test_an_endpoint_url_maps_to_the_expected_function_name(
@@ -48,7 +42,7 @@ def test_an_endpoint_url_maps_to_the_expected_function_name(
 
 
 def test_update_visit_status_request_returns_401_without_auth(
-        client, upload_visit_status_request_sample
+    client, upload_visit_status_request_sample
 ):
     response = client.post(
         "/bts/updatevisitstatusrequest",
@@ -77,11 +71,7 @@ def test_complete_visit_request_returns_401_without_auth(
     assert response.status_code == 401
 
 
-def test_health_check(
-    client
-):
-    response = client.get(
-        "/bts/V1/health"
-    )
+def test_health_check(client):
+    response = client.get("/bts/V1/health")
     assert json.loads(response.get_data(as_text=True)) == {"healthy": True}
     assert response.status_code == 200

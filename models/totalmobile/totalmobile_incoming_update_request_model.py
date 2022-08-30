@@ -5,7 +5,7 @@ from app.exceptions.custom_exceptions import InvalidTotalmobileUpdateRequestExce
 from models.base_model import BaseModel
 from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 @dataclass
@@ -19,11 +19,15 @@ class TotalMobileIncomingUpdateRequestModel(BaseModel):
 
     @classmethod
     def import_request(cls: Type[T], incoming_request: Dict[str, str]) -> T:
-        if not TotalMobileIncomingUpdateRequestModel.dictionary_keys_exist(incoming_request, "result", "responses"):
+        if not TotalMobileIncomingUpdateRequestModel.dictionary_keys_exist(
+            incoming_request, "result", "responses"
+        ):
             raise InvalidTotalmobileUpdateRequestException
 
         reference_model = TotalmobileReferenceModel(incoming_request)
-        responses_dictionary = cls.get_dictionary_of_response_elements(incoming_request["result"]["responses"])
+        responses_dictionary = cls.get_dictionary_of_response_elements(
+            incoming_request["result"]["responses"]
+        )
 
         total_mobile_case = TotalMobileIncomingUpdateRequestModel(
             questionnaire_name=reference_model.questionnaire_name,
@@ -31,7 +35,7 @@ class TotalMobileIncomingUpdateRequestModel(BaseModel):
             outcome_code=cls.get_outcome_code(responses_dictionary),
             contact_name=cls.get_contact_name(responses_dictionary),
             home_phone_number=cls.get_home_phone_number(responses_dictionary),
-            mobile_phone_number=cls.get_mobile_phone_number(responses_dictionary)
+            mobile_phone_number=cls.get_mobile_phone_number(responses_dictionary),
         )
 
         return total_mobile_case
@@ -44,9 +48,17 @@ class TotalMobileIncomingUpdateRequestModel(BaseModel):
             for main_response_item in responses:
                 if isinstance(main_response_item, dict):
                     for dict_item in main_response_item.keys():
-                        if dict_item == "responses" and isinstance(main_response_item[dict_item], list):
+                        if dict_item == "responses" and isinstance(
+                            main_response_item[dict_item], list
+                        ):
                             for response_item in main_response_item[dict_item]:
-                                response_elements.update({response_item["element"]["reference"]: response_item["value"]})
+                                response_elements.update(
+                                    {
+                                        response_item["element"][
+                                            "reference"
+                                        ]: response_item["value"]
+                                    }
+                                )
 
         return response_elements
 

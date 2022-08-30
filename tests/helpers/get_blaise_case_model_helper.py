@@ -12,28 +12,29 @@ from models.blaise.uac_model import UacChunks
 
 
 def get_populated_case_model(
-        questionnaire_name: str = "LMS2101_AA1",
-        case_id: str = "90000",
-        data_model_name: str = "LM2007",
-        wave: str = "1",
-        address_line_1: str = "12 Blaise Street",
-        address_line_2: str = "Blaise Hill",
-        address_line_3: str = "Blaiseville",
-        county: str = "Gwent",
-        town: str = "Newport",
-        postcode: str = "FML134D",
-        telephone_number_1: str = "07900990901",
-        telephone_number_2: str = "07900990902",
-        appointment_telephone_number: str = "07900990903",
-        outcome_code: int = 301,
-        latitude: str = "10020202",
-        longitude: str = "34949494",
-        priority: str = "1",
-        field_case: str = "Y",
-        field_region: str = "Region 1",
-        field_team: str = "B-Team",
-        wave_com_dte: Optional[datetime] = datetime(2023, 1, 31),
-        uac_chunks: UacChunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")):
+    questionnaire_name: str = "LMS2101_AA1",
+    case_id: str = "90000",
+    data_model_name: str = "LM2007",
+    wave: str = "1",
+    address_line_1: str = "12 Blaise Street",
+    address_line_2: str = "Blaise Hill",
+    address_line_3: str = "Blaiseville",
+    county: str = "Gwent",
+    town: str = "Newport",
+    postcode: str = "FML134D",
+    telephone_number_1: str = "07900990901",
+    telephone_number_2: str = "07900990902",
+    appointment_telephone_number: str = "07900990903",
+    outcome_code: int = 301,
+    latitude: str = "10020202",
+    longitude: str = "34949494",
+    priority: str = "1",
+    field_case: str = "Y",
+    field_region: str = "Region 1",
+    field_team: str = "B-Team",
+    wave_com_dte: Optional[datetime] = datetime(2023, 1, 31),
+    uac_chunks: UacChunks = UacChunks(uac1="3456", uac2="3453", uac3="4546"),
+):
     return BlaiseCaseInformationModel(
         questionnaire_name=questionnaire_name,
         case_id=case_id,
@@ -50,7 +51,7 @@ def get_populated_case_model(
                 coordinates=AddressCoordinates(
                     latitude=latitude,
                     longitude=longitude,
-                )
+                ),
             )
         ),
         contact_details=ContactDetails(
@@ -65,4 +66,5 @@ def get_populated_case_model(
         field_team=field_team,
         wave_com_dte=wave_com_dte,
         uac_chunks=uac_chunks,
-        has_call_history=False)
+        has_call_history=False,
+    )
