@@ -1,8 +1,24 @@
-from typing import Any, Dict
+from typing import Any, Dict, TypedDict
 
 import requests
 from google.auth.transport.requests import Request
 from google.oauth2 import id_token
+
+
+class UacChunks(TypedDict):
+    uac1: str
+    uac2: str
+    uac3: str
+
+
+class Uac(TypedDict):  # type: ignore
+    instrument_name: str
+    case_id: str
+    uac_chunks: UacChunks
+    full_uac: str
+
+
+GetUacsResponse = Dict[str, Uac]
 
 
 class BusClient:
@@ -10,7 +26,7 @@ class BusClient:
         self._url = url
         self.__client_id = client_id
 
-    def get_uacs_by_case_id(self, instrument_name: str) -> Dict[str, Any]:
+    def get_uacs_by_case_id(self, instrument_name: str) -> GetUacsResponse:
         return self.__get(f"uacs/instrument/{instrument_name}/bycaseid").json()
 
     def __get(self, path: str) -> Any:

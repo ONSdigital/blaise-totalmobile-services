@@ -64,7 +64,7 @@ def map_totalmobile_job_models(
     ]
 
 
-def run_async_tasks(tasks: List[Tuple[str, str]], queue_id: str, cloud_function: str):
+def run_async_tasks(tasks: List[Tuple[str, bytes]], queue_id: str, cloud_function: str):
     task_requests = prepare_tasks(
         tasks=tasks, queue_id=queue_id, cloud_function_name=cloud_function
     )

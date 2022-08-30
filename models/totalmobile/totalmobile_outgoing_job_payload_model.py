@@ -5,7 +5,7 @@ from typing import List, Optional, Type, TypeVar
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
 
-T = TypeVar("T")
+T = TypeVar("T", bound="TotalMobileOutgoingJobPayloadModel")
 
 
 @dataclass
@@ -25,18 +25,18 @@ class DueDate:
 
 @dataclass
 class AddressCoordinates:
-    latitude: str
-    longitude: str
+    latitude: Optional[str]
+    longitude: Optional[str]
 
 
 @dataclass
 class Address:
-    addressLine1: str
-    addressLine2: str
-    addressLine3: str
-    addressLine4: str
-    addressLine5: str
-    postCode: str
+    addressLine1: Optional[str]
+    addressLine2: Optional[str]
+    addressLine3: Optional[str]
+    addressLine4: Optional[str]
+    addressLine5: Optional[str]
+    postCode: Optional[str]
     coordinates: AddressCoordinates
 
 
@@ -48,13 +48,13 @@ class AddressDetails:
 
 @dataclass
 class ContactDetails:
-    name: str
+    name: Optional[str]
 
 
 @dataclass
 class AdditionalProperty:
     name: str
-    value: str
+    value: Optional[str]
 
 
 @dataclass
@@ -79,8 +79,10 @@ class TotalMobileOutgoingJobPayloadModel:
         return payload
 
     @staticmethod
-    def create_job_reference(questionnaire_name: str, case_id: str) -> str:
-        reference_model = TotalmobileReferenceModel(questionnaire_name, case_id)
+    def create_job_reference(questionnaire_name: str, case_id: Optional[str]) -> str:
+        reference_model = TotalmobileReferenceModel.from_questionnaire_and_case(
+            questionnaire_name, case_id
+        )
         return reference_model.create_reference()
 
     @staticmethod
@@ -124,7 +126,7 @@ class TotalMobileOutgoingJobPayloadModel:
         questionnaire_name: str,
         questionnaire_case: BlaiseCaseInformationModel,
     ) -> T:
-        total_mobile_case = TotalMobileOutgoingJobPayloadModel(
+        total_mobile_case = cls(
             identity=Reference(
                 reference=cls.create_job_reference(
                     questionnaire_name, questionnaire_case.case_id
