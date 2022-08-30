@@ -1,7 +1,8 @@
-from typing import Dict, List, Optional, Any
-from app.app import setup_app
+from typing import Any, Dict, List, Optional
+
 from werkzeug.security import generate_password_hash
 
+from app.app import setup_app
 from app.exceptions.custom_exceptions import QuestionnaireDoesNotExistError
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from services.blaise_service import QuestionnaireCaseDoesNotExistError

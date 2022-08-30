@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Type, TypeVar, Dict
+from typing import Dict, Type, TypeVar
 
 from app.exceptions.custom_exceptions import InvalidTotalmobileUpdateRequestException
 from models.base_model import BaseModel

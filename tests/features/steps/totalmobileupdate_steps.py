@@ -1,7 +1,8 @@
 import base64
 import logging
 
-from behave import given, when, then
+from behave import given, then, when
+
 from tests.helpers import incoming_request_helper
 
 

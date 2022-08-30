@@ -1,6 +1,7 @@
+from unittest.mock import create_autospec
+
 import pytest
 
-from unittest.mock import create_autospec
 from client import AuthException
 from client.optimise import OptimiseClient
 from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel

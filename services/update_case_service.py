@@ -1,10 +1,15 @@
 import logging
 
+from app.exceptions.custom_exceptions import (
+    QuestionnaireCaseDoesNotExistError,
+    QuestionnaireDoesNotExistError,
+)
 from appconfig import Config
-from app.exceptions.custom_exceptions import QuestionnaireDoesNotExistError, QuestionnaireCaseDoesNotExistError
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from models.blaise.blaise_case_update_model import BlaiseCaseUpdateModel
-from models.totalmobile.totalmobile_incoming_update_request_model import TotalMobileIncomingUpdateRequestModel
+from models.totalmobile.totalmobile_incoming_update_request_model import (
+    TotalMobileIncomingUpdateRequestModel,
+)
 
 
 def update_case(totalmobile_request: TotalMobileIncomingUpdateRequestModel, config: Config, questionnaire_service) -> None:

@@ -1,5 +1,7 @@
 from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
-from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingJobPayloadModel
+from models.totalmobile.totalmobile_outgoing_job_payload_model import (
+    TotalMobileOutgoingJobPayloadModel,
+)
 from tests.helpers import get_blaise_case_model_helper
 
 

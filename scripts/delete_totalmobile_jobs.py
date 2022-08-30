@@ -1,10 +1,10 @@
 import concurrent.futures
+from itertools import repeat
+from typing import Dict, List
 
 from appconfig import Config
 from client import OptimiseClient
-from itertools import repeat
 from services.totalmobile_service import TotalmobileService
-from typing import List, Dict
 
 
 def __remove_default_world_id(list_of_active_world_ids: List[str]) -> List[str]:

@@ -1,5 +1,6 @@
-import pytest
 import json
+
+import pytest
 
 from app.app import load_config, setup_app
 

@@ -2,7 +2,7 @@ import os
 import sys
 
 from appconfig import Config
-from services import questionnaire_service, eligible_case_service
+from services import eligible_case_service, questionnaire_service
 
 
 def __check_for_env_var(name: str):

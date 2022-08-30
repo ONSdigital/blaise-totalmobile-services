@@ -1,6 +1,7 @@
 from dataclasses import dataclass, fields
 from datetime import datetime
-from typing import Dict, Type, TypeVar, Optional
+from typing import Dict, Optional, Type, TypeVar
+
 from models.base_model import BaseModel
 from models.blaise.uac_model import UacChunks, UacModel
 

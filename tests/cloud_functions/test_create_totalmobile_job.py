@@ -1,11 +1,10 @@
+from unittest.mock import create_autospec
+
 import flask
 import pytest
 
-from unittest.mock import create_autospec
 from client import AuthException
-from cloud_functions.create_totalmobile_job import (
-    create_totalmobile_job,
-)
+from cloud_functions.create_totalmobile_job import create_totalmobile_job
 from services.totalmobile_service import TotalmobileService
 
 

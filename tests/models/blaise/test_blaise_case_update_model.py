@@ -1,7 +1,9 @@
 import pytest
 
 from models.blaise.blaise_case_update_model import BlaiseCaseUpdateModel
-from models.totalmobile.totalmobile_incoming_update_request_model import TotalMobileIncomingUpdateRequestModel
+from models.totalmobile.totalmobile_incoming_update_request_model import (
+    TotalMobileIncomingUpdateRequestModel,
+)
 
 
 def test_import_case_returns_a_populated_model():

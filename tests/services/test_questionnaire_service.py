@@ -1,11 +1,16 @@
+from unittest import mock
+
 import pytest
 
 from models.blaise.uac_model import UacChunks, UacModel
-from services.questionnaire_service import get_eligible_cases, get_cases, get_wave_from_questionnaire_name, \
-    questionnaire_exists, update_case
-from tests.helpers import get_blaise_case_model_helper
-from unittest import mock
-from tests.helpers import config_helper
+from services.questionnaire_service import (
+    get_cases,
+    get_eligible_cases,
+    get_wave_from_questionnaire_name,
+    questionnaire_exists,
+    update_case,
+)
+from tests.helpers import config_helper, get_blaise_case_model_helper
 
 
 @mock.patch("services.questionnaire_service.get_cases")

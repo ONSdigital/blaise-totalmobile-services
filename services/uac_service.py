@@ -1,4 +1,5 @@
 from typing import List
+
 from appconfig import Config
 from client.bus import BusClient
 from models.blaise.uac_model import UacModel

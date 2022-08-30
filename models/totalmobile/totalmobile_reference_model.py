@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict, Tuple
+from typing import Dict, List, Tuple
 
 from app.exceptions.custom_exceptions import BadReferenceError, MissingReferenceError
 from models.base_model import BaseModel

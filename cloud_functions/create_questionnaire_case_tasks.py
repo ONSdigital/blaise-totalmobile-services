@@ -5,11 +5,13 @@ from typing import Dict, List, Tuple
 import flask
 
 from appconfig import Config
-from cloud_functions.logging import setup_logger
 from cloud_functions.functions import prepare_tasks, run
-from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
+from cloud_functions.logging import setup_logger
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
-from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingJobPayloadModel
+from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
+from models.totalmobile.totalmobile_outgoing_job_payload_model import (
+    TotalMobileOutgoingJobPayloadModel,
+)
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 from services import questionnaire_service
 from services.totalmobile_service import TotalmobileService

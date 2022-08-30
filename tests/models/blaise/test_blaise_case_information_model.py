@@ -1,8 +1,9 @@
+from datetime import datetime
+
 import pytest
 
-from datetime import datetime
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
-from models.blaise.uac_model import UacModel, UacChunks
+from models.blaise.uac_model import UacChunks, UacModel
 from tests.helpers import get_blaise_case_model_helper
 
 

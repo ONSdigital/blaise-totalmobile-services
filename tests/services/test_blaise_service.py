@@ -1,12 +1,12 @@
-import blaise_restapi
-import pytest
-
 from datetime import datetime
-from urllib3.exceptions import HTTPError
-from services import blaise_service
 from unittest import mock
 
+import blaise_restapi
+import pytest
+from urllib3.exceptions import HTTPError
+
 from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
+from services import blaise_service
 from tests.helpers import config_helper
 
 

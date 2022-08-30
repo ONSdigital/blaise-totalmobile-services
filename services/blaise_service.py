@@ -1,10 +1,10 @@
-from urllib3.exceptions import HTTPError
+from typing import Dict, List
+
 import blaise_restapi
+from urllib3.exceptions import HTTPError
 
 from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
 from appconfig import Config
-from typing import List, Dict
-
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 
 required_fields_from_blaise = [

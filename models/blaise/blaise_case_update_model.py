@@ -1,7 +1,9 @@
 from dataclasses import dataclass
-from typing import TypeVar, Type
+from typing import Type, TypeVar
 
-from models.totalmobile.totalmobile_incoming_update_request_model import TotalMobileIncomingUpdateRequestModel
+from models.totalmobile.totalmobile_incoming_update_request_model import (
+    TotalMobileIncomingUpdateRequestModel,
+)
 
 T = TypeVar('T')
 

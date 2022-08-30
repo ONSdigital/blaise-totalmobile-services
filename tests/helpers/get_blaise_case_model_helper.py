@@ -1,8 +1,14 @@
-from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel, AddressDetails, Address, AddressCoordinates, \
-    ContactDetails
-from models.blaise.uac_model import UacChunks
 from datetime import datetime
 from typing import Optional
+
+from models.blaise.blaise_case_information_model import (
+    Address,
+    AddressCoordinates,
+    AddressDetails,
+    BlaiseCaseInformationModel,
+    ContactDetails,
+)
+from models.blaise.uac_model import UacChunks
 
 
 def get_populated_case_model(

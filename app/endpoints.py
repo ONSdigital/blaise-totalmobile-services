@@ -1,14 +1,17 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, current_app, jsonify, request
 
 from app.auth import auth
+from app.exceptions.custom_exceptions import (
+    BadReferenceError,
+    MissingReferenceError,
+    QuestionnaireCaseDoesNotExistError,
+    QuestionnaireDoesNotExistError,
+)
 from app.handlers.total_mobile_handler import (
     complete_visit_request_handler,
     submit_form_result_request_handler,
     update_visit_status_request_handler,
 )
-
-from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError, QuestionnaireDoesNotExistError, \
-    MissingReferenceError, BadReferenceError
 
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
 

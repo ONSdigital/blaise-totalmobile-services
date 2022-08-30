@@ -1,15 +1,17 @@
 import asyncio
 import logging
-
-from google.cloud import datastore
 from datetime import datetime
 from typing import List
-from cloud_functions.logging import setup_logger
-from cloud_functions.functions import prepare_tasks, run
-from models.cloud_tasks.questionnaire_case_cloud_task_model import QuestionnaireCaseTaskModel
-from appconfig import Config
 from uuid import uuid4
 
+from google.cloud import datastore
+
+from appconfig import Config
+from cloud_functions.functions import prepare_tasks, run
+from cloud_functions.logging import setup_logger
+from models.cloud_tasks.questionnaire_case_cloud_task_model import (
+    QuestionnaireCaseTaskModel,
+)
 
 setup_logger()
 

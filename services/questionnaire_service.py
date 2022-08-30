@@ -1,8 +1,9 @@
 import logging
-from typing import List, Dict
+from typing import Dict, List
+
 from appconfig import Config
-from services import blaise_service, uac_service, eligible_case_service
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+from services import blaise_service, eligible_case_service, uac_service
 
 
 def get_eligible_cases(questionnaire_name: str, config: Config) -> List[BlaiseCaseInformationModel]:

@@ -1,6 +1,6 @@
 import json
 from dataclasses import asdict, dataclass
-from typing import Dict, TypeVar, Type
+from typing import Dict, Type, TypeVar
 from uuid import uuid4
 
 T = TypeVar('T')

@@ -1,6 +1,6 @@
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Type, TypeVar, List, Optional
+from typing import List, Optional, Type, TypeVar
 
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel

@@ -6,8 +6,8 @@ from unittest import mock
 
 import pytest
 from werkzeug.security import generate_password_hash
-from app.app import setup_app
 
+from app.app import setup_app
 from client import OptimiseClient
 
 

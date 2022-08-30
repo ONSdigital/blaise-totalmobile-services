@@ -1,9 +1,18 @@
-from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingJobPayloadModel, Reference, \
-    Skill, AddressDetails, Address, \
-    AddressCoordinates, ContactDetails, AdditionalProperty, DueDate
-from models.blaise.uac_model import UacChunks
-from tests.helpers import get_blaise_case_model_helper
 from datetime import datetime
+
+from models.blaise.uac_model import UacChunks
+from models.totalmobile.totalmobile_outgoing_job_payload_model import (
+    AdditionalProperty,
+    Address,
+    AddressCoordinates,
+    AddressDetails,
+    ContactDetails,
+    DueDate,
+    Reference,
+    Skill,
+    TotalMobileOutgoingJobPayloadModel,
+)
+from tests.helpers import get_blaise_case_model_helper
 
 
 def test_import_case_returns_a_populated_model():

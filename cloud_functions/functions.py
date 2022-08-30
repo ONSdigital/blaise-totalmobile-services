@@ -1,8 +1,9 @@
 import asyncio
-from google.cloud import tasks_v2
-from google.protobuf.duration_pb2 import Duration
 from datetime import timedelta
 from typing import Any, Coroutine, List, Tuple
+
+from google.cloud import tasks_v2
+from google.protobuf.duration_pb2 import Duration
 
 from appconfig import Config
 

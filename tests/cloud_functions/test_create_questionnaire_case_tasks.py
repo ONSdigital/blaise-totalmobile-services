@@ -1,23 +1,25 @@
 import json
+import logging
 from unittest import mock
 from unittest.mock import create_autospec
 
 import flask
 import pytest
-import logging
-from models.blaise.blaise_case_information_model import UacChunks
-from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingJobPayloadModel
-from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
-from services.totalmobile_service import TotalmobileService
 
-from tests.helpers import config_helper
 from client.optimise import OptimiseClient
 from cloud_functions.create_questionnaire_case_tasks import (
     create_questionnaire_case_tasks,
+    get_cases_with_valid_world_ids,
     map_totalmobile_job_models,
     validate_request,
-    get_cases_with_valid_world_ids
 )
+from models.blaise.blaise_case_information_model import UacChunks
+from models.totalmobile.totalmobile_outgoing_job_payload_model import (
+    TotalMobileOutgoingJobPayloadModel,
+)
+from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
+from services.totalmobile_service import TotalmobileService
+from tests.helpers import config_helper
 from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
 

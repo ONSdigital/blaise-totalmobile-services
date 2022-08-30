@@ -1,4 +1,5 @@
 import logging
+
 import flask
 
 from cloud_functions.logging import setup_logger

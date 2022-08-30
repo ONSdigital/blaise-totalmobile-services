@@ -1,5 +1,6 @@
 import logging
 from typing import List
+
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 
 
