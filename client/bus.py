@@ -1,7 +1,9 @@
+from typing import Any, Dict
+
 import requests
 from google.auth.transport.requests import Request
 from google.oauth2 import id_token
-from typing import Dict, Any
+
 
 class BusClient:
     def __init__(self, url: str, client_id: str) -> None:

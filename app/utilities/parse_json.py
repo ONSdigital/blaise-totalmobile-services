@@ -11,14 +11,14 @@ def get_case_details(input: Dict[str, Any]) -> Tuple[str]:
     if (
         "Result" not in input
         or "Association" not in input["Result"]
-        or "Reference" not in input["Result"]["Association"] 
+        or "Reference" not in input["Result"]["Association"]
         or input["Result"]["Association"]["Reference"] == ""
     ):
         logging.error("Unique reference is missing from totalmobile payload")
         raise MissingReferenceError()
     try:
         result = input["Result"]["Association"]["Reference"].split(".")
-        return result[0],result[1]
+        return result[0], result[1]
     except Exception as err:
         print(f"Failed to get questionnaire name and case id: {err}")
         raise err

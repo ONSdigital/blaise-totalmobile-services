@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from typing import List, TypeVar, Type
+from typing import List, Type, TypeVar
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 @dataclass
@@ -28,8 +28,12 @@ class TotalmobileWorldModel:
 
     @classmethod
     def import_worlds(cls: Type[T], world_dictionary: dict[str, str]) -> T:
-        return TotalmobileWorldModel([
-            World(region=world_dictionary_item["identity"]["reference"], id=world_dictionary_item["id"])
-            for world_dictionary_item
-            in world_dictionary
-        ])
+        return TotalmobileWorldModel(
+            [
+                World(
+                    region=world_dictionary_item["identity"]["reference"],
+                    id=world_dictionary_item["id"],
+                )
+                for world_dictionary_item in world_dictionary
+            ]
+        )

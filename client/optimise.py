@@ -7,7 +7,7 @@ from client.base import BaseClient
 
 class OptimiseClient(BaseClient):
     def __init__(
-            self, url: str, instance: str, client_id: str, client_secret: str
+        self, url: str, instance: str, client_id: str, client_secret: str
     ) -> None:
         super().__init__(url, instance, client_id, client_secret)
 

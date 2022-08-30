@@ -24,16 +24,16 @@ def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(
         "gusty",
         "cloud_function_sa",
         "",
-        ""
+        "",
     )
 
-    tasks = [("task1", b"task1body"),("task2",b"task2body")]
+    tasks = [("task1", b"task1body"), ("task2", b"task2body")]
 
     # act
     result = prepare_tasks(
         tasks=tasks,
         queue_id="totalmobile_jobs_queue_id",
-        cloud_function_name="cloud_function"
+        cloud_function_name="cloud_function",
     )
 
     # assert
@@ -70,7 +70,6 @@ def test_create_tasks_gets_called_once_for_each_task_given_to_it(mock_create_tas
         tasks_v2.CreateTaskRequest(parent="qid1", task=tasks_v2.Task()),
         tasks_v2.CreateTaskRequest(parent="qid2", task=tasks_v2.Task()),
     ]
-
 
     # act
     create_tasks(task_requests, mock_create_task)

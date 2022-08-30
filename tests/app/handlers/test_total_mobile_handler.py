@@ -3,7 +3,6 @@ from unittest import mock
 from app.handlers.total_mobile_handler import submit_form_result_request_handler
 from appconfig.config import Config
 
-
 # def test_submit_form_result_request_handler_passes_the_correct_parameters_to_update_case_telephone_number(
 #     submit_form_result_request_sample
 # ):

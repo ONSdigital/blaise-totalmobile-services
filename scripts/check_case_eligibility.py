@@ -2,7 +2,7 @@ import os
 import sys
 
 from appconfig import Config
-from services import questionnaire_service, eligible_case_service
+from services import eligible_case_service, questionnaire_service
 
 
 def __check_for_env_var(name: str):
@@ -20,7 +20,9 @@ if __name__ == "__main__":
 
     if len(sys.argv) != 2:
         repository_root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-        print(f"Usage: PYTHONPATH={repository_root} python {sys.argv[0]} QUESTIONNAIRE_NAME")
+        print(
+            f"Usage: PYTHONPATH={repository_root} python {sys.argv[0]} QUESTIONNAIRE_NAME"
+        )
         exit(1)
 
     questionnaire_name = sys.argv[1]
@@ -42,4 +44,6 @@ if __name__ == "__main__":
         print(f"{case.case_id} {eligible}")
 
     print()
-    print(f"Total eligible = {eligible_count} / Total not-eligible = {ineligible_count}")
+    print(
+        f"Total eligible = {eligible_count} / Total not-eligible = {ineligible_count}"
+    )

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, Type, TypeVar
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 @dataclass
@@ -24,5 +24,6 @@ class UacModel:
             uac_chunks=UacChunks(
                 uac1=uac_data_dictionary["uac_chunks"]["uac1"],
                 uac2=uac_data_dictionary["uac_chunks"]["uac2"],
-                uac3=uac_data_dictionary["uac_chunks"]["uac3"]))
-
+                uac3=uac_data_dictionary["uac_chunks"]["uac3"],
+            ),
+        )

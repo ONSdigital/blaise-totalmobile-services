@@ -1,10 +1,11 @@
 from dataclasses import dataclass, fields
 from datetime import datetime
-from typing import Dict, Type, TypeVar, Optional
+from typing import Dict, Optional, Type, TypeVar
+
 from models.base_model import BaseModel
 from models.blaise.uac_model import UacChunks, UacModel
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 @dataclass
@@ -62,9 +63,15 @@ class BlaiseCaseInformationModel(BaseModel):
         self.uac_chunks = uac_model.uac_chunks
 
     @classmethod
-    def import_case(cls: Type[T], questionnaire_name: str, case_data_dictionary: Dict[str, str]) -> T:
+    def import_case(
+        cls: Type[T], questionnaire_name: str, case_data_dictionary: Dict[str, str]
+    ) -> T:
         wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE")
-        wave_com_dte = datetime.strptime(wave_com_dte_str, "%d-%m-%Y") if wave_com_dte_str != '' else None
+        wave_com_dte = (
+            datetime.strptime(wave_com_dte_str, "%d-%m-%Y")
+            if wave_com_dte_str != ""
+            else None
+        )
         return BlaiseCaseInformationModel(
             questionnaire_name=questionnaire_name,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
@@ -82,7 +89,7 @@ class BlaiseCaseInformationModel(BaseModel):
                     coordinates=AddressCoordinates(
                         latitude=case_data_dictionary.get("qDataBag.UPRN_Latitude"),
                         longitude=case_data_dictionary.get("qDataBag.UPRN_Longitude"),
-                    )
+                    ),
                 )
             ),
             contact_details=ContactDetails(
@@ -90,14 +97,18 @@ class BlaiseCaseInformationModel(BaseModel):
                 telephone_number_2=case_data_dictionary.get("qDataBag.TelNo2"),
                 appointment_telephone_number=case_data_dictionary.get("telNoAppt"),
             ),
-            outcome_code=cls.convert_string_to_integer(case_data_dictionary.get("hOut", 0)),
+            outcome_code=cls.convert_string_to_integer(
+                case_data_dictionary.get("hOut", 0)
+            ),
             priority=case_data_dictionary.get("qDataBag.Priority"),
             field_case=case_data_dictionary.get("qDataBag.FieldCase"),
             field_region=case_data_dictionary.get("qDataBag.FieldRegion"),
             field_team=case_data_dictionary.get("qDataBag.FieldTeam"),
             wave_com_dte=wave_com_dte,
             uac_chunks=UacChunks(uac1="", uac2="", uac3=""),
-            has_call_history=cls.has_call_history(case_data_dictionary.get("catiMana.CatiCall.RegsCalls[1].DialResult"))
+            has_call_history=cls.has_call_history(
+                case_data_dictionary.get("catiMana.CatiCall.RegsCalls[1].DialResult")
+            ),
         )
 
     @staticmethod

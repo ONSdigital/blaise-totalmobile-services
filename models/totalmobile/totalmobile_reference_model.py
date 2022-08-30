@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict, Tuple
+from typing import Dict, List, Tuple
 
 from app.exceptions.custom_exceptions import BadReferenceError, MissingReferenceError
 from models.base_model import BaseModel
@@ -21,7 +21,7 @@ class TotalmobileReferenceModel(BaseModel):
     def initialize_properties_from_request(self, args: tuple[any]):
         reference = self.get_reference_from_incoming_request(args[0])
         request_fields = self.get_fields_from_reference(reference)
-        self.questionnaire_name = request_fields[0].replace('-', '_')
+        self.questionnaire_name = request_fields[0].replace("-", "_")
         self.case_id = request_fields[1]
 
     def initialize_properties(self, args: tuple[any]):
@@ -48,7 +48,9 @@ class TotalmobileReferenceModel(BaseModel):
 
     @staticmethod
     def get_reference_from_incoming_request(incoming_request: Dict[str, str]):
-        reference = TotalmobileReferenceModel.get_dictionary_keys_value_if_they_exist(incoming_request, "result", "association", "reference")
+        reference = TotalmobileReferenceModel.get_dictionary_keys_value_if_they_exist(
+            incoming_request, "result", "association", "reference"
+        )
 
         if reference is None:
             logging.error("Unique reference is missing from totalmobile payload")
