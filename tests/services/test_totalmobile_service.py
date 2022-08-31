@@ -124,4 +124,4 @@ def test_delete_jobs_calls_the_rest_api_client_with_the_correct_parameters():
     totalmobile_service.delete_job(world_id, job)
 
     # assert
-    optimise_client_mock.delete_job.assert_called_with(world_id, job)
+    optimise_client_mock.delete_job.assert_called_with(world_id, job, "0")

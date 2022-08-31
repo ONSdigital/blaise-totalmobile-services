@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from typing import Any, List
 
 import requests
+import json
 
 from client.errors import AuthException, BadRequest, ServerError
 
@@ -45,10 +46,11 @@ class BaseClient:
         self.__check_response(response)
         return response
 
-    def _delete(self, path: str) -> requests.Response:
+    def _delete(self, path: str, reason: str) -> requests.Response:
         response = requests.delete(
             f"{self._url}/{self._instance}/{path}",
             headers=self.__auth_header(),
+            json={"deletionReason": {"reference": reason}}
         )
         self.__check_response(response)
         return response

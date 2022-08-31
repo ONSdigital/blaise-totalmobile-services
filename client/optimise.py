@@ -14,8 +14,8 @@ class OptimiseClient(BaseClient):
     def create_job(self, world_id: str, job: Dict[Any, Any]) -> requests.Response:
         return self._post(f"worlds/{world_id}/jobs", job).json()
 
-    def delete_job(self, world_id: str, job: str) -> requests.Response:
-        return self._delete(f"worlds/{world_id}/jobs/{job}")
+    def delete_job(self, world_id: str, job: str, reason: str) -> requests.Response:
+        return self._delete(f"worlds/{world_id}/jobs/{job}", reason)
 
     def get_jobs(self, world_id: str) -> List[Any]:
         return self._get_list(f"worlds/{world_id}/jobs?pageSize=1000")
@@ -40,5 +40,5 @@ class OptimiseClient(BaseClient):
     def _post(self, path: str, data: Any) -> Any:
         return super()._post(f"api/optimise/{path}", data)
 
-    def _delete(self, path: str) -> Any:
-        return super()._delete(f"api/optimise/{path}")
+    def _delete(self, path: str, data: Any) -> Any:
+        return super()._delete(f"api/optimise/{path}", data)
