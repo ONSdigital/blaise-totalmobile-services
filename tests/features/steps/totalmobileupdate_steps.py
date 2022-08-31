@@ -1,3 +1,5 @@
+# type: ignore[no-redef]
+
 import base64
 import logging
 

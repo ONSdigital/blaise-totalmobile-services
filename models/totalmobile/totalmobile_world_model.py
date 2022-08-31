@@ -1,7 +1,9 @@
 from dataclasses import dataclass
-from typing import List, Type, TypeVar
+from typing import List, Optional, Type, TypeVar
 
-T = TypeVar("T")
+from client.optimise import GetWorldsResponse
+
+T = TypeVar("T", bound="TotalmobileWorldModel")
 
 
 @dataclass
@@ -14,7 +16,7 @@ class World:
 class TotalmobileWorldModel:
     worlds: List[World]
 
-    def get_world_id(self, region: str):
+    def get_world_id(self, region: Optional[str]):
         for world in self.worlds:
             if world.region == region:
                 return world.id
@@ -27,8 +29,8 @@ class TotalmobileWorldModel:
         return [world.id for world in self.worlds]
 
     @classmethod
-    def import_worlds(cls: Type[T], world_dictionary: dict[str, str]) -> T:
-        return TotalmobileWorldModel(
+    def import_worlds(cls: Type[T], world_dictionary: GetWorldsResponse) -> T:
+        return cls(
             [
                 World(
                     region=world_dictionary_item["identity"]["reference"],

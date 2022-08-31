@@ -35,7 +35,7 @@ required_fields_from_blaise = [
 
 def get_cases(
     questionnaire_name: str, config: Config
-) -> [List[BlaiseCaseInformationModel]]:
+) -> List[BlaiseCaseInformationModel]:
     restapi_client = blaise_restapi.Client(config.blaise_api_url)
 
     questionnaire_case_data = restapi_client.get_questionnaire_data(

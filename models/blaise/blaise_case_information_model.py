@@ -5,23 +5,23 @@ from typing import Dict, Optional, Type, TypeVar
 from models.base_model import BaseModel
 from models.blaise.uac_model import UacChunks, UacModel
 
-T = TypeVar("T")
+T = TypeVar("T", bound="BlaiseCaseInformationModel")
 
 
 @dataclass
 class AddressCoordinates:
-    latitude: str
-    longitude: str
+    latitude: Optional[str]
+    longitude: Optional[str]
 
 
 @dataclass
 class Address:
-    address_line_1: str
-    address_line_2: str
-    address_line_3: str
-    county: str
-    town: str
-    postcode: str
+    address_line_1: Optional[str]
+    address_line_2: Optional[str]
+    address_line_3: Optional[str]
+    county: Optional[str]
+    town: Optional[str]
+    postcode: Optional[str]
     coordinates: AddressCoordinates
 
 
@@ -32,30 +32,30 @@ class AddressDetails:
 
 @dataclass
 class ContactDetails:
-    telephone_number_1: str
-    telephone_number_2: str
-    appointment_telephone_number: str
+    telephone_number_1: Optional[str]
+    telephone_number_2: Optional[str]
+    appointment_telephone_number: Optional[str]
 
 
 @dataclass
 class BlaiseCaseInformationModel(BaseModel):
     questionnaire_name: str
-    case_id: str
-    data_model_name: str
+    case_id: Optional[str]
+    data_model_name: Optional[str]
     # survey_type: str
-    wave: str
+    wave: Optional[str]
     address_details: AddressDetails
     contact_details: ContactDetails
     outcome_code: int
-    priority: str
-    field_case: str
-    field_region: str
-    field_team: str
+    priority: Optional[str]
+    field_case: Optional[str]
+    field_region: Optional[str]
+    field_team: Optional[str]
     wave_com_dte: Optional[datetime]
-    uac_chunks: UacChunks
+    uac_chunks: Optional[UacChunks]
     has_call_history: bool
 
-    def populate_uac_data(self, uac_model: UacModel):
+    def populate_uac_data(self, uac_model: Optional[UacModel]):
         if uac_model is None:
             self.uac_chunks = None
             return
@@ -66,13 +66,13 @@ class BlaiseCaseInformationModel(BaseModel):
     def import_case(
         cls: Type[T], questionnaire_name: str, case_data_dictionary: Dict[str, str]
     ) -> T:
-        wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE")
+        wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE", "")
         wave_com_dte = (
             datetime.strptime(wave_com_dte_str, "%d-%m-%Y")
             if wave_com_dte_str != ""
             else None
         )
-        return BlaiseCaseInformationModel(
+        return cls(
             questionnaire_name=questionnaire_name,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
             data_model_name=case_data_dictionary.get("dataModelName"),
@@ -98,7 +98,7 @@ class BlaiseCaseInformationModel(BaseModel):
                 appointment_telephone_number=case_data_dictionary.get("telNoAppt"),
             ),
             outcome_code=cls.convert_string_to_integer(
-                case_data_dictionary.get("hOut", 0)
+                case_data_dictionary.get("hOut", "0")
             ),
             priority=case_data_dictionary.get("qDataBag.Priority"),
             field_case=case_data_dictionary.get("qDataBag.FieldCase"),
@@ -106,7 +106,7 @@ class BlaiseCaseInformationModel(BaseModel):
             field_team=case_data_dictionary.get("qDataBag.FieldTeam"),
             wave_com_dte=wave_com_dte,
             uac_chunks=UacChunks(uac1="", uac2="", uac3=""),
-            has_call_history=cls.has_call_history(
+            has_call_history=cls.string_to_bool(
                 case_data_dictionary.get("catiMana.CatiCall.RegsCalls[1].DialResult")
             ),
         )
@@ -118,7 +118,7 @@ class BlaiseCaseInformationModel(BaseModel):
         return int(value)
 
     @staticmethod
-    def has_call_history(value: str) -> bool:
+    def string_to_bool(value: Optional[str]) -> bool:
         if value == "" or value is None:
             return False
         return True

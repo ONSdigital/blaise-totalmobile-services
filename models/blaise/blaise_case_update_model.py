@@ -1,21 +1,21 @@
 from dataclasses import dataclass
-from typing import Type, TypeVar
+from typing import Optional, Type, TypeVar
 
 from models.totalmobile.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 
-T = TypeVar("T")
+T = TypeVar("T", bound="BlaiseCaseUpdateModel")
 
 
 @dataclass
 class BlaiseCaseUpdateModel:
     questionnaire_name: str
     case_id: str
-    outcome_code: int
-    contact_name: str
-    home_phone_number: str
-    mobile_phone_number: str
+    outcome_code: Optional[int]
+    contact_name: Optional[str]
+    home_phone_number: Optional[str]
+    mobile_phone_number: Optional[str]
 
     @staticmethod
     def knock_to_nudge_indicator_flag():
@@ -54,7 +54,7 @@ class BlaiseCaseUpdateModel:
     def import_case(
         cls: Type[T], totalmobile_request: TotalMobileIncomingUpdateRequestModel
     ) -> T:
-        return BlaiseCaseUpdateModel(
+        return cls(
             questionnaire_name=totalmobile_request.questionnaire_name,
             case_id=totalmobile_request.case_id,
             outcome_code=totalmobile_request.outcome_code,
