@@ -10,8 +10,8 @@ from services.totalmobile_service import TotalmobileService
 
 def __get_active_world_ids(totalmobile_service_local: TotalmobileService) -> List[str]:
     print("Retrieving world IDs")
-    return (totalmobile_service_local.get_world_model().get_available_ids())
-    
+    return totalmobile_service_local.get_world_model().get_available_ids()
+
 
 def __map_world_id_to_job_reference(
     totalmobile_service_local: TotalmobileService, world_ids: List[str]
@@ -23,7 +23,10 @@ def __map_world_id_to_job_reference(
         print(f"Retrieved {len(jobs)} jobs for world ID {world_id}")
         for job in jobs:
             if job["visitComplete"] is not True:
-                my_dict = {"world_id": world_id, "job_reference": job["identity"]["reference"]}
+                my_dict = {
+                    "world_id": world_id,
+                    "job_reference": job["identity"]["reference"],
+                }
                 list_of_jobs.append(my_dict)
     print(
         f"Found a total of {len(list_of_jobs)} uncompleted jobs across {len(world_ids)} worlds"
