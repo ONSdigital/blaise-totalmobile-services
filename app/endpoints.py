@@ -28,8 +28,10 @@ def submit_form_result_request():
     try:
         submit_form_result_request_handler(request, current_app.questionnaire_service)
         return "ok"
-    except (MissingReferenceError, BadReferenceError, InvalidTotalmobileUpdateRequestException):
+    except (MissingReferenceError, BadReferenceError):
         return "Missing/invalid reference in request", 400
+    except InvalidTotalmobileUpdateRequestException:
+        return "Request appears to be malformed", 400
     except QuestionnaireDoesNotExistError:
         return "Questionnaire does not exist in Blaise", 404
     except QuestionnaireCaseDoesNotExistError:
