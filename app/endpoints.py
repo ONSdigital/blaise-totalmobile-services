@@ -5,7 +5,7 @@ from app.exceptions.custom_exceptions import (
     BadReferenceError,
     MissingReferenceError,
     QuestionnaireCaseDoesNotExistError,
-    QuestionnaireDoesNotExistError,
+    QuestionnaireDoesNotExistError, InvalidTotalmobileUpdateRequestException,
 )
 from app.handlers.total_mobile_handler import (
     complete_visit_request_handler,
@@ -28,10 +28,8 @@ def submit_form_result_request():
     try:
         submit_form_result_request_handler(request, current_app.questionnaire_service)
         return "ok"
-    except MissingReferenceError:
-        return "Missing reference", 400
-    except BadReferenceError:
-        return "Missing reference", 400
+    except (MissingReferenceError, BadReferenceError, InvalidTotalmobileUpdateRequestException):
+        return "Missing/invalid reference in request", 400
     except QuestionnaireDoesNotExistError:
         return "Questionnaire does not exist in Blaise", 404
     except QuestionnaireCaseDoesNotExistError:
