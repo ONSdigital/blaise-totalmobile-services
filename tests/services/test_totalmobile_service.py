@@ -98,7 +98,7 @@ def test_create_job_auth_error():
         totalmobile_service.create_job(totalmobile_job_model)
 
 
-def test_get_jobs_calls_the_rest_api_client_with_the_correct_parameters():
+def test_get_jobs_calls_the_client_with_the_correct_parameters():
     # arrange
     optimise_client_mock = create_autospec(OptimiseClient)
     optimise_client_mock.get_jobs.return_value = {}
@@ -112,7 +112,7 @@ def test_get_jobs_calls_the_rest_api_client_with_the_correct_parameters():
     optimise_client_mock.get_jobs.assert_called_with(world_id)
 
 
-def test_delete_jobs_calls_the_rest_api_client_with_the_correct_parameters():
+def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_no_reason_passed():
     # arrange
     optimise_client_mock = create_autospec(OptimiseClient)
     optimise_client_mock.get_jobs.return_value = {}
@@ -125,3 +125,18 @@ def test_delete_jobs_calls_the_rest_api_client_with_the_correct_parameters():
 
     # assert
     optimise_client_mock.delete_job.assert_called_with(world_id, job, "0")
+
+
+def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_reason_passed():
+    # arrange
+    optimise_client_mock = create_autospec(OptimiseClient)
+    optimise_client_mock.get_jobs.return_value = {}
+    world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
+    job = "1234"
+    totalmobile_service = TotalmobileService(optimise_client_mock)
+
+    # act
+    totalmobile_service.delete_job(world_id, job, "110")
+
+    # assert
+    optimise_client_mock.delete_job.assert_called_with(world_id, job, "110")
