@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from typing import Any, Dict, Optional, Type, TypedDict, TypeVar
 
@@ -25,6 +26,7 @@ class TotalMobileIncomingUpdateRequestModel(BaseModel):
     @classmethod
     def import_request(cls: Type[T], incoming_request: IncomingRequest) -> T:
         if not cls.dictionary_keys_exist(incoming_request, "result", "responses"):
+            logging.error("The totalmobile payload appears to be malformed")
             raise InvalidTotalmobileUpdateRequestException
 
         reference_model = TotalmobileReferenceModel.from_request(incoming_request)
