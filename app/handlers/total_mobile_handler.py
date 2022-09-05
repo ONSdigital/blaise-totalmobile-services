@@ -18,8 +18,8 @@ def submit_form_result_request_handler(
 
     totalmobile_case = TotalMobileIncomingUpdateRequestModel.import_request(data)
 
-    update_case_service = UpdateCaseService()
-    update_case_service.update_case(totalmobile_case, questionnaire_service)
+    update_case_service = UpdateCaseService(questionnaire_service)
+    update_case_service.update_case(totalmobile_case)
 
 
 def update_visit_status_request_handler(request):

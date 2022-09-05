@@ -13,19 +13,17 @@ from services.questionnaire_service import QuestionnaireService
 
 
 class UpdateCaseService:
+    def __init__(self, questionnaire_service: QuestionnaireService):
+        self._questionnaire_service = questionnaire_service
+
     def update_case(
-        self,
-        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-        questionnaire_service,
+        self, totalmobile_request: TotalMobileIncomingUpdateRequestModel
     ) -> None:
-        self._validate_questionnaire_exists(
-            totalmobile_request.questionnaire_name, questionnaire_service
-        )
+        self._validate_questionnaire_exists(totalmobile_request.questionnaire_name)
 
         blaise_case = self._get_case(
             totalmobile_request.questionnaire_name,
             totalmobile_request.case_id,
-            questionnaire_service,
         )
         update_blaise_case_model = BlaiseCaseUpdateModel.import_case(
             totalmobile_request
@@ -36,15 +34,11 @@ class UpdateCaseService:
             310,
             320,
         ):
-            self._update_case_contact_information(
-                blaise_case, update_blaise_case_model, questionnaire_service
-            )
+            self._update_case_contact_information(blaise_case, update_blaise_case_model)
             return
 
         if totalmobile_request.outcome_code in (460, 461, 510, 540, 551, 560, 580, 640):
-            self._update_case_outcome_code(
-                blaise_case, update_blaise_case_model, questionnaire_service
-            )
+            self._update_case_outcome_code(blaise_case, update_blaise_case_model)
             return
 
         logging.info(
@@ -57,7 +51,6 @@ class UpdateCaseService:
         self,
         blaise_case,
         update_blaise_case_model,
-        questionnaire_service: QuestionnaireService,
     ) -> None:
         fields_to_update = {}
 
@@ -75,7 +68,7 @@ class UpdateCaseService:
             update_blaise_case_model.knock_to_nudge_indicator_flag()
         )
 
-        questionnaire_service.update_case(
+        self._questionnaire_service.update_case(
             blaise_case.questionnaire_name, blaise_case.case_id, fields_to_update
         )
 
@@ -89,7 +82,6 @@ class UpdateCaseService:
         self,
         blaise_case,
         update_blaise_case_model,
-        questionnaire_service: QuestionnaireService,
     ) -> None:
         fields_to_update = {}
         fields_to_update.update(update_blaise_case_model.outcome_details())
@@ -101,7 +93,7 @@ class UpdateCaseService:
         if not blaise_case.has_call_history:
             fields_to_update.update(update_blaise_case_model.call_history_record(5))
 
-        questionnaire_service.update_case(
+        self._questionnaire_service.update_case(
             blaise_case.questionnaire_name, blaise_case.case_id, fields_to_update
         )
 
@@ -111,10 +103,8 @@ class UpdateCaseService:
             f"TM hOut={update_blaise_case_model.outcome_code})"
         )
 
-    def _validate_questionnaire_exists(
-        self, questionnaire_name: str, questionnaire_service: QuestionnaireService
-    ) -> None:
-        if not questionnaire_service.questionnaire_exists(questionnaire_name):
+    def _validate_questionnaire_exists(self, questionnaire_name: str) -> None:
+        if not self._questionnaire_service.questionnaire_exists(questionnaire_name):
             logging.error(
                 f"Could not find questionnaire {questionnaire_name} in Blaise"
             )
@@ -126,10 +116,9 @@ class UpdateCaseService:
         self,
         questionnaire_name: str,
         case_id: str,
-        questionnaire_service: QuestionnaireService,
     ) -> BlaiseCaseInformationModel:
         try:
-            case = questionnaire_service.get_case(questionnaire_name, case_id)
+            case = self._questionnaire_service.get_case(questionnaire_name, case_id)
         except QuestionnaireCaseDoesNotExistError as err:
             logging.error(
                 f"Could not find case {case_id} for questionnaire {questionnaire_name} in Blaise"
