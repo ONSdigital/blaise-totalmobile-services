@@ -55,13 +55,13 @@ class MockQuestionnaireService:
         self.questionnaires[questionnaire] = []
 
     # service function mocks
-    def questionnaire_exists(self, questionnaire_name, config):
+    def questionnaire_exists(self, questionnaire_name):
         return questionnaire_name in self.questionnaires
 
-    def get_case(self, questionnaire_name, case_id, config):
+    def get_case(self, questionnaire_name, case_id):
         return self.get_case_from_questionnaire(questionnaire_name, case_id)
 
-    def update_case(self, questionnaire_name, case_id, data_fields, config):
+    def update_case(self, questionnaire_name, case_id, data_fields):
         self.update_case_request = {
             "data_fields": data_fields,
             "questionnaire_name": questionnaire_name,
