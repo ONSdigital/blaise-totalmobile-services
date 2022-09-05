@@ -17,10 +17,22 @@ from app.handlers.total_mobile_handler import (
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
 
 
+@incoming.after_request
+def add_header(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Strict-Transport-Security"] = "max-age=86400"
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Content-Security-Policy"] = "default-src 'self'"
+    response.headers["X-Frame-Options"] = "DENY"
+    return response
+
+
 @incoming.route("/updatevisitstatusrequest", methods=["POST"])
 @auth.login_required
 def update_visit_status_request():
     update_visit_status_request_handler(request)
+    return "ok"
 
 
 @incoming.route("/submitformresultrequest", methods=["POST"])
@@ -43,6 +55,7 @@ def submit_form_result_request():
 @auth.login_required
 def complete_visit_request():
     complete_visit_request_handler(request)
+    return "ok"
 
 
 @incoming.route("/<version>/health", methods=["GET"])
