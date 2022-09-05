@@ -3,9 +3,10 @@ from flask import Blueprint, current_app, jsonify, request
 from app.auth import auth
 from app.exceptions.custom_exceptions import (
     BadReferenceError,
+    InvalidTotalmobileUpdateRequestException,
     MissingReferenceError,
     QuestionnaireCaseDoesNotExistError,
-    QuestionnaireDoesNotExistError, InvalidTotalmobileUpdateRequestException,
+    QuestionnaireDoesNotExistError,
 )
 from app.handlers.total_mobile_handler import (
     complete_visit_request_handler,
