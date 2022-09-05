@@ -2,7 +2,8 @@ import os
 import sys
 
 from appconfig import Config
-from services import eligible_case_service, questionnaire_service
+from services import eligible_case_service
+from services.questionnaire_service import QuestionnaireService
 
 
 def __check_for_env_var(name: str):
@@ -28,6 +29,7 @@ if __name__ == "__main__":
     questionnaire_name = sys.argv[1]
 
     config = Config.from_env()
+    questionnaire_service = QuestionnaireService()
     cases = questionnaire_service.get_cases(questionnaire_name, config)
     eligible_cases = eligible_case_service.get_eligible_cases(cases)
 

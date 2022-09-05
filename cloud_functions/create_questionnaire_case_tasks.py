@@ -14,6 +14,7 @@ from models.totalmobile.totalmobile_outgoing_job_payload_model import (
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 from services import questionnaire_service
+from services.questionnaire_service import QuestionnaireService
 from services.totalmobile_service import TotalmobileService
 
 setup_logger()
@@ -75,6 +76,8 @@ def run_async_tasks(tasks: List[Tuple[str, bytes]], queue_id: str, cloud_functio
 def create_questionnaire_case_tasks(
     request: flask.Request, config: Config, totalmobile_service: TotalmobileService
 ) -> str:
+    questionnaire_service = QuestionnaireService()
+
     logging.info("Started creating questionnaire case tasks")
 
     request_json = request.get_json()

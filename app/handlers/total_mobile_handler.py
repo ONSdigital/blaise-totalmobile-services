@@ -7,9 +7,12 @@ from models.totalmobile.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 from services import update_case_service
+from services.questionnaire_service import QuestionnaireService
 
 
-def submit_form_result_request_handler(request, questionnaire_service):
+def submit_form_result_request_handler(
+    request, questionnaire_service: QuestionnaireService
+):
     config = Config.from_env()
     data = request.get_json()
     validate_data(data)
