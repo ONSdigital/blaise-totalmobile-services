@@ -2,7 +2,7 @@ import os
 import sys
 
 from appconfig import Config
-from services import blaise_service, eligible_case_service
+from services import blaise_service, eligible_case_service, uac_service
 from services.questionnaire_service import QuestionnaireService
 
 
@@ -33,6 +33,7 @@ if __name__ == "__main__":
         config,
         blaise_service=blaise_service,
         eligible_case_service=eligible_case_service,
+        uac_service=uac_service,
     )
     cases = questionnaire_service.get_cases(questionnaire_name)
     eligible_cases = eligible_case_service.get_eligible_cases(cases)

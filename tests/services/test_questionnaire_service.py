@@ -20,18 +20,24 @@ def mock_eligible_case_service():
 
 
 @pytest.fixture()
+def mock_uac_service():
+    return Mock()
+
+
+@pytest.fixture()
 def config() -> Config:
     return config_helper.get_default_config()
 
 
 @pytest.fixture()
 def service(
-    config, mock_blaise_service, mock_eligible_case_service
+    config, mock_blaise_service, mock_eligible_case_service, mock_uac_service
 ) -> QuestionnaireService:
     return QuestionnaireService(
         config,
         blaise_service=mock_blaise_service,
         eligible_case_service=mock_eligible_case_service,
+        uac_service=mock_uac_service,
     )
 
 
@@ -88,7 +94,6 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
     assert result == eligible_cases
 
 
-@mock.patch("services.uac_service.get_uacs")
 def test_get_cases_returns_a_list_of_fully_populated_cases(
     mock_uac_service,
     service,
@@ -116,7 +121,7 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(
     ]
 
     mock_blaise_service.get_cases.return_value = questionnaire_cases
-    mock_uac_service.return_value = questionnaire_uacs
+    mock_uac_service.get_uacs.return_value = questionnaire_uacs
 
     questionnaire_name = "LMS2101_AA1"
 
