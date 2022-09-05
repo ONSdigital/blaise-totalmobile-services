@@ -13,7 +13,7 @@ from models.totalmobile.totalmobile_outgoing_job_payload_model import (
     TotalMobileOutgoingJobPayloadModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from services import blaise_service, eligible_case_service
+from services import blaise_service, eligible_case_service, uac_service
 from services.questionnaire_service import QuestionnaireService
 from services.totalmobile_service import TotalmobileService
 
@@ -80,6 +80,7 @@ def create_questionnaire_case_tasks(
         config,
         blaise_service=blaise_service,
         eligible_case_service=eligible_case_service,
+        uac_service=uac_service,
     )
 
     logging.info("Started creating questionnaire case tasks")

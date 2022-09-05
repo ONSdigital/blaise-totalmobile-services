@@ -3,7 +3,7 @@ from flask import Flask
 from app.auth import auth
 from app.config import Config
 from app.endpoints import incoming
-from services import blaise_service, eligible_case_service
+from services import blaise_service, eligible_case_service, uac_service
 from services.questionnaire_service import QuestionnaireService
 
 
@@ -22,5 +22,6 @@ def setup_app():
         config,
         blaise_service=blaise_service,
         eligible_case_service=eligible_case_service,
+        uac_service=uac_service,
     )
     return application
