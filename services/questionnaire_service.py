@@ -3,20 +3,21 @@ from typing import Dict, List
 
 from appconfig import Config
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
-from services import eligible_case_service, uac_service
+from services import uac_service
 
 
 class QuestionnaireService:
-    def __init__(self, config: Config, blaise_service):
+    def __init__(self, config: Config, blaise_service, eligible_case_service):
         self._config = config
         self._blaise_service = blaise_service
+        self._eligible_case_service = eligible_case_service
 
     def get_eligible_cases(
         self, questionnaire_name: str
     ) -> List[BlaiseCaseInformationModel]:
         questionnaire_cases = self.get_cases(questionnaire_name)
 
-        return eligible_case_service.get_eligible_cases(questionnaire_cases)
+        return self._eligible_case_service.get_eligible_cases(questionnaire_cases)
 
     def get_cases(self, questionnaire_name: str) -> List[BlaiseCaseInformationModel]:
         questionnaire_cases = self._blaise_service.get_cases(
