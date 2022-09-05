@@ -2,7 +2,8 @@ import os
 import sys
 
 from appconfig import Config
-from services import blaise_service, eligible_case_service, uac_service
+from services import eligible_case_service, uac_service
+from services.blaise_service import BlaiseService
 from services.questionnaire_service import QuestionnaireService
 
 
@@ -31,7 +32,7 @@ if __name__ == "__main__":
     config = Config.from_env()
     questionnaire_service = QuestionnaireService(
         config,
-        blaise_service=blaise_service,
+        blaise_service=BlaiseService(),
         eligible_case_service=eligible_case_service,
         uac_service=uac_service,
     )
