@@ -39,7 +39,7 @@ def test_get_case_details_raises_an_error_when_json_is_empty():
 def test_get_case_details_raises_an_error_when_reference_in_incorrect_format(
     submit_form_result_request_sample: Dict[str, Any]
 ):
-     # arrange
+    # arrange
     sample_json = submit_form_result_request_sample
     sample_json["Result"]["Association"]["Reference"] = "DST2111Z-AA11001011"
     with pytest.raises(Exception):
@@ -49,7 +49,7 @@ def test_get_case_details_raises_an_error_when_reference_in_incorrect_format(
 def test_get_case_details_raises_an_error_when_reference_is_missing(
     submit_form_result_request_sample: Dict[str, Any]
 ):
-     # arrange
+    # arrange
     sample_json = submit_form_result_request_sample
     del sample_json["Result"]["Association"]["Reference"]
     with pytest.raises(MissingReferenceError):
@@ -59,17 +59,17 @@ def test_get_case_details_raises_an_error_when_reference_is_missing(
 def test_get_case_details_raises_an_error_when_association_is_missing(
     submit_form_result_request_sample: Dict[str, Any]
 ):
-     # arrange
+    # arrange
     sample_json = submit_form_result_request_sample
     del sample_json["Result"]["Association"]
     with pytest.raises(MissingReferenceError):
         get_case_details(sample_json)
 
 
-def test_get_case_details_raises_an_error_when_association_is_missing(
+def test_get_case_details_raises_an_error_when_result_is_missing(
     submit_form_result_request_sample: Dict[str, Any]
 ):
-     # arrange
+    # arrange
     sample_json = submit_form_result_request_sample
     del sample_json["Result"]
     with pytest.raises(MissingReferenceError):
@@ -79,7 +79,7 @@ def test_get_case_details_raises_an_error_when_association_is_missing(
 def test_get_case_details_raises_an_error_when_reference_is_empty(
     submit_form_result_request_sample: Dict[str, Any]
 ):
-     # arrange
+    # arrange
     sample_json = submit_form_result_request_sample
     sample_json["Result"]["Association"]["Reference"] = ""
     with pytest.raises(MissingReferenceError):
@@ -223,8 +223,8 @@ def test_validate_data_raises_error_when_data_is_empty():
 @pytest.mark.parametrize(
     "sample_json",
     [
-        pytest.lazy_fixture("upload_visit_status_request_sample"),
-        pytest.lazy_fixture("complete_visit_request_sample"),
+        pytest.lazy_fixture("upload_visit_status_request_sample"),  # type: ignore
+        pytest.lazy_fixture("complete_visit_request_sample"),  # type: ignore
     ],
 )
 def test_get_reference_number_returns_reference_number_when_valid_json_is_passed_to_function(

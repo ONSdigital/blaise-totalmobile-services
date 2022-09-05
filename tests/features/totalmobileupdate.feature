@@ -21,6 +21,22 @@ Feature: Totalmobile update
     And a "404 Not Found" response is sent back to Totalmobile
 
   Scenario: Reference is missing
-    When Totalmobile sends an update with missing reference
+    When Totalmobile sends an update with a missing reference
     Then "Unique reference is missing from totalmobile payload" is logged as an error message
+    And a "400 Bad Request" response is sent back to Totalmobile
+
+  Scenario Outline: Reference is in the incorrect format
+    When Totalmobile sends an update with a malformed reference <reference>
+    Then "Unique reference appeared to be malformed in the totalmobile payload" is logged as an error message
+    And a "400 Bad Request" response is sent back to Totalmobile
+    Examples:
+      | reference         |
+      | LMS2101_AA1-90001 |
+      | LMS2101_AA1:90001 |
+      | LMS2101_AA1.      |
+      | .90001            |
+
+  Scenario: Payload appears to be malformed
+    When Totalmobile sends an update with a malformed payload
+    Then "The totalmobile payload appears to be malformed" is logged as an error message
     And a "400 Bad Request" response is sent back to Totalmobile

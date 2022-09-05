@@ -1,16 +1,23 @@
+from unittest import mock
+
 import pytest
 
 from models.blaise.uac_model import UacChunks, UacModel
-from services.questionnaire_service import get_eligible_cases, get_cases, get_wave_from_questionnaire_name, \
-    questionnaire_exists, update_case
-from tests.helpers import get_blaise_case_model_helper
-from unittest import mock
-from tests.helpers import config_helper
+from services.questionnaire_service import (
+    get_cases,
+    get_eligible_cases,
+    get_wave_from_questionnaire_name,
+    questionnaire_exists,
+    update_case,
+)
+from tests.helpers import config_helper, get_blaise_case_model_helper
 
 
 @mock.patch("services.questionnaire_service.get_cases")
 @mock.patch("services.eligible_case_service.get_eligible_cases")
-def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(mock_get_eligible_cases, mock_get_cases):
+def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
+    mock_get_eligible_cases, mock_get_cases
+):
     # arrange
     config = config_helper.get_default_config()
 
@@ -36,8 +43,9 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(mock_
 
 @mock.patch("services.questionnaire_service.get_cases")
 @mock.patch("services.eligible_case_service.get_eligible_cases")
-def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible_case_service(mock_get_eligible_cases,
-                                                                                              mock_get_cases):
+def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible_case_service(
+    mock_get_eligible_cases, mock_get_cases
+):
     # arrange
     config = config_helper.get_default_config()
 
@@ -62,29 +70,31 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
 
 @mock.patch("services.uac_service.get_uacs")
 @mock.patch("services.blaise_service.get_cases")
-def test_get_cases_returns_a_list_of_fully_populated_cases(mock_blaise_service, mock_uac_service):
+def test_get_cases_returns_a_list_of_fully_populated_cases(
+    mock_blaise_service, mock_uac_service
+):
     # arrange
     config = config_helper.get_default_config()
 
     questionnaire_cases = [
         get_blaise_case_model_helper.get_populated_case_model(
-            case_id="20001",
-            uac_chunks=UacChunks(uac1="", uac2="", uac3="")),
+            case_id="20001", uac_chunks=UacChunks(uac1="", uac2="", uac3="")
+        ),
         get_blaise_case_model_helper.get_populated_case_model(
-            case_id="20003",
-            uac_chunks=UacChunks(uac1="", uac2="", uac3="")),
+            case_id="20003", uac_chunks=UacChunks(uac1="", uac2="", uac3="")
+        ),
     ]
 
     questionnaire_uacs = [
         UacModel(
-            case_id="20001",
-            uac_chunks=UacChunks(uac1="2324", uac2="6744", uac3="5646")),
+            case_id="20001", uac_chunks=UacChunks(uac1="2324", uac2="6744", uac3="5646")
+        ),
         UacModel(
-            case_id="20002",
-            uac_chunks=UacChunks(uac1="3324", uac2="7744", uac3="6646")),
+            case_id="20002", uac_chunks=UacChunks(uac1="3324", uac2="7744", uac3="6646")
+        ),
         UacModel(
-            case_id="20003",
-            uac_chunks=UacChunks(uac1="4324", uac2="8744", uac3="7646")),
+            case_id="20003", uac_chunks=UacChunks(uac1="4324", uac2="8744", uac3="7646")
+        ),
     ]
 
     mock_blaise_service.return_value = questionnaire_cases
@@ -98,11 +108,11 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(mock_blaise_service, 
     # assert
     assert result == [
         get_blaise_case_model_helper.get_populated_case_model(
-            case_id="20001",
-            uac_chunks=UacChunks(uac1="2324", uac2="6744", uac3="5646")),
+            case_id="20001", uac_chunks=UacChunks(uac1="2324", uac2="6744", uac3="5646")
+        ),
         get_blaise_case_model_helper.get_populated_case_model(
-            case_id="20003",
-            uac_chunks=UacChunks(uac1="4324", uac2="8744", uac3="7646")),
+            case_id="20003", uac_chunks=UacChunks(uac1="4324", uac2="8744", uac3="7646")
+        ),
     ]
 
 
@@ -133,7 +143,9 @@ def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error():
 
 
 @mock.patch("services.blaise_service.questionnaire_exists")
-def test_questionnaire_exists_calls_the_blaise_service_with_the_correct_parameters(mock_blaise_service):
+def test_questionnaire_exists_calls_the_blaise_service_with_the_correct_parameters(
+    mock_blaise_service,
+):
     config = config_helper.get_default_config()
     questionnaire_name = "LMS2101_AA1"
 
@@ -144,9 +156,13 @@ def test_questionnaire_exists_calls_the_blaise_service_with_the_correct_paramete
     mock_blaise_service.assert_called_with(questionnaire_name, config)
 
 
-@pytest.mark.parametrize("api_response, expected_response", [(False, False), (True, True)])
+@pytest.mark.parametrize(
+    "api_response, expected_response", [(False, False), (True, True)]
+)
 @mock.patch("services.blaise_service.questionnaire_exists")
-def test_questionnaire_exists_returns_correct_response(mock_blaise_service, api_response, expected_response):
+def test_questionnaire_exists_returns_correct_response(
+    mock_blaise_service, api_response, expected_response
+):
     config = config_helper.get_default_config()
     questionnaire_name = "LMS2101_AA1"
     mock_blaise_service.return_value = api_response
@@ -159,7 +175,9 @@ def test_questionnaire_exists_returns_correct_response(mock_blaise_service, api_
 
 
 @mock.patch("services.blaise_service.update_case")
-def test_update_case_calls_the_blaise_service_with_the_correct_parameters(mock_blaise_service):
+def test_update_case_calls_the_blaise_service_with_the_correct_parameters(
+    mock_blaise_service,
+):
     config = config_helper.get_default_config()
     questionnaire_name = "LMS2101_AA1"
     case_id = "900001"
@@ -174,4 +192,6 @@ def test_update_case_calls_the_blaise_service_with_the_correct_parameters(mock_b
     update_case(questionnaire_name, case_id, data_fields, config)
 
     # assert
-    mock_blaise_service.assert_called_with(questionnaire_name, case_id, data_fields, config)
+    mock_blaise_service.assert_called_with(
+        questionnaire_name, case_id, data_fields, config
+    )

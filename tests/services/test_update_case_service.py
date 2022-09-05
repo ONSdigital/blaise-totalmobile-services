@@ -1,5 +1,3 @@
-
-
 def test_update_case_calls_the_questionnaire_service_with_the_correct_parameters():
     pass
 

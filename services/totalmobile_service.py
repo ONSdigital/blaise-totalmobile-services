@@ -1,7 +1,8 @@
-from client.optimise import OptimiseClient
+from typing import Dict, List
+
+from client.optimise import GetJobsResponse, OptimiseClient
 from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from typing import Dict
 
 
 class TotalmobileService:
@@ -13,14 +14,10 @@ class TotalmobileService:
         return TotalmobileWorldModel.import_worlds(worlds)
 
     def create_job(self, job: TotalmobileJobModel):
-        return self.client.create_job(
-            job.world_id,
-            job.payload
-        )
+        return self.client.create_job(job.world_id, job.payload)
 
     def delete_job(self, world_id: str, job: str):
         return self.client.delete_job(world_id, job)
 
-    def get_jobs(self, world_id: str) -> Dict[str, str]:
+    def get_jobs(self, world_id: str) -> GetJobsResponse:
         return self.client.get_jobs(world_id)
-
