@@ -15,20 +15,30 @@ def mock_blaise_service():
 
 
 @pytest.fixture()
+def mock_eligible_case_service():
+    return Mock()
+
+
+@pytest.fixture()
 def config() -> Config:
     return config_helper.get_default_config()
 
 
 @pytest.fixture()
-def service(config, mock_blaise_service) -> QuestionnaireService:
-    return QuestionnaireService(config, blaise_service=mock_blaise_service)
+def service(
+    config, mock_blaise_service, mock_eligible_case_service
+) -> QuestionnaireService:
+    return QuestionnaireService(
+        config,
+        blaise_service=mock_blaise_service,
+        eligible_case_service=mock_eligible_case_service,
+    )
 
 
 @mock.patch.object(QuestionnaireService, "get_cases")
-@mock.patch("services.eligible_case_service.get_eligible_cases")
 def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
-    mock_get_eligible_cases,
     mock_get_cases,
+    mock_eligible_case_service,
     service,
 ):
     questionnaire_cases = [
@@ -39,7 +49,7 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
     eligible_cases = [questionnaire_cases[0]]
 
     mock_get_cases.return_value = questionnaire_cases
-    mock_get_eligible_cases.return_value = eligible_cases
+    mock_eligible_case_service.get_eligible_cases.return_value = eligible_cases
 
     questionnaire_name = "LMS2101_AA1"
 
@@ -48,14 +58,15 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
 
     # assert
     mock_get_cases.assert_called_with(questionnaire_name)
-    mock_get_eligible_cases.assert_called_with(questionnaire_cases)
+    mock_eligible_case_service.get_eligible_cases.assert_called_with(
+        questionnaire_cases
+    )
 
 
 @mock.patch.object(QuestionnaireService, "get_cases")
-@mock.patch("services.eligible_case_service.get_eligible_cases")
 def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible_case_service(
-    mock_get_eligible_cases,
     mock_get_cases,
+    mock_eligible_case_service,
     service,
 ):
     questionnaire_cases = [
@@ -66,7 +77,7 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
     eligible_cases = [questionnaire_cases[0]]
 
     mock_get_cases.return_value = questionnaire_cases
-    mock_get_eligible_cases.return_value = eligible_cases
+    mock_eligible_case_service.get_eligible_cases.return_value = eligible_cases
 
     questionnaire_name = "LMS2101_AA1"
 

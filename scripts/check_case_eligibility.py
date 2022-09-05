@@ -2,7 +2,7 @@ import os
 import sys
 
 from appconfig import Config
-from services import eligible_case_service
+from services import blaise_service, eligible_case_service
 from services.questionnaire_service import QuestionnaireService
 
 
@@ -29,8 +29,12 @@ if __name__ == "__main__":
     questionnaire_name = sys.argv[1]
 
     config = Config.from_env()
-    questionnaire_service = QuestionnaireService()
-    cases = questionnaire_service.get_cases(questionnaire_name, config)
+    questionnaire_service = QuestionnaireService(
+        config,
+        blaise_service=blaise_service,
+        eligible_case_service=eligible_case_service,
+    )
+    cases = questionnaire_service.get_cases(questionnaire_name)
     eligible_cases = eligible_case_service.get_eligible_cases(cases)
 
     eligible_count = 0
