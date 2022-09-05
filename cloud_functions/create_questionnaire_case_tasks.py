@@ -13,7 +13,8 @@ from models.totalmobile.totalmobile_outgoing_job_payload_model import (
     TotalMobileOutgoingJobPayloadModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from services import blaise_service, eligible_case_service, uac_service
+from services import eligible_case_service, uac_service
+from services.blaise_service import BlaiseService
 from services.questionnaire_service import QuestionnaireService
 from services.totalmobile_service import TotalmobileService
 
@@ -78,7 +79,7 @@ def create_questionnaire_case_tasks(
 ) -> str:
     questionnaire_service = QuestionnaireService(
         config,
-        blaise_service=blaise_service,
+        blaise_service=BlaiseService(),
         eligible_case_service=eligible_case_service,
         uac_service=uac_service,
     )

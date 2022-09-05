@@ -6,13 +6,18 @@ import pytest
 from urllib3.exceptions import HTTPError
 
 from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
-from services import blaise_service
+from services.blaise_service import BlaiseService
 from tests.helpers import config_helper
+
+
+@pytest.fixture()
+def blaise_service() -> BlaiseService:
+    return BlaiseService()
 
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
 def test_get_cases_calls_the_rest_api_client_with_the_correct_parameters(
-    _mock_rest_api_client,
+    _mock_rest_api_client, blaise_service
 ):
     config = config_helper.get_default_config()
     blaise_server_park = "gusty"
@@ -30,7 +35,7 @@ def test_get_cases_calls_the_rest_api_client_with_the_correct_parameters(
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
 def test_get_cases_returns_a_list_of_case_models(
-    _mock_rest_api_client_get_questionnaire,
+    _mock_rest_api_client_get_questionnaire, blaise_service
 ):
     # arrange
     config = config_helper.get_default_config()
@@ -70,7 +75,7 @@ def test_get_cases_returns_a_list_of_case_models(
 
 @mock.patch.object(blaise_restapi.Client, "get_case")
 def test_get_case_calls_the_rest_api_client_with_the_correct_parameters(
-    _mock_rest_api_client,
+    _mock_rest_api_client, blaise_service
 ):
     config = config_helper.get_default_config()
     blaise_server_park = "gusty"
@@ -96,7 +101,7 @@ def test_get_case_calls_the_rest_api_client_with_the_correct_parameters(
 
 
 @mock.patch.object(blaise_restapi.Client, "get_case")
-def test_get_case_returns_a_case_model(_mock_rest_api_client):
+def test_get_case_returns_a_case_model(_mock_rest_api_client, blaise_service):
     # arrange
     config = config_helper.get_default_config()
     questionnaire_name = "LMS2101_AA1"
@@ -120,7 +125,7 @@ def test_get_case_returns_a_case_model(_mock_rest_api_client):
 
 @mock.patch.object(blaise_restapi.Client, "get_case")
 def test_get_case_throws_a_case_does_not_exist_error_if_the_case_does_not_exist(
-    _mock_rest_api_client,
+    _mock_rest_api_client, blaise_service
 ):
     # arrange
     config = config_helper.get_default_config()
@@ -136,7 +141,7 @@ def test_get_case_throws_a_case_does_not_exist_error_if_the_case_does_not_exist(
 
 @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
 def test_questionnaire_exists_calls_the_rest_api_client_with_the_correct_parameters(
-    _mock_rest_api_client,
+    _mock_rest_api_client, blaise_service
 ):
     config = config_helper.get_default_config()
     blaise_server_park = "gusty"
@@ -154,7 +159,7 @@ def test_questionnaire_exists_calls_the_rest_api_client_with_the_correct_paramet
 )
 @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
 def test_questionnaire_exists_returns_correct_response(
-    _mock_rest_api_client, api_response, expected_response
+    _mock_rest_api_client, api_response, expected_response, blaise_service
 ):
     config = config_helper.get_default_config()
     questionnaire_name = "LMS2101_AA1"
@@ -169,7 +174,7 @@ def test_questionnaire_exists_returns_correct_response(
 
 @mock.patch.object(blaise_restapi.Client, "patch_case_data")
 def test_update_case_calls_the_rest_api_client_with_the_correct_parameters(
-    _mock_rest_api_client,
+    _mock_rest_api_client, blaise_service
 ):
     config = config_helper.get_default_config()
     blaise_server_park = "gusty"

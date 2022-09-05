@@ -3,11 +3,16 @@ from typing import Dict, List
 
 from appconfig import Config
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+from services.blaise_service import BlaiseService
 
 
 class QuestionnaireService:
     def __init__(
-        self, config: Config, blaise_service, eligible_case_service, uac_service
+        self,
+        config: Config,
+        blaise_service: BlaiseService,
+        eligible_case_service,
+        uac_service,
     ):
         self._config = config
         self._blaise_service = blaise_service
