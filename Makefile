@@ -22,3 +22,8 @@ lint:
 ## Run unit tests
 test:
 	@poetry run python -m pytest
+
+.PHONY: behave
+## Run behave tests
+behave:
+	@poetry run python -m behave tests/features
