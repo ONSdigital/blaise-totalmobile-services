@@ -5,20 +5,16 @@ from app.utilities.parse_json import get_reference_number, validate_data
 from models.totalmobile.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
-from services.questionnaire_service import QuestionnaireService
 from services.update_case_service import UpdateCaseService
 
 
-def submit_form_result_request_handler(
-    request, questionnaire_service: QuestionnaireService
-):
+def submit_form_result_request_handler(request, update_case_service: UpdateCaseService):
     data = request.get_json()
     validate_data(data)
     logging.info(f"Incoming request via 'submitformresultrequest' - {data}")
 
     totalmobile_case = TotalMobileIncomingUpdateRequestModel.import_request(data)
 
-    update_case_service = UpdateCaseService(questionnaire_service)
     update_case_service.update_case(totalmobile_case)
 
 
