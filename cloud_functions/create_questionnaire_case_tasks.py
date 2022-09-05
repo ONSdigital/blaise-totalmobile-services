@@ -79,7 +79,7 @@ def create_questionnaire_case_tasks(
 ) -> str:
     questionnaire_service = QuestionnaireService(
         config,
-        blaise_service=BlaiseService(),
+        blaise_service=BlaiseService(config),
         eligible_case_service=eligible_case_service,
         uac_service=uac_service,
     )

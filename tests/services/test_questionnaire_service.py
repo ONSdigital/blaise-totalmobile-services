@@ -176,9 +176,7 @@ def test_questionnaire_exists_calls_the_blaise_service_with_the_correct_paramete
     service.questionnaire_exists(questionnaire_name)
 
     # assert
-    mock_blaise_service.questionnaire_exists.assert_called_with(
-        questionnaire_name, config
-    )
+    mock_blaise_service.questionnaire_exists.assert_called_with(questionnaire_name)
 
 
 @pytest.mark.parametrize(
@@ -219,5 +217,5 @@ def test_update_case_calls_the_blaise_service_with_the_correct_parameters(
 
     # assert
     mock_blaise_service.update_case.assert_called_with(
-        questionnaire_name, case_id, data_fields, config
+        questionnaire_name, case_id, data_fields
     )

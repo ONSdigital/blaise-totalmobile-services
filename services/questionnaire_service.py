@@ -27,12 +27,8 @@ class QuestionnaireService:
         return self._eligible_case_service.get_eligible_cases(questionnaire_cases)
 
     def get_cases(self, questionnaire_name: str) -> List[BlaiseCaseInformationModel]:
-        questionnaire_cases = self._blaise_service.get_cases(
-            questionnaire_name, self._config
-        )
-        questionnaire_uacs = self._uac_service.get_uacs(
-            questionnaire_name, self._config
-        )
+        questionnaire_cases = self._blaise_service.get_cases(questionnaire_name)
+        questionnaire_uacs = self._uac_service.get_uacs(questionnaire_name)
 
         [
             questionnaire_case.populate_uac_data(
@@ -53,7 +49,7 @@ class QuestionnaireService:
     def get_case(
         self, questionnaire_name: str, case_id: str
     ) -> BlaiseCaseInformationModel:
-        return self._blaise_service.get_case(questionnaire_name, case_id, self._config)
+        return self._blaise_service.get_case(questionnaire_name, case_id)
 
     def get_wave_from_questionnaire_name(self, questionnaire_name: str) -> str:
         if questionnaire_name[0:3] != "LMS":
@@ -63,9 +59,7 @@ class QuestionnaireService:
         return questionnaire_name[-1]
 
     def questionnaire_exists(self, questionnaire_name: str) -> bool:
-        return self._blaise_service.questionnaire_exists(
-            questionnaire_name, self._config
-        )
+        return self._blaise_service.questionnaire_exists(questionnaire_name)
 
     def update_case(
         self,
@@ -78,5 +72,5 @@ class QuestionnaireService:
         )
 
         return self._blaise_service.update_case(
-            questionnaire_name, case_id, data_fields, self._config
+            questionnaire_name, case_id, data_fields
         )
