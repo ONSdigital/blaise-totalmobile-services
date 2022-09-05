@@ -16,5 +16,6 @@ def setup_app():
     application = Flask(__name__)
     application.auth = auth
     application.register_blueprint(incoming)
-    application.questionnaire_service = QuestionnaireService()
+    config = Config.from_env()
+    application.questionnaire_service = QuestionnaireService(config)
     return application

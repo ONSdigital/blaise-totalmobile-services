@@ -7,18 +7,19 @@ from services import blaise_service, eligible_case_service, uac_service
 
 
 class QuestionnaireService:
+    def __init__(self, config: Config):
+        self._config = config
+
     def get_eligible_cases(
-        self, questionnaire_name: str, config: Config
+        self, questionnaire_name: str
     ) -> List[BlaiseCaseInformationModel]:
-        questionnaire_cases = self.get_cases(questionnaire_name, config)
+        questionnaire_cases = self.get_cases(questionnaire_name)
 
         return eligible_case_service.get_eligible_cases(questionnaire_cases)
 
-    def get_cases(
-        self, questionnaire_name: str, config: Config
-    ) -> List[BlaiseCaseInformationModel]:
-        questionnaire_cases = blaise_service.get_cases(questionnaire_name, config)
-        questionnaire_uacs = uac_service.get_uacs(questionnaire_name, config)
+    def get_cases(self, questionnaire_name: str) -> List[BlaiseCaseInformationModel]:
+        questionnaire_cases = blaise_service.get_cases(questionnaire_name, self._config)
+        questionnaire_uacs = uac_service.get_uacs(questionnaire_name, self._config)
 
         [
             questionnaire_case.populate_uac_data(
@@ -37,9 +38,9 @@ class QuestionnaireService:
         return questionnaire_cases
 
     def get_case(
-        self, questionnaire_name: str, case_id: str, config: Config
+        self, questionnaire_name: str, case_id: str
     ) -> BlaiseCaseInformationModel:
-        return blaise_service.get_case(questionnaire_name, case_id, config)
+        return blaise_service.get_case(questionnaire_name, case_id, self._config)
 
     def get_wave_from_questionnaire_name(self, questionnaire_name: str) -> str:
         if questionnaire_name[0:3] != "LMS":
@@ -48,20 +49,19 @@ class QuestionnaireService:
             )
         return questionnaire_name[-1]
 
-    def questionnaire_exists(self, questionnaire_name: str, config: Config) -> bool:
-        return blaise_service.questionnaire_exists(questionnaire_name, config)
+    def questionnaire_exists(self, questionnaire_name: str) -> bool:
+        return blaise_service.questionnaire_exists(questionnaire_name, self._config)
 
     def update_case(
         self,
         questionnaire_name: str,
         case_id: str,
         data_fields: Dict[str, str],
-        config: Config,
     ) -> None:
         logging.info(
             f"Attempting to update case {case_id} in questionnaire {questionnaire_name} in Blaise with data fields {data_fields}"
         )
 
         return blaise_service.update_case(
-            questionnaire_name, case_id, data_fields, config
+            questionnaire_name, case_id, data_fields, self._config
         )
