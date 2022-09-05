@@ -153,3 +153,17 @@ def get_update_case_request_without_reference_element():
     update_request = get_populated_update_case_request_for_contact_made()
     del update_request["result"]["association"]["reference"]
     return update_request
+
+
+def get_update_case_request_with_malformed_reference_element(
+    reference="LMS2101-AA1:90001",
+):
+    update_request = get_populated_update_case_request_for_contact_made()
+    update_request["result"]["association"]["reference"] = reference
+    return update_request
+
+
+def get_malformed_update_case_request():
+    update_request = get_populated_update_case_request_for_contact_made()
+    del update_request["result"]["responses"]
+    return update_request

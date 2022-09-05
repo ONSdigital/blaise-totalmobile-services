@@ -66,9 +66,15 @@ class TotalmobileReferenceModel(BaseModel):
         reference_fields = reference.split(".", 2)
 
         if len(reference_fields) != 2:
+            logging.error(
+                "Unique reference appeared to be malformed in the totalmobile payload"
+            )
             raise BadReferenceError()
 
         if reference_fields[0] == "" or reference_fields[1] == "":
+            logging.error(
+                "Unique reference appeared to be malformed in the totalmobile payload"
+            )
             raise BadReferenceError()
 
         return reference_fields
