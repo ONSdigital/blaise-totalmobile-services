@@ -153,7 +153,7 @@ def test_create_case_tasks_for_questionnaire(
     )
 
     # assert
-    mock_get_eligible_cases.assert_called_with("LMS2101_AA1", config)
+    mock_get_eligible_cases.assert_called_with("LMS2101_AA1")
 
     mock_run_async_tasks.assert_called_once()
     kwargs = mock_run_async_tasks.call_args.kwargs

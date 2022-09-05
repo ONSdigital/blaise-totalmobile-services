@@ -2,14 +2,20 @@ from unittest import mock
 
 import pytest
 
+from appconfig import Config
 from models.blaise.uac_model import UacChunks, UacModel
 from services.questionnaire_service import QuestionnaireService
 from tests.helpers import config_helper, get_blaise_case_model_helper
 
 
-@pytest.fixture
-def service() -> QuestionnaireService:
-    return QuestionnaireService()
+@pytest.fixture()
+def config() -> Config:
+    return config_helper.get_default_config()
+
+
+@pytest.fixture()
+def service(config) -> QuestionnaireService:
+    return QuestionnaireService(config)
 
 
 @mock.patch.object(QuestionnaireService, "get_cases")
@@ -19,9 +25,6 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
     mock_get_cases,
     service,
 ):
-    # arrange
-    config = config_helper.get_default_config()
-
     questionnaire_cases = [
         get_blaise_case_model_helper.get_populated_case_model(),  # eligible
         get_blaise_case_model_helper.get_populated_case_model(),  # not eligible
@@ -35,10 +38,10 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
     questionnaire_name = "LMS2101_AA1"
 
     # act
-    service.get_eligible_cases(questionnaire_name, config)
+    service.get_eligible_cases(questionnaire_name)
 
     # assert
-    mock_get_cases.assert_called_with(questionnaire_name, config)
+    mock_get_cases.assert_called_with(questionnaire_name)
     mock_get_eligible_cases.assert_called_with(questionnaire_cases)
 
 
@@ -49,9 +52,6 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
     mock_get_cases,
     service,
 ):
-    # arrange
-    config = config_helper.get_default_config()
-
     questionnaire_cases = [
         get_blaise_case_model_helper.get_populated_case_model(),  # eligible
         get_blaise_case_model_helper.get_populated_case_model(),  # not eligible
@@ -65,7 +65,7 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
     questionnaire_name = "LMS2101_AA1"
 
     # act
-    result = service.get_eligible_cases(questionnaire_name, config)
+    result = service.get_eligible_cases(questionnaire_name)
 
     # assert
     assert result == eligible_cases
@@ -78,9 +78,6 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(
     mock_uac_service,
     service,
 ):
-    # arrange
-    config = config_helper.get_default_config()
-
     questionnaire_cases = [
         get_blaise_case_model_helper.get_populated_case_model(
             case_id="20001", uac_chunks=UacChunks(uac1="", uac2="", uac3="")
@@ -108,7 +105,7 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(
     questionnaire_name = "LMS2101_AA1"
 
     # act
-    result = service.get_cases(questionnaire_name, config)
+    result = service.get_cases(questionnaire_name)
 
     # assert
     assert result == [
@@ -151,12 +148,12 @@ def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error(servi
 def test_questionnaire_exists_calls_the_blaise_service_with_the_correct_parameters(
     mock_blaise_service,
     service,
+    config,
 ):
-    config = config_helper.get_default_config()
     questionnaire_name = "LMS2101_AA1"
 
     # act
-    service.questionnaire_exists(questionnaire_name, config)
+    service.questionnaire_exists(questionnaire_name)
 
     # assert
     mock_blaise_service.assert_called_with(questionnaire_name, config)
@@ -172,12 +169,11 @@ def test_questionnaire_exists_returns_correct_response(
     expected_response,
     service,
 ):
-    config = config_helper.get_default_config()
     questionnaire_name = "LMS2101_AA1"
     mock_blaise_service.return_value = api_response
 
     # act
-    result = service.questionnaire_exists(questionnaire_name, config)
+    result = service.questionnaire_exists(questionnaire_name)
 
     # assert
     assert result == expected_response
@@ -187,8 +183,8 @@ def test_questionnaire_exists_returns_correct_response(
 def test_update_case_calls_the_blaise_service_with_the_correct_parameters(
     mock_blaise_service,
     service,
+    config,
 ):
-    config = config_helper.get_default_config()
     questionnaire_name = "LMS2101_AA1"
     case_id = "900001"
     data_fields = [
@@ -199,7 +195,7 @@ def test_update_case_calls_the_blaise_service_with_the_correct_parameters(
     ]
 
     # act
-    service.update_case(questionnaire_name, case_id, data_fields, config)
+    service.update_case(questionnaire_name, case_id, data_fields)
 
     # assert
     mock_blaise_service.assert_called_with(
