@@ -18,6 +18,7 @@ from models.totalmobile.totalmobile_outgoing_job_payload_model import (
     TotalMobileOutgoingJobPayloadModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
+from services.questionnaire_service import QuestionnaireService
 from services.totalmobile_service import TotalmobileService
 from tests.helpers import config_helper
 from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
@@ -97,7 +98,7 @@ def test_validate_request_when_missing_fields():
     )
 
 
-@mock.patch("services.questionnaire_service.get_eligible_cases")
+@mock.patch.object(QuestionnaireService, "get_eligible_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 @mock.patch(
     "cloud_functions.create_questionnaire_case_tasks.get_cases_with_valid_world_ids"
@@ -173,7 +174,7 @@ def test_create_case_tasks_for_questionnaire(
     assert result == "Done"
 
 
-@mock.patch("services.questionnaire_service.get_eligible_cases")
+@mock.patch.object(QuestionnaireService, "get_eligible_cases")
 @mock.patch("cloud_functions.create_questionnaire_case_tasks.run_async_tasks")
 def test_create_questionnaire_case_tasks_when_no_eligible_cases(
     mock_run_async_tasks, mock_get_eligible_cases
