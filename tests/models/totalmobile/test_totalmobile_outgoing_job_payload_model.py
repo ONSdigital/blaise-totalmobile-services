@@ -1,9 +1,18 @@
-from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingJobPayloadModel, Reference, \
-    Skill, AddressDetails, Address, \
-    AddressCoordinates, ContactDetails, AdditionalProperty, DueDate
-from models.blaise.uac_model import UacChunks
-from tests.helpers import get_blaise_case_model_helper
 from datetime import datetime
+
+from models.blaise.uac_model import UacChunks
+from models.totalmobile.totalmobile_outgoing_job_payload_model import (
+    AdditionalProperty,
+    Address,
+    AddressCoordinates,
+    AddressDetails,
+    ContactDetails,
+    DueDate,
+    Reference,
+    Skill,
+    TotalMobileOutgoingJobPayloadModel,
+)
+from tests.helpers import get_blaise_case_model_helper
 
 
 def test_import_case_returns_a_populated_model():
@@ -30,11 +39,13 @@ def test_import_case_returns_a_populated_model():
         field_region="Gwent",
         field_team="B-Team",
         wave_com_dte=datetime(2023, 1, 31),
-        uac_chunks=UacChunks(uac1="3456", uac2="3453", uac3="4546")
+        uac_chunks=UacChunks(uac1="3456", uac2="3453", uac3="4546"),
     )
 
     # act
-    result = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
+    result = TotalMobileOutgoingJobPayloadModel.import_case(
+        questionnaire_name, questionnaire_case
+    )
 
     # assert
     assert result.identity.reference == "LMS2101-AA1.90001"
@@ -42,7 +53,8 @@ def test_import_case_returns_a_populated_model():
         "UAC: 3456 3453 4546\n"
         "Due Date: 31/01/2023\n"
         "Study: LMS2101_AA1\n"
-        "Case ID: 90001")
+        "Case ID: 90001"
+    )
     assert result.origin == "ONS"
     assert result.duration == 15
     assert result.workType == "LMS"
@@ -101,11 +113,13 @@ def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uac
     )
 
     # act
-    result = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
+    result = TotalMobileOutgoingJobPayloadModel.import_case(
+        questionnaire_name, questionnaire_case
+    )
 
     # assert
     for additional_property in result.additionalProperties:
-        assert additional_property.name.startswith('uac') is False
+        assert additional_property.name.startswith("uac") is False
 
 
 def test_to_payload_returns_a_correctly_formatted_payload():
@@ -117,67 +131,37 @@ def test_to_payload_returns_a_correctly_formatted_payload():
         workType="LMS",
         skills=[Skill(identity=Reference("LMS"))],
         dueDate=DueDate(end=datetime(2023, 1, 31)),
-        location=AddressDetails(address="12 Blaise Street, Blaise Hill, Blaiseville, Newport, FML134D",
-                                addressDetail=Address(
-                                    addressLine1="12 Blaise Street",
-                                    addressLine2="Blaise Hill",
-                                    addressLine3="Blaiseville",
-                                    addressLine4="Gwent",
-                                    addressLine5="Newport",
-                                    postCode="FML134D",
-                                    coordinates=AddressCoordinates(
-                                        latitude="10020202",
-                                        longitude="34949494")
-                                )),
+        location=AddressDetails(
+            address="12 Blaise Street, Blaise Hill, Blaiseville, Newport, FML134D",
+            addressDetail=Address(
+                addressLine1="12 Blaise Street",
+                addressLine2="Blaise Hill",
+                addressLine3="Blaiseville",
+                addressLine4="Gwent",
+                addressLine5="Newport",
+                postCode="FML134D",
+                coordinates=AddressCoordinates(
+                    latitude="10020202", longitude="34949494"
+                ),
+            ),
+        ),
         contact=ContactDetails(name="FML134D"),
         attributes=[
-            AdditionalProperty(
-                name="Region",
-                value="Gwent"
-            ),
-            AdditionalProperty(
-                name="Team",
-                value="B-Team"
-            ),
+            AdditionalProperty(name="Region", value="Gwent"),
+            AdditionalProperty(name="Team", value="B-Team"),
         ],
         additionalProperties=[
-            AdditionalProperty(
-                name="surveyName",
-                value="LM2007"
-            ),
-            AdditionalProperty(
-                name="tla",
-                value="LMS"
-            ),
-            AdditionalProperty(
-                name="wave",
-                value="1"
-            ),
-            AdditionalProperty(
-                name="priority",
-                value="1"
-            ),
-            AdditionalProperty(
-                name="fieldRegion",
-                value="Gwent"
-            ),
-            AdditionalProperty(
-                name="fieldTeam",
-                value="B-Team"
-            ),
-            AdditionalProperty(
-                name="uac1",
-                value="3456"
-            ),
-            AdditionalProperty(
-                name="uac2",
-                value="3453"
-            ),
-            AdditionalProperty(
-                name="uac3",
-                value="4546"
-            )
-        ])
+            AdditionalProperty(name="surveyName", value="LM2007"),
+            AdditionalProperty(name="tla", value="LMS"),
+            AdditionalProperty(name="wave", value="1"),
+            AdditionalProperty(name="priority", value="1"),
+            AdditionalProperty(name="fieldRegion", value="Gwent"),
+            AdditionalProperty(name="fieldTeam", value="B-Team"),
+            AdditionalProperty(name="uac1", value="3456"),
+            AdditionalProperty(name="uac2", value="3453"),
+            AdditionalProperty(name="uac3", value="4546"),
+        ],
+    )
 
     # act
     result = totalmobile_case.to_payload()
@@ -220,52 +204,19 @@ def test_to_payload_returns_a_correctly_formatted_payload():
             "name": "FML134D",
         },
         "attributes": [
-            {
-                "name": "Region",
-                "value": "Gwent"
-            },
-            {
-                "name": "Team",
-                "value": "B-Team"
-            },
+            {"name": "Region", "value": "Gwent"},
+            {"name": "Team", "value": "B-Team"},
         ],
         "additionalProperties": [
-            {
-                "name": "surveyName",
-                "value": "LM2007"
-            },
-            {
-                "name": "tla",
-                "value": "LMS"
-            },
-            {
-                "name": "wave",
-                "value": "1"
-            },
-            {
-                "name": "priority",
-                "value": "1"
-            },
-            {
-                "name": "fieldRegion",
-                "value": "Gwent"
-            },
-            {
-                "name": "fieldTeam",
-                "value": "B-Team"
-            },
-            {
-                "name": "uac1",
-                "value": "3456"
-            },
-            {
-                "name": "uac2",
-                "value": "3453"
-            },
-            {
-                "name": "uac3",
-                "value": "4546"
-            },
+            {"name": "surveyName", "value": "LM2007"},
+            {"name": "tla", "value": "LMS"},
+            {"name": "wave", "value": "1"},
+            {"name": "priority", "value": "1"},
+            {"name": "fieldRegion", "value": "Gwent"},
+            {"name": "fieldTeam", "value": "B-Team"},
+            {"name": "uac1", "value": "3456"},
+            {"name": "uac2", "value": "3453"},
+            {"name": "uac3", "value": "4546"},
         ],
     }
 
@@ -277,7 +228,9 @@ def test_to_payload_sends_an_empty_string_to_totalmobile_if_the_due_date_is_miss
         wave_com_dte=None
     )
 
-    case = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
+    case = TotalMobileOutgoingJobPayloadModel.import_case(
+        questionnaire_name, questionnaire_case
+    )
     result = case.to_payload()
 
     assert result["dueDate"]["end"] == ""
@@ -290,11 +243,13 @@ def test_create_description_returns_a_correctly_formatted_description():
         case_id="12345",
         data_model_name="LMS2201_AA1",
         wave_com_dte=datetime(2022, 1, 31),
-        uac_chunks=UacChunks(uac1="1234", uac2="1235", uac3="1236")
+        uac_chunks=UacChunks(uac1="1234", uac2="1235", uac3="1236"),
     )
 
     # Act
-    case = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
+    case = TotalMobileOutgoingJobPayloadModel.import_case(
+        questionnaire_name, questionnaire_case
+    )
 
     # Assert
     assert case.description == (
@@ -309,21 +264,17 @@ def test_create_description_returns_a_correctly_formatted_description_when_all_v
     # Arrange
     questionnaire_name = "LMS2201_AA1"
     questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
-        case_id="1234",
-        data_model_name="",
-        wave_com_dte=None,
-        uac_chunks=None
+        case_id="1234", data_model_name="", wave_com_dte=None, uac_chunks=None
     )
 
     # Act
-    case = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
+    case = TotalMobileOutgoingJobPayloadModel.import_case(
+        questionnaire_name, questionnaire_case
+    )
 
     # Assert
     assert case.description == (
-        "UAC: \n"
-        "Due Date: \n"
-        "Study: LMS2201_AA1\n"
-        "Case ID: 1234"
+        "UAC: \n" "Due Date: \n" "Study: LMS2201_AA1\n" "Case ID: 1234"
     )
 
 
@@ -340,10 +291,15 @@ def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_all
     )
 
     # Act
-    case = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
+    case = TotalMobileOutgoingJobPayloadModel.import_case(
+        questionnaire_name, questionnaire_case
+    )
 
     # Assert
-    assert case.location.address == "123 Blaise Street, Blaisville, Upper Blaise, Blaisingdom, BS1 1BS"
+    assert (
+        case.location.address
+        == "123 Blaise Street, Blaisville, Upper Blaise, Blaisingdom, BS1 1BS"
+    )
 
 
 def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_not_all_fields_are_populated():
@@ -359,7 +315,9 @@ def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_not
     )
 
     # Act
-    case = TotalMobileOutgoingJobPayloadModel.import_case(questionnaire_name, questionnaire_case)
+    case = TotalMobileOutgoingJobPayloadModel.import_case(
+        questionnaire_name, questionnaire_case
+    )
 
     # Assert
     assert case.location.address == "123 Blaise Street, Blaisingdom, BS1 1BS"

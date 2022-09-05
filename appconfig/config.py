@@ -57,4 +57,3 @@ class Config:
         print(f"Configuration - cloud_function_sa: {self.cloud_function_sa}")
         print(f"Configuration - bus_api_url: {self.bus_api_url}")
         print(f"Configuration - bus_client_id: {self.bus_client_id}")
-

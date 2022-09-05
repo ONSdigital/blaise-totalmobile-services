@@ -16,5 +16,5 @@ def test_config_from_env():
         blaise_server_park="",
         cloud_function_sa="",
         bus_api_url="",
-        bus_client_id=""
+        bus_client_id="",
     )

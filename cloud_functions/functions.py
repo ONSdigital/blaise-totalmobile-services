@@ -1,16 +1,15 @@
 import asyncio
-from google.cloud import tasks_v2
-from google.protobuf.duration_pb2 import Duration
 from datetime import timedelta
 from typing import Any, Coroutine, List, Tuple
+
+from google.cloud import tasks_v2
+from google.protobuf.duration_pb2 import Duration
 
 from appconfig import Config
 
 
 def prepare_tasks(
-        tasks: List[Tuple[str, str]],
-        queue_id,
-        cloud_function_name
+    tasks: List[Tuple[str, bytes]], queue_id, cloud_function_name
 ) -> List[tasks_v2.CreateTaskRequest]:
 
     config = Config.from_env()
