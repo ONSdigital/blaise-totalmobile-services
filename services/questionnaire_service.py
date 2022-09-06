@@ -4,6 +4,7 @@ from typing import Dict, List
 from appconfig import Config
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from services.blaise_service import BlaiseService
+from services.uac_service import UacService
 
 
 class QuestionnaireService:
@@ -12,7 +13,7 @@ class QuestionnaireService:
         config: Config,
         blaise_service: BlaiseService,
         eligible_case_service,
-        uac_service,
+        uac_service: UacService,
     ):
         self._config = config
         self._blaise_service = blaise_service
