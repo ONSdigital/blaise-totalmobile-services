@@ -112,7 +112,7 @@ def test_get_jobs_calls_the_client_with_the_correct_parameters():
     optimise_client_mock.get_jobs.assert_called_with(world_id)
 
 
-def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_no_reason_passed():
+def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_no_reason_json_passed():
     # arrange
     optimise_client_mock = create_autospec(OptimiseClient)
     optimise_client_mock.get_jobs.return_value = {}
@@ -124,10 +124,12 @@ def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_no_reason
     totalmobile_service.delete_job(world_id, job)
 
     # assert
-    optimise_client_mock.delete_job.assert_called_with(world_id, job, "0")
+    optimise_client_mock.delete_job.assert_called_with(
+        world_id, job, {"deletionReason": {"reference": "0"}}
+    )
 
 
-def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_reason_passed():
+def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_reason_json_passed():
     # arrange
     optimise_client_mock = create_autospec(OptimiseClient)
     optimise_client_mock.get_jobs.return_value = {}
@@ -139,4 +141,6 @@ def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_reason_pa
     totalmobile_service.delete_job(world_id, job, "110")
 
     # assert
-    optimise_client_mock.delete_job.assert_called_with(world_id, job, "110")
+    optimise_client_mock.delete_job.assert_called_with(
+        world_id, job, {"deletionReason": {"reference": "110"}}
+    )

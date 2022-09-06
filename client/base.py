@@ -1,4 +1,3 @@
-import json
 from datetime import datetime, timedelta
 from typing import Any, List
 
@@ -46,11 +45,11 @@ class BaseClient:
         self.__check_response(response)
         return response
 
-    def _delete(self, path: str, reason: str) -> requests.Response:
+    def _delete(self, path: str, json: Any = None) -> requests.Response:
         response = requests.delete(
             f"{self._url}/{self._instance}/{path}",
             headers=self.__auth_header(),
-            json={"deletionReason": {"reference": reason}},
+            json=json,
         )
         self.__check_response(response)
         return response

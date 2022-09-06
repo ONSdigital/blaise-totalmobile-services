@@ -19,6 +19,7 @@ GetWorldsResponse = List[GetWorldResponse]
 
 class GetJobResponse(TypedDict):
     identity: Identity
+    visitComplete: str
 
 
 GetJobsResponse = List[GetJobResponse]
