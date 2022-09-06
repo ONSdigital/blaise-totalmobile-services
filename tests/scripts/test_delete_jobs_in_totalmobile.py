@@ -29,8 +29,10 @@ def test_get_list_of_active_world_ids_returns_a_list_of_active_world_ids():
 
 def test_remove_default_world_returns_a_list_without_default_world():
     default_world_id = "c0ffee00-c8d0-499f-8693-8be6ad1dc6ea"
+    mod_world_id = "b9268537-c4ee-4ff2-b63c-a8a500cb2f04"
     list_of_active_world_ids = [
         default_world_id,
+        mod_world_id,
         "c0ffee00-c8d0-499f-8693-8be6ad1dc7ea",
         "c0ffee00-c8d0-499f-8693-8be6ad1dc8ea",
         "c0ffee00-c8d0-499f-8693-8be6ad1dc9ea",
@@ -44,12 +46,14 @@ def test_remove_default_world_returns_a_list_without_default_world():
 
 def test_get_list_of_active_world_ids_returns_a_list_of_active_world_ids_when_default_world_id_is_returned():
     default_world_id = "c0ffee00-c8d0-499f-8693-8be6ad1dc6ea"
+    mod_world_id = "b9268537-c4ee-4ff2-b63c-a8a500cb2f04"
     totalmobile_service_mock = create_autospec(TotalmobileService)
     totalmobile_service_mock.get_world_model.return_value = TotalmobileWorldModel(
         worlds=[
             World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6"),
             World(region="Region 2", id="3fa85f64-5717-4562-b3fc-2c963f66afa6"),
             World(region="Region 3", id=default_world_id),
+            World(region="Region 3", id=mod_world_id),
         ],
     )
 
