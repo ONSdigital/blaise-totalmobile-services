@@ -1,4 +1,5 @@
 from unittest import mock
+from unittest.mock import Mock
 
 from google.cloud import tasks_v2
 
@@ -62,35 +63,17 @@ def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(
     )
 
 
-@mock.patch.object(tasks_v2.CloudTasksAsyncClient, "create_task")
-def test_create_tasks_gets_called_once_for_each_task_given_to_it(mock_create_task):
+def test_create_tasks_gets_called_once_for_each_task_given_to_it():
     # arrange
-    mock_create_task.return_value = {}
     task_requests = [
         tasks_v2.CreateTaskRequest(parent="qid1", task=tasks_v2.Task()),
         tasks_v2.CreateTaskRequest(parent="qid2", task=tasks_v2.Task()),
     ]
+    task_client = Mock()
+    task_client.create_task.side_effect = lambda task: f"created {task.parent}"
 
     # act
-    create_tasks(task_requests, mock_create_task)
+    tasks = create_tasks(task_requests, task_client)
 
-    # assert
-    mock_create_task.assert_has_calls(
-        [mock.call.create_task(task_request) for task_request in task_requests]
-    )
-
-
-@mock.patch.object(tasks_v2.CloudTasksAsyncClient, "create_task")
-def test_create_tasks_returns_the_correct_number_of_tasks(mock_create_task):
-    # arrange
-    mock_create_task.return_value = {}
-    task_requests = [
-        tasks_v2.CreateTaskRequest(parent="qid1", task=tasks_v2.Task()),
-        tasks_v2.CreateTaskRequest(parent="qid2", task=tasks_v2.Task()),
-    ]
-
-    # act
-    result = create_tasks(task_requests, mock_create_task)
-
-    # assert
-    assert len(result) == 2
+    # # assert
+    assert tasks == ["created qid1", "created qid2"]
