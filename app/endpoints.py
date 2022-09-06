@@ -13,6 +13,9 @@ from app.handlers.total_mobile_handler import (
     submit_form_result_request_handler,
     update_visit_status_request_handler,
 )
+from services import eligible_case_service
+from services.questionnaire_service import QuestionnaireService
+from services.uac_service import UacService
 from services.update_case_service import UpdateCaseService
 
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
@@ -40,7 +43,14 @@ def update_visit_status_request():
 @auth.login_required
 def submit_form_result_request():
     try:
-        update_case_service = UpdateCaseService(current_app.questionnaire_service)
+        uac_service = UacService(current_app.app_config)
+        questionnaire_service = QuestionnaireService(
+            current_app.app_config,
+            blaise_service=current_app.blaise_service,
+            eligible_case_service=eligible_case_service,
+            uac_service=uac_service,
+        )
+        update_case_service = UpdateCaseService(questionnaire_service)
         submit_form_result_request_handler(request, update_case_service)
         return "ok"
     except (MissingReferenceError, BadReferenceError):
