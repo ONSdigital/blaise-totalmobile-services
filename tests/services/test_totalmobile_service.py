@@ -124,9 +124,7 @@ def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_no_reason
     totalmobile_service.delete_job(world_id, job)
 
     # assert
-    optimise_client_mock.delete_job.assert_called_with(
-        world_id, job, {"deletionReason": {"reference": "0"}}
-    )
+    optimise_client_mock.delete_job.assert_called_with(world_id, job, "0")
 
 
 def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_reason_json_passed():
@@ -141,6 +139,4 @@ def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_reason_js
     totalmobile_service.delete_job(world_id, job, "110")
 
     # assert
-    optimise_client_mock.delete_job.assert_called_with(
-        world_id, job, {"deletionReason": {"reference": "110"}}
-    )
+    optimise_client_mock.delete_job.assert_called_with(world_id, job, "110")
