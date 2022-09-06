@@ -1,3 +1,5 @@
+# type: ignore[no-redef]
+
 import base64
 import logging
 
@@ -100,13 +102,37 @@ def step_impl(context, reference):
     context.response = response
 
 
-@when("Totalmobile sends an update with missing reference")
+@when("Totalmobile sends an update with a missing reference")
 def step_impl(context):
     valid_credentials = base64.b64encode(b"test_username:test_password").decode("utf-8")
     response = context.test_client.post(
         "/bts/submitformresultrequest",
         headers={"Authorization": f"Basic {valid_credentials}"},
         json=incoming_request_helper.get_update_case_request_without_reference_element(),
+    )
+    context.response = response
+
+
+@when("Totalmobile sends an update with a malformed reference {reference}")
+def step_impl(context, reference):
+    valid_credentials = base64.b64encode(b"test_username:test_password").decode("utf-8")
+    response = context.test_client.post(
+        "/bts/submitformresultrequest",
+        headers={"Authorization": f"Basic {valid_credentials}"},
+        json=incoming_request_helper.get_update_case_request_with_malformed_reference_element(
+            reference=reference
+        ),
+    )
+    context.response = response
+
+
+@when("Totalmobile sends an update with a malformed payload")
+def step_impl(context):
+    valid_credentials = base64.b64encode(b"test_username:test_password").decode("utf-8")
+    response = context.test_client.post(
+        "/bts/submitformresultrequest",
+        headers={"Authorization": f"Basic {valid_credentials}"},
+        json=incoming_request_helper.get_malformed_update_case_request(),
     )
     context.response = response
 

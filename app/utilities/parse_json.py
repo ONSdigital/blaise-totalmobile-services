@@ -6,7 +6,7 @@ import phonenumbers
 from app.exceptions.custom_exceptions import MissingReferenceError
 
 
-def get_case_details(input: Dict[str, Any]) -> Tuple[str]:
+def get_case_details(input: Dict[str, Any]) -> Tuple[str, str]:
     print(f"Getting questionnaire name and case id, please wait...")
     if (
         "Result" not in input

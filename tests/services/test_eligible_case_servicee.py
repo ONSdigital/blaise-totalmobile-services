@@ -405,7 +405,7 @@ def test_get_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(
     ) in caplog.record_tuples
 
 
-def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_N(caplog):
+def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_n(caplog):
     # arrange
 
     cases = [
@@ -430,11 +430,13 @@ def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_N(caplog):
     assert (
         "root",
         logging.INFO,
-        f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '{test_input}' outside of the range '{value_range}' set for the field 'outcome_code'",
+        f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a field case value of 'N', not 'Y'",
     ) in caplog.record_tuples
 
 
-def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_N(caplog):
+def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_N_and_priority_is_missing(
+    caplog,
+):
     # arrange
 
     cases = [

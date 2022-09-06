@@ -171,7 +171,7 @@ def test_contact_details_returns_an_empty_dictionary_if_no_contact_details_provi
 
 
 @pytest.mark.parametrize("record_number", [1, 5])
-def test_contact_details_returns_an_empty_dictionary_if_no_contact_details_provided(
+def test_contact_details_returns_expected_detail_if_record_number_provided(
     record_number,
 ):
     # act

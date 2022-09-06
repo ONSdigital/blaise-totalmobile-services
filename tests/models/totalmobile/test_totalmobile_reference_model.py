@@ -32,7 +32,9 @@ def test_model_raises_a_missing_reference_error_when_given_an_invalid_questionna
 
     # act & assert
     with pytest.raises(MissingReferenceError):
-        TotalmobileReferenceModel(questionnaire_name, case_id)
+        TotalmobileReferenceModel.from_questionnaire_and_case(
+            questionnaire_name, case_id
+        )
 
 
 def test_questionnaire_name_and_case_id_properties_are_set_correctly_when_given_a_valid_incoming_request():
@@ -43,7 +45,7 @@ def test_questionnaire_name_and_case_id_properties_are_set_correctly_when_given_
             reference=reference
         )
     )
-    reference_model = TotalmobileReferenceModel(incoming_case_request)
+    reference_model = TotalmobileReferenceModel.from_request(incoming_case_request)
 
     # act & assert
     assert reference_model.questionnaire_name == "LMS2101_AA1"
@@ -56,7 +58,7 @@ def test_model_raises_a_missing_reference_error_if_the_request_does_not_have_exp
 
     # act & assert
     with pytest.raises(MissingReferenceError):
-        TotalmobileReferenceModel(incoming_case_request)
+        TotalmobileReferenceModel.from_request(incoming_case_request)
 
 
 def test_model_raises_a_missing_reference_error_if_the_request_does_not_have_expected_association_element():
@@ -68,7 +70,7 @@ def test_model_raises_a_missing_reference_error_if_the_request_does_not_have_exp
 
     # act & assert
     with pytest.raises(MissingReferenceError):
-        TotalmobileReferenceModel(incoming_case_request)
+        TotalmobileReferenceModel.from_request(incoming_case_request)
 
 
 def test_model_raises_a_missing_reference_error_if_the_request_does_not_have_expected_reference_element():
@@ -80,7 +82,7 @@ def test_model_raises_a_missing_reference_error_if_the_request_does_not_have_exp
 
     # act & assert
     with pytest.raises(MissingReferenceError):
-        TotalmobileReferenceModel(incoming_case_request)
+        TotalmobileReferenceModel.from_request(incoming_case_request)
 
 
 def test_model_raises_a_missing_reference_error_if_the_request_has_an_empty_reference():
@@ -94,7 +96,7 @@ def test_model_raises_a_missing_reference_error_if_the_request_has_an_empty_refe
 
     # act & assert
     with pytest.raises(MissingReferenceError):
-        TotalmobileReferenceModel(incoming_case_request)
+        TotalmobileReferenceModel.from_request(incoming_case_request)
 
 
 @pytest.mark.parametrize(
@@ -113,4 +115,4 @@ def test_model_raises_a_bad_reference_error_if_the_request_does_not_have_a_corre
 
     # assert
     with pytest.raises(BadReferenceError):
-        TotalmobileReferenceModel(incoming_case_request)
+        TotalmobileReferenceModel.from_request(incoming_case_request)

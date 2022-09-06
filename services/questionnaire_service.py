@@ -49,7 +49,7 @@ def get_wave_from_questionnaire_name(questionnaire_name: str) -> str:
     return questionnaire_name[-1]
 
 
-def questionnaire_exists(questionnaire_name: str, config: Config) -> str:
+def questionnaire_exists(questionnaire_name: str, config: Config) -> bool:
     return blaise_service.questionnaire_exists(questionnaire_name, config)
 
 

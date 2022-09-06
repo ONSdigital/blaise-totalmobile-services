@@ -1,8 +1,27 @@
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, TypedDict, Union
 
 import requests
 
 from client.base import BaseClient
+
+
+class Identity(TypedDict):
+    reference: str
+
+
+class GetWorldResponse(TypedDict):
+    id: str
+    identity: Identity
+
+
+GetWorldsResponse = List[GetWorldResponse]
+
+
+class GetJobResponse(TypedDict):
+    identity: Identity
+
+
+GetJobsResponse = List[GetJobResponse]
 
 
 class OptimiseClient(BaseClient):
@@ -17,7 +36,7 @@ class OptimiseClient(BaseClient):
     def delete_job(self, world_id: str, job: str, reason: str) -> requests.Response:
         return self._delete(f"worlds/{world_id}/jobs/{job}", reason)
 
-    def get_jobs(self, world_id: str) -> List[Any]:
+    def get_jobs(self, world_id: str) -> GetJobsResponse:
         return self._get_list(f"worlds/{world_id}/jobs?pageSize=1000")
 
     def get_job(self, world_id: str, job_reference: str) -> Dict[Any, Any]:
@@ -28,10 +47,10 @@ class OptimiseClient(BaseClient):
             f"worlds/{world_id}/jobs/{job_reference}/additionalProperties"
         ).json()
 
-    def get_worlds(self) -> Dict[str, Union[str, Dict[str, str]]]:
+    def get_worlds(self) -> GetWorldsResponse:
         return self._get("worlds").json()
 
-    def get_world(self, world: str) -> Dict[Any, Any]:
+    def get_world(self, world: str) -> GetWorldResponse:
         return self._get(f"worlds/{world}").json()
 
     def _get(self, path: str) -> Any:

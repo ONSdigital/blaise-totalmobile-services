@@ -3,6 +3,7 @@ from flask import Blueprint, current_app, jsonify, request
 from app.auth import auth
 from app.exceptions.custom_exceptions import (
     BadReferenceError,
+    InvalidTotalmobileUpdateRequestException,
     MissingReferenceError,
     QuestionnaireCaseDoesNotExistError,
     QuestionnaireDoesNotExistError,
@@ -16,10 +17,22 @@ from app.handlers.total_mobile_handler import (
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
 
 
+@incoming.after_request
+def add_header(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Strict-Transport-Security"] = "max-age=86400"
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Content-Security-Policy"] = "default-src 'self'"
+    response.headers["X-Frame-Options"] = "DENY"
+    return response
+
+
 @incoming.route("/updatevisitstatusrequest", methods=["POST"])
 @auth.login_required
 def update_visit_status_request():
     update_visit_status_request_handler(request)
+    return "ok"
 
 
 @incoming.route("/submitformresultrequest", methods=["POST"])
@@ -28,10 +41,10 @@ def submit_form_result_request():
     try:
         submit_form_result_request_handler(request, current_app.questionnaire_service)
         return "ok"
-    except MissingReferenceError:
-        return "Missing reference", 400
-    except BadReferenceError:
-        return "Missing reference", 400
+    except (MissingReferenceError, BadReferenceError):
+        return "Missing/invalid reference in request", 400
+    except InvalidTotalmobileUpdateRequestException:
+        return "Request appears to be malformed", 400
     except QuestionnaireDoesNotExistError:
         return "Questionnaire does not exist in Blaise", 404
     except QuestionnaireCaseDoesNotExistError:
@@ -42,6 +55,7 @@ def submit_form_result_request():
 @auth.login_required
 def complete_visit_request():
     complete_visit_request_handler(request)
+    return "ok"
 
 
 @incoming.route("/<version>/health", methods=["GET"])
