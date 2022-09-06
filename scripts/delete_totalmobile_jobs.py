@@ -10,10 +10,11 @@ from services.totalmobile_service import TotalmobileService
 def __remove_default_world_id(list_of_active_world_ids: List[str]) -> List[str]:
     print("Removing the default world id from the retrieved world ids")
     default_world_id = "c0ffee00-c8d0-499f-8693-8be6ad1dc6ea"
+    mod_world_id = "b9268537-c4ee-4ff2-b63c-a8a500cb2f04"
     return [
         world_id
         for world_id in list_of_active_world_ids
-        if world_id != default_world_id
+        if world_id not in [default_world_id, mod_world_id]
     ]
 
 
@@ -80,7 +81,3 @@ if __name__ == "__main__":
     else:
         print("Did not run 'delete_job' as 'totalmobile_url' was not pointing to 'dev'")
         exit(1)
-
-# TODO:
-# add custom exceptions to catch when a case has a status of 'completed'
-# map 'Region 1' etc. for logging? - better than '1234 12134 132423' in the logs?
