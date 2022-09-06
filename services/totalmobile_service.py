@@ -17,8 +17,7 @@ class TotalmobileService:
         return self.client.create_job(job.world_id, job.payload)
 
     def delete_job(self, world_id: str, job: str, reason: str = "0"):
-        reason_json = {"deletionReason": {"reference": reason}}
-        return self.client.delete_job(world_id, job, reason_json)
+        return self.client.delete_job(world_id, job, reason)
 
     def get_jobs(self, world_id: str) -> GetJobsResponse:
         return self.client.get_jobs(world_id)
