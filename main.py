@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import cloud_functions.check_questionnaire_release_date
 import cloud_functions.create_questionnaire_case_tasks
 import cloud_functions.create_totalmobile_job
+import cloud_functions.delete_completed_jobs
 from app.app import load_config, setup_app
 from appconfig import Config
 from client import OptimiseClient
