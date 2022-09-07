@@ -10,30 +10,30 @@ from tests.helpers import incoming_request_helper
 
 @given('there is a questionnaire "{questionnaire}" with case "{case_id}" in Blaise')
 def step_impl(context, questionnaire, case_id):
-    context.questionnaire_service.add_questionnaire(questionnaire)
+    context.blaise_service.add_questionnaire(questionnaire)
     context.questionnaire_name = questionnaire
 
-    context.questionnaire_service.add_case_to_questionnaire(questionnaire, case_id)
+    context.blaise_service.add_case_to_questionnaire(questionnaire, case_id)
     context.case_id = case_id
 
 
 @given("the case has an outcome code of {outcome_code}")
 def step_impl(context, outcome_code):
-    context.questionnaire_service.update_outcome_code_of_case_in_questionnaire(
+    context.blaise_service.update_outcome_code_of_case_in_questionnaire(
         context.questionnaire_name, context.case_id, outcome_code
     )
 
 
 @given("the case has no pre-existing call history")
 def step_impl(context):
-    context.questionnaire_service.set_case_has_call_history(
+    context.blaise_service.set_case_has_call_history(
         False, context.questionnaire_name, context.case_id
     )
 
 
 @given("the case has call history")
 def step_impl(context):
-    context.questionnaire_service.set_case_has_call_history(
+    context.blaise_service.set_case_has_call_history(
         True, context.questionnaire_name, context.case_id
     )
 
@@ -46,7 +46,7 @@ def step_impl(context, questionnaire):
 
 @given('there is a questionnaire "{questionnaire}" in Blaise')
 def step_impl(context, questionnaire):
-    context.questionnaire_service.add_questionnaire(questionnaire)
+    context.blaise_service.add_questionnaire(questionnaire)
 
 
 @given('there is no case "{case_id}" for questionnaire "{questionnaire}" in Blaise')
@@ -140,23 +140,12 @@ def step_impl(context):
 @then('the case "{case_id}" for questionnaire "{questionnaire}" has been updated with')
 def step_impl(context, questionnaire, case_id):
     fields_to_update = {row["field_name"]: row["value"] for row in context.table}
-    actual_fields_updated = context.questionnaire_service.update_case_request[
-        "data_fields"
-    ]
-
-    assert (
-        context.questionnaire_service.update_case_request is not None
-    ), f"update service has not been called"
-    assert (
-        questionnaire
-        == context.questionnaire_service.update_case_request["questionnaire_name"]
-    )
-    assert case_id == context.questionnaire_service.update_case_request["case_id"]
+    actual_fields_updated = context.blaise_service.get_updates(questionnaire, case_id)
     for item in fields_to_update.keys():
         assert (
             item in actual_fields_updated
-            and actual_fields_updated[item] == fields_to_update[item]
-        )
+        ), f"{item} should be in {actual_fields_updated}"
+        assert actual_fields_updated[item] == fields_to_update[item]
 
 
 @then(
@@ -164,29 +153,16 @@ def step_impl(context, questionnaire, case_id):
 )
 def step_impl(context, questionnaire, case_id):
     fields_to_update = {row["field_name"]: row["value"] for row in context.table}
-    actual_fields_updated = context.questionnaire_service.update_case_request[
-        "data_fields"
-    ]
-
-    assert (
-        context.questionnaire_service.update_case_request is not None
-    ), f"update service has not been called"
-    assert (
-        questionnaire
-        == context.questionnaire_service.update_case_request["questionnaire_name"]
-    )
-    assert case_id == context.questionnaire_service.update_case_request["case_id"]
+    actual_fields_updated = context.blaise_service.get_updates(questionnaire, case_id)
     for item in fields_to_update.keys():
-        assert (
-            item in actual_fields_updated
-            and actual_fields_updated[item] == fields_to_update[item]
-        )
+        assert item in actual_fields_updated
+        assert actual_fields_updated[item] == fields_to_update[item]
 
 
 @then('the case "{case_id}" for questionnaire "{questionnaire}" has not been updated')
 def step_impl(context, questionnaire, case_id):
-    assert (
-        context.questionnaire_service.update_case_request is None
+    assert not context.blaise_service.case_has_been_updated(
+        questionnaire, case_id
     ), "Update case should not have been called"
 
 

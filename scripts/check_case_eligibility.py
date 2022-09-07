@@ -2,7 +2,10 @@ import os
 import sys
 
 from appconfig import Config
-from services import eligible_case_service, questionnaire_service
+from services import eligible_case_service, uac_service
+from services.blaise_service import BlaiseService
+from services.questionnaire_service import QuestionnaireService
+from services.uac_service import UacService
 
 
 def __check_for_env_var(name: str):
@@ -28,7 +31,13 @@ if __name__ == "__main__":
     questionnaire_name = sys.argv[1]
 
     config = Config.from_env()
-    cases = questionnaire_service.get_cases(questionnaire_name, config)
+    questionnaire_service = QuestionnaireService(
+        config,
+        blaise_service=BlaiseService(config),
+        eligible_case_service=eligible_case_service,
+        uac_service=UacService(config),
+    )
+    cases = questionnaire_service.get_cases(questionnaire_name)
     eligible_cases = eligible_case_service.get_eligible_cases(cases)
 
     eligible_count = 0
