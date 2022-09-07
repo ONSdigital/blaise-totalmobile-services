@@ -7,22 +7,9 @@ from client import OptimiseClient
 from services.totalmobile_service import TotalmobileService
 
 
-def __remove_default_world_id(list_of_active_world_ids: List[str]) -> List[str]:
-    print("Removing the default world id from the retrieved world ids")
-    default_world_id = "c0ffee00-c8d0-499f-8693-8be6ad1dc6ea"
-    mod_world_id = "b9268537-c4ee-4ff2-b63c-a8a500cb2f04"
-    return [
-        world_id
-        for world_id in list_of_active_world_ids
-        if world_id not in [default_world_id, mod_world_id]
-    ]
-
-
 def __get_active_world_ids(totalmobile_service_local: TotalmobileService) -> List[str]:
-    print("Retrieving world ids")
-    return __remove_default_world_id(
-        totalmobile_service_local.get_world_model().get_available_ids()
-    )
+    print("Retrieving world IDs")
+    return totalmobile_service_local.get_world_model().get_available_ids()
 
 
 def __map_world_id_to_job_reference(
@@ -30,14 +17,18 @@ def __map_world_id_to_job_reference(
 ) -> List[Dict[str, str]]:
     list_of_jobs = []
     for world_id in world_ids:
-        print(f"Retrieving job references for {world_id}")
+        print(f"Retrieving jobs for world ID {world_id}")
         jobs = totalmobile_service_local.get_jobs(world_id)
-        print(f"Retrieved {len(jobs)} for {world_id}")
+        print(f"Retrieved {len(jobs)} jobs for world ID {world_id}")
         for job in jobs:
-            my_dict = {"world_id": world_id, "reference": job["identity"]["reference"]}
-            list_of_jobs.append(my_dict)
+            if job["visitComplete"] is not True:
+                my_dict = {
+                    "world_id": world_id,
+                    "job_reference": job["identity"]["reference"],
+                }
+                list_of_jobs.append(my_dict)
     print(
-        f"Found a total of {len(list_of_jobs)} Totalmobile jobs across {len(world_ids)} worlds"
+        f"Found a total of {len(list_of_jobs)} uncompleted jobs across {len(world_ids)} worlds"
     )
     return list_of_jobs
 
@@ -46,11 +37,11 @@ def __delete_job(
     totalmobile_service_local: TotalmobileService, job: Dict[str, str]
 ) -> None:
     try:
-        totalmobile_service_local.delete_job(job["world_id"], job["reference"])
-        print(f"Deleted job id {job['reference']} from world {job['world_id']}")
+        totalmobile_service_local.delete_job(job["world_id"], job["job_reference"], "0")
+        print(f"Deleted job id {job['job_reference']} from world {job['world_id']}")
     except Exception as e:
         print(
-            f"Could not delete job id {job['reference']} from world {job['world_id']}"
+            f"Could not delete job id {job['job_reference']} from world {job['world_id']}"
         )
         print(e)
 
@@ -81,3 +72,6 @@ if __name__ == "__main__":
     else:
         print("Did not run 'delete_job' as 'totalmobile_url' was not pointing to 'dev'")
         exit(1)
+
+# TODO:
+# map 'Region 1' etc. for logging? - better than '1234 12134 132423' in the logs?
