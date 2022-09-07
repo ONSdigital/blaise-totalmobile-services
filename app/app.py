@@ -3,7 +3,7 @@ from flask import Flask
 from app.auth import auth
 from app.config import Config
 from app.endpoints import incoming
-from services import questionnaire_service
+from services.blaise_service import BlaiseService
 
 
 def load_config(application):
@@ -16,5 +16,7 @@ def setup_app():
     application = Flask(__name__)
     application.auth = auth
     application.register_blueprint(incoming)
-    application.questionnaire_service = questionnaire_service
+    config = Config.from_env()
+    application.app_config = config
+    application.blaise_service = BlaiseService(config)
     return application
