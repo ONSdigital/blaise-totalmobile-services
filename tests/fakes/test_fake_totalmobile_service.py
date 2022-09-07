@@ -1,6 +1,6 @@
 import pytest
 
-from tests.fakes.fake_totalmobile_service import FakeTotalmobileService, _JobDoesNotExistError
+from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
 
 
 @pytest.fixture()
@@ -30,9 +30,3 @@ def test_remove_job(service: FakeTotalmobileService):
 
     # assert
     assert not service.job_exists(reference)
-
-
-def test_remove_job_when_job_does_not_exist(service: FakeTotalmobileService):
-    # arrange, act and assert
-    with pytest.raises(_JobDoesNotExistError, match=f"Job 'unknown' does not exist"):
-        service.remove_job("unknown")
