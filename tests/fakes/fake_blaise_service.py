@@ -15,7 +15,7 @@ def nested_dict() -> defaultdict:
     return defaultdict(nested_dict)
 
 
-class MockBlaiseService:
+class FakeBlaiseService:
     def __init__(self):
         self._questionnaires = {}
         self._updates = nested_dict()
