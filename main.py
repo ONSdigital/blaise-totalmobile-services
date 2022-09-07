@@ -37,10 +37,8 @@ def create_questionnaire_case_tasks(request: flask.Request) -> str:
         config.totalmobile_client_secret,
     )
     totalmobile_service = TotalmobileService(optimise_client)
-    return (
-        cloud_functions.create_questionnaire_case_tasks.create_questionnaire_case_tasks(
-            request, config, totalmobile_service
-        )
+    return cloud_functions.create_questionnaire_case_tasks.create_questionnaire_case_tasks(
+        request, config, totalmobile_service
     )
 
 
@@ -51,9 +49,8 @@ def check_questionnaire_release_date(_event, _context) -> str:
 
 
 def delete_completed_jobs(_event, _context) -> str:
-    return(
-        cloud_functions.delete_completed_jobs.delete_completed_jobs()
-    )
+    return cloud_functions.delete_completed_jobs.delete_completed_jobs()
+
 
 if os.path.isfile("./.env"):
     print("Loading environment variables from dotenv file")
