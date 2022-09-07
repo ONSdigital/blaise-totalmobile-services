@@ -1,12 +1,12 @@
 from werkzeug.security import generate_password_hash
 
 from app.app import setup_app
-from tests.mocks.mock_blaise_service import MockBlaiseService
+from tests.fakes.fake_blaise_service import FakeBlaiseService
 
 
 def before_scenario(context, scenario):
     app = setup_app()
-    app.blaise_service = MockBlaiseService()
+    app.blaise_service = FakeBlaiseService()
     context.blaise_service = app.blaise_service
 
     app.config["user"] = "test_username"

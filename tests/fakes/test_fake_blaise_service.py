@@ -8,15 +8,15 @@ from models.blaise.blaise_case_information_model import (
     BlaiseCaseInformationModel,
     ContactDetails,
 )
-from tests.mocks.mock_blaise_service import MockBlaiseService
+from tests.fakes.fake_blaise_service import FakeBlaiseService
 
 
 @pytest.fixture()
-def service() -> MockBlaiseService:
-    return MockBlaiseService()
+def service() -> FakeBlaiseService:
+    return FakeBlaiseService()
 
 
-def test_questionnaire_exists(service: MockBlaiseService):
+def test_questionnaire_exists(service: FakeBlaiseService):
     service.add_questionnaire("LMS11111")
     service.add_questionnaire("LMS22222")
 
@@ -26,7 +26,7 @@ def test_questionnaire_exists(service: MockBlaiseService):
     assert not service.questionnaire_exists("LMS99999")
 
 
-def test_add_case_when_questionnaire_does_not_exist(service: MockBlaiseService):
+def test_add_case_when_questionnaire_does_not_exist(service: FakeBlaiseService):
     with pytest.raises(
         QuestionnaireCaseDoesNotExistError,
         match=f"Questionnaire 'unknown' does not exist",
@@ -35,7 +35,7 @@ def test_add_case_when_questionnaire_does_not_exist(service: MockBlaiseService):
 
 
 def test_update_outcome_code_of_case_in_questionnaire_when_questionnaire_does_not_exist(
-    service: MockBlaiseService,
+    service: FakeBlaiseService,
 ):
     with pytest.raises(
         QuestionnaireCaseDoesNotExistError,
@@ -45,7 +45,7 @@ def test_update_outcome_code_of_case_in_questionnaire_when_questionnaire_does_no
 
 
 def test_update_outcome_code_of_case_in_questionnaire_when_case_does_not_exist(
-    service: MockBlaiseService,
+    service: FakeBlaiseService,
 ):
     service.add_questionnaire("LMS12345")
     with pytest.raises(
@@ -55,7 +55,7 @@ def test_update_outcome_code_of_case_in_questionnaire_when_case_does_not_exist(
         service.update_outcome_code_of_case_in_questionnaire("LMS12345", "12345", "310")
 
 
-def test_update_outcome_code_of_case_in_questionnaire(service: MockBlaiseService):
+def test_update_outcome_code_of_case_in_questionnaire(service: FakeBlaiseService):
     service.add_questionnaire("LMS12345")
     service.add_case_to_questionnaire("LMS12345", "11111")
     service.update_outcome_code_of_case_in_questionnaire("LMS12345", "11111", "310")
@@ -63,7 +63,7 @@ def test_update_outcome_code_of_case_in_questionnaire(service: MockBlaiseService
 
 
 def test_set_case_has_call_history_when_questionnaire_does_not_exist(
-    service: MockBlaiseService,
+    service: FakeBlaiseService,
 ):
     with pytest.raises(
         QuestionnaireCaseDoesNotExistError,
@@ -72,7 +72,7 @@ def test_set_case_has_call_history_when_questionnaire_does_not_exist(
         service.set_case_has_call_history(False, "unknown", "12345")
 
 
-def test_set_case_has_call_history_when_case_does_not_exist(service: MockBlaiseService):
+def test_set_case_has_call_history_when_case_does_not_exist(service: FakeBlaiseService):
     service.add_questionnaire("LMS12345")
     with pytest.raises(
         QuestionnaireCaseDoesNotExistError,
@@ -81,7 +81,7 @@ def test_set_case_has_call_history_when_case_does_not_exist(service: MockBlaiseS
         service.set_case_has_call_history(False, "LMS12345", "12345")
 
 
-def test_set_case_has_call_history(service: MockBlaiseService):
+def test_set_case_has_call_history(service: FakeBlaiseService):
     service.add_questionnaire("LMS12345")
     service.add_case_to_questionnaire("LMS12345", "11111")
     service.add_case_to_questionnaire("LMS12345", "22222")
@@ -91,7 +91,7 @@ def test_set_case_has_call_history(service: MockBlaiseService):
     assert not service.get_case("LMS12345", "22222").has_call_history
 
 
-def test_get_case_when_questionnaire_does_not_exist(service: MockBlaiseService):
+def test_get_case_when_questionnaire_does_not_exist(service: FakeBlaiseService):
     with pytest.raises(
         QuestionnaireCaseDoesNotExistError,
         match=f"Questionnaire 'unknown' does not exist",
@@ -99,7 +99,7 @@ def test_get_case_when_questionnaire_does_not_exist(service: MockBlaiseService):
         service.get_case("unknown", "12345")
 
 
-def test_get_case_when_case_does_not_exist(service: MockBlaiseService):
+def test_get_case_when_case_does_not_exist(service: FakeBlaiseService):
     service.add_questionnaire("LMS22222")
     with pytest.raises(
         QuestionnaireCaseDoesNotExistError,
@@ -108,7 +108,7 @@ def test_get_case_when_case_does_not_exist(service: MockBlaiseService):
         service.get_case("LMS22222", "12345")
 
 
-def test_get_case_when_case_exists(service: MockBlaiseService):
+def test_get_case_when_case_exists(service: FakeBlaiseService):
     service.add_questionnaire("LMS12345")
     service.add_case_to_questionnaire("LMS12345", "99999")
     assert service.get_case("LMS12345", "99999") == BlaiseCaseInformationModel(
@@ -144,13 +144,13 @@ def test_get_case_when_case_exists(service: MockBlaiseService):
 
 
 def test_case_has_been_updated_when_update_case_has_not_been_called(
-    service: MockBlaiseService,
+    service: FakeBlaiseService,
 ):
     assert service.case_has_been_updated("LMS12345", "12345") is False
 
 
 def test_case_has_been_updated_when_update_case_has_been_called(
-    service: MockBlaiseService,
+    service: FakeBlaiseService,
 ):
     service.update_case("LMS12345", "11111", dict())
     assert service.case_has_been_updated("LMS12345", "11111") is True
@@ -158,7 +158,7 @@ def test_case_has_been_updated_when_update_case_has_been_called(
 
 
 def test_get_updates_when_questionnaire_cases_have_not_been_updated(
-    service: MockBlaiseService,
+    service: FakeBlaiseService,
 ):
     with pytest.raises(
         Exception,
@@ -167,7 +167,7 @@ def test_get_updates_when_questionnaire_cases_have_not_been_updated(
         service.get_updates("unknown", "12345")
 
 
-def test_get_updates_when_case_has_not_been_updated(service: MockBlaiseService):
+def test_get_updates_when_case_has_not_been_updated(service: FakeBlaiseService):
     service.update_case("LMS12345", "11111", dict(field="value"))
     with pytest.raises(
         Exception,
@@ -176,7 +176,7 @@ def test_get_updates_when_case_has_not_been_updated(service: MockBlaiseService):
         service.get_updates("LMS12345", "99999")
 
 
-def test_get_updates_when_updates_occurred(service: MockBlaiseService):
+def test_get_updates_when_updates_occurred(service: FakeBlaiseService):
     service.update_case("LMS12345", "11111", dict(field1="value1", field2="value2"))
     service.update_case("LMS12345", "22222", dict(field2="value2", field3="value3"))
     assert service.get_updates("LMS12345", "11111") == dict(
@@ -187,7 +187,7 @@ def test_get_updates_when_updates_occurred(service: MockBlaiseService):
     )
 
 
-def test_get_updates_when_overwrite_occurred(service: MockBlaiseService):
+def test_get_updates_when_overwrite_occurred(service: FakeBlaiseService):
     service.add_questionnaire("LMS12345")
     service.add_case_to_questionnaire("LMS12345", "11111")
     service.update_case(
