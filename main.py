@@ -49,6 +49,11 @@ def check_questionnaire_release_date(_event, _context) -> str:
     )
 
 
+def delete_completed_jobs(_event, _context) -> str:
+    return(
+        cloud_functions.delete_completed_jobs.delete_completed_jobs()
+    )
+
 if os.path.isfile("./.env"):
     print("Loading environment variables from dotenv file")
     load_dotenv()
