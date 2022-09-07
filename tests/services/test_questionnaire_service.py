@@ -1,26 +1,52 @@
 from unittest import mock
+from unittest.mock import Mock
 
 import pytest
 
+from appconfig import Config
 from models.blaise.uac_model import UacChunks, UacModel
-from services.questionnaire_service import (
-    get_cases,
-    get_eligible_cases,
-    get_wave_from_questionnaire_name,
-    questionnaire_exists,
-    update_case,
-)
+from services.questionnaire_service import QuestionnaireService
 from tests.helpers import config_helper, get_blaise_case_model_helper
 
 
-@mock.patch("services.questionnaire_service.get_cases")
-@mock.patch("services.eligible_case_service.get_eligible_cases")
-def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
-    mock_get_eligible_cases, mock_get_cases
-):
-    # arrange
-    config = config_helper.get_default_config()
+@pytest.fixture()
+def mock_blaise_service():
+    return Mock()
 
+
+@pytest.fixture()
+def mock_eligible_case_service():
+    return Mock()
+
+
+@pytest.fixture()
+def mock_uac_service():
+    return Mock()
+
+
+@pytest.fixture()
+def config() -> Config:
+    return config_helper.get_default_config()
+
+
+@pytest.fixture()
+def service(
+    config, mock_blaise_service, mock_eligible_case_service, mock_uac_service
+) -> QuestionnaireService:
+    return QuestionnaireService(
+        config,
+        blaise_service=mock_blaise_service,
+        eligible_case_service=mock_eligible_case_service,
+        uac_service=mock_uac_service,
+    )
+
+
+@mock.patch.object(QuestionnaireService, "get_cases")
+def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
+    mock_get_cases,
+    mock_eligible_case_service,
+    service,
+):
     questionnaire_cases = [
         get_blaise_case_model_helper.get_populated_case_model(),  # eligible
         get_blaise_case_model_helper.get_populated_case_model(),  # not eligible
@@ -29,26 +55,26 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
     eligible_cases = [questionnaire_cases[0]]
 
     mock_get_cases.return_value = questionnaire_cases
-    mock_get_eligible_cases.return_value = eligible_cases
+    mock_eligible_case_service.get_eligible_cases.return_value = eligible_cases
 
     questionnaire_name = "LMS2101_AA1"
 
     # act
-    get_eligible_cases(questionnaire_name, config)
+    service.get_eligible_cases(questionnaire_name)
 
     # assert
-    mock_get_cases.assert_called_with(questionnaire_name, config)
-    mock_get_eligible_cases.assert_called_with(questionnaire_cases)
+    mock_get_cases.assert_called_with(questionnaire_name)
+    mock_eligible_case_service.get_eligible_cases.assert_called_with(
+        questionnaire_cases
+    )
 
 
-@mock.patch("services.questionnaire_service.get_cases")
-@mock.patch("services.eligible_case_service.get_eligible_cases")
+@mock.patch.object(QuestionnaireService, "get_cases")
 def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible_case_service(
-    mock_get_eligible_cases, mock_get_cases
+    mock_get_cases,
+    mock_eligible_case_service,
+    service,
 ):
-    # arrange
-    config = config_helper.get_default_config()
-
     questionnaire_cases = [
         get_blaise_case_model_helper.get_populated_case_model(),  # eligible
         get_blaise_case_model_helper.get_populated_case_model(),  # not eligible
@@ -57,25 +83,22 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
     eligible_cases = [questionnaire_cases[0]]
 
     mock_get_cases.return_value = questionnaire_cases
-    mock_get_eligible_cases.return_value = eligible_cases
+    mock_eligible_case_service.get_eligible_cases.return_value = eligible_cases
 
     questionnaire_name = "LMS2101_AA1"
 
     # act
-    result = get_eligible_cases(questionnaire_name, config)
+    result = service.get_eligible_cases(questionnaire_name)
 
     # assert
     assert result == eligible_cases
 
 
-@mock.patch("services.uac_service.get_uacs")
-@mock.patch("services.blaise_service.get_cases")
 def test_get_cases_returns_a_list_of_fully_populated_cases(
-    mock_blaise_service, mock_uac_service
+    mock_uac_service,
+    service,
+    mock_blaise_service,
 ):
-    # arrange
-    config = config_helper.get_default_config()
-
     questionnaire_cases = [
         get_blaise_case_model_helper.get_populated_case_model(
             case_id="20001", uac_chunks=UacChunks(uac1="", uac2="", uac3="")
@@ -97,13 +120,13 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(
         ),
     ]
 
-    mock_blaise_service.return_value = questionnaire_cases
-    mock_uac_service.return_value = questionnaire_uacs
+    mock_blaise_service.get_cases.return_value = questionnaire_cases
+    mock_uac_service.get_uacs.return_value = questionnaire_uacs
 
     questionnaire_name = "LMS2101_AA1"
 
     # act
-    result = get_cases(questionnaire_name, config)
+    result = service.get_cases(questionnaire_name)
 
     # assert
     assert result == [
@@ -116,69 +139,70 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(
     ]
 
 
-def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire():
+def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire(service):
     # arrange
     questionnaire_name = "OPN2101A"
 
     # act
     with pytest.raises(Exception) as err:
-        get_wave_from_questionnaire_name(questionnaire_name)
+        service.get_wave_from_questionnaire_name(questionnaire_name)
 
     # assert
     assert str(err.value) == "Invalid format for questionnaire name: OPN2101A"
 
 
-def test_get_wave_from_questionnaire_name():
+def test_get_wave_from_questionnaire_name(service):
     # assert
-    assert get_wave_from_questionnaire_name("LMS2101_AA1") == "1"
-    assert get_wave_from_questionnaire_name("LMS1234_ZZ2") == "2"
+    assert service.get_wave_from_questionnaire_name("LMS2101_AA1") == "1"
+    assert service.get_wave_from_questionnaire_name("LMS1234_ZZ2") == "2"
 
 
-def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error():
+def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error(service):
     # assert
     with pytest.raises(Exception) as err:
-        get_wave_from_questionnaire_name("ABC1234_AA1")
+        service.get_wave_from_questionnaire_name("ABC1234_AA1")
 
     assert str(err.value) == "Invalid format for questionnaire name: ABC1234_AA1"
 
 
-@mock.patch("services.blaise_service.questionnaire_exists")
 def test_questionnaire_exists_calls_the_blaise_service_with_the_correct_parameters(
     mock_blaise_service,
+    service,
+    config,
 ):
-    config = config_helper.get_default_config()
     questionnaire_name = "LMS2101_AA1"
 
     # act
-    questionnaire_exists(questionnaire_name, config)
+    service.questionnaire_exists(questionnaire_name)
 
     # assert
-    mock_blaise_service.assert_called_with(questionnaire_name, config)
+    mock_blaise_service.questionnaire_exists.assert_called_with(questionnaire_name)
 
 
 @pytest.mark.parametrize(
     "api_response, expected_response", [(False, False), (True, True)]
 )
-@mock.patch("services.blaise_service.questionnaire_exists")
 def test_questionnaire_exists_returns_correct_response(
-    mock_blaise_service, api_response, expected_response
+    api_response,
+    mock_blaise_service,
+    expected_response,
+    service,
 ):
-    config = config_helper.get_default_config()
     questionnaire_name = "LMS2101_AA1"
-    mock_blaise_service.return_value = api_response
+    mock_blaise_service.questionnaire_exists.return_value = api_response
 
     # act
-    result = questionnaire_exists(questionnaire_name, config)
+    result = service.questionnaire_exists(questionnaire_name)
 
     # assert
     assert result == expected_response
 
 
-@mock.patch("services.blaise_service.update_case")
 def test_update_case_calls_the_blaise_service_with_the_correct_parameters(
     mock_blaise_service,
+    service,
+    config,
 ):
-    config = config_helper.get_default_config()
     questionnaire_name = "LMS2101_AA1"
     case_id = "900001"
     data_fields = [
@@ -189,9 +213,9 @@ def test_update_case_calls_the_blaise_service_with_the_correct_parameters(
     ]
 
     # act
-    update_case(questionnaire_name, case_id, data_fields, config)
+    service.update_case(questionnaire_name, case_id, data_fields)
 
     # assert
-    mock_blaise_service.assert_called_with(
-        questionnaire_name, case_id, data_fields, config
+    mock_blaise_service.update_case.assert_called_with(
+        questionnaire_name, case_id, data_fields
     )

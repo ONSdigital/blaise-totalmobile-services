@@ -1,30 +1,41 @@
 from unittest import mock
 
+import pytest
+
+from appconfig import Config
 from client import bus
 from models.blaise.uac_model import UacChunks, UacModel
-from services import uac_service
+from services.uac_service import UacService
 from tests.helpers import config_helper
+
+
+@pytest.fixture()
+def config() -> Config:
+    return config_helper.get_default_config()
+
+
+@pytest.fixture()
+def uac_service(config) -> UacService:
+    return UacService(config)
 
 
 @mock.patch.object(bus.BusClient, "get_uacs_by_case_id")
 def test_get_uacs_calls_the_rest_api_client_with_the_correct_parameters(
-    _mock_rest_api_client,
+    _mock_rest_api_client, uac_service
 ):
     # arrange
-    config = config_helper.get_default_config()
     questionnaire_name = "DST2106Z"
 
     # act
-    uac_service.get_uacs(questionnaire_name, config)
+    uac_service.get_uacs(questionnaire_name)
 
     # assert
     _mock_rest_api_client.assert_called_with(questionnaire_name)
 
 
 @mock.patch.object(bus.BusClient, "get_uacs_by_case_id")
-def test_get_uacs_returns_a_list_of_uac_models(_mock_rest_api_client):
+def test_get_uacs_returns_a_list_of_uac_models(_mock_rest_api_client, uac_service):
     # arrange
-    config = config_helper.get_default_config()
     _mock_rest_api_client.return_value = {
         "10010": {
             "instrument_name": "OPN2101A",
@@ -49,7 +60,7 @@ def test_get_uacs_returns_a_list_of_uac_models(_mock_rest_api_client):
     questionnaire_name = "OPN2101A"
 
     # act
-    result = uac_service.get_uacs(questionnaire_name, config)
+    result = uac_service.get_uacs(questionnaire_name)
 
     # assert
     assert result == [
