@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Any
 
 import blaise_restapi
 from urllib3.exceptions import HTTPError
@@ -74,11 +74,11 @@ class BlaiseService:
             self._config.blaise_server_park, questionnaire_name
         )
 
-    def update_case(
-        self, questionnaire_name: str, case_id: str, data_fields: Dict[str, str]
-    ) -> None:
+    def update_case(self, questionnaire_name: str, case_id: str, data_fields: Dict[str, str]) -> None:
         restapi_client = blaise_restapi.Client(self._config.blaise_api_url)
 
-        restapi_client.patch_case_data(
-            self._config.blaise_server_park, questionnaire_name, case_id, data_fields
-        )
+        restapi_client.patch_case_data(self._config.blaise_server_park, questionnaire_name, case_id, data_fields)
+
+    def get_case_status_information(self, questionnaire_name: str) -> List[Dict[str, Any]]:
+        restapi_client = blaise_restapi.Client(self._config.blaise_api_url)
+        return restapi_client.get_case_status(self._config.blaise_server_park, questionnaire_name)

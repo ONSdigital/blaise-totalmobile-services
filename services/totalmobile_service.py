@@ -1,5 +1,3 @@
-from typing import Dict, List
-
 from client.optimise import GetJobsResponse, OptimiseClient
 from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
