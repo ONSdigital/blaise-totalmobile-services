@@ -30,7 +30,7 @@ def get_worlds_response():
 
 def get_jobs_response():
     return [
-        {"visitComplete": "True", "identity": {"reference": "LMS1111-AA1.12345"}},
-        {"visitComplete": "False", "identity": {"reference": "LMS2222-BB2.22222"}},
-        {"visitComplete": "False", "identity": {"reference": "LMS1111-AA1.67890"}},
+        {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
+        {"visitComplete": False, "identity": {"reference": "LMS2222-BB2.22222"}},
+        {"visitComplete": False, "identity": {"reference": "LMS1111-AA1.67890"}},
     ]

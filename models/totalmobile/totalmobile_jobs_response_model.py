@@ -22,7 +22,7 @@ class TotalmobileJobsResponseModel:
         self.questionnaire_jobs = {}
 
         for job in jobs:
-            visit_complete = True if job["visitComplete"] == "True" else False
+            visit_complete = job["visitComplete"]
             job_reference = job["identity"]["reference"]
 
             reference_model = TotalmobileReferenceModel.from_reference(job_reference)

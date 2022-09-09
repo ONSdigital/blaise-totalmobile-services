@@ -62,9 +62,11 @@ def delete_totalmobile_jobs_completed_in_blaise(_event, _context) -> str:
     )
     totalmobile_service = TotalmobileService(optimise_client)
     blaise_service = BlaiseService(config)
-    delete_jobs_service = DeleteTotalmobileJobsService(totalmobile_service, blaise_service)
-    return (
-        cloud_functions.delete_totalmobile_jobs_completed_in_blaise.delete_totalmobile_jobs_completed_in_blaise(delete_jobs_service)
+    delete_jobs_service = DeleteTotalmobileJobsService(
+        totalmobile_service, blaise_service
+    )
+    return cloud_functions.delete_totalmobile_jobs_completed_in_blaise.delete_totalmobile_jobs_completed_in_blaise(
+        delete_jobs_service
     )
 
 

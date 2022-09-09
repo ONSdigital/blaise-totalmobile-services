@@ -1,4 +1,6 @@
-from models.totalmobile.totalmobile_jobs_response_model import TotalmobileJobsResponseModel
+from models.totalmobile.totalmobile_jobs_response_model import (
+    TotalmobileJobsResponseModel,
+)
 from tests.helpers import optimise_client_helper
 
 

@@ -19,7 +19,7 @@ GetWorldsResponse = List[GetWorldResponse]
 
 class GetJobResponse(TypedDict):
     identity: Identity
-    visitComplete: str
+    visitComplete: bool
 
 
 GetJobsResponse = List[GetJobResponse]
