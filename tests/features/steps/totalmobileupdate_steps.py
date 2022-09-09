@@ -5,6 +5,7 @@ import logging
 
 from behave import given, then, when
 
+from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from tests.helpers import incoming_request_helper
 
 
@@ -193,29 +194,38 @@ def step_impl(context, case_id, questionnaire):
     completed_case = "110"
 
     context.blaise_service.add_questionnaire(questionnaire)
-    context.blaise_service.add_case_to_questionnaire(case_id)
+    context.blaise_service.add_case_to_questionnaire(questionnaire, case_id)
     context.blaise_service.update_outcome_code_of_case_in_questionnaire(
         questionnaire, case_id, completed_case
     )
 
+@given('a case "{case_id}" has not been started for questionnaire "{questionnaire}"')
+def step_impl(context, case_id, questionnaire):
+    not_started_case = "0"
 
-@given('there is a job in Totalmobile with reference "{reference}"')
+    context.blaise_service.add_questionnaire(questionnaire)
+    context.blaise_service.add_case_to_questionnaire(questionnaire, case_id)
+    context.blaise_service.update_outcome_code_of_case_in_questionnaire(
+        questionnaire, case_id, not_started_case
+    )
+
+
+@given('there is an incomplete job in Totalmobile with reference "{reference}"')
 def step_impl(context, reference):
     context.totalmobile_service.add_job(reference)
 
 
 @when("delete jobs is run")
 def step_impl(context):
-    # TODO
-    raise NotImplementedError("STEP: When delete jobs is run")
+    delete_totalmobile_service = DeleteTotalmobileJobsService(context.totalmobile_service, context.blaise_service)
+    delete_totalmobile_service.delete_totalmobile_jobs_completed_in_blaise()
 
 
 @then('the Totalmobile job with reference "{reference}" is deleted')
 def step_impl(context, reference):
-    assert context.totalmobile_service.job_exists(reference) is False
+    assert context.totalmobile_service.delete_job_has_been_called(reference)
 
 
-@then('a "204" response is received from Totalmobile')
-def step_impl(context):
-    # TODO
-    raise NotImplementedError('STEP: And a "204" response is received from Totalmobile')
+@then('the Totalmobile job with reference "{reference}" is not deleted')
+def step_impl(context, reference):
+    assert not context.totalmobile_service.delete_job_has_been_called(reference)

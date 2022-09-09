@@ -1,3 +1,5 @@
+import logging
+
 from models.totalmobile.totalmobile_jobs_response_model import (
     TotalmobileJobsResponseModel,
 )
@@ -27,6 +29,7 @@ class DeleteTotalmobileJobsService:
             for job in totalmobile_jobs_model.questionnaire_jobs[questionnaire_name]:
                 if job.visit_complete is False and job.case_id in completed_case_ids:
                     self.totalmobile_service.delete_job(world_id, job.reference, "110")
+                    logging.info(f"Successfully removed job {job.reference} from Totalmobile")
 
     def get_completed_blaise_cases(self, questionnaire_name) -> list[str]:
         case_status_list = self.blaise_service.get_case_status_information(
