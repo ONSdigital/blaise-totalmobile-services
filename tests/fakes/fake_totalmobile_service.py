@@ -1,6 +1,8 @@
 from collections import defaultdict
 
-from models.totalmobile.totalmobile_jobs_response_model import TotalmobileJobsResponseModel
+from models.totalmobile.totalmobile_jobs_response_model import (
+    TotalmobileJobsResponseModel,
+)
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 
 
@@ -37,3 +39,5 @@ class FakeTotalmobileService:
                     {"visitComplete": False, "identity": {"reference": f"{key}"}},
                 ]
             )
+
+        raise Exception

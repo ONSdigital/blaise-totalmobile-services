@@ -199,6 +199,7 @@ def step_impl(context, case_id, questionnaire):
         questionnaire, case_id, completed_case
     )
 
+
 @given('a case "{case_id}" has not been started for questionnaire "{questionnaire}"')
 def step_impl(context, case_id, questionnaire):
     not_started_case = "0"
@@ -217,7 +218,9 @@ def step_impl(context, reference):
 
 @when("delete jobs is run")
 def step_impl(context):
-    delete_totalmobile_service = DeleteTotalmobileJobsService(context.totalmobile_service, context.blaise_service)
+    delete_totalmobile_service = DeleteTotalmobileJobsService(
+        context.totalmobile_service, context.blaise_service
+    )
     delete_totalmobile_service.delete_totalmobile_jobs_completed_in_blaise()
 
 
