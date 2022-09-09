@@ -7,7 +7,7 @@ import pytest
 from client import AuthException
 from client.errors import BadRequest
 from cloud_functions.create_totalmobile_job import create_totalmobile_job
-from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
+from models.cloud_tasks.totalmobile_job_request_model import TotalMobileJobRequest
 from services.totalmobile_service import TotalmobileService
 
 
@@ -15,14 +15,6 @@ def test_create_totalmobile_job(mock_create_job_task):
     mock_request = flask.Request.from_values(json=mock_create_job_task)
     total_mobile_service_mock = create_autospec(TotalmobileService)
     assert create_totalmobile_job(mock_request, total_mobile_service_mock) == "Done"
-    total_mobile_service_mock.create_job.assert_called_with(
-        TotalmobileJobModel(
-            questionnaire="DST2101_AA1",
-            world_id="test-world-id",
-            case_id="100100",
-            payload={},
-        )
-    )
 
 
 def test_create_totalmobile_job_error(mock_create_job_task):
