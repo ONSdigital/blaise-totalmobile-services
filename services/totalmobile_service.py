@@ -1,6 +1,8 @@
-from client.optimise import OptimiseClient, GetJobsResponse
+from client.optimise import GetJobsResponse, OptimiseClient
 from models.cloud_tasks.totalmobile_job_request_model import TotalmobileJobRequestModel
-from models.totalmobile.totalmobile_jobs_response_model import TotalmobileJobsResponseModel
+from models.totalmobile.totalmobile_jobs_response_model import (
+    TotalmobileJobsResponseModel,
+)
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 
 
