@@ -155,3 +155,36 @@ def test_delete_totalmobile_jobs_completed_in_blaise_only_calls_case_status_info
     assert mock_blaise_service.get_case_status_information.call_count == 2
     mock_blaise_service.get_case_status_information.assert_any_call("LMS2222_BB2")
     mock_blaise_service.get_case_status_information.assert_any_call("LMS1111_AA1")
+
+
+def test_delete_totalmobile_jobs_completed_in_blaise_does_not_get_caseids_for_questionnaires_that_have_no_incomplete_jobs():
+    # arrange
+    world_id = "13013122-d69f-4d6b-gu1d-721f190c4479"
+
+    mock_totalmobile_service = create_autospec(TotalmobileService)
+    mock_blaise_service = create_autospec(BlaiseService)
+
+    mock_totalmobile_service.get_jobs_model.return_value = TotalmobileJobsResponseModel(
+        [
+            {"visitComplete": "True", "identity": {"reference": "LMS1111-AA1.12345"}},
+            {"visitComplete": "True", "identity": {"reference": "LMS1111-AA1.22222"}},
+            {"visitComplete": "True", "identity": {"reference": "LMS1111-AA1.67890"}},
+        ]
+    )
+
+    mock_blaise_service.get_case_status_information.return_value = [
+        {"primaryKey": "12345", "outcome": 310},
+        {"primaryKey": "22222", "outcome": 110},
+        {"primaryKey": "67890", "outcome": 110},
+    ]
+
+    delete_totalmobile_jobs_service = DeleteTotalmobileJobsService(
+        mock_totalmobile_service, mock_blaise_service
+    )
+
+    # act
+    delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
+
+    # assert
+    assert mock_blaise_service.get_case_status_information.call_count == 0
+    assert mock_totalmobile_service.delete_job.call_count == 0
