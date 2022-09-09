@@ -13,7 +13,9 @@ from tests.helpers import optimise_client_helper
 def test_get_world_model_returns_a_world_model():
     # arrange
     optimise_client_mock = create_autospec(OptimiseClient)
-    optimise_client_mock.get_worlds.return_value = optimise_client_helper.get_worlds_response()
+    optimise_client_mock.get_worlds.return_value = (
+        optimise_client_helper.get_worlds_response()
+    )
 
     totalmobile_service = TotalmobileService(optimise_client_mock)
 
@@ -76,7 +78,9 @@ def test_create_job_auth_error():
 def test_get_jobs_model_returns_a_jobs_model():
     # arrange
     optimise_client_mock = create_autospec(OptimiseClient)
-    optimise_client_mock.get_jobs.return_value = optimise_client_helper.get_jobs_response()
+    optimise_client_mock.get_jobs.return_value = (
+        optimise_client_helper.get_jobs_response()
+    )
     world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
     totalmobile_service = TotalmobileService(optimise_client_mock)
 

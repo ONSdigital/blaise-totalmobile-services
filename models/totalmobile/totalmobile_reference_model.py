@@ -1,15 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import (
-    Any,
-    Dict,
-    List,
-    Optional,
-    Type,
-    TypedDict,
-    TypeVar,
-)
+from typing import Any, Dict, List, Optional, Type, TypedDict, TypeVar
 
 from app.exceptions.custom_exceptions import BadReferenceError, MissingReferenceError
 from models.base_model import BaseModel
@@ -94,4 +86,6 @@ class TotalmobileReferenceModel(BaseModel):
         request_fields = TotalmobileReferenceModel.get_fields_from_reference(reference)
         questionnaire_name = request_fields[0].replace("-", "_")
         case_id = request_fields[1]
-        return TotalmobileReferenceModel(questionnaire_name=questionnaire_name, case_id=case_id)
+        return TotalmobileReferenceModel(
+            questionnaire_name=questionnaire_name, case_id=case_id
+        )

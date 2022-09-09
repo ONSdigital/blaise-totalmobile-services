@@ -1,6 +1,7 @@
 from models.totalmobile.totalmobile_jobs_model import TotalmobileJobsModel
 from tests.helpers import optimise_client_helper
 
+
 def test_total_mobile_job_models_maps_expected_list_of_models_from_job_response():
     # arrange
     job_response = optimise_client_helper.get_jobs_response()

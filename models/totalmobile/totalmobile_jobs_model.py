@@ -1,4 +1,5 @@
-from typing import List, Dict
+from typing import Dict, List
+
 from client.optimise import GetJobsResponse
 from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
 
@@ -27,13 +28,10 @@ class TotalmobileJobsModel:
             reference_model = TotalmobileReferenceModel.from_reference(job_reference)
 
             if reference_model.questionnaire_name in self.questionnaire_jobs.keys():
-                self.questionnaire_jobs[reference_model.questionnaire_name].append(Job(
-                    job_reference,
-                    reference_model.case_id,
-                    visit_complete))
+                self.questionnaire_jobs[reference_model.questionnaire_name].append(
+                    Job(job_reference, reference_model.case_id, visit_complete)
+                )
             else:
-                self.questionnaire_jobs[reference_model.questionnaire_name] = [Job(
-                    job_reference,
-                    reference_model.case_id,
-                    visit_complete)]
-
+                self.questionnaire_jobs[reference_model.questionnaire_name] = [
+                    Job(job_reference, reference_model.case_id, visit_complete)
+                ]

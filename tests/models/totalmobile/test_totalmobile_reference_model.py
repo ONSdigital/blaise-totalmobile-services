@@ -128,4 +128,3 @@ def test_questionnaire_name_and_case_id_properties_are_set_correctly_when_given_
     # assert
     assert reference_model.questionnaire_name == "LMS2101_AA1"
     assert reference_model.case_id == "90001"
-
