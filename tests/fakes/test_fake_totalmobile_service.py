@@ -26,7 +26,7 @@ def test_remove_job(service: FakeTotalmobileService):
 
     # act
     service.add_job(reference)
-    service.remove_job(reference)
+    service.delete_job("foo", reference)
 
     # assert
-    assert not service.job_exists(reference)
+    assert service.delete_job_has_been_called(reference)
