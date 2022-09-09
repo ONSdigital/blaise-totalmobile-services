@@ -1,35 +1,39 @@
 from typing import List, Dict
-
+from client.optimise import GetJobsResponse
 from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
 
 
 class Job:
     reference: str
     case_id: str
+    visit_complete: bool
 
-    def __init__(self, reference_model: TotalmobileReferenceModel):
-        self.reference = reference_model.create_reference()
-        self.case_id = reference_model.case_id
+    def __init__(self, reference: str, case_id: str, visit_complete: bool):
+        self.reference = reference
+        self.case_id = case_id
+        self.visit_complete = visit_complete
 
 
 class TotalmobileJobsModel:
     questionnaire_jobs: Dict[str, List[Job]]
 
-    def __init__(self, job_references: List[str]):
+    def __init__(self, jobs: GetJobsResponse):
         self.questionnaire_jobs = {}
-        reference_models = self.map_reference_models_from_list_of_job_references(job_references)
 
-        for reference_model in reference_models:
+        for job in jobs:
+            visit_complete = True if job["visitComplete"] == "True" else False
+            job_reference = job["identity"]["reference"]
+
+            reference_model = TotalmobileReferenceModel.from_reference(job_reference)
+
             if reference_model.questionnaire_name in self.questionnaire_jobs.keys():
-                self.questionnaire_jobs[reference_model.questionnaire_name]\
-                    .append(Job(reference_model))
+                self.questionnaire_jobs[reference_model.questionnaire_name].append(Job(
+                    job_reference,
+                    reference_model.case_id,
+                    visit_complete))
             else:
-                self.questionnaire_jobs[reference_model.questionnaire_name] = [Job(reference_model)]
+                self.questionnaire_jobs[reference_model.questionnaire_name] = [Job(
+                    job_reference,
+                    reference_model.case_id,
+                    visit_complete)]
 
-    @staticmethod
-    def map_reference_models_from_list_of_job_references(job_references: list[str]) -> list[TotalmobileReferenceModel]:
-        reference_models = []
-        for job_reference in job_references:
-            reference_models.append(TotalmobileReferenceModel.from_reference(job_reference))
-
-        return reference_models
