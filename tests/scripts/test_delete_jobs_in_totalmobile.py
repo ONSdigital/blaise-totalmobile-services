@@ -31,7 +31,7 @@ def test_build_dictionary():
         "3fa85f64-5717-4562-b3fc-2c963f66afa7",
     ]
     totalmobile_service_mock = create_autospec(TotalmobileService)
-    totalmobile_service_mock.get_jobs.return_value = [
+    totalmobile_service_mock.get_jobs_model.return_value = [
         {"identity": {"reference": "Foo"}, "visitComplete": False},
         {"identity": {"reference": "Bar"}, "visitComplete": False},
     ]
