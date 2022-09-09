@@ -196,18 +196,12 @@ def test_update_case_calls_the_rest_api_client_with_the_correct_parameters(
 
 @mock.patch.object(blaise_restapi.Client, "get_case_status")
 def test_get_cases_status_returns_a_list_dictionary_of_stuff_and_or_things(
-        _mock_rest_api_client_get_case_status, blaise_service
+    _mock_rest_api_client_get_case_status, blaise_service
 ):
     # arrange
     case_status_list = [
-        {
-            "primaryKey": "12345",
-            "outcome": 110
-        },
-        {
-            "primaryKey": "67890",
-            "outcome": 310
-        }
+        {"primaryKey": "12345", "outcome": 110},
+        {"primaryKey": "67890", "outcome": 310},
     ]
     _mock_rest_api_client_get_case_status.return_value = case_status_list
 
@@ -222,7 +216,7 @@ def test_get_cases_status_returns_a_list_dictionary_of_stuff_and_or_things(
 
 @mock.patch.object(blaise_restapi.Client, "get_case_status")
 def test_get_case_status_information_calls_the_rest_api_client_with_the_correct_parameters(
-        _mock_rest_api_client, blaise_service
+    _mock_rest_api_client, blaise_service
 ):
     blaise_server_park = "gusty"
     questionnaire_name = "LMS2101_AA1"
@@ -233,6 +227,4 @@ def test_get_case_status_information_calls_the_rest_api_client_with_the_correct_
     blaise_service.get_case_status_information(questionnaire_name)
 
     # assert
-    _mock_rest_api_client.assert_called_with(
-        blaise_server_park, questionnaire_name
-    )
+    _mock_rest_api_client.assert_called_with(blaise_server_park, questionnaire_name)

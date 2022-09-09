@@ -186,13 +186,17 @@ def step_impl(context, response):
     ), f"Context response is {context.response.status_code}, response is {mappings[response]}"
 
 
-@given('a respondent has completed case "{case_id}" online for questionnaire "{questionnaire}"')
+@given(
+    'a respondent has completed case "{case_id}" online for questionnaire "{questionnaire}"'
+)
 def step_impl(context, case_id, questionnaire):
     completed_case = "110"
 
     context.blaise_service.add_questionnaire(questionnaire)
     context.blaise_service.add_case_to_questionnaire(case_id)
-    context.blaise_service.update_outcome_code_of_case_in_questionnaire(questionnaire, case_id, completed_case)
+    context.blaise_service.update_outcome_code_of_case_in_questionnaire(
+        questionnaire, case_id, completed_case
+    )
 
 
 @given('there is a job in Totalmobile with reference "{reference}"')
@@ -203,7 +207,7 @@ def step_impl(context, reference):
 @when("delete jobs is run")
 def step_impl(context):
     # TODO
-    raise NotImplementedError(u'STEP: When delete jobs is run')
+    raise NotImplementedError("STEP: When delete jobs is run")
 
 
 @then('the Totalmobile job with reference "{reference}" is deleted')
@@ -214,4 +218,4 @@ def step_impl(context, reference):
 @then('a "204" response is received from Totalmobile')
 def step_impl(context):
     # TODO
-    raise NotImplementedError(u'STEP: And a "204" response is received from Totalmobile')
+    raise NotImplementedError('STEP: And a "204" response is received from Totalmobile')
