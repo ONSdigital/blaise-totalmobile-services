@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 import flask
 
@@ -10,8 +11,8 @@ from services.totalmobile_service import TotalmobileService
 setup_logger()
 
 
-def is_not_duplicate_job_error(err: BadRequest) -> bool:
-    return (
+def get_duplicate_job_message(err: BadRequest) -> Optional[str]:
+    if (
         not isinstance(err.error_details, dict)
         or "jobEntity" not in err.error_details
         or not isinstance(err.error_details["jobEntity"], list)
@@ -19,7 +20,9 @@ def is_not_duplicate_job_error(err: BadRequest) -> bool:
         or not err.error_details["jobEntity"][0].startswith(
             "Job already exists with Reference"
         )
-    )
+    ):
+        return None
+    return err.error_details["jobEntity"][0]
 
 
 def create_totalmobile_job(
@@ -42,7 +45,8 @@ def create_totalmobile_job(
         response = totalmobile_service.create_job(totalmobile_job)
         logging.info(f"Response: {response}")
     except BadRequest as err:
-        if is_not_duplicate_job_error(err):
+        duplicate_error_message = get_duplicate_job_message(err)
+        if duplicate_error_message is None:
             raise err
-        logging.warning(err.error_details["jobEntity"][0])
+        logging.warning(duplicate_error_message)
     return "Done"
