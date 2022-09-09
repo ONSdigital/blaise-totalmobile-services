@@ -18,7 +18,7 @@ def __map_world_id_to_job_reference(
     list_of_jobs = []
     for world_id in world_ids:
         print(f"Retrieving jobs for world ID {world_id}")
-        jobs = totalmobile_service_local.get_jobs_model(world_id)
+        jobs = totalmobile_service_local.get_jobs(world_id)
         print(f"Retrieved {len(jobs)} jobs for world ID {world_id}")
         for job in jobs:
             if job["visitComplete"] is not True:

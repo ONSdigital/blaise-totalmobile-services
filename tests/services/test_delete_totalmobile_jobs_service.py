@@ -1,6 +1,6 @@
 from unittest.mock import call, create_autospec
 
-from models.totalmobile.totalmobile_jobs_model import Job, TotalmobileJobsModel
+from models.totalmobile.totalmobile_jobs_response_model import Job, TotalmobileJobsResponseModel
 from services.blaise_service import BlaiseService
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from services.totalmobile_service import TotalmobileService
@@ -36,7 +36,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_incomplete_jobs_onl
     mock_totalmobile_service = create_autospec(TotalmobileService)
     mock_blaise_service = create_autospec(BlaiseService)
 
-    mock_totalmobile_service.get_jobs_model.return_value = TotalmobileJobsModel(
+    mock_totalmobile_service.get_jobs_model.return_value = TotalmobileJobsResponseModel(
         [
             {"visitComplete": "True", "identity": {"reference": "LMS1111-AA1.12345"}},
             {"visitComplete": "True", "identity": {"reference": "LMS1111-AA1.22222"}},
@@ -71,7 +71,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_jobs_for_completed_
     mock_totalmobile_service = create_autospec(TotalmobileService)
     mock_blaise_service = create_autospec(BlaiseService)
 
-    mock_totalmobile_service.get_jobs_model.return_value = TotalmobileJobsModel(
+    mock_totalmobile_service.get_jobs_model.return_value = TotalmobileJobsResponseModel(
         [
             {"visitComplete": "True", "identity": {"reference": "LMS1111-AA1.12345"}},
             {"visitComplete": "False", "identity": {"reference": "LMS2222-BB2.22222"}},
@@ -113,7 +113,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_only_calls_case_status_info
     mock_totalmobile_service = create_autospec(TotalmobileService)
     mock_blaise_service = create_autospec(BlaiseService)
 
-    mock_totalmobile_service.get_jobs_model.return_value = TotalmobileJobsModel(
+    mock_totalmobile_service.get_jobs_model.return_value = TotalmobileJobsResponseModel(
         [
             {"visitComplete": "True", "identity": {"reference": "LMS1111-AA1.12345"}},
             {"visitComplete": "False", "identity": {"reference": "LMS2222-BB2.22222"}},

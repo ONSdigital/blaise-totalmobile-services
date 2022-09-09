@@ -15,7 +15,7 @@ class Job:
         self.visit_complete = visit_complete
 
 
-class TotalmobileJobsModel:
+class TotalmobileJobsResponseModel:
     questionnaire_jobs: Dict[str, List[Job]]
 
     def __init__(self, jobs: GetJobsResponse):

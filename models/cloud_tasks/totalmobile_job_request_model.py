@@ -3,7 +3,7 @@ from dataclasses import asdict, dataclass
 from typing import Dict, Optional, Type, TypedDict, TypeVar
 from uuid import uuid4
 
-T = TypeVar("T", bound="TotalmobileJobModel")
+T = TypeVar("T", bound="TotalmobileJobRequestModel")
 
 
 class TotalMobileJobRequest(TypedDict):
@@ -14,7 +14,7 @@ class TotalMobileJobRequest(TypedDict):
 
 
 @dataclass
-class TotalmobileJobModel:
+class TotalmobileJobRequestModel:
     questionnaire: str
     world_id: str
     case_id: Optional[str]
