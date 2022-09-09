@@ -4,7 +4,7 @@ import pytest
 
 from client import AuthException
 from client.optimise import OptimiseClient
-from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
+from models.cloud_tasks.totalmobile_job_request_model import TotalmobileJobRequestModel
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.totalmobile_service import TotalmobileService
 from tests.helpers import optimise_client_helper
@@ -38,11 +38,11 @@ def test_get_world_model_returns_a_world_model():
 def test_create_job_calls_the_client_with_the_correct_parameters():
     # arrange
     optimise_client_mock = create_autospec(OptimiseClient)
-    totalmobile_job_model = TotalmobileJobModel(
+    totalmobile_job_model = TotalmobileJobRequestModel(
         questionnaire="LMS2101_AA1",
         case_id="900001",
         world_id="3fa85f64-5717-4562-b3fc-2c963f66afa7",
-        payload="{}",
+        payload={},
     )
 
     totalmobile_service = TotalmobileService(optimise_client_mock)
@@ -52,7 +52,7 @@ def test_create_job_calls_the_client_with_the_correct_parameters():
 
     # assert
     optimise_client_mock.create_job.assert_called_with(
-        "3fa85f64-5717-4562-b3fc-2c963f66afa7", "{}"
+        "3fa85f64-5717-4562-b3fc-2c963f66afa7", {}
     )
 
 
@@ -61,11 +61,11 @@ def test_create_job_auth_error():
     optimise_client_mock = create_autospec(OptimiseClient)
     optimise_client_mock.create_job.side_effect = AuthException()
 
-    totalmobile_job_model = TotalmobileJobModel(
+    totalmobile_job_model = TotalmobileJobRequestModel(
         questionnaire="LMS2101_AA1",
         case_id="900001",
         world_id="3fa85f64-5717-4562-b3fc-2c963f66afa7",
-        payload="{}",
+        payload={},
     )
 
     totalmobile_service = TotalmobileService(optimise_client_mock)
@@ -73,6 +73,20 @@ def test_create_job_auth_error():
     # act & assert
     with pytest.raises(AuthException):
         totalmobile_service.create_job(totalmobile_job_model)
+
+
+def test_get_jobs_calls_the_client_with_the_correct_parameters():
+    # arrange
+    optimise_client_mock = create_autospec(OptimiseClient)
+    optimise_client_mock.get_jobs.return_value = {}
+    world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
+    totalmobile_service = TotalmobileService(optimise_client_mock)
+
+    # act
+    totalmobile_service.get_jobs(world_id)
+
+    # assert
+    optimise_client_mock.get_jobs.assert_called_with(world_id)
 
 
 def test_get_jobs_model_returns_a_jobs_model():
@@ -87,7 +101,6 @@ def test_get_jobs_model_returns_a_jobs_model():
     # act
     result = totalmobile_service.get_jobs_model(world_id)
 
-    # assert
     # assert
     assert len(result.questionnaire_jobs) == 2
 
@@ -122,7 +135,6 @@ def test_get_jobs_model_calls_the_client_with_the_correct_parameters():
 def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_no_reason_json_passed():
     # arrange
     optimise_client_mock = create_autospec(OptimiseClient)
-    optimise_client_mock.get_jobs.return_value = {}
     world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
     job = "1234"
     totalmobile_service = TotalmobileService(optimise_client_mock)
@@ -137,7 +149,6 @@ def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_no_reason
 def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_reason_json_passed():
     # arrange
     optimise_client_mock = create_autospec(OptimiseClient)
-    optimise_client_mock.get_jobs.return_value = {}
     world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
     job = "1234"
     totalmobile_service = TotalmobileService(optimise_client_mock)

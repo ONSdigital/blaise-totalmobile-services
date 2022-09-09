@@ -3,7 +3,7 @@ import logging
 import flask
 
 from cloud_functions.logging import setup_logger
-from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
+from models.cloud_tasks.totalmobile_job_request_model import TotalmobileJobRequestModel
 from services.totalmobile_service import TotalmobileService
 
 setup_logger()
@@ -20,7 +20,7 @@ def create_totalmobile_job(
 
     logging.info(f"Totalmobile job request {request_json}")
 
-    totalmobile_job = TotalmobileJobModel.import_job(request_json)
+    totalmobile_job = TotalmobileJobRequestModel.import_job(request_json)
 
     logging.info(
         f"Creating Totalmobile job for questionnaire {totalmobile_job.questionnaire} with case ID {totalmobile_job.case_id}"
