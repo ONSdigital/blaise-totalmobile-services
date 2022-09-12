@@ -112,6 +112,23 @@ class FakeBlaiseService:
         for field, value in data_fields.items():
             self._updates[questionnaire_name][case_id][field] = value
 
+    def get_case_status_information(
+        self, questionnaire_name: str
+    ) -> List[Dict[str, Any]]:
+        self._assert_questionnaire_exists(questionnaire_name)
+
+        case = self._questionnaires[questionnaire_name]
+
+        for key in case.keys():
+            return [
+                {
+                    "primaryKey": f"{case[key].case_id}",
+                    "outcome": case[key].outcome_code,
+                },
+            ]
+
+        raise Exception
+
     def _assert_questionnaire_exists(self, questionnaire):
         if not self.questionnaire_exists(questionnaire):
             raise QuestionnaireCaseDoesNotExistError(

@@ -8,7 +8,7 @@ from appconfig import Config
 from cloud_functions.functions import prepare_tasks, run
 from cloud_functions.logging import setup_logger
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
-from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
+from models.cloud_tasks.totalmobile_job_request_model import TotalmobileJobRequestModel
 from models.totalmobile.totalmobile_outgoing_job_payload_model import (
     TotalMobileOutgoingJobPayloadModel,
 )
@@ -53,9 +53,9 @@ def map_totalmobile_job_models(
     cases: List[BlaiseCaseInformationModel],
     world_model: TotalmobileWorldModel,
     questionnaire_name: str,
-) -> List[TotalmobileJobModel]:
+) -> List[TotalmobileJobRequestModel]:
     return [
-        TotalmobileJobModel(
+        TotalmobileJobRequestModel(
             questionnaire_name,
             world_model.get_world_id(case.field_region),
             case.case_id,

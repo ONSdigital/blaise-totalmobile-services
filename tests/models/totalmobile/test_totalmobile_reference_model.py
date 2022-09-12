@@ -116,3 +116,15 @@ def test_model_raises_a_bad_reference_error_if_the_request_does_not_have_a_corre
     # assert
     with pytest.raises(BadReferenceError):
         TotalmobileReferenceModel.from_request(incoming_case_request)
+
+
+def test_questionnaire_name_and_case_id_properties_are_set_correctly_when_given_a_valid_reference():
+    # arrange
+    reference = "LMS2101-AA1.90001"
+
+    # act
+    reference_model = TotalmobileReferenceModel.from_reference(reference)
+
+    # assert
+    assert reference_model.questionnaire_name == "LMS2101_AA1"
+    assert reference_model.case_id == "90001"
