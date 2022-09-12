@@ -156,8 +156,8 @@ def create_questionnaire_case_tasks(questionnaire_name: str, config: Config, tot
 
     run_async_tasks(
         tasks=tasks,
-        queue_id=config.totalmobile_jobs_queue_id,
-        cloud_function=config.totalmobile_job_cloud_function,
+        queue_id="bts-create-totalmobile-jobs",
+        cloud_function="bts-create-totalmobile-jobs-processor",
     )
     logging.info("Finished creating questionnaire case tasks")
     return "Done"
