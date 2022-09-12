@@ -25,7 +25,7 @@ def get_duplicate_job_message(err: BadRequest) -> Optional[str]:
     return err.error_details["jobEntity"][0]
 
 
-def create_totalmobile_job(
+def create_totalmobile_jobs_processor(
     request: flask.Request, totalmobile_service: TotalmobileService
 ) -> str:
     request_json = request.get_json()
