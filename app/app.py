@@ -3,6 +3,7 @@ from flask import Flask
 from app.auth import auth
 from app.config import Config
 from app.endpoints import incoming
+from appconfig.config import Config as AppConfig
 from services.blaise_service import BlaiseService
 
 
@@ -16,7 +17,7 @@ def setup_app():
     application = Flask(__name__)
     application.auth = auth
     application.register_blueprint(incoming)
-    config = Config.from_env()
-    application.app_config = config
-    application.blaise_service = BlaiseService(config)
+    app_config = AppConfig.from_env()
+    application.app_config = app_config
+    application.blaise_service = BlaiseService(app_config)
     return application
