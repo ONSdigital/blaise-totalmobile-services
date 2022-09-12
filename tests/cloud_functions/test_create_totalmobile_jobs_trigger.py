@@ -268,8 +268,8 @@ def test_create_case_tasks_for_questionnaire(
 
     mock_run_async_tasks.assert_called_once()
     kwargs = mock_run_async_tasks.call_args.kwargs
-    assert kwargs["cloud_function"] == "totalmobile_job_cloud_function"
-    assert kwargs["queue_id"] == "totalmobile_jobs_queue_id"
+    assert kwargs["cloud_function"] == "bts-create-totalmobile-jobs-processor"
+    assert kwargs["queue_id"] == "bts-create-totalmobile-jobs"
     assert len(kwargs["tasks"]) == 1
     task = kwargs["tasks"][0]
     assert task[0][0:3] == "LMS"
