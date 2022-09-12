@@ -4,7 +4,6 @@ import flask
 from dotenv import load_dotenv
 
 import cloud_functions.create_totalmobile_jobs_trigger
-import cloud_functions.create_questionnaire_case_tasks
 import cloud_functions.create_totalmobile_jobs_processor
 import cloud_functions.delete_totalmobile_jobs_completed_in_blaise
 from app.app import load_config, setup_app
@@ -30,22 +29,6 @@ def create_totalmobile_jobs_processor(request: flask.Request) -> str:
     totalmobile_service = TotalmobileService(optimise_client)
     return cloud_functions.create_totalmobile_job.create_totalmobile_job(
         request, totalmobile_service
-    )
-
-
-def create_questionnaire_case_tasks(request: flask.Request) -> str:
-    config = Config.from_env()
-    optimise_client = OptimiseClient(
-        config.totalmobile_url,
-        config.totalmobile_instance,
-        config.totalmobile_client_id,
-        config.totalmobile_client_secret,
-    )
-    totalmobile_service = TotalmobileService(optimise_client)
-    return (
-        cloud_functions.create_questionnaire_case_tasks.create_questionnaire_case_tasks(
-            request, config, totalmobile_service
-        )
     )
 
 
