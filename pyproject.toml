@@ -7,7 +7,7 @@ authors = ["Your Name <you@example.com>"]
 [tool.poetry.dependencies]
 python = "^3.9"
 requests = "^2.27.1"
-blaise-restapi = {git = "https://github.com/ONSdigital/blaise-api-python-client.git", rev = "29e8e831bb498016fc05a902369fdef8aa9f8969"}
+blaise-restapi = {git = "https://github.com/ONSdigital/blaise-api-python-client.git", rev = "fb5cdbbfc976a95809273d7b9c68c7be47fe2660"}
 google-auth = "^2.6.0"
 google-cloud-pubsub = "^2.11.0"
 google-cloud-tasks = "^2.8.1"
@@ -55,3 +55,6 @@ line_length = "88"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[flake8]
+max-line-length = 120

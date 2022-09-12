@@ -1,4 +1,4 @@
-from appconfig import Config, ConfigError
+from appconfig import Config
 
 
 def test_config_from_env():

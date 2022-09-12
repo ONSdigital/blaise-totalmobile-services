@@ -11,6 +11,8 @@ from app.app import load_config, setup_app
 from appconfig import Config
 from client import OptimiseClient
 from cloud_functions.logging import setup_logger
+from services.blaise_service import BlaiseService
+from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from services.totalmobile_service import TotalmobileService
 
 
@@ -51,8 +53,20 @@ def check_questionnaire_release_date(_event, _context) -> str:
 
 
 def delete_totalmobile_jobs_completed_in_blaise(_event, _context) -> str:
-    return (
-        cloud_functions.delete_totalmobile_jobs_completed_in_blaise.delete_totalmobile_jobs_completed_in_blaise()
+    config = Config.from_env()
+    optimise_client = OptimiseClient(
+        config.totalmobile_url,
+        config.totalmobile_instance,
+        config.totalmobile_client_id,
+        config.totalmobile_client_secret,
+    )
+    totalmobile_service = TotalmobileService(optimise_client)
+    blaise_service = BlaiseService(config)
+    delete_jobs_service = DeleteTotalmobileJobsService(
+        totalmobile_service, blaise_service
+    )
+    return cloud_functions.delete_totalmobile_jobs_completed_in_blaise.delete_totalmobile_jobs_completed_in_blaise(
+        delete_jobs_service
     )
 
 
