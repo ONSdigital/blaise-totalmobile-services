@@ -3,7 +3,7 @@ import os
 import flask
 from dotenv import load_dotenv
 
-import cloud_functions.check_questionnaire_release_date
+import cloud_functions.create_totalmobile_jobs_trigger
 import cloud_functions.create_questionnaire_case_tasks
 import cloud_functions.create_totalmobile_job
 import cloud_functions.delete_totalmobile_jobs_completed_in_blaise
@@ -46,9 +46,9 @@ def create_questionnaire_case_tasks(request: flask.Request) -> str:
     )
 
 
-def check_questionnaire_release_date(_event, _context) -> str:
+def create_totalmobile_jobs_trigger(_event, _context) -> str:
     return (
-        cloud_functions.check_questionnaire_release_date.check_questionnaire_release_date()
+        cloud_functions.check_questionnaire_release_date.create_totalmobile_jobs_trigger()
     )
 
 

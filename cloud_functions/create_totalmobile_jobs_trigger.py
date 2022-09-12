@@ -45,7 +45,7 @@ def get_datastore_records() -> list:
     return list(query.fetch())
 
 
-def check_questionnaire_release_date() -> str:
+def create_totalmobile_jobs_trigger() -> str:
 
     logging.info("Checking for questionnaire release dates")
 

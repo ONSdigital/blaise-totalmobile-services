@@ -4,8 +4,8 @@ from unittest import mock
 
 from google.cloud import datastore
 
-from cloud_functions.check_questionnaire_release_date import (
-    check_questionnaire_release_date,
+from cloud_functions.create_totalmobile_jobs_trigger import (
+    create_totalmobile_jobs_trigger,
     create_questionnaire_case_task_name,
     get_questionnaires_with_release_date_of_today,
     map_questionnaire_case_task_models,
@@ -22,7 +22,7 @@ def entity_builder(key, questionnaire, tmreleasedate):
     return entity
 
 
-@mock.patch("cloud_functions.check_questionnaire_release_date.get_datastore_records")
+@mock.patch("cloud_functions.create_totalmobile_jobs_trigger.get_datastore_records")
 def test_get_questionnaires_with_release_date_of_today_only_returns_questionnaires_with_todays_date(
     mock_get_datastore_records,
 ):
@@ -40,7 +40,7 @@ def test_get_questionnaires_with_release_date_of_today_only_returns_questionnair
     assert result == ["LMS2111Z"]
 
 
-@mock.patch("cloud_functions.check_questionnaire_release_date.get_datastore_records")
+@mock.patch("cloud_functions.create_totalmobile_jobs_trigger.get_datastore_records")
 def test_get_questionnaires_with_release_date_of_today_returns_an_empty_list_when_there_are_no_release_dates_for_today(
     mock_get_datastore_records,
 ):
@@ -58,7 +58,7 @@ def test_get_questionnaires_with_release_date_of_today_returns_an_empty_list_whe
     assert result == []
 
 
-@mock.patch("cloud_functions.check_questionnaire_release_date.get_datastore_records")
+@mock.patch("cloud_functions.create_totalmobile_jobs_trigger.get_datastore_records")
 def test_get_questionnaires_with_release_date_of_today_returns_an_empty_list_when_there_are_no_records_in_datastore(
     mock_get_datastore_records,
 ):
@@ -73,7 +73,7 @@ def test_get_questionnaires_with_release_date_of_today_returns_an_empty_list_whe
 
 
 @mock.patch(
-    "cloud_functions.check_questionnaire_release_date.get_questionnaires_with_release_date_of_today"
+    "cloud_functions.create_totalmobile_jobs_trigger.get_questionnaires_with_release_date_of_today"
 )
 def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_for_release(
     mock_get_questionnaires_with_todays_release_date, caplog
@@ -82,7 +82,7 @@ def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_
     mock_get_questionnaires_with_todays_release_date.return_value = []
 
     # act
-    result = check_questionnaire_release_date()
+    result = create_totalmobile_jobs_trigger()
 
     # assert
     assert result == "There are no questionnaires with a release date of today"
