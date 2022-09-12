@@ -11,9 +11,12 @@ from app.app import load_config, setup_app
 from appconfig import Config
 from client import OptimiseClient
 from cloud_functions.logging import setup_logger
+from services import eligible_case_service
 from services.blaise_service import BlaiseService
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
+from services.questionnaire_service import QuestionnaireService
 from services.totalmobile_service import TotalmobileService
+from services.uac_service import UacService
 
 
 def create_totalmobile_jobs_processor(request: flask.Request) -> str:
@@ -47,8 +50,23 @@ def create_questionnaire_case_tasks(request: flask.Request) -> str:
 
 
 def create_totalmobile_jobs_trigger(_event, _context) -> str:
+    config = Config.from_env()
+    questionnaire_service = QuestionnaireService(
+        config,
+        blaise_service=BlaiseService(config),
+        eligible_case_service=eligible_case_service,
+        uac_service=UacService(config),
+    )
+    optimise_client = OptimiseClient(
+        config.totalmobile_url,
+        config.totalmobile_instance,
+        config.totalmobile_client_id,
+        config.totalmobile_client_secret,
+    )
+    totalmobile_service = TotalmobileService(optimise_client)
+
     return (
-        cloud_functions.check_questionnaire_release_date.create_totalmobile_jobs_trigger()
+        cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(config, totalmobile_service, questionnaire_service)
     )
 
 
