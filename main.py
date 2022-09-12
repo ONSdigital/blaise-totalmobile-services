@@ -3,8 +3,8 @@ import os
 import flask
 from dotenv import load_dotenv
 
-import cloud_functions.create_totalmobile_jobs_trigger
 import cloud_functions.create_totalmobile_jobs_processor
+import cloud_functions.create_totalmobile_jobs_trigger
 import cloud_functions.delete_totalmobile_jobs_completed_in_blaise
 from app.app import load_config, setup_app
 from appconfig import Config
@@ -49,7 +49,9 @@ def create_totalmobile_jobs_trigger(_event, _context) -> str:
     totalmobile_service = TotalmobileService(optimise_client)
 
     return (
-        cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(config, totalmobile_service, questionnaire_service)
+        cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
+            config, totalmobile_service, questionnaire_service
+        )
     )
 
 

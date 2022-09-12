@@ -1,30 +1,28 @@
-import flask
-import logging
 import json
-import pytest
-
+import logging
 from datetime import datetime
 from unittest import mock
 from unittest.mock import create_autospec
+
+import flask
+import pytest
 from google.cloud import datastore
 
 from client.optimise import OptimiseClient
-
 from cloud_functions.create_totalmobile_jobs_trigger import (
-    create_totalmobile_jobs_trigger,
     create_questionnaire_case_task_name,
+    create_questionnaire_case_tasks,
+    create_totalmobile_jobs_trigger,
+    get_cases_with_valid_world_ids,
     get_questionnaires_with_release_date_of_today,
     map_questionnaire_case_task_models,
-    create_questionnaire_case_tasks,
-    get_cases_with_valid_world_ids,
     map_totalmobile_job_models,
     validate_request,
 )
+from models.blaise.blaise_case_information_model import UacChunks
 from models.cloud_tasks.questionnaire_case_cloud_task_model import (
     QuestionnaireCaseTaskModel,
 )
-
-from models.blaise.blaise_case_information_model import UacChunks
 from models.totalmobile.totalmobile_outgoing_job_payload_model import (
     TotalMobileOutgoingJobPayloadModel,
 )
@@ -108,7 +106,9 @@ def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_
     questionnaire_service_mock.get_wave_from_questionnaire_name.return_value = "1"
     questionnaire_service_mock.get_cases.return_value = []
     # act
-    result = create_totalmobile_jobs_trigger(config, total_mobile_service_mock, questionnaire_service_mock)
+    result = create_totalmobile_jobs_trigger(
+        config, total_mobile_service_mock, questionnaire_service_mock
+    )
 
     # assert
     assert result == "There are no questionnaires with a release date of today"
@@ -205,6 +205,7 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
         ).to_payload()
     )
 
+
 @mock.patch("cloud_functions.create_totalmobile_jobs_trigger.run_async_tasks")
 @mock.patch(
     "cloud_functions.create_totalmobile_jobs_trigger.get_cases_with_valid_world_ids"
@@ -256,7 +257,10 @@ def test_create_case_tasks_for_questionnaire(
 
     # act
     result = create_questionnaire_case_tasks(
-        questionnaire_name, config, total_mobile_service_mock, questionnaire_service_mock
+        questionnaire_name,
+        config,
+        total_mobile_service_mock,
+        questionnaire_service_mock,
     )
 
     # assert
@@ -282,9 +286,7 @@ def test_create_case_tasks_for_questionnaire(
 
 
 @mock.patch("cloud_functions.create_totalmobile_jobs_trigger.run_async_tasks")
-def test_create_questionnaire_case_tasks_when_no_eligible_cases(
-    mock_run_async_tasks
-):
+def test_create_questionnaire_case_tasks_when_no_eligible_cases(mock_run_async_tasks):
     # arrange
     questionnaire_name = "LMS2101_AA1"
     total_mobile_service_mock = create_autospec(TotalmobileService)
@@ -296,7 +298,10 @@ def test_create_questionnaire_case_tasks_when_no_eligible_cases(
 
     # act
     result = create_questionnaire_case_tasks(
-        questionnaire_name, config, total_mobile_service_mock, questionnaire_service_mock
+        questionnaire_name,
+        config,
+        total_mobile_service_mock,
+        questionnaire_service_mock,
     )
 
     # assert

@@ -1,7 +1,7 @@
 import asyncio
 import logging
 from datetime import datetime
-from typing import List, Tuple, Dict
+from typing import Dict, List, Tuple
 from uuid import uuid4
 
 from google.cloud import datastore
@@ -14,7 +14,9 @@ from models.cloud_tasks.questionnaire_case_cloud_task_model import (
     QuestionnaireCaseTaskModel,
 )
 from models.cloud_tasks.totalmobile_job_request_model import TotalmobileJobRequestModel
-from models.totalmobile.totalmobile_outgoing_job_payload_model import TotalMobileOutgoingJobPayloadModel
+from models.totalmobile.totalmobile_outgoing_job_payload_model import (
+    TotalMobileOutgoingJobPayloadModel,
+)
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 from services.questionnaire_service import QuestionnaireService
 from services.totalmobile_service import TotalmobileService
@@ -27,7 +29,7 @@ def create_questionnaire_case_task_name(job_model: QuestionnaireCaseTaskModel) -
 
 
 def map_questionnaire_case_task_models(
-        questionnaires: List[str],
+    questionnaires: List[str],
 ) -> List[QuestionnaireCaseTaskModel]:
     return [
         QuestionnaireCaseTaskModel(questionnaire_name)
@@ -65,7 +67,7 @@ def validate_request(request_json: Dict) -> None:
 
 
 def get_cases_with_valid_world_ids(
-        filtered_cases: List[BlaiseCaseInformationModel], world_model: TotalmobileWorldModel
+    filtered_cases: List[BlaiseCaseInformationModel], world_model: TotalmobileWorldModel
 ) -> List[BlaiseCaseInformationModel]:
     cases_with_valid_world_ids = []
     for case in filtered_cases:
@@ -79,9 +81,9 @@ def get_cases_with_valid_world_ids(
 
 
 def map_totalmobile_job_models(
-        cases: List[BlaiseCaseInformationModel],
-        world_model: TotalmobileWorldModel,
-        questionnaire_name: str,
+    cases: List[BlaiseCaseInformationModel],
+    world_model: TotalmobileWorldModel,
+    questionnaire_name: str,
 ) -> List[TotalmobileJobRequestModel]:
     return [
         TotalmobileJobRequestModel(
@@ -104,9 +106,15 @@ def run_async_tasks(tasks: List[Tuple[str, bytes]], queue_id: str, cloud_functio
     asyncio.run(run(task_requests))
 
 
-def create_questionnaire_case_tasks(questionnaire_name: str, config: Config, totalmobile_service: TotalmobileService,
-                                    questionnaire_service: QuestionnaireService) -> None:
-    logging.info(f"Started creating questionnaire case tasks for questionnaire {questionnaire_name}")
+def create_questionnaire_case_tasks(
+    questionnaire_name: str,
+    config: Config,
+    totalmobile_service: TotalmobileService,
+    questionnaire_service: QuestionnaireService,
+) -> None:
+    logging.info(
+        f"Started creating questionnaire case tasks for questionnaire {questionnaire_name}"
+    )
 
     wave = questionnaire_service.get_wave_from_questionnaire_name(questionnaire_name)
     if wave != "1":
@@ -163,7 +171,11 @@ def create_questionnaire_case_tasks(questionnaire_name: str, config: Config, tot
     return "Done"
 
 
-def create_totalmobile_jobs_trigger(config: Config, totalmobile_service: TotalmobileService, questionnaire_service: QuestionnaireService) -> str:
+def create_totalmobile_jobs_trigger(
+    config: Config,
+    totalmobile_service: TotalmobileService,
+    questionnaire_service: QuestionnaireService,
+) -> str:
     logging.info("Checking for questionnaire release dates")
 
     questionnaires_with_release_date_of_today = (
@@ -176,6 +188,8 @@ def create_totalmobile_jobs_trigger(config: Config, totalmobile_service: Totalmo
 
     for questionnaire_name in questionnaires_with_release_date_of_today:
         logging.info(f"Questionnaire {questionnaire_name} has a release date of today")
-        create_questionnaire_case_tasks(questionnaire_name, config, totalmobile_service, questionnaire_service)
+        create_questionnaire_case_tasks(
+            questionnaire_name, config, totalmobile_service, questionnaire_service
+        )
 
     return "Done"

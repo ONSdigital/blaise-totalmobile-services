@@ -6,7 +6,9 @@ import pytest
 
 from client import AuthException
 from client.errors import BadRequest
-from cloud_functions.create_totalmobile_jobs_processor import create_totalmobile_jobs_processor
+from cloud_functions.create_totalmobile_jobs_processor import (
+    create_totalmobile_jobs_processor,
+)
 from models.cloud_tasks.totalmobile_job_request_model import TotalMobileJobRequest
 from services.totalmobile_service import TotalmobileService
 
@@ -14,7 +16,10 @@ from services.totalmobile_service import TotalmobileService
 def test_create_totalmobile_job(mock_create_job_task):
     mock_request = flask.Request.from_values(json=mock_create_job_task)
     total_mobile_service_mock = create_autospec(TotalmobileService)
-    assert create_totalmobile_jobs_processor(mock_request, total_mobile_service_mock) == "Done"
+    assert (
+        create_totalmobile_jobs_processor(mock_request, total_mobile_service_mock)
+        == "Done"
+    )
 
 
 def test_create_totalmobile_job_error(mock_create_job_task):
