@@ -74,8 +74,8 @@ Create an .env file in the root of the project and add the following environment
 | TOTALMOBILE_CLIENT_SECRET | The client secret to authenicate with Totalmobile. | blah |
 | TOTALMOBILE_JOB_CLOUD_FUNCTION | The name of the Cloud Function for creating jobs in Totalmobile. | create-totalmobile-job |
 | TOTALMOBILE_JOBS_QUEUE_ID | The Cloud Tasks queue ID for sending jobs to Totalmobile. | projects/ons-blaise-v2-dev-sandbox123/locations/europe-west2/queues/totalmobile-jobs |
-| TOTALMOBILE_USER | The username for Totalmobile to authenicate with us. | blah |
-| TOTALMOBILE_PASSWORD_HASH | The hashed password for Totalmobile to authenicate with us. | pbkdf2:sha256:260000$Y1Pew7gJMYbRhfNR$9b97ee1d4a735047051c83bff275532d4d1322f1fc186739189b00fa7cc9a51b |
+| TOTALMOBILE_INCOMING_USER | The username for Totalmobile to authenicate with us. | blah |
+| TOTALMOBILE_INCOMING_PASSWORD_HASH | The hashed password for Totalmobile to authenicate with us. | pbkdf2:sha256:260000$Y1Pew7gJMYbRhfNR$9b97ee1d4a735047051c83bff275532d4d1322f1fc186739189b00fa7cc9a51b |
 | CLOUD_FUNCTION_SA | The GCP service account the cloud functions will use. | totalmobile-sa@ons-blaise-v2-dev-sandbox123.iam.gserviceaccount.com |
 
 ```
@@ -89,8 +89,8 @@ TOTALMOBILE_CLIENT_ID=blah
 TOTALMOBILE_CLIENT_SECRET=blah
 TOTALMOBILE_JOB_CLOUD_FUNCTION=create-totalmobile-job
 TOTALMOBILE_JOBS_QUEUE_ID=projects/ons-blaise-v2-dev-sandbox123/locations/europe-west2/queues/totalmobile-jobs
-TOTALMOBILE_USER=blah
-TOTALMOBILE_PASSWORD_HASH=pbkdf2:sha256:260000$Y1Pew7gJMYbRhfNR$9b97ee1d4a735047051c83bff275532d4d1322f1fc186739189b00fa7cc9a51b
+TOTALMOBILE_INCOMING_USER=blah
+TOTALMOBILE_INCOMING_PASSWORD_HASH=pbkdf2:sha256:260000$Y1Pew7gJMYbRhfNR$9b97ee1d4a735047051c83bff275532d4d1322f1fc186739189b00fa7cc9a51b
 CLOUD_FUNCTION_SA=totalmobile-sa@ons-blaise-v2-dev-sandbox123.iam.gserviceaccount.com
 ```
 
