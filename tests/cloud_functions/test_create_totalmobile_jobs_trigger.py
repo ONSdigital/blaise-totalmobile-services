@@ -4,8 +4,6 @@ from datetime import datetime
 from unittest import mock
 from unittest.mock import create_autospec
 
-import flask
-import pytest
 from google.cloud import datastore
 
 from client.optimise import OptimiseClient
@@ -17,7 +15,6 @@ from cloud_functions.create_totalmobile_jobs_trigger import (
     get_questionnaires_with_release_date_of_today,
     map_questionnaire_case_task_models,
     map_totalmobile_job_models,
-    validate_request,
 )
 from models.blaise.blaise_case_information_model import UacChunks
 from models.cloud_tasks.questionnaire_case_cloud_task_model import (
@@ -97,7 +94,6 @@ def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_
     mock_get_questionnaires_with_todays_release_date, caplog
 ):
     # arrange
-    config = config_helper.get_default_config()
     mock_get_questionnaires_with_todays_release_date.return_value = []
 
     total_mobile_service_mock = create_autospec(TotalmobileService)
@@ -106,8 +102,7 @@ def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_
     questionnaire_service_mock.get_wave_from_questionnaire_name.return_value = "1"
     questionnaire_service_mock.get_cases.return_value = []
     # act
-    result = create_totalmobile_jobs_trigger(
-        config, total_mobile_service_mock, questionnaire_service_mock
+    result = create_totalmobile_jobs_trigger(total_mobile_service_mock, questionnaire_service_mock
     )
 
     # assert
@@ -215,7 +210,6 @@ def test_create_case_tasks_for_questionnaire(
     mock_run_async_tasks,
 ):
     # arrange
-    config = config_helper.get_default_config()
     total_mobile_service_mock = create_autospec(TotalmobileService)
     questionnaire_service_mock = create_autospec(QuestionnaireService)
     total_mobile_service_mock.get_world_model.return_value = TotalmobileWorldModel(
@@ -258,7 +252,6 @@ def test_create_case_tasks_for_questionnaire(
     # act
     result = create_questionnaire_case_tasks(
         questionnaire_name,
-        config,
         total_mobile_service_mock,
         questionnaire_service_mock,
     )
@@ -292,14 +285,12 @@ def test_create_questionnaire_case_tasks_when_no_eligible_cases(mock_run_async_t
     total_mobile_service_mock = create_autospec(TotalmobileService)
     questionnaire_service_mock = create_autospec(QuestionnaireService)
 
-    config = config_helper.get_default_config()
     questionnaire_service_mock.get_wave_from_questionnaire_name.return_value = "1"
     questionnaire_service_mock.get_cases.return_value = []
 
     # act
     result = create_questionnaire_case_tasks(
         questionnaire_name,
-        config,
         total_mobile_service_mock,
         questionnaire_service_mock,
     )

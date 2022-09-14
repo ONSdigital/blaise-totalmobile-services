@@ -6,7 +6,6 @@ from uuid import uuid4
 
 from google.cloud import datastore
 
-from appconfig import Config
 from cloud_functions.functions import prepare_tasks, run
 from cloud_functions.logging import setup_logger
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
