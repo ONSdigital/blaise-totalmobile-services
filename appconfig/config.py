@@ -29,7 +29,7 @@ class Config:
             totalmobile_instance=os.getenv("TOTALMOBILE_INSTANCE", ""),
             totalmobile_client_id=os.getenv("TOTALMOBILE_CLIENT_ID", ""),
             totalmobile_client_secret=os.getenv("TOTALMOBILE_CLIENT_SECRET", ""),
-            totalmobile_jobs_queue_id=os.getenv("TOTALMOBILE_JOBS_QUEUE_ID", ""),
+            create_totalmobile_jobs_task_queue_id=os.getenv("CREATE_TOTALMOBILE_JOBS_TASK_QUEUE_ID", ""),
             totalmobile_job_cloud_function=os.getenv(
                 "TOTALMOBILE_JOB_CLOUD_FUNCTION", ""
             ),
