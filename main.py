@@ -27,7 +27,7 @@ def create_totalmobile_jobs_processor(request: flask.Request) -> str:
         config.totalmobile_client_secret,
     )
     totalmobile_service = TotalmobileService(optimise_client)
-    return cloud_functions.create_totalmobile_job.create_totalmobile_job(
+    return cloud_functions.create_totalmobile_jobs_processor.create_totalmobile_jobs_processor(
         request, totalmobile_service
     )
 
