@@ -40,3 +40,4 @@ Feature: Totalmobile update
     When Totalmobile sends an update with a malformed payload
     Then "The totalmobile payload appears to be malformed" is logged as an error message
     And a "400 Bad Request" response is sent back to Totalmobile
+

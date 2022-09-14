@@ -26,21 +26,6 @@ def test_questionnaire_exists(service: FakeBlaiseService):
     assert not service.questionnaire_exists("LMS99999")
 
 
-def test_get_case_status_information_returns_expected_cases(service: FakeBlaiseService):
-    # arrange
-    service.add_questionnaire("LMS11111")
-    service.add_case_to_questionnaire("LMS11111", "12345")
-    service.update_outcome_code_of_case_in_questionnaire("LMS11111", "12345", "110")
-
-    # act
-    result = service.get_case_status_information("LMS11111")
-
-    # assert
-    assert result == [
-        {"primaryKey": "12345", "outcome": 110},
-    ]
-
-
 def test_add_case_when_questionnaire_does_not_exist(service: FakeBlaiseService):
     with pytest.raises(
         QuestionnaireCaseDoesNotExistError,

@@ -1,6 +1,6 @@
 from dataclasses import dataclass, fields
 from datetime import datetime
-from typing import Dict, Optional, Type, TypeVar
+from typing import Dict, Optional, Type, TypeVar, List
 
 from models.base_model import BaseModel
 from models.blaise.uac_model import UacChunks, UacModel
@@ -64,7 +64,7 @@ class BlaiseCaseInformationModel(BaseModel):
 
     @classmethod
     def import_case(
-        cls: Type[T], questionnaire_name: str, case_data_dictionary: Dict[str, str]
+            cls: Type[T], questionnaire_name: str, case_data_dictionary: Dict[str, str]
     ) -> T:
         wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE", "")
         wave_com_dte = (
@@ -122,3 +122,30 @@ class BlaiseCaseInformationModel(BaseModel):
         if value == "" or value is None:
             return False
         return True
+
+    @staticmethod
+    def required_fields_from_blaise() -> List[str]:
+        return [
+            "qiD.Serial_Number",
+            "dataModelName",
+            "qDataBag.TLA",
+            "qDataBag.Wave",
+            "qDataBag.Prem1",
+            "qDataBag.Prem2",
+            "qDataBag.Prem3",
+            "qDataBag.District",
+            "qDataBag.PostTown",
+            "qDataBag.PostCode",
+            "qDataBag.TelNo",
+            "qDataBag.TelNo2",
+            "telNoAppt",
+            "hOut",
+            "qDataBag.UPRN_Latitude",
+            "qDataBag.UPRN_Longitude",
+            "qDataBag.Priority",
+            "qDataBag.FieldCase",
+            "qDataBag.FieldRegion",
+            "qDataBag.FieldTeam",
+            "qDataBag.WaveComDTE",
+            "catiMana.CatiCall.RegsCalls[1].DialResult",
+        ]

@@ -34,11 +34,11 @@ class DeleteTotalmobileJobsService:
                     )
 
     def get_completed_blaise_cases(self, questionnaire_name) -> list[str]:
-        case_status_list = self.blaise_service.get_case_status_information(
+        cases = self.blaise_service.get_cases(
             questionnaire_name
         )
         return [
-            case["primaryKey"] for case in case_status_list if case["outcome"] == 110
+            case.case_id for case in cases if case.outcome_code == 110
         ]
 
     @staticmethod
