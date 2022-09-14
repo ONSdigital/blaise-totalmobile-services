@@ -126,6 +126,11 @@ Run behave tests:
 poetry run python -m behave tests/features
 ```
 
+Run check-types tests:
+```shell
+poetry run mypy .
+```
+
 ### Poetry Problems
 
 #### Dependencies (like the blaise-restapi) not updating properly after running ```poetry update blaise-restapi``` ???

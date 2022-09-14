@@ -10,9 +10,7 @@ from appconfig import Config
 from cloud_functions.functions import prepare_tasks, run
 from cloud_functions.logging import setup_logger
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
-from models.cloud_tasks.questionnaire_case_cloud_task_model import (
-    QuestionnaireCaseTaskModel,
-)
+# from models.cloud_tasks.questionnaire_case_cloud_task_model import (QuestionnaireCaseTaskModel)
 from models.cloud_tasks.totalmobile_job_request_model import TotalmobileJobRequestModel
 from models.totalmobile.totalmobile_outgoing_job_payload_model import (
     TotalMobileOutgoingJobPayloadModel,
@@ -23,11 +21,12 @@ from services.totalmobile_service import TotalmobileService
 
 setup_logger()
 
-
+"""
 def create_questionnaire_case_task_name(job_model: QuestionnaireCaseTaskModel) -> str:
     return f"{job_model.questionnaire}-{str(uuid4())}"
+"""
 
-
+"""
 def map_questionnaire_case_task_models(
     questionnaires: List[str],
 ) -> List[QuestionnaireCaseTaskModel]:
@@ -35,6 +34,7 @@ def map_questionnaire_case_task_models(
         QuestionnaireCaseTaskModel(questionnaire_name)
         for questionnaire_name in questionnaires
     ]
+"""
 
 
 def get_questionnaires_with_release_date_of_today() -> list:
@@ -53,10 +53,12 @@ def get_datastore_records() -> list:
     return list(query.fetch())
 
 
+"""
 def __filter_missing_fields(case, REQUIRED_FIELDS) -> List[str]:
     return list(filter(lambda field: field not in case, REQUIRED_FIELDS))
+"""
 
-
+"""
 def validate_request(request_json: Dict) -> None:
     REQUIRED_FIELDS = ["questionnaire"]
     missing_fields = __filter_missing_fields(request_json, REQUIRED_FIELDS)
@@ -64,6 +66,7 @@ def validate_request(request_json: Dict) -> None:
         raise Exception(
             f"Required fields missing from request payload: {missing_fields}"
         )
+"""
 
 
 def get_cases_with_valid_world_ids(
@@ -106,7 +109,7 @@ def run_async_tasks(tasks: List[Tuple[str, bytes]], queue_id: str, cloud_functio
     asyncio.run(run(task_requests))
 
 
-def create_questionnaire_case_tasks(
+def create_cloud_tasks(
     questionnaire_name: str,
     config: Config,
     totalmobile_service: TotalmobileService,
@@ -189,7 +192,7 @@ def create_totalmobile_jobs_trigger(
 
     for questionnaire_name in questionnaires_with_release_date_of_today:
         logging.info(f"Questionnaire {questionnaire_name} has a release date of today")
-        create_questionnaire_case_tasks(
+        create_cloud_tasks(
             questionnaire_name, config, totalmobile_service, questionnaire_service
         )
 

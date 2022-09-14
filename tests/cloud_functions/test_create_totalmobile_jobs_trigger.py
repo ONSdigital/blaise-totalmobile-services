@@ -8,19 +8,15 @@ from google.cloud import datastore
 
 from appconfig import Config
 from client.optimise import OptimiseClient
-from cloud_functions.create_totalmobile_jobs_trigger import (
-    create_questionnaire_case_task_name,
-    create_questionnaire_case_tasks,
+from cloud_functions.create_totalmobile_jobs_trigger import (  # create_questionnaire_case_task_name,; map_questionnaire_case_task_models,
+    create_cloud_tasks,
     create_totalmobile_jobs_trigger,
     get_cases_with_valid_world_ids,
     get_questionnaires_with_release_date_of_today,
-    map_questionnaire_case_task_models,
     map_totalmobile_job_models,
 )
 from models.blaise.blaise_case_information_model import UacChunks
-from models.cloud_tasks.questionnaire_case_cloud_task_model import (
-    QuestionnaireCaseTaskModel,
-)
+# from models.cloud_tasks.questionnaire_case_cloud_task_model import (QuestionnaireCaseTaskModel)
 from models.totalmobile.totalmobile_outgoing_job_payload_model import (
     TotalMobileOutgoingJobPayloadModel,
 )
@@ -117,6 +113,7 @@ def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_
     ) in caplog.record_tuples
 
 
+"""
 def test_map_questionnaire_case_task_models_maps_the_correct_list_of_models():
     # arrange
     todays_questionnaires_for_release = ["LMS2111Z", "LMS2112T"]
@@ -129,8 +126,9 @@ def test_map_questionnaire_case_task_models_maps_the_correct_list_of_models():
         QuestionnaireCaseTaskModel(questionnaire="LMS2111Z"),
         QuestionnaireCaseTaskModel(questionnaire="LMS2112T"),
     ]
+"""
 
-
+"""
 def test_create_questionnaire_case_task_name_returns_unique_name_each_time_when_passed_the_same_model():
     # arrange
     model = QuestionnaireCaseTaskModel("LMS2101A")
@@ -141,6 +139,7 @@ def test_create_questionnaire_case_task_name_returns_unique_name_each_time_when_
 
     # assert
     assert result1 != result2
+"""
 
 
 def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
@@ -254,7 +253,7 @@ def test_create_case_tasks_for_questionnaire(
     questionnaire_service_mock.get_cases.return_value = []
 
     # act
-    result = create_questionnaire_case_tasks(
+    result = create_cloud_tasks(
         questionnaire_name,
         config,
         total_mobile_service_mock,
@@ -284,7 +283,7 @@ def test_create_case_tasks_for_questionnaire(
 
 
 @mock.patch("cloud_functions.create_totalmobile_jobs_trigger.run_async_tasks")
-def test_create_questionnaire_case_tasks_when_no_eligible_cases(mock_run_async_tasks):
+def test_create_cloud_tasks_when_no_eligible_cases(mock_run_async_tasks):
     # arrange
     config = config_helper.get_default_config()
     questionnaire_name = "LMS2101_AA1"
@@ -295,7 +294,7 @@ def test_create_questionnaire_case_tasks_when_no_eligible_cases(mock_run_async_t
     questionnaire_service_mock.get_cases.return_value = []
 
     # act
-    result = create_questionnaire_case_tasks(
+    result = create_cloud_tasks(
         questionnaire_name,
         config,
         total_mobile_service_mock,
