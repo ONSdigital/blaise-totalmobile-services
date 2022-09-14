@@ -98,7 +98,9 @@ class FakeBlaiseService:
 
         for key in case.keys():
             return [
-                get_blaise_case_model_helper.get_populated_case_model(case_id=case[key].case_id, outcome_code=case[key].outcome_code),
+                get_blaise_case_model_helper.get_populated_case_model(
+                    case_id=case[key].case_id, outcome_code=case[key].outcome_code
+                ),
             ]
 
         raise Exception
@@ -122,7 +124,9 @@ class FakeBlaiseService:
         for field, value in data_fields.items():
             self._updates[questionnaire_name][case_id][field] = value
 
-    def get_case_status_information(self, questionnaire_name: str) -> List[Dict[str, Any]]:
+    def get_case_status_information(
+        self, questionnaire_name: str
+    ) -> List[Dict[str, Any]]:
         self._assert_questionnaire_exists(questionnaire_name)
 
         case = self._questionnaires[questionnaire_name]

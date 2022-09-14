@@ -9,7 +9,6 @@ from models.blaise.blaise_case_information_model import BlaiseCaseInformationMod
 
 
 class BlaiseService:
-
     def __init__(self, config: Config):
         self._config = config
 

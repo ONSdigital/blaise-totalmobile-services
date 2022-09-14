@@ -1,6 +1,6 @@
 from dataclasses import dataclass, fields
 from datetime import datetime
-from typing import Dict, Optional, Type, TypeVar, List
+from typing import Dict, List, Optional, Type, TypeVar
 
 from models.base_model import BaseModel
 from models.blaise.uac_model import UacChunks, UacModel
@@ -64,7 +64,7 @@ class BlaiseCaseInformationModel(BaseModel):
 
     @classmethod
     def import_case(
-            cls: Type[T], questionnaire_name: str, case_data_dictionary: Dict[str, str]
+        cls: Type[T], questionnaire_name: str, case_data_dictionary: Dict[str, str]
     ) -> T:
         wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE", "")
         wave_com_dte = (

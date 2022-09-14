@@ -15,9 +15,15 @@ def test_get_completed_blaise_cases_returns_an_expected_list_of_case_ids():
     # arrange
     questionnaire_name = "LMS1111_AA1"
     questionnaire_cases = [
-        get_blaise_case_model_helper.get_populated_case_model(case_id="12345", outcome_code= 110),
-        get_blaise_case_model_helper.get_populated_case_model(case_id="22222", outcome_code= 310),
-        get_blaise_case_model_helper.get_populated_case_model(case_id="67890", outcome_code=110)
+        get_blaise_case_model_helper.get_populated_case_model(
+            case_id="12345", outcome_code=110
+        ),
+        get_blaise_case_model_helper.get_populated_case_model(
+            case_id="22222", outcome_code=310
+        ),
+        get_blaise_case_model_helper.get_populated_case_model(
+            case_id="67890", outcome_code=110
+        ),
     ]
 
     mock_totalmobile_service = create_autospec(TotalmobileService)
@@ -54,9 +60,15 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_incomplete_jobs_onl
     )
 
     mock_blaise_service.get_cases.return_value = [
-        get_blaise_case_model_helper.get_populated_case_model(case_id="12345", outcome_code= 110),
-        get_blaise_case_model_helper.get_populated_case_model(case_id="22222", outcome_code= 310),
-        get_blaise_case_model_helper.get_populated_case_model(case_id="67890", outcome_code=110)
+        get_blaise_case_model_helper.get_populated_case_model(
+            case_id="12345", outcome_code=110
+        ),
+        get_blaise_case_model_helper.get_populated_case_model(
+            case_id="22222", outcome_code=310
+        ),
+        get_blaise_case_model_helper.get_populated_case_model(
+            case_id="67890", outcome_code=110
+        ),
     ]
 
     delete_totalmobile_jobs_service = DeleteTotalmobileJobsService(
@@ -94,11 +106,17 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_jobs_for_completed_
 
     mock_blaise_service.get_cases.side_effect = [
         [
-            get_blaise_case_model_helper.get_populated_case_model(case_id="12345", outcome_code=310),
-            get_blaise_case_model_helper.get_populated_case_model(case_id="67890", outcome_code=110)
+            get_blaise_case_model_helper.get_populated_case_model(
+                case_id="12345", outcome_code=310
+            ),
+            get_blaise_case_model_helper.get_populated_case_model(
+                case_id="67890", outcome_code=110
+            ),
         ],
         [
-            get_blaise_case_model_helper.get_populated_case_model(case_id="22222", outcome_code=110)
+            get_blaise_case_model_helper.get_populated_case_model(
+                case_id="22222", outcome_code=110
+            )
         ],
     ]
 
@@ -141,12 +159,20 @@ def test_delete_totalmobile_jobs_completed_in_blaise_only_calls_case_status_info
 
     mock_blaise_service.get_cases.side_effect = [
         [
-            get_blaise_case_model_helper.get_populated_case_model(case_id="12345", outcome_code=310),
-            get_blaise_case_model_helper.get_populated_case_model(case_id="67890", outcome_code=110)
+            get_blaise_case_model_helper.get_populated_case_model(
+                case_id="12345", outcome_code=310
+            ),
+            get_blaise_case_model_helper.get_populated_case_model(
+                case_id="67890", outcome_code=110
+            ),
         ],
         [
-            get_blaise_case_model_helper.get_populated_case_model(case_id="22222", outcome_code=110),
-            get_blaise_case_model_helper.get_populated_case_model(case_id="44444", outcome_code=110)
+            get_blaise_case_model_helper.get_populated_case_model(
+                case_id="22222", outcome_code=110
+            ),
+            get_blaise_case_model_helper.get_populated_case_model(
+                case_id="44444", outcome_code=110
+            ),
         ],
     ]
 
@@ -193,9 +219,15 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_not_get_caseids_for_qu
     )
 
     mock_blaise_service.get_cases.return_value = [
-        get_blaise_case_model_helper.get_populated_case_model(case_id="12345", outcome_code= 110),
-        get_blaise_case_model_helper.get_populated_case_model(case_id="22222", outcome_code= 310),
-        get_blaise_case_model_helper.get_populated_case_model(case_id="67890", outcome_code=110)
+        get_blaise_case_model_helper.get_populated_case_model(
+            case_id="12345", outcome_code=110
+        ),
+        get_blaise_case_model_helper.get_populated_case_model(
+            case_id="22222", outcome_code=310
+        ),
+        get_blaise_case_model_helper.get_populated_case_model(
+            case_id="67890", outcome_code=110
+        ),
     ]
 
     delete_totalmobile_jobs_service = DeleteTotalmobileJobsService(
@@ -258,7 +290,9 @@ def test_delete_totalmobile_jobs_completed_in_blaise_only_gets_jobs_in_region_1(
     )
 
     mock_blaise_service.get_cases.side_effect = [
-        get_blaise_case_model_helper.get_populated_case_model(case_id="12345", outcome_code=310),
+        get_blaise_case_model_helper.get_populated_case_model(
+            case_id="12345", outcome_code=310
+        ),
     ]
 
     delete_totalmobile_jobs_service = DeleteTotalmobileJobsService(

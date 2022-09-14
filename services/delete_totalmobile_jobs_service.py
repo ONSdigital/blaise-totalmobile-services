@@ -1,4 +1,5 @@
 import logging
+from typing import Optional, List
 
 from models.totalmobile.totalmobile_jobs_response_model import (
     TotalmobileJobsResponseModel,
@@ -33,13 +34,9 @@ class DeleteTotalmobileJobsService:
                         f"Successfully removed job {job.reference} from Totalmobile"
                     )
 
-    def get_completed_blaise_cases(self, questionnaire_name) -> list[str]:
-        cases = self.blaise_service.get_cases(
-            questionnaire_name
-        )
-        return [
-            case.case_id for case in cases if case.outcome_code == 110
-        ]
+    def get_completed_blaise_cases(self, questionnaire_name) -> List[Optional[str]]:
+        cases = self.blaise_service.get_cases(questionnaire_name)
+        return [case.case_id for case in cases if case.outcome_code == 110]
 
     @staticmethod
     def questionnaire_has_incomplete_cases(
