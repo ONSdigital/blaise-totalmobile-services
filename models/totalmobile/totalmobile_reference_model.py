@@ -57,13 +57,13 @@ class TotalmobileReferenceModel(BaseModel):
 
         if len(reference_fields) != 2:
             logging.error(
-                "Unique reference appeared to be malformed in the totalmobile payload"
+                "Unique reference appeared to be malformed in the Totalmobile payload"
             )
             raise BadReferenceError()
 
         if reference_fields[0] == "" or reference_fields[1] == "":
             logging.error(
-                "Unique reference appeared to be malformed in the totalmobile payload"
+                "Unique reference appeared to be malformed in the Totalmobile payload"
             )
             raise BadReferenceError()
 
@@ -76,7 +76,7 @@ class TotalmobileReferenceModel(BaseModel):
         )
 
         if reference is None:
-            logging.error("Unique reference is missing from totalmobile payload")
+            logging.error("Unique reference is missing from the Totalmobile payload")
             raise MissingReferenceError()
 
         return reference

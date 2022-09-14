@@ -13,7 +13,6 @@ from app.utilities.parse_json import (
     get_case_details,
     get_reference_number,
     get_telephone_number,
-    validate_data,
 )
 
 
@@ -209,17 +208,6 @@ def test_valid_telephone_number_raises_a_type_error(phone_number: str):
         __valid_telephone_number(phone_number)
 
 
-def test_validata_data_returns_none_when_valid_json_is_passed_to_function(
-    submit_form_result_request_sample,
-):
-    assert validate_data(submit_form_result_request_sample) is None
-
-
-def test_validate_data_raises_error_when_data_is_empty():
-    with pytest.raises(Exception):
-        validate_data({})
-
-
 @pytest.mark.parametrize(
     "sample_json",
     [
@@ -231,8 +219,3 @@ def test_get_reference_number_returns_reference_number_when_valid_json_is_passed
     sample_json,
 ):
     assert get_reference_number(sample_json) == "SLC-12345-678-910"
-
-
-def test_get_reference_number_raises_error_when_data_is_empty():
-    with pytest.raises(Exception):
-        validate_data({})

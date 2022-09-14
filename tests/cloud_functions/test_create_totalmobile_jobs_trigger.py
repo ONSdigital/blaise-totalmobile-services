@@ -290,7 +290,11 @@ def test_get_cases_with_valid_world_ids_logs_a_console_error_when_given_an_unkno
 
     get_cases_with_valid_world_ids(filtered_cases, world_model)
 
-    assert ("root", logging.WARNING, "Unsupported world: Risca") in caplog.record_tuples
+    assert (
+        "root",
+        logging.WARNING,
+        "Case rejected due to invalid field region - Risca",
+    ) in caplog.record_tuples
 
 
 @mock.patch.object(OptimiseClient, "get_worlds")
@@ -313,7 +317,11 @@ def test_get_cases_with_valid_world_ids_logs_a_console_error_and_returns_data_wh
     assert cases_with_valid_world_ids == [
         get_populated_case_model(field_region="Region 1")
     ]
-    assert ("root", logging.WARNING, "Unsupported world: Risca") in caplog.record_tuples
+    assert (
+        "root",
+        logging.WARNING,
+        "Case rejected due to invalid field region - Risca",
+    ) in caplog.record_tuples
 
 
 def test_get_cases_with_valid_world_ids_logs_a_console_error_when_field_region_is_an_empty_value(
@@ -328,7 +336,7 @@ def test_get_cases_with_valid_world_ids_logs_a_console_error_when_field_region_i
     assert (
         "root",
         logging.WARNING,
-        "Case rejected. Missing Field Region",
+        "Case rejected due to missing field region",
     ) in caplog.record_tuples
 
 
@@ -355,5 +363,5 @@ def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unkno
     assert (
         "root",
         logging.WARNING,
-        "Case rejected. Missing Field Region",
+        "Case rejected due to missing field region",
     ) in caplog.record_tuples

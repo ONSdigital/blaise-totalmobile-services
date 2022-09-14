@@ -10,7 +10,6 @@ from appconfig import Config
 from cloud_functions.functions import prepare_tasks, run
 from cloud_functions.logging import setup_logger
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
-# from models.cloud_tasks.questionnaire_case_cloud_task_model import (QuestionnaireCaseTaskModel)
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     TotalMobileOutgoingCreateJobPayloadModel,
@@ -44,9 +43,11 @@ def get_cases_with_valid_world_ids(
     cases_with_valid_world_ids = []
     for case in filtered_cases:
         if case.field_region == "":
-            logging.warning("Case rejected. Missing Field Region")
+            logging.warning("Case rejected due to missing field region")
         elif world_model.get_world_id(case.field_region) is None:
-            logging.warning(f"Unsupported world: {case.field_region}")
+            logging.warning(
+                f"Case rejected due to invalid field region - {case.field_region}"
+            )
         else:
             cases_with_valid_world_ids.append(case)
     return cases_with_valid_world_ids
@@ -84,25 +85,18 @@ def create_cloud_tasks(
     totalmobile_service: TotalmobileService,
     questionnaire_service: QuestionnaireService,
 ) -> str:
-    logging.info(
-        f"Started creating questionnaire case tasks for questionnaire {questionnaire_name}"
-    )
-
     wave = questionnaire_service.get_wave_from_questionnaire_name(questionnaire_name)
     if wave != "1":
         logging.info(
-            f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported"
+            f"Questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported"
         )
         raise Exception(
-            f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported"
+            f"Questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported"
         )
 
     logging.info(f"Creating case tasks for questionnaire {questionnaire_name}")
 
     eligible_cases = questionnaire_service.get_eligible_cases(questionnaire_name)
-    logging.info(
-        f"Retrieved {len(eligible_cases)} cases for questionnaire {questionnaire_name}"
-    )
 
     if len(eligible_cases) == 0:
         logging.info(
@@ -110,15 +104,17 @@ def create_cloud_tasks(
         )
         return f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}"
 
-    logging.info(f"{len(eligible_cases)} eligible cases found")
+    logging.info(
+        f"Found {len(eligible_cases)} eligible cases for questionnaire {questionnaire_name}"
+    )
 
     world_model = totalmobile_service.get_world_model()
-    logging.info(f"Retrieved world id model")
+    logging.info(f"Retrieved Totalmobile worlds")
 
     cases_with_valid_world_ids = get_cases_with_valid_world_ids(
         eligible_cases, world_model
     )
-    logging.info(f"Finished searching for cases with valid world ids")
+    logging.info(f"Finished filtering Blaise cases with valid worlds")
 
     totalmobile_job_models = map_totalmobile_job_models(
         cases_with_valid_world_ids, world_model, questionnaire_name
@@ -140,7 +136,9 @@ def create_cloud_tasks(
         queue_id=config.create_totalmobile_jobs_task_queue_id,
         cloud_function="bts-create-totalmobile-jobs-processor",
     )
-    logging.info("Finished creating questionnaire case tasks")
+    logging.info(
+        f"Finished creating cloud tasks for questionnaire {questionnaire_name}"
+    )
     return "Done"
 
 

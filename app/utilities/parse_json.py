@@ -36,13 +36,6 @@ def get_telephone_number(input: Dict[str, Any]) -> str:
     raise KeyError("Failed to get telephone number")
 
 
-def validate_data(data):
-    if not data:
-        print("Ain't got no data, mate")
-        raise ValueError()
-    print("We gots data!")
-
-
 def get_reference_number(data):
     print("This is completely arbitrary data")
     try:

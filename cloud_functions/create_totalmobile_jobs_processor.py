@@ -18,7 +18,7 @@ def get_duplicate_job_message(err: BadRequest) -> Optional[str]:
         or not isinstance(err.error_details["jobEntity"], list)
         or len(err.error_details["jobEntity"]) == 0
         or not err.error_details["jobEntity"][0].startswith(
-            "Job already exists with Reference"
+            "Job already exists with reference"
         )
     ):
         return None
@@ -31,10 +31,12 @@ def create_totalmobile_jobs_processor(
     request_json = request.get_json()
 
     if request_json is None:
-        logging.error("Function was not triggered by a valid request")
-        raise Exception("Function was not triggered by a valid request")
-
-    logging.info(f"Totalmobile job request {request_json}")
+        logging.error(
+            "create_totalmobile_jobs_processor was not triggered by a valid request"
+        )
+        raise Exception(
+            "create_totalmobile_jobs_processor was not triggered by a valid request"
+        )
 
     totalmobile_job = TotalmobileCreateJobModel.import_job(request_json)
 
