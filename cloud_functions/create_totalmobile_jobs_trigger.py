@@ -108,10 +108,9 @@ def run_async_tasks(tasks: List[Tuple[str, bytes]], queue_id: str, cloud_functio
 
 def create_questionnaire_case_tasks(
     questionnaire_name: str,
-    config: Config,
     totalmobile_service: TotalmobileService,
     questionnaire_service: QuestionnaireService,
-) -> None:
+) -> str:
     logging.info(
         f"Started creating questionnaire case tasks for questionnaire {questionnaire_name}"
     )
@@ -137,6 +136,7 @@ def create_questionnaire_case_tasks(
             f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}"
         )
         return f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}"
+
     logging.info(f"{len(eligible_cases)} eligible cases found")
 
     world_model = totalmobile_service.get_world_model()
@@ -172,7 +172,6 @@ def create_questionnaire_case_tasks(
 
 
 def create_totalmobile_jobs_trigger(
-    config: Config,
     totalmobile_service: TotalmobileService,
     questionnaire_service: QuestionnaireService,
 ) -> str:
@@ -189,7 +188,7 @@ def create_totalmobile_jobs_trigger(
     for questionnaire_name in questionnaires_with_release_date_of_today:
         logging.info(f"Questionnaire {questionnaire_name} has a release date of today")
         create_questionnaire_case_tasks(
-            questionnaire_name, config, totalmobile_service, questionnaire_service
+            questionnaire_name, totalmobile_service, questionnaire_service
         )
 
     return "Done"
