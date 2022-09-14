@@ -12,8 +12,7 @@ class Config:
     totalmobile_instance: str
     totalmobile_client_id: str
     totalmobile_client_secret: str
-    totalmobile_jobs_queue_id: str
-    totalmobile_job_cloud_function: str
+    create_totalmobile_jobs_task_queue_id: str
     gcloud_project: str
     region: str
     blaise_api_url: str
@@ -29,9 +28,8 @@ class Config:
             totalmobile_instance=os.getenv("TOTALMOBILE_INSTANCE", ""),
             totalmobile_client_id=os.getenv("TOTALMOBILE_CLIENT_ID", ""),
             totalmobile_client_secret=os.getenv("TOTALMOBILE_CLIENT_SECRET", ""),
-            create_totalmobile_jobs_task_queue_id=os.getenv("CREATE_TOTALMOBILE_JOBS_TASK_QUEUE_ID", ""),
-            totalmobile_job_cloud_function=os.getenv(
-                "TOTALMOBILE_JOB_CLOUD_FUNCTION", ""
+            create_totalmobile_jobs_task_queue_id=os.getenv(
+                "CREATE_TOTALMOBILE_JOBS_TASK_QUEUE_ID", ""
             ),
             gcloud_project=os.getenv("GCLOUD_PROJECT", ""),
             region=os.getenv("REGION", ""),
@@ -50,6 +48,9 @@ class Config:
             print("Configuration - totalmobile_client_secret: None")
         else:
             print("Configuration - totalmobile_client_secret: Provided")
+        print(
+            f"Configuration - create_totalmobile_jobs_task_queue_id: {self.create_totalmobile_jobs_task_queue_id}"
+        )
         print(f"Configuration - gcloud_project: {self.gcloud_project}")
         print(f"Configuration - region: {self.region}")
         print(f"Configuration - blaise_api_url: {self.blaise_api_url}")

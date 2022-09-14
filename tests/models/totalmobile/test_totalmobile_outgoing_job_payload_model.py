@@ -124,15 +124,25 @@ def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uac
         assert additional_property.name.startswith("uac") is False
 
 
-@pytest.mark.parametrize("latitude, longitude", [("", "10020202"), ("10020202", ""), (None, "10020202"), ("10020202", None), ("", ""), (None, None)],
+@pytest.mark.parametrize(
+    "latitude, longitude",
+    [
+        ("", "10020202"),
+        ("10020202", ""),
+        (None, "10020202"),
+        ("10020202", None),
+        ("", ""),
+        (None, None),
+    ],
 )
-def test_import_case_does_not_populate_lat_and_lon_if_both_are_not_supplied(latitude: str, longitude: str):
+def test_import_case_does_not_populate_lat_and_lon_if_both_are_not_supplied(
+    latitude: str, longitude: str
+):
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
     questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
-        latitude=latitude,
-        longitude=longitude
+        latitude=latitude, longitude=longitude
     )
 
     # act

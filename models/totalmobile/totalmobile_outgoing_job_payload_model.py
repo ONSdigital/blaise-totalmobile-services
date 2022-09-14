@@ -87,7 +87,7 @@ class TotalMobileOutgoingJobPayloadModel:
 
     @staticmethod
     def create_description(
-            questionnaire_name: str, questionnaire_case: BlaiseCaseInformationModel
+        questionnaire_name: str, questionnaire_case: BlaiseCaseInformationModel
     ) -> str:
         uac_string = (
             ""
@@ -121,7 +121,9 @@ class TotalMobileOutgoingJobPayloadModel:
         return concatenated_address
 
     @staticmethod
-    def set_address_coordinates(latitude: Optional[str], longitude: Optional[str]) -> AddressCoordinates:
+    def set_address_coordinates(
+        latitude: Optional[str], longitude: Optional[str]
+    ) -> AddressCoordinates:
 
         if not latitude or not longitude:
             return AddressCoordinates(latitude=None, longitude=None)
@@ -133,9 +135,9 @@ class TotalMobileOutgoingJobPayloadModel:
 
     @classmethod
     def import_case(
-            cls: Type[T],
-            questionnaire_name: str,
-            questionnaire_case: BlaiseCaseInformationModel,
+        cls: Type[T],
+        questionnaire_name: str,
+        questionnaire_case: BlaiseCaseInformationModel,
     ) -> T:
         total_mobile_case = cls(
             identity=Reference(
