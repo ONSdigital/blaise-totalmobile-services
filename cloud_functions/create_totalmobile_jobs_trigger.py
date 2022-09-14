@@ -6,6 +6,7 @@ from uuid import uuid4
 
 from google.cloud import datastore
 
+from appconfig import Config
 from cloud_functions.functions import prepare_tasks, run
 from cloud_functions.logging import setup_logger
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
@@ -107,6 +108,7 @@ def run_async_tasks(tasks: List[Tuple[str, bytes]], queue_id: str, cloud_functio
 
 def create_questionnaire_case_tasks(
     questionnaire_name: str,
+    config: Config,
     totalmobile_service: TotalmobileService,
     questionnaire_service: QuestionnaireService,
 ) -> str:
@@ -163,7 +165,7 @@ def create_questionnaire_case_tasks(
 
     run_async_tasks(
         tasks=tasks,
-        queue_id="bts-create-totalmobile-jobs",
+        queue_id=config.totalmobile_jobs_queue_id,
         cloud_function="bts-create-totalmobile-jobs-processor",
     )
     logging.info("Finished creating questionnaire case tasks")
@@ -171,6 +173,7 @@ def create_questionnaire_case_tasks(
 
 
 def create_totalmobile_jobs_trigger(
+    config: Config,
     totalmobile_service: TotalmobileService,
     questionnaire_service: QuestionnaireService,
 ) -> str:
@@ -187,7 +190,7 @@ def create_totalmobile_jobs_trigger(
     for questionnaire_name in questionnaires_with_release_date_of_today:
         logging.info(f"Questionnaire {questionnaire_name} has a release date of today")
         create_questionnaire_case_tasks(
-            questionnaire_name, totalmobile_service, questionnaire_service
+            questionnaire_name, config, totalmobile_service, questionnaire_service
         )
 
     return "Done"

@@ -50,7 +50,7 @@ def create_totalmobile_jobs_trigger(_event, _context) -> str:
 
     return (
         cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
-            totalmobile_service, questionnaire_service
+            config, totalmobile_service, questionnaire_service
         )
     )
 
