@@ -113,35 +113,6 @@ def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_
     ) in caplog.record_tuples
 
 
-"""
-def test_map_questionnaire_case_task_models_maps_the_correct_list_of_models():
-    # arrange
-    todays_questionnaires_for_release = ["LMS2111Z", "LMS2112T"]
-
-    # act
-    result = map_questionnaire_case_task_models(todays_questionnaires_for_release)
-
-    # assert
-    assert result == [
-        QuestionnaireCaseTaskModel(questionnaire="LMS2111Z"),
-        QuestionnaireCaseTaskModel(questionnaire="LMS2112T"),
-    ]
-"""
-
-"""
-def test_create_questionnaire_case_task_name_returns_unique_name_each_time_when_passed_the_same_model():
-    # arrange
-    model = QuestionnaireCaseTaskModel("LMS2101A")
-
-    # act
-    result1 = create_questionnaire_case_task_name(model)
-    result2 = create_questionnaire_case_task_name(model)
-
-    # assert
-    assert result1 != result2
-"""
-
-
 def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     # arrange
     questionnaire_name = "LMS2101_AA1"

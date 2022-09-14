@@ -21,21 +21,6 @@ from services.totalmobile_service import TotalmobileService
 
 setup_logger()
 
-"""
-def create_questionnaire_case_task_name(job_model: QuestionnaireCaseTaskModel) -> str:
-    return f"{job_model.questionnaire}-{str(uuid4())}"
-"""
-
-"""
-def map_questionnaire_case_task_models(
-    questionnaires: List[str],
-) -> List[QuestionnaireCaseTaskModel]:
-    return [
-        QuestionnaireCaseTaskModel(questionnaire_name)
-        for questionnaire_name in questionnaires
-    ]
-"""
-
 
 def get_questionnaires_with_release_date_of_today() -> list:
     records = get_datastore_records()
@@ -51,22 +36,6 @@ def get_datastore_records() -> list:
     datastore_client = datastore.Client()
     query = datastore_client.query(kind="TmReleaseDate")
     return list(query.fetch())
-
-
-"""
-def __filter_missing_fields(case, REQUIRED_FIELDS) -> List[str]:
-    return list(filter(lambda field: field not in case, REQUIRED_FIELDS))
-"""
-
-"""
-def validate_request(request_json: Dict) -> None:
-    REQUIRED_FIELDS = ["questionnaire"]
-    missing_fields = __filter_missing_fields(request_json, REQUIRED_FIELDS)
-    if len(missing_fields) >= 1:
-        raise Exception(
-            f"Required fields missing from request payload: {missing_fields}"
-        )
-"""
 
 
 def get_cases_with_valid_world_ids(

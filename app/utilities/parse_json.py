@@ -40,7 +40,6 @@ def validate_data(data):
     if not data:
         print("Ain't got no data, mate")
         raise ValueError()
-
     print("We gots data!")
 
 
