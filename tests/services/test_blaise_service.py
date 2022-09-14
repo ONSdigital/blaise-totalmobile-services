@@ -28,7 +28,7 @@ def test_get_cases_calls_the_rest_api_client_with_the_correct_parameters(
 ):
     blaise_server_park = "gusty"
     questionnaire_name = "DST2106Z"
-    fields = BlaiseCaseInformationModel.required_fields_from_blaise
+    fields = BlaiseCaseInformationModel.required_fields_from_blaise()
 
     # act
     blaise_service.get_cases(questionnaire_name)

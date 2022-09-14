@@ -18,7 +18,7 @@ class BlaiseService:
         questionnaire_case_data = restapi_client.get_questionnaire_data(
             self._config.blaise_server_park,
             questionnaire_name,
-            BlaiseCaseInformationModel.required_fields_from_blaise,
+            BlaiseCaseInformationModel.required_fields_from_blaise(),
         )
 
         return [

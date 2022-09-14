@@ -102,7 +102,8 @@ def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_
     questionnaire_service_mock.get_wave_from_questionnaire_name.return_value = "1"
     questionnaire_service_mock.get_cases.return_value = []
     # act
-    result = create_totalmobile_jobs_trigger(total_mobile_service_mock, questionnaire_service_mock
+    result = create_totalmobile_jobs_trigger(
+        total_mobile_service_mock, questionnaire_service_mock
     )
 
     # assert

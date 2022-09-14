@@ -124,7 +124,7 @@ class BlaiseCaseInformationModel(BaseModel):
         return True
 
     @staticmethod
-    def required_fields_from_blaise() -> List[str]:
+    def required_fields_from_blaise() -> List:
         return [
             "qiD.Serial_Number",
             "dataModelName",
