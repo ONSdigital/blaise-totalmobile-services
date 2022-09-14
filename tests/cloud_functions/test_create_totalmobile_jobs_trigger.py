@@ -365,8 +365,6 @@ def test_get_cases_with_valid_world_ids_logs_a_console_error_when_field_region_i
 def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world_and_a_known_world(
     caplog,
 ):
-    config = config_helper.get_default_config()
-
     filtered_cases = [
         get_populated_case_model(field_region=""),
         get_populated_case_model(field_region="Region 1"),
