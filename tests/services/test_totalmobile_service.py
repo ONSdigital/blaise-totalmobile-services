@@ -4,7 +4,7 @@ import pytest
 
 from client import AuthException
 from client.optimise import OptimiseClient
-from models.cloud_tasks.totalmobile_job_request_model import TotalmobileJobRequestModel
+from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.totalmobile_service import TotalmobileService
 from tests.helpers import optimise_client_helper
@@ -38,7 +38,7 @@ def test_get_world_model_returns_a_world_model():
 def test_create_job_calls_the_client_with_the_correct_parameters():
     # arrange
     optimise_client_mock = create_autospec(OptimiseClient)
-    totalmobile_job_model = TotalmobileJobRequestModel(
+    totalmobile_job_model = TotalmobileCreateJobModel(
         questionnaire="LMS2101_AA1",
         case_id="900001",
         world_id="3fa85f64-5717-4562-b3fc-2c963f66afa7",
@@ -61,7 +61,7 @@ def test_create_job_auth_error():
     optimise_client_mock = create_autospec(OptimiseClient)
     optimise_client_mock.create_job.side_effect = AuthException()
 
-    totalmobile_job_model = TotalmobileJobRequestModel(
+    totalmobile_job_model = TotalmobileCreateJobModel(
         questionnaire="LMS2101_AA1",
         case_id="900001",
         world_id="3fa85f64-5717-4562-b3fc-2c963f66afa7",

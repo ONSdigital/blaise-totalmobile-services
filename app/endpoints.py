@@ -8,7 +8,7 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireCaseDoesNotExistError,
     QuestionnaireDoesNotExistError,
 )
-from app.handlers.total_mobile_handler import (
+from app.handlers.totalmobile_incoming_handler import (
     complete_visit_request_handler,
     submit_form_result_request_handler,
     update_visit_status_request_handler,

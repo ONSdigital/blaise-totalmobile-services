@@ -1,10 +1,10 @@
 import logging
 
-from app.services.total_mobile_service import do_something_service
 from app.utilities.parse_json import get_reference_number, validate_data
 from models.totalmobile.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
+from services.placeholder_service import do_something_service
 from services.update_case_service import UpdateCaseService
 
 

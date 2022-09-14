@@ -11,9 +11,9 @@ from cloud_functions.functions import prepare_tasks, run
 from cloud_functions.logging import setup_logger
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 # from models.cloud_tasks.questionnaire_case_cloud_task_model import (QuestionnaireCaseTaskModel)
-from models.cloud_tasks.totalmobile_job_request_model import TotalmobileJobRequestModel
-from models.totalmobile.totalmobile_outgoing_job_payload_model import (
-    TotalMobileOutgoingJobPayloadModel,
+from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
+from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
+    TotalMobileOutgoingCreateJobPayloadModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 from services.questionnaire_service import QuestionnaireService
@@ -56,13 +56,13 @@ def map_totalmobile_job_models(
     cases: List[BlaiseCaseInformationModel],
     world_model: TotalmobileWorldModel,
     questionnaire_name: str,
-) -> List[TotalmobileJobRequestModel]:
+) -> List[TotalmobileCreateJobModel]:
     return [
-        TotalmobileJobRequestModel(
+        TotalmobileCreateJobModel(
             questionnaire_name,
             world_model.get_world_id(case.field_region),
             case.case_id,
-            TotalMobileOutgoingJobPayloadModel.import_case(
+            TotalMobileOutgoingCreateJobPayloadModel.import_case(
                 questionnaire_name, case
             ).to_payload(),
         )

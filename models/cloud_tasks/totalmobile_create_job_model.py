@@ -3,10 +3,10 @@ from dataclasses import asdict, dataclass
 from typing import Dict, Optional, Type, TypedDict, TypeVar
 from uuid import uuid4
 
-T = TypeVar("T", bound="TotalmobileJobRequestModel")
+T = TypeVar("T", bound="TotalmobileCreateJobModel")
 
 
-class TotalMobileJobRequest(TypedDict):
+class TotalmobileCreateJob(TypedDict):
     questionnaire: str
     world_id: str
     case_id: str
@@ -14,7 +14,7 @@ class TotalMobileJobRequest(TypedDict):
 
 
 @dataclass
-class TotalmobileJobRequestModel:
+class TotalmobileCreateJobModel:
     questionnaire: str
     world_id: str
     case_id: Optional[str]
@@ -30,9 +30,7 @@ class TotalmobileJobRequestModel:
         return f"{self.questionnaire}-{self.case_id}-{str(uuid4())}"
 
     @classmethod
-    def import_job(
-        cls: Type[T], totalmobile_job_dictionary: TotalMobileJobRequest
-    ) -> T:
+    def import_job(cls: Type[T], totalmobile_job_dictionary: TotalmobileCreateJob) -> T:
         return cls(
             questionnaire=totalmobile_job_dictionary["questionnaire"],
             world_id=totalmobile_job_dictionary["world_id"],

@@ -1,8 +1,8 @@
 import logging
 from typing import List, Optional
 
-from models.totalmobile.totalmobile_jobs_response_model import (
-    TotalmobileJobsResponseModel,
+from models.totalmobile.totalmobile_get_jobs_response_model import (
+    TotalmobileGetJobsResponseModel,
 )
 from services.blaise_service import BlaiseService
 from services.totalmobile_service import TotalmobileService
@@ -40,7 +40,7 @@ class DeleteTotalmobileJobsService:
 
     @staticmethod
     def questionnaire_has_incomplete_cases(
-        questionnaire_name: str, totalmobile_jobs_model: TotalmobileJobsResponseModel
+        questionnaire_name: str, totalmobile_jobs_model: TotalmobileGetJobsResponseModel
     ) -> bool:
         return all(
             job.visit_complete

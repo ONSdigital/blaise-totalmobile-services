@@ -1,8 +1,8 @@
 from unittest.mock import call, create_autospec
 
-from models.totalmobile.totalmobile_jobs_response_model import (
+from models.totalmobile.totalmobile_get_jobs_response_model import (
     Job,
-    TotalmobileJobsResponseModel,
+    TotalmobileGetJobsResponseModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.blaise_service import BlaiseService
@@ -51,12 +51,17 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_incomplete_jobs_onl
         worlds=[World(region="Region 1", id=world_id)]
     )
 
-    mock_totalmobile_service.get_jobs_model.return_value = TotalmobileJobsResponseModel(
-        [
-            {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
-            {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.22222"}},
-            {"visitComplete": False, "identity": {"reference": "LMS1111-AA1.67890"}},
-        ]
+    mock_totalmobile_service.get_jobs_model.return_value = (
+        TotalmobileGetJobsResponseModel(
+            [
+                {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
+                {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.22222"}},
+                {
+                    "visitComplete": False,
+                    "identity": {"reference": "LMS1111-AA1.67890"},
+                },
+            ]
+        )
     )
 
     mock_blaise_service.get_cases.return_value = [
@@ -96,12 +101,20 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_jobs_for_completed_
         worlds=[World(region="Region 1", id=world_id)]
     )
 
-    mock_totalmobile_service.get_jobs_model.return_value = TotalmobileJobsResponseModel(
-        [
-            {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
-            {"visitComplete": False, "identity": {"reference": "LMS2222-BB2.22222"}},
-            {"visitComplete": False, "identity": {"reference": "LMS1111-AA1.67890"}},
-        ]
+    mock_totalmobile_service.get_jobs_model.return_value = (
+        TotalmobileGetJobsResponseModel(
+            [
+                {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
+                {
+                    "visitComplete": False,
+                    "identity": {"reference": "LMS2222-BB2.22222"},
+                },
+                {
+                    "visitComplete": False,
+                    "identity": {"reference": "LMS1111-AA1.67890"},
+                },
+            ]
+        )
     )
 
     mock_blaise_service.get_cases.side_effect = [
@@ -148,13 +161,24 @@ def test_delete_totalmobile_jobs_completed_in_blaise_only_calls_case_status_info
         worlds=[World(region="Region 1", id=world_id)]
     )
 
-    mock_totalmobile_service.get_jobs_model.return_value = TotalmobileJobsResponseModel(
-        [
-            {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
-            {"visitComplete": False, "identity": {"reference": "LMS2222-BB2.22222"}},
-            {"visitComplete": False, "identity": {"reference": "LMS1111-AA1.67890"}},
-            {"visitComplete": False, "identity": {"reference": "LMS2222-BB2.44444"}},
-        ]
+    mock_totalmobile_service.get_jobs_model.return_value = (
+        TotalmobileGetJobsResponseModel(
+            [
+                {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
+                {
+                    "visitComplete": False,
+                    "identity": {"reference": "LMS2222-BB2.22222"},
+                },
+                {
+                    "visitComplete": False,
+                    "identity": {"reference": "LMS1111-AA1.67890"},
+                },
+                {
+                    "visitComplete": False,
+                    "identity": {"reference": "LMS2222-BB2.44444"},
+                },
+            ]
+        )
     )
 
     mock_blaise_service.get_cases.side_effect = [
@@ -210,12 +234,14 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_not_get_caseids_for_qu
         worlds=[World(region="Region 1", id=world_id)]
     )
 
-    mock_totalmobile_service.get_jobs_model.return_value = TotalmobileJobsResponseModel(
-        [
-            {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
-            {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.22222"}},
-            {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.67890"}},
-        ]
+    mock_totalmobile_service.get_jobs_model.return_value = (
+        TotalmobileGetJobsResponseModel(
+            [
+                {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
+                {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.22222"}},
+                {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.67890"}},
+            ]
+        )
     )
 
     mock_blaise_service.get_cases.return_value = [
@@ -283,10 +309,12 @@ def test_delete_totalmobile_jobs_completed_in_blaise_only_gets_jobs_in_region_1(
         ]
     )
 
-    mock_totalmobile_service.get_jobs_model.return_value = TotalmobileJobsResponseModel(
-        [
-            {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
-        ]
+    mock_totalmobile_service.get_jobs_model.return_value = (
+        TotalmobileGetJobsResponseModel(
+            [
+                {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
+            ]
+        )
     )
 
     mock_blaise_service.get_cases.side_effect = [

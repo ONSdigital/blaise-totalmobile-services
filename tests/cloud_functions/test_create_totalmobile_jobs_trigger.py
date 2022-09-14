@@ -17,8 +17,8 @@ from cloud_functions.create_totalmobile_jobs_trigger import (  # create_question
 )
 from models.blaise.blaise_case_information_model import UacChunks
 # from models.cloud_tasks.questionnaire_case_cloud_task_model import (QuestionnaireCaseTaskModel)
-from models.totalmobile.totalmobile_outgoing_job_payload_model import (
-    TotalMobileOutgoingJobPayloadModel,
+from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
+    TotalMobileOutgoingCreateJobPayloadModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.questionnaire_service import QuestionnaireService
@@ -148,7 +148,7 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     assert result[0].case_id == "10010"
     assert (
         result[0].payload
-        == TotalMobileOutgoingJobPayloadModel.import_case(
+        == TotalMobileOutgoingCreateJobPayloadModel.import_case(
             questionnaire_name, case_data[0]
         ).to_payload()
     )
@@ -158,7 +158,7 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     assert result[1].case_id == "10020"
     assert (
         result[1].payload
-        == TotalMobileOutgoingJobPayloadModel.import_case(
+        == TotalMobileOutgoingCreateJobPayloadModel.import_case(
             questionnaire_name, case_data[1]
         ).to_payload()
     )
@@ -168,7 +168,7 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     assert result[2].case_id == "10030"
     assert (
         result[2].payload
-        == TotalMobileOutgoingJobPayloadModel.import_case(
+        == TotalMobileOutgoingCreateJobPayloadModel.import_case(
             questionnaire_name, case_data[2]
         ).to_payload()
     )
@@ -246,7 +246,7 @@ def test_create_case_tasks_for_questionnaire(
         "questionnaire": "LMS2101_AA1",
         "world_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "case_id": "10010",
-        "payload": TotalMobileOutgoingJobPayloadModel.import_case(
+        "payload": TotalMobileOutgoingCreateJobPayloadModel.import_case(
             "LMS2101_AA1", questionnaire_cases[0]
         ).to_payload(),
     }

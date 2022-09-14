@@ -5,7 +5,7 @@ from typing import List, Optional, Type, TypeVar
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
 
-T = TypeVar("T", bound="TotalMobileOutgoingJobPayloadModel")
+T = TypeVar("T", bound="TotalMobileOutgoingCreateJobPayloadModel")
 
 
 @dataclass
@@ -58,7 +58,7 @@ class AdditionalProperty:
 
 
 @dataclass
-class TotalMobileOutgoingJobPayloadModel:
+class TotalMobileOutgoingCreateJobPayloadModel:
     identity: Reference
     description: str
     origin: str
