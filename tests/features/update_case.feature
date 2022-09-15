@@ -1,4 +1,4 @@
-Feature: Totalmobile update
+Feature: Update case
 
   Scenario: Questionnaire and case is found in Blaise
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
@@ -22,12 +22,12 @@ Feature: Totalmobile update
 
   Scenario: Reference is missing
     When Totalmobile sends an update with a missing reference
-    Then "Unique reference is missing from totalmobile payload" is logged as an error message
+    Then "Unique reference is missing from the Totalmobile payload" is logged as an error message
     And a "400 Bad Request" response is sent back to Totalmobile
 
   Scenario Outline: Reference is in the incorrect format
     When Totalmobile sends an update with a malformed reference <reference>
-    Then "Unique reference appeared to be malformed in the totalmobile payload" is logged as an error message
+    Then "Unique reference appeared to be malformed in the Totalmobile payload" is logged as an error message
     And a "400 Bad Request" response is sent back to Totalmobile
     Examples:
       | reference         |
@@ -38,6 +38,6 @@ Feature: Totalmobile update
 
   Scenario: Payload appears to be malformed
     When Totalmobile sends an update with a malformed payload
-    Then "The totalmobile payload appears to be malformed" is logged as an error message
+    Then "The Totalmobile payload appears to be malformed" is logged as an error message
     And a "400 Bad Request" response is sent back to Totalmobile
 

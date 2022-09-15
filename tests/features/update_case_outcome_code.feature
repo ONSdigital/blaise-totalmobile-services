@@ -1,4 +1,4 @@
-Feature: Totalmobile update outcome code
+Feature: update outcome code
 
   Scenario Outline: Totalmobile sends a request with an outcome code of 310 (non-contact) when case has outcome code of <outcome_code>
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise

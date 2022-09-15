@@ -187,27 +187,23 @@ def step_impl(context, response):
     ), f"Context response is {context.response.status_code}, response is {mappings[response]}"
 
 
-@given(
-    'a respondent has completed case "{case_id}" online for questionnaire "{questionnaire}"'
-)
+@given('case "{case_id}" for questionnaire "{questionnaire}" has been completed')
 def step_impl(context, case_id, questionnaire):
-    completed_case = "110"
-
+    case_completed_outcome_code = "110"
     context.blaise_service.add_questionnaire(questionnaire)
     context.blaise_service.add_case_to_questionnaire(questionnaire, case_id)
     context.blaise_service.update_outcome_code_of_case_in_questionnaire(
-        questionnaire, case_id, completed_case
+        questionnaire, case_id, case_completed_outcome_code
     )
 
 
-@given('a case "{case_id}" has not been started for questionnaire "{questionnaire}"')
+@given('case "{case_id}" for questionnaire "{questionnaire}" has not been completed')
 def step_impl(context, case_id, questionnaire):
-    not_started_case = "0"
-
+    case_not_completed_outcome_code = "0"
     context.blaise_service.add_questionnaire(questionnaire)
     context.blaise_service.add_case_to_questionnaire(questionnaire, case_id)
     context.blaise_service.update_outcome_code_of_case_in_questionnaire(
-        questionnaire, case_id, not_started_case
+        questionnaire, case_id, case_not_completed_outcome_code
     )
 
 
@@ -216,7 +212,7 @@ def step_impl(context, reference):
     context.totalmobile_service.add_job(reference)
 
 
-@when("delete jobs is run")
+@when("delete_totalmobile_jobs_completed_in_blaise is run")
 def step_impl(context):
     delete_totalmobile_service = DeleteTotalmobileJobsService(
         context.totalmobile_service, context.blaise_service
