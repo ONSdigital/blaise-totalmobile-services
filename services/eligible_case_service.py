@@ -33,7 +33,7 @@ def telephone_number_is_empty(case: BlaiseCaseInformationModel) -> bool:
         return True
 
     logging.info(
-        f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to totalmobile as it has a value set for the field 'telephone_number_1'"
+        f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a value set for the field 'telephone_number_1'"
     )
     return False
 
@@ -43,7 +43,7 @@ def telephone_number_2_is_empty(case: BlaiseCaseInformationModel) -> bool:
         return True
 
     logging.info(
-        f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to totalmobile as it has a value set for the field 'telephone_number_2'"
+        f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a value set for the field 'telephone_number_2'"
     )
     return False
 
@@ -53,7 +53,7 @@ def appointment_telephone_number_is_empty(case: BlaiseCaseInformationModel) -> b
         return True
 
     logging.info(
-        f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to totalmobile as it has a value set for the field 'appointment_telephone_number'"
+        f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a value set for the field 'appointment_telephone_number'"
     )
     return False
 
@@ -64,7 +64,7 @@ def case_is_part_of_wave_1(case: BlaiseCaseInformationModel) -> bool:
         return True
 
     logging.info(
-        f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to totalmobile as it has a value '{case.wave}' outside of the range '{value_range}' set for the field 'wave'"
+        f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a value '{case.wave}' outside of the range '{value_range}' set for the field 'wave'"
     )
     return False
 
@@ -74,7 +74,7 @@ def case_has_field_case_of_y(case: BlaiseCaseInformationModel) -> bool:
         return True
 
     logging.info(
-        f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to totalmobile as it has a field case value of '{case.field_case}', not 'Y'"
+        f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a field case value of '{case.field_case}', not 'Y'"
     )
     return False
 
@@ -87,6 +87,6 @@ def case_has_a_desired_outcome_code_of_0_or_310_or_320(
         return True
 
     logging.info(
-        f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to totalmobile as it has a value '{case.outcome_code}' outside of the range '{value_range}' set for the field 'outcome_code'"
+        f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a value '{case.outcome_code}' outside of the range '{value_range}' set for the field 'outcome_code'"
     )
     return False

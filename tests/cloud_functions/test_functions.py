@@ -13,19 +13,18 @@ def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(
 ):
     # arrange
     mock_config_from_env.return_value = Config(
-        "",
-        "",
-        "",
-        "",
-        "totalmobile_jobs_queue_id",
-        "cloud_function",
-        "project",
+        "totalmobile_url",
+        "totalmobile_instance",
+        "totalmobile_client_id",
+        "totalmobile_client_secret",
+        "create_totalmobile_jobs_task_queue_id",
+        "gcloud_project",
         "region",
         "rest_api_url",
-        "gusty",
+        "blaise_server_park",
         "cloud_function_sa",
-        "",
-        "",
+        "bus_api_url",
+        "bus_client_id",
     )
 
     tasks = [("task1", b"task1body"), ("task2", b"task2body")]
@@ -33,16 +32,16 @@ def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(
     # act
     result = prepare_tasks(
         tasks=tasks,
-        queue_id="totalmobile_jobs_queue_id",
+        queue_id="create_totalmobile_jobs_task_queue_id",
         cloud_function_name="cloud_function",
     )
 
     # assert
-    assert result[0].parent == "totalmobile_jobs_queue_id"
-    assert result[0].task.name == "totalmobile_jobs_queue_id/tasks/task1"
+    assert result[0].parent == "create_totalmobile_jobs_task_queue_id"
+    assert result[0].task.name == "create_totalmobile_jobs_task_queue_id/tasks/task1"
     assert (
         result[0].task.http_request.url
-        == "https://region-project.cloudfunctions.net/cloud_function"
+        == "https://region-gcloud_project.cloudfunctions.net/cloud_function"
     )
     assert result[0].task.http_request.body == b"task1body"
     assert (
@@ -50,11 +49,11 @@ def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(
         == "cloud_function_sa"
     )
 
-    assert result[1].parent == "totalmobile_jobs_queue_id"
-    assert result[1].task.name == "totalmobile_jobs_queue_id/tasks/task2"
+    assert result[1].parent == "create_totalmobile_jobs_task_queue_id"
+    assert result[1].task.name == "create_totalmobile_jobs_task_queue_id/tasks/task2"
     assert (
         result[1].task.http_request.url
-        == "https://region-project.cloudfunctions.net/cloud_function"
+        == "https://region-gcloud_project.cloudfunctions.net/cloud_function"
     )
     assert result[1].task.http_request.body == b"task2body"
     assert (
