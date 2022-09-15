@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Dict, List
 
 import blaise_restapi
 from urllib3.exceptions import HTTPError

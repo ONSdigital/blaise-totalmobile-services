@@ -1,8 +1,7 @@
 import asyncio
 import logging
 from datetime import datetime
-from typing import Dict, List, Tuple
-from uuid import uuid4
+from typing import List, Tuple
 
 from google.cloud import datastore
 

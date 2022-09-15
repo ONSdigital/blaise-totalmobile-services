@@ -8,7 +8,7 @@ from google.cloud import datastore
 
 from appconfig import Config
 from client.optimise import OptimiseClient
-from cloud_functions.create_totalmobile_jobs_trigger import (  # create_questionnaire_case_task_name,; map_questionnaire_case_task_models,
+from cloud_functions.create_totalmobile_jobs_trigger import (
     create_cloud_tasks,
     create_totalmobile_jobs_trigger,
     get_cases_with_valid_world_ids,
@@ -16,7 +16,6 @@ from cloud_functions.create_totalmobile_jobs_trigger import (  # create_question
     map_totalmobile_job_models,
 )
 from models.blaise.blaise_case_information_model import UacChunks
-# from models.cloud_tasks.questionnaire_case_cloud_task_model import (QuestionnaireCaseTaskModel)
 from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     TotalMobileOutgoingCreateJobPayloadModel,
 )
