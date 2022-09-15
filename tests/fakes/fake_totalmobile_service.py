@@ -1,7 +1,7 @@
 from collections import defaultdict
 
-from models.totalmobile.totalmobile_jobs_response_model import (
-    TotalmobileJobsResponseModel,
+from models.totalmobile.totalmobile_get_jobs_response_model import (
+    TotalmobileGetJobsResponseModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 
@@ -32,9 +32,9 @@ class FakeTotalmobileService:
             worlds=[World(region="Region 1", id="13013122-d69f-4d6b-gu1d-721f190c4479")]
         )
 
-    def get_jobs_model(self, world_id: str) -> TotalmobileJobsResponseModel:
+    def get_jobs_model(self, world_id: str) -> TotalmobileGetJobsResponseModel:
         for key in self._jobs.keys():
-            return TotalmobileJobsResponseModel(
+            return TotalmobileGetJobsResponseModel(
                 [
                     {"visitComplete": False, "identity": {"reference": f"{key}"}},
                 ]

@@ -1,7 +1,9 @@
 from datetime import datetime
 
+import pytest
+
 from models.blaise.uac_model import UacChunks
-from models.totalmobile.totalmobile_outgoing_job_payload_model import (
+from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     AdditionalProperty,
     Address,
     AddressCoordinates,
@@ -10,7 +12,7 @@ from models.totalmobile.totalmobile_outgoing_job_payload_model import (
     DueDate,
     Reference,
     Skill,
-    TotalMobileOutgoingJobPayloadModel,
+    TotalMobileOutgoingCreateJobPayloadModel,
 )
 from tests.helpers import get_blaise_case_model_helper
 
@@ -43,7 +45,7 @@ def test_import_case_returns_a_populated_model():
     )
 
     # act
-    result = TotalMobileOutgoingJobPayloadModel.import_case(
+    result = TotalMobileOutgoingCreateJobPayloadModel.import_case(
         questionnaire_name, questionnaire_case
     )
 
@@ -113,7 +115,7 @@ def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uac
     )
 
     # act
-    result = TotalMobileOutgoingJobPayloadModel.import_case(
+    result = TotalMobileOutgoingCreateJobPayloadModel.import_case(
         questionnaire_name, questionnaire_case
     )
 
@@ -122,8 +124,39 @@ def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uac
         assert additional_property.name.startswith("uac") is False
 
 
+@pytest.mark.parametrize(
+    "latitude, longitude",
+    [
+        ("", "10020202"),
+        ("10020202", ""),
+        (None, "10020202"),
+        ("10020202", None),
+        ("", ""),
+        (None, None),
+    ],
+)
+def test_import_case_does_not_populate_lat_and_lon_if_both_are_not_supplied(
+    latitude: str, longitude: str
+):
+    # arrange
+    questionnaire_name = "LMS2101_AA1"
+
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+        latitude=latitude, longitude=longitude
+    )
+
+    # act
+    result = TotalMobileOutgoingCreateJobPayloadModel.import_case(
+        questionnaire_name, questionnaire_case
+    )
+
+    # assert
+    assert result.location.addressDetail.coordinates.latitude is None
+    assert result.location.addressDetail.coordinates.longitude is None
+
+
 def test_to_payload_returns_a_correctly_formatted_payload():
-    totalmobile_case = TotalMobileOutgoingJobPayloadModel(
+    totalmobile_case = TotalMobileOutgoingCreateJobPayloadModel(
         identity=Reference("LMS2101-AA1.90001"),
         description="Study: LMS2101_AA1\nCase ID: 90001",
         origin="ONS",
@@ -228,7 +261,7 @@ def test_to_payload_sends_an_empty_string_to_totalmobile_if_the_due_date_is_miss
         wave_com_dte=None
     )
 
-    case = TotalMobileOutgoingJobPayloadModel.import_case(
+    case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
         questionnaire_name, questionnaire_case
     )
     result = case.to_payload()
@@ -247,7 +280,7 @@ def test_create_description_returns_a_correctly_formatted_description():
     )
 
     # Act
-    case = TotalMobileOutgoingJobPayloadModel.import_case(
+    case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
         questionnaire_name, questionnaire_case
     )
 
@@ -268,7 +301,7 @@ def test_create_description_returns_a_correctly_formatted_description_when_all_v
     )
 
     # Act
-    case = TotalMobileOutgoingJobPayloadModel.import_case(
+    case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
         questionnaire_name, questionnaire_case
     )
 
@@ -291,7 +324,7 @@ def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_all
     )
 
     # Act
-    case = TotalMobileOutgoingJobPayloadModel.import_case(
+    case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
         questionnaire_name, questionnaire_case
     )
 
@@ -315,7 +348,7 @@ def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_not
     )
 
     # Act
-    case = TotalMobileOutgoingJobPayloadModel.import_case(
+    case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
         questionnaire_name, questionnaire_case
     )
 

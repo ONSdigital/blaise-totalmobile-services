@@ -30,4 +30,4 @@ The unique identifier for the endpoint payloads are as follows:
 * Complete - ["Identity"]["Reference"]
 * Submit - ["Result"]["Association"]["Reference"]
 
-These IDs are the job reference we set when sending data to Totalmobile and is should be constructed from the questionnaire name and case id. This is how we will link the data back to the Blaise data.
+These IDs are the job reference we set when sending data to Totalmobile and is should be constructed from the questionnaire name and case ID. This is how we will link the data back to the Blaise data.

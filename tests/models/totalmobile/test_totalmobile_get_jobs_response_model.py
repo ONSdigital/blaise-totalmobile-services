@@ -1,5 +1,5 @@
-from models.totalmobile.totalmobile_jobs_response_model import (
-    TotalmobileJobsResponseModel,
+from models.totalmobile.totalmobile_get_jobs_response_model import (
+    TotalmobileGetJobsResponseModel,
 )
 from tests.helpers import optimise_client_helper
 
@@ -9,7 +9,7 @@ def test_total_mobile_job_models_maps_expected_list_of_models_from_job_response(
     job_response = optimise_client_helper.get_jobs_response()
 
     # act
-    result = TotalmobileJobsResponseModel(job_response)
+    result = TotalmobileGetJobsResponseModel(job_response)
 
     # assert
     assert len(result.questionnaire_jobs) == 2
