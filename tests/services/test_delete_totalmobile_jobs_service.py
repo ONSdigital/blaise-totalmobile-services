@@ -68,7 +68,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_incomplete_jobs_onl
     # assert
     assert mock_totalmobile_service.delete_job.call_count == 1
     mock_totalmobile_service.delete_job.assert_any_call(
-        world_id, "LMS1111-AA1.67890", "110"
+        world_id, "LMS1111-AA1.67890", "completed in blaise"
     )
 
 
@@ -111,10 +111,10 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_jobs_for_completed_
     # assert
     assert mock_totalmobile_service.delete_job.call_count == 2
     mock_totalmobile_service.delete_job.assert_any_call(
-        world_id, "LMS1111-AA1.67890", "110"
+        world_id, "LMS1111-AA1.67890", "completed in blaise"
     )
     mock_totalmobile_service.delete_job.assert_any_call(
-        world_id, "LMS2222-BB2.22222", "110"
+        world_id, "LMS2222-BB2.22222", "completed in blaise"
     )
 
 
@@ -159,13 +159,13 @@ def test_delete_totalmobile_jobs_completed_in_blaise_only_calls_case_status_info
     # assert
     assert mock_totalmobile_service.delete_job.call_count == 3
     mock_totalmobile_service.delete_job.assert_any_call(
-        world_id, "LMS1111-AA1.67890", "110"
+        world_id, "LMS1111-AA1.67890", "completed in blaise"
     )
     mock_totalmobile_service.delete_job.assert_any_call(
-        world_id, "LMS2222-BB2.22222", "110"
+        world_id, "LMS2222-BB2.22222", "completed in blaise"
     )
     mock_totalmobile_service.delete_job.assert_any_call(
-        world_id, "LMS2222-BB2.44444", "110"
+        world_id, "LMS2222-BB2.44444", "completed in blaise"
     )
 
     assert mock_blaise_service.get_case_status_information.call_count == 2

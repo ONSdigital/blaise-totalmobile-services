@@ -28,7 +28,9 @@ class DeleteTotalmobileJobsService:
 
             for job in totalmobile_jobs_model.questionnaire_jobs[questionnaire_name]:
                 if job.visit_complete is False and job.case_id in completed_case_ids:
-                    self.totalmobile_service.delete_job(world_id, job.reference, "110")
+                    self.totalmobile_service.delete_job(
+                        world_id, job.reference, "completed in blaise"
+                    )
                     logging.info(
                         f"Successfully removed job {job.reference} from Totalmobile"
                     )
