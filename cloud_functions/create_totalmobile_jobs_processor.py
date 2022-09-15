@@ -18,7 +18,7 @@ def get_duplicate_job_message(err: BadRequest) -> Optional[str]:
         or not isinstance(err.error_details["jobEntity"], list)
         or len(err.error_details["jobEntity"]) == 0
         or not err.error_details["jobEntity"][0].startswith(
-            "Job already exists with reference"
+            "Job already exists with Reference"
         )
     ):
         return None

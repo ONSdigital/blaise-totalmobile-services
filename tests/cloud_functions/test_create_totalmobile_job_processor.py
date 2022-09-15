@@ -35,7 +35,7 @@ def test_create_totalmobile_job_when_job_already_exists(mock_create_job_task, ca
     total_mobile_service_mock = create_autospec(TotalmobileService)
     total_mobile_service_mock.create_job.side_effect = BadRequest(
         error_details={
-            "jobEntity": ["Job already exists with reference DST2101-AA1.100100."]
+            "jobEntity": ["Job already exists with Reference DST2101-AA1.100100."]
         }
     )
     with caplog.at_level(logging.WARNING):
@@ -43,7 +43,7 @@ def test_create_totalmobile_job_when_job_already_exists(mock_create_job_task, ca
     assert (
         "root",
         logging.WARNING,
-        "Job already exists with reference DST2101-AA1.100100.",
+        "Job already exists with Reference DST2101-AA1.100100.",
     ) in caplog.record_tuples
 
 
