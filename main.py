@@ -18,20 +18,6 @@ from services.totalmobile_service import TotalmobileService
 from services.uac_service import UacService
 
 
-def create_totalmobile_jobs_processor(request: flask.Request) -> str:
-    config = Config.from_env()
-    optimise_client = OptimiseClient(
-        config.totalmobile_url,
-        config.totalmobile_instance,
-        config.totalmobile_client_id,
-        config.totalmobile_client_secret,
-    )
-    totalmobile_service = TotalmobileService(optimise_client)
-    return cloud_functions.create_totalmobile_jobs_processor.create_totalmobile_jobs_processor(
-        request, totalmobile_service
-    )
-
-
 def create_totalmobile_jobs_trigger(_event, _context) -> str:
     config = Config.from_env()
     questionnaire_service = QuestionnaireService(
@@ -52,6 +38,20 @@ def create_totalmobile_jobs_trigger(_event, _context) -> str:
         cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
             config, totalmobile_service, questionnaire_service
         )
+    )
+
+
+def create_totalmobile_jobs_processor(request: flask.Request) -> str:
+    config = Config.from_env()
+    optimise_client = OptimiseClient(
+        config.totalmobile_url,
+        config.totalmobile_instance,
+        config.totalmobile_client_id,
+        config.totalmobile_client_secret,
+    )
+    totalmobile_service = TotalmobileService(optimise_client)
+    return cloud_functions.create_totalmobile_jobs_processor.create_totalmobile_jobs_processor(
+        request, totalmobile_service
     )
 
 

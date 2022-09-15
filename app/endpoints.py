@@ -1,3 +1,5 @@
+import logging
+
 from flask import Blueprint, current_app, jsonify, request
 
 from app.auth import auth
@@ -32,16 +34,10 @@ def add_header(response):
     return response
 
 
-@incoming.route("/updatevisitstatusrequest", methods=["POST"])
-@auth.login_required
-def update_visit_status_request():
-    update_visit_status_request_handler(request)
-    return "ok"
-
-
 @incoming.route("/submitformresultrequest", methods=["POST"])
 @auth.login_required
 def submit_form_result_request():
+    logging.info(f"Incoming request via the 'submitformresultrequest' endpoint")
     try:
         uac_service = UacService(current_app.app_config)
         questionnaire_service = QuestionnaireService(
@@ -66,7 +62,16 @@ def submit_form_result_request():
 @incoming.route("/completevisitrequest", methods=["POST"])
 @auth.login_required
 def complete_visit_request():
+    logging.info(f"Incoming request via the 'completevisitrequest' endpoint")
     complete_visit_request_handler(request)
+    return "ok"
+
+
+@incoming.route("/updatevisitstatusrequest", methods=["POST"])
+@auth.login_required
+def update_visit_status_request():
+    logging.info(f"Incoming request via the 'updatevisitstatusrequest' endpoint")
+    update_visit_status_request_handler(request)
     return "ok"
 
 
