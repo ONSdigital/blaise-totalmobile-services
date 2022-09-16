@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, TypedDict, Union
+from typing import Any, Dict, List, TypedDict
 
 import requests
 
@@ -19,7 +19,7 @@ GetWorldsResponse = List[GetWorldResponse]
 
 class GetJobResponse(TypedDict):
     identity: Identity
-    visitComplete: str
+    visitComplete: bool
 
 
 GetJobsResponse = List[GetJobResponse]

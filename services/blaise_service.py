@@ -9,31 +9,6 @@ from models.blaise.blaise_case_information_model import BlaiseCaseInformationMod
 
 
 class BlaiseService:
-    required_fields_from_blaise = [
-        "qiD.Serial_Number",
-        "dataModelName",
-        "qDataBag.TLA",
-        "qDataBag.Wave",
-        "qDataBag.Prem1",
-        "qDataBag.Prem2",
-        "qDataBag.Prem3",
-        "qDataBag.District",
-        "qDataBag.PostTown",
-        "qDataBag.PostCode",
-        "qDataBag.TelNo",
-        "qDataBag.TelNo2",
-        "telNoAppt",
-        "hOut",
-        "qDataBag.UPRN_Latitude",
-        "qDataBag.UPRN_Longitude",
-        "qDataBag.Priority",
-        "qDataBag.FieldCase",
-        "qDataBag.FieldRegion",
-        "qDataBag.FieldTeam",
-        "qDataBag.WaveComDTE",
-        "catiMana.CatiCall.RegsCalls[1].DialResult",
-    ]
-
     def __init__(self, config: Config):
         self._config = config
 
@@ -43,7 +18,7 @@ class BlaiseService:
         questionnaire_case_data = restapi_client.get_questionnaire_data(
             self._config.blaise_server_park,
             questionnaire_name,
-            self.required_fields_from_blaise,
+            BlaiseCaseInformationModel.required_fields_from_blaise(),
         )
 
         return [

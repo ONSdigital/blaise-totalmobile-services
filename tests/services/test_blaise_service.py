@@ -7,6 +7,7 @@ from urllib3.exceptions import HTTPError
 
 from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
 from appconfig import Config
+from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from services.blaise_service import BlaiseService
 from tests.helpers import config_helper
 
@@ -27,7 +28,7 @@ def test_get_cases_calls_the_rest_api_client_with_the_correct_parameters(
 ):
     blaise_server_park = "gusty"
     questionnaire_name = "DST2106Z"
-    fields = blaise_service.required_fields_from_blaise
+    fields = BlaiseCaseInformationModel.required_fields_from_blaise()
 
     # act
     blaise_service.get_cases(questionnaire_name)

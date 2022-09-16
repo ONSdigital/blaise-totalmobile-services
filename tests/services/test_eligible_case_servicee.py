@@ -220,32 +220,32 @@ def test_get_eligible_cases_logs_all_cases_appropriately(caplog):
     assert (
         "root",
         logging.INFO,
-        "Case '90002' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value set for the field 'telephone_number_1'",
+        "Case '90002' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a value set for the field 'telephone_number_1'",
     ) in caplog.record_tuples
     assert (
         "root",
         logging.INFO,
-        "Case '90003' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value set for the field 'telephone_number_2'",
+        "Case '90003' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a value set for the field 'telephone_number_2'",
     ) in caplog.record_tuples
     assert (
         "root",
         logging.INFO,
-        "Case '90004' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value set for the field 'appointment_telephone_number'",
+        "Case '90004' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a value set for the field 'appointment_telephone_number'",
     ) in caplog.record_tuples
     assert (
         "root",
         logging.INFO,
-        "Case '90005' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '2' outside of the range '['1']' set for the field 'wave'",
+        "Case '90005' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a value '2' outside of the range '['1']' set for the field 'wave'",
     ) in caplog.record_tuples
     assert (
         "root",
         logging.INFO,
-        "Case '90006' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a field case value of 'N', not 'Y'",
+        "Case '90006' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a field case value of 'N', not 'Y'",
     ) in caplog.record_tuples
     assert (
         "root",
         logging.INFO,
-        "Case '90007' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '410' outside of the range '[0, 310, 320]' set for the field 'outcome_code'",
+        "Case '90007' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a value '410' outside of the range '[0, 310, 320]' set for the field 'outcome_code'",
     ) in caplog.record_tuples
     assert (
         "root",
@@ -279,7 +279,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_teleph
     assert (
         "root",
         logging.INFO,
-        "Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value set for the field 'telephone_number_1'",
+        "Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a value set for the field 'telephone_number_1'",
     ) in caplog.record_tuples
 
 
@@ -308,7 +308,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_teleph
     assert (
         "root",
         logging.INFO,
-        "Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value set for the field 'telephone_number_2'",
+        "Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a value set for the field 'telephone_number_2'",
     ) in caplog.record_tuples
 
 
@@ -337,7 +337,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_appoin
     assert (
         "root",
         logging.INFO,
-        "Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value set for the field 'appointment_telephone_number'",
+        "Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a value set for the field 'appointment_telephone_number'",
     ) in caplog.record_tuples
 
 
@@ -369,7 +369,7 @@ def test_get_eligible_cases_logs_a_message_when_a_wave_is_not_in_range(
     assert (
         "root",
         logging.INFO,
-        f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '{test_input}' outside of the range '{value_range}' set for the field 'wave'",
+        f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a value '{test_input}' outside of the range '{value_range}' set for the field 'wave'",
     ) in caplog.record_tuples
 
 
@@ -401,7 +401,7 @@ def test_get_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(
     assert (
         "root",
         logging.INFO,
-        f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a value '{test_input}' outside of the range '{value_range}' set for the field 'outcome_code'",
+        f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a value '{test_input}' outside of the range '{value_range}' set for the field 'outcome_code'",
     ) in caplog.record_tuples
 
 
@@ -430,7 +430,7 @@ def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_n(caplog):
     assert (
         "root",
         logging.INFO,
-        f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a field case value of 'N', not 'Y'",
+        f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a field case value of 'N', not 'Y'",
     ) in caplog.record_tuples
 
 
@@ -460,7 +460,7 @@ def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_N_and_prior
     assert (
         "root",
         logging.INFO,
-        f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a field case value of 'N', not 'Y'",
+        f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a field case value of 'N', not 'Y'",
     ) in caplog.record_tuples
 
 
@@ -490,5 +490,5 @@ def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_an_empty_st
     assert (
         "root",
         logging.INFO,
-        f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to totalmobile as it has a field case value of '', not 'Y'",
+        f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a field case value of '', not 'Y'",
     ) in caplog.record_tuples

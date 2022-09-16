@@ -5,7 +5,7 @@ from typing import List, Optional, Type, TypeVar
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
 
-T = TypeVar("T", bound="TotalMobileOutgoingJobPayloadModel")
+T = TypeVar("T", bound="TotalMobileOutgoingCreateJobPayloadModel")
 
 
 @dataclass
@@ -58,7 +58,7 @@ class AdditionalProperty:
 
 
 @dataclass
-class TotalMobileOutgoingJobPayloadModel:
+class TotalMobileOutgoingCreateJobPayloadModel:
     identity: Reference
     description: str
     origin: str
@@ -120,6 +120,19 @@ class TotalMobileOutgoingJobPayloadModel:
         )
         return concatenated_address
 
+    @staticmethod
+    def set_address_coordinates(
+        latitude: Optional[str], longitude: Optional[str]
+    ) -> AddressCoordinates:
+
+        if not latitude or not longitude:
+            return AddressCoordinates(latitude=None, longitude=None)
+
+        return AddressCoordinates(
+            latitude=latitude,
+            longitude=longitude,
+        )
+
     @classmethod
     def import_case(
         cls: Type[T],
@@ -147,7 +160,7 @@ class TotalMobileOutgoingJobPayloadModel:
                     addressLine4=questionnaire_case.address_details.address.county,
                     addressLine5=questionnaire_case.address_details.address.town,
                     postCode=questionnaire_case.address_details.address.postcode,
-                    coordinates=AddressCoordinates(
+                    coordinates=cls.set_address_coordinates(
                         latitude=questionnaire_case.address_details.address.coordinates.latitude,
                         longitude=questionnaire_case.address_details.address.coordinates.longitude,
                     ),

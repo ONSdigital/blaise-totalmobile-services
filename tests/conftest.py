@@ -1,8 +1,6 @@
 import json
 from base64 import b64encode
-from calendar import c
 from typing import Dict
-from unittest import mock
 
 import pytest
 from werkzeug.security import generate_password_hash

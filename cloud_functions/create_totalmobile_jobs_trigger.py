@@ -1,38 +1,39 @@
 import asyncio
 import logging
-from typing import Dict, List, Tuple
+from datetime import datetime
+from typing import List, Tuple
 
-import flask
+from google.cloud import datastore
 
 from appconfig import Config
 from cloud_functions.functions import prepare_tasks, run
 from cloud_functions.logging import setup_logger
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
-from models.cloud_tasks.totalmobile_outgoing_job_model import TotalmobileJobModel
-from models.totalmobile.totalmobile_outgoing_job_payload_model import (
-    TotalMobileOutgoingJobPayloadModel,
+from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
+from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
+    TotalMobileOutgoingCreateJobPayloadModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from services import eligible_case_service
-from services.blaise_service import BlaiseService
 from services.questionnaire_service import QuestionnaireService
 from services.totalmobile_service import TotalmobileService
-from services.uac_service import UacService
 
 setup_logger()
 
 
-def __filter_missing_fields(case, REQUIRED_FIELDS) -> List[str]:
-    return list(filter(lambda field: field not in case, REQUIRED_FIELDS))
+def get_questionnaires_with_release_date_of_today() -> list:
+    records = get_datastore_records()
+    today = datetime.today().strftime("%d/%m/%Y")
+    return [
+        record["questionnaire"]
+        for record in records
+        if record["tmreleasedate"].strftime("%d/%m/%Y") == today
+    ]
 
 
-def validate_request(request_json: Dict) -> None:
-    REQUIRED_FIELDS = ["questionnaire"]
-    missing_fields = __filter_missing_fields(request_json, REQUIRED_FIELDS)
-    if len(missing_fields) >= 1:
-        raise Exception(
-            f"Required fields missing from request payload: {missing_fields}"
-        )
+def get_datastore_records() -> list:
+    datastore_client = datastore.Client()
+    query = datastore_client.query(kind="TmReleaseDate")
+    return list(query.fetch())
 
 
 def get_cases_with_valid_world_ids(
@@ -41,9 +42,11 @@ def get_cases_with_valid_world_ids(
     cases_with_valid_world_ids = []
     for case in filtered_cases:
         if case.field_region == "":
-            logging.warning("Case rejected. Missing Field Region")
+            logging.warning("Case rejected due to missing field region")
         elif world_model.get_world_id(case.field_region) is None:
-            logging.warning(f"Unsupported world: {case.field_region}")
+            logging.warning(
+                f"Case rejected due to invalid field region - {case.field_region}"
+            )
         else:
             cases_with_valid_world_ids.append(case)
     return cases_with_valid_world_ids
@@ -53,13 +56,13 @@ def map_totalmobile_job_models(
     cases: List[BlaiseCaseInformationModel],
     world_model: TotalmobileWorldModel,
     questionnaire_name: str,
-) -> List[TotalmobileJobModel]:
+) -> List[TotalmobileCreateJobModel]:
     return [
-        TotalmobileJobModel(
+        TotalmobileCreateJobModel(
             questionnaire_name,
             world_model.get_world_id(case.field_region),
             case.case_id,
-            TotalMobileOutgoingJobPayloadModel.import_case(
+            TotalMobileOutgoingCreateJobPayloadModel.import_case(
                 questionnaire_name, case
             ).to_payload(),
         )
@@ -75,55 +78,42 @@ def run_async_tasks(tasks: List[Tuple[str, bytes]], queue_id: str, cloud_functio
     asyncio.run(run(task_requests))
 
 
-def create_questionnaire_case_tasks(
-    request: flask.Request, config: Config, totalmobile_service: TotalmobileService
+def create_cloud_tasks(
+    questionnaire_name: str,
+    config: Config,
+    totalmobile_service: TotalmobileService,
+    questionnaire_service: QuestionnaireService,
 ) -> str:
-    questionnaire_service = QuestionnaireService(
-        config,
-        blaise_service=BlaiseService(config),
-        eligible_case_service=eligible_case_service,
-        uac_service=UacService(config),
-    )
-
-    logging.info("Started creating questionnaire case tasks")
-
-    request_json = request.get_json()
-    if request_json is None:
-        logging.info("Function was not triggered by a valid request")
-        raise Exception("Function was not triggered by a valid request")
-    validate_request(request_json)
-
-    questionnaire_name = request_json["questionnaire"]
     wave = questionnaire_service.get_wave_from_questionnaire_name(questionnaire_name)
     if wave != "1":
         logging.info(
-            f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported"
+            f"Questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported"
         )
         raise Exception(
-            f"questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported"
+            f"Questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported"
         )
 
     logging.info(f"Creating case tasks for questionnaire {questionnaire_name}")
 
     eligible_cases = questionnaire_service.get_eligible_cases(questionnaire_name)
-    logging.info(
-        f"Retrieved {len(eligible_cases)} cases for questionnaire {questionnaire_name}"
-    )
 
     if len(eligible_cases) == 0:
         logging.info(
             f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}"
         )
         return f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}"
-    logging.info(f"{len(eligible_cases)} eligible cases found")
+
+    logging.info(
+        f"Found {len(eligible_cases)} eligible cases for questionnaire {questionnaire_name}"
+    )
 
     world_model = totalmobile_service.get_world_model()
-    logging.info(f"Retrieved world id model")
+    logging.info(f"Retrieved Totalmobile worlds")
 
     cases_with_valid_world_ids = get_cases_with_valid_world_ids(
         eligible_cases, world_model
     )
-    logging.info(f"Finished searching for cases with valid world ids")
+    logging.info(f"Finished filtering Blaise cases with valid worlds")
 
     totalmobile_job_models = map_totalmobile_job_models(
         cases_with_valid_world_ids, world_model, questionnaire_name
@@ -142,8 +132,34 @@ def create_questionnaire_case_tasks(
 
     run_async_tasks(
         tasks=tasks,
-        queue_id=config.totalmobile_jobs_queue_id,
-        cloud_function=config.totalmobile_job_cloud_function,
+        queue_id=config.create_totalmobile_jobs_task_queue_id,
+        cloud_function="bts-create-totalmobile-jobs-processor",
     )
-    logging.info("Finished creating questionnaire case tasks")
+    logging.info(
+        f"Finished creating cloud tasks for questionnaire {questionnaire_name}"
+    )
+    return "Done"
+
+
+def create_totalmobile_jobs_trigger(
+    config: Config,
+    totalmobile_service: TotalmobileService,
+    questionnaire_service: QuestionnaireService,
+) -> str:
+    logging.info("Checking for questionnaire release dates")
+
+    questionnaires_with_release_date_of_today = (
+        get_questionnaires_with_release_date_of_today()
+    )
+
+    if questionnaires_with_release_date_of_today == []:
+        logging.info("There are no questionnaires with a release date of today")
+        return "There are no questionnaires with a release date of today"
+
+    for questionnaire_name in questionnaires_with_release_date_of_today:
+        logging.info(f"Questionnaire {questionnaire_name} has a release date of today")
+        create_cloud_tasks(
+            questionnaire_name, config, totalmobile_service, questionnaire_service
+        )
+
     return "Done"

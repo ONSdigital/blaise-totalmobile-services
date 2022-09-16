@@ -1,18 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import (
-    Any,
-    Dict,
-    List,
-    Optional,
-    Tuple,
-    Type,
-    TypedDict,
-    TypeVar,
-    Union,
-    cast,
-)
+from typing import Any, Dict, List, Optional, Type, TypedDict, TypeVar
 
 from app.exceptions.custom_exceptions import BadReferenceError, MissingReferenceError
 from models.base_model import BaseModel
@@ -37,12 +26,13 @@ class TotalmobileReferenceModel(BaseModel):
         self.case_id = case_id
 
     @classmethod
+    def from_reference(cls: Type[T], reference: str) -> T:
+        return cls.get_model_from_reference(reference)
+
+    @classmethod
     def from_request(cls: Type[T], request: IncomingRequest) -> T:
         reference = cls.get_reference_from_incoming_request(request)
-        request_fields = cls.get_fields_from_reference(reference)
-        questionnaire_name = request_fields[0].replace("-", "_")
-        case_id = request_fields[1]
-        return cls(questionnaire_name=questionnaire_name, case_id=case_id)
+        return cls.get_model_from_reference(reference)
 
     @classmethod
     def from_questionnaire_and_case(
@@ -67,13 +57,13 @@ class TotalmobileReferenceModel(BaseModel):
 
         if len(reference_fields) != 2:
             logging.error(
-                "Unique reference appeared to be malformed in the totalmobile payload"
+                "Unique reference appeared to be malformed in the Totalmobile payload"
             )
             raise BadReferenceError()
 
         if reference_fields[0] == "" or reference_fields[1] == "":
             logging.error(
-                "Unique reference appeared to be malformed in the totalmobile payload"
+                "Unique reference appeared to be malformed in the Totalmobile payload"
             )
             raise BadReferenceError()
 
@@ -86,7 +76,16 @@ class TotalmobileReferenceModel(BaseModel):
         )
 
         if reference is None:
-            logging.error("Unique reference is missing from totalmobile payload")
+            logging.error("Unique reference is missing from the Totalmobile payload")
             raise MissingReferenceError()
 
         return reference
+
+    @staticmethod
+    def get_model_from_reference(reference: str):
+        request_fields = TotalmobileReferenceModel.get_fields_from_reference(reference)
+        questionnaire_name = request_fields[0].replace("-", "_")
+        case_id = request_fields[1]
+        return TotalmobileReferenceModel(
+            questionnaire_name=questionnaire_name, case_id=case_id
+        )

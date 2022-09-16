@@ -1,6 +1,6 @@
 from dataclasses import dataclass, fields
 from datetime import datetime
-from typing import Dict, Optional, Type, TypeVar
+from typing import Dict, List, Optional, Type, TypeVar
 
 from models.base_model import BaseModel
 from models.blaise.uac_model import UacChunks, UacModel
@@ -122,3 +122,30 @@ class BlaiseCaseInformationModel(BaseModel):
         if value == "" or value is None:
             return False
         return True
+
+    @staticmethod
+    def required_fields_from_blaise() -> List:
+        return [
+            "qiD.Serial_Number",
+            "dataModelName",
+            "qDataBag.TLA",
+            "qDataBag.Wave",
+            "qDataBag.Prem1",
+            "qDataBag.Prem2",
+            "qDataBag.Prem3",
+            "qDataBag.District",
+            "qDataBag.PostTown",
+            "qDataBag.PostCode",
+            "qDataBag.TelNo",
+            "qDataBag.TelNo2",
+            "telNoAppt",
+            "hOut",
+            "qDataBag.UPRN_Latitude",
+            "qDataBag.UPRN_Longitude",
+            "qDataBag.Priority",
+            "qDataBag.FieldCase",
+            "qDataBag.FieldRegion",
+            "qDataBag.FieldTeam",
+            "qDataBag.WaveComDTE",
+            "catiMana.CatiCall.RegsCalls[1].DialResult",
+        ]
