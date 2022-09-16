@@ -1,4 +1,4 @@
-Feature: Delete job
+Feature: Delete jobs
 
   Scenario: A case in Blaise has been completed
     Given case "12345" for questionnaire "LMS2206_AA1" has been completed
