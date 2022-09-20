@@ -48,8 +48,11 @@ class DeleteTotalmobileJobsService:
         try:
             cases = self.blaise_service.get_cases(questionnaire_name)
             return [case.case_id for case in cases if case.outcome_code == 110]
-        except:
-            logging.error("Unable to retrieve cases from Blaise")
+        except Exception as error:
+            logging.error(
+                "Unable to retrieve cases from Blaise",
+                extra={"Exception_reason": str(error)},
+            )
             return []
 
     @staticmethod
@@ -72,8 +75,11 @@ class DeleteTotalmobileJobsService:
     ) -> Optional[TotalmobileGetJobsResponseModel]:
         try:
             return self.totalmobile_service.get_jobs_model(world_id)
-        except:
-            logging.error("Unable to retrieve jobs from Totalmobile")
+        except Exception as error:
+            logging.error(
+                "Unable to retrieve jobs from Totalmobile",
+                extra={"Exception_reason": str(error)},
+            )
             return None
 
     def delete_job(self, world_id: str, job_reference: str):
@@ -82,7 +88,8 @@ class DeleteTotalmobileJobsService:
                 world_id, job_reference, self._delete_reason
             )
             logging.info(f"Successfully removed job {job_reference} from Totalmobile")
-        except:
+        except Exception as error:
             logging.error(
-                f"Unable to delete job reference '{job_reference}` from Totalmobile"
+                f"Unable to delete job reference '{job_reference}` from Totalmobile",
+                extra={"Exception_reason": str(error)},
             )
