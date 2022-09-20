@@ -249,6 +249,6 @@ def step_impl(context):
     context.totalmobile_service.method_throws_exception("delete_job")
 
 
-@given("the Blaise service is errors when retrieving cases")
+@given("the Blaise service errors when retrieving cases")
 def step_impl(context):
     context.blaise_service.method_throws_exception("get_cases")

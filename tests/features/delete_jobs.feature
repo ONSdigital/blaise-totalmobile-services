@@ -23,7 +23,7 @@ Feature: Delete jobs
   Scenario: Fails to get cases from Blaise
     Given case "12345" for questionnaire "LMS2206_AA1" has been completed
     And there is an incomplete job in Totalmobile with reference "LMS2206-AA1.12345"
-    And the Blaise service is errors when retrieving cases
+    And the Blaise service errors when retrieving cases
     When delete_totalmobile_jobs_completed_in_blaise is run
     Then "Unable to retrieve cases from Blaise" is logged as an error message
 
