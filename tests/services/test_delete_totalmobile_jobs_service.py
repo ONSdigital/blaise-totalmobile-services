@@ -11,35 +11,6 @@ from services.totalmobile_service import TotalmobileService
 from tests.helpers import get_blaise_case_model_helper
 
 
-def test_get_completed_blaise_cases_returns_an_expected_list_of_case_ids():
-    # arrange
-    questionnaire_name = "LMS1111_AA1"
-    questionnaire_cases = [
-        get_blaise_case_model_helper.get_populated_case_model(
-            case_id="12345", outcome_code=110
-        ),
-        get_blaise_case_model_helper.get_populated_case_model(
-            case_id="22222", outcome_code=310
-        ),
-        get_blaise_case_model_helper.get_populated_case_model(
-            case_id="67890", outcome_code=110
-        ),
-    ]
-
-    mock_totalmobile_service = create_autospec(TotalmobileService)
-    mock_blaise_service = create_autospec(BlaiseService)
-
-    mock_blaise_service.get_cases.return_value = questionnaire_cases
-    delete_totalmobile_jobs_service = DeleteTotalmobileJobsService(
-        mock_totalmobile_service, mock_blaise_service
-    )
-
-    # act and assert
-    assert delete_totalmobile_jobs_service.get_completed_blaise_cases(
-        questionnaire_name
-    ) == ["12345", "67890"]
-
-
 def test_delete_totalmobile_jobs_completed_in_blaise_deletes_incomplete_jobs_only_for_completed_cases_in_blaise():
     # arrange
     world_id = "13013122-d69f-4d6b-gu1d-721f190c4479"
