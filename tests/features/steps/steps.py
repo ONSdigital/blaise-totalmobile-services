@@ -212,6 +212,15 @@ def step_impl(context, reference):
     context.totalmobile_service.add_job(reference)
 
 
+@given('case "{case_id}" for questionnaire "{questionnaire}" does not exist in Blaise')
+def step_impl(context, case_id, questionnaire):
+    context.blaise_service.add_questionnaire(questionnaire)
+    context.blaise_service.add_case_to_questionnaire(questionnaire, "0")
+    context.blaise_service.update_outcome_code_of_case_in_questionnaire(
+        questionnaire, "0", 110
+    )
+
+
 @when("delete_totalmobile_jobs_completed_in_blaise is run")
 def step_impl(context):
     delete_totalmobile_service = DeleteTotalmobileJobsService(
@@ -228,3 +237,18 @@ def step_impl(context, reference):
 @then('the Totalmobile job with reference "{reference}" is not deleted')
 def step_impl(context, reference):
     assert not context.totalmobile_service.delete_job_has_been_called(reference)
+
+
+@given("the Totalmobile service errors when retrieving jobs")
+def step_impl(context):
+    context.totalmobile_service.method_throws_exception("get_jobs_model")
+
+
+@given("the Totalmobile service errors when deleting jobs")
+def step_impl(context):
+    context.totalmobile_service.method_throws_exception("delete_job")
+
+
+@given("the Blaise service errors when retrieving cases")
+def step_impl(context):
+    context.blaise_service.method_throws_exception("get_cases")
