@@ -20,6 +20,10 @@ class FakeBlaiseService:
     def __init__(self):
         self._questionnaires = {}
         self._updates = nested_dict()
+        self._errors_when_method_is_called = []
+
+    def method_throws_exception(self, method_name: str):
+        self._errors_when_method_is_called.append(method_name)
 
     def add_questionnaire(self, questionnaire_name: str) -> None:
         self._questionnaires[questionnaire_name] = {}
@@ -92,14 +96,17 @@ class FakeBlaiseService:
         raise NotImplementedError()
 
     def get_cases(self, questionnaire_name: str) -> List[BlaiseCaseInformationModel]:
+        if "get_cases" in self._errors_when_method_is_called:
+            raise Exception("get_case has errored")
+
         self._assert_questionnaire_exists(questionnaire_name)
 
-        case = self._questionnaires[questionnaire_name]
+        cases = self._questionnaires[questionnaire_name]
 
-        for key in case.keys():
+        for key in cases.keys():
             return [
                 get_blaise_case_model_helper.get_populated_case_model(
-                    case_id=case[key].case_id, outcome_code=case[key].outcome_code
+                    case_id=cases[key].case_id, outcome_code=cases[key].outcome_code
                 ),
             ]
 
@@ -108,38 +115,30 @@ class FakeBlaiseService:
     def get_case(
         self, questionnaire_name: str, case_id: str
     ) -> BlaiseCaseInformationModel:
+        if "get_case" in self._errors_when_method_is_called:
+            raise Exception("get_case has errored")
+
         self._assert_case_exists(questionnaire_name, case_id)
 
         return self._questionnaires[questionnaire_name][case_id]
 
     def questionnaire_exists(self, questionnaire_name: str) -> bool:
+        if "questionnaire_exists" in self._errors_when_method_is_called:
+            raise Exception("questionnaire_exists has errored")
+
         return questionnaire_name in self._questionnaires
 
     def update_case(
         self, questionnaire_name: str, case_id: str, data_fields: Dict[str, str]
     ) -> None:
+        if "update_case" in self._errors_when_method_is_called:
+            raise Exception("update_case has errored")
+
         if case_id not in self._updates[questionnaire_name]:
             self._updates[questionnaire_name][case_id] = {}
 
         for field, value in data_fields.items():
             self._updates[questionnaire_name][case_id][field] = value
-
-    def get_case_status_information(
-        self, questionnaire_name: str
-    ) -> List[Dict[str, Any]]:
-        self._assert_questionnaire_exists(questionnaire_name)
-
-        case = self._questionnaires[questionnaire_name]
-
-        for key in case.keys():
-            return [
-                {
-                    "primaryKey": f"{case[key].case_id}",
-                    "outcome": case[key].outcome_code,
-                },
-            ]
-
-        raise Exception
 
     def _assert_questionnaire_exists(self, questionnaire):
         if not self.questionnaire_exists(questionnaire):
