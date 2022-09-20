@@ -1,9 +1,7 @@
 import logging
 from typing import Dict, List, Optional
 
-from models.totalmobile.totalmobile_get_jobs_response_model import (
-    Job
-)
+from models.totalmobile.totalmobile_get_jobs_response_model import Job
 from services.blaise_service import BlaiseService
 from services.totalmobile_service import TotalmobileService
 
