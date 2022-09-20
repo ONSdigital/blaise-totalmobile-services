@@ -14,10 +14,13 @@ class DeleteTotalmobileJobsService:
     ):
         self.totalmobile_service = totalmobile_service
         self.blaise_service = blaise_service
+        self._delete_reason = "completed in blaise"
 
     def delete_totalmobile_jobs_completed_in_blaise(self) -> None:
         world_id = self.get_world_id()
-        totalmobile_jobs_model = self.totalmobile_service.get_jobs_model(world_id)
+        totalmobile_jobs_model = self.get_jobs_model(world_id)
+        if not totalmobile_jobs_model:
+            return
 
         for questionnaire_name in totalmobile_jobs_model.questionnaire_jobs.keys():
             if self.questionnaire_has_incomplete_cases(
@@ -26,19 +29,31 @@ class DeleteTotalmobileJobsService:
                 continue
 
             completed_case_ids = self.get_completed_blaise_cases(questionnaire_name)
+            if not completed_case_ids:
+                continue
 
             for job in totalmobile_jobs_model.questionnaire_jobs[questionnaire_name]:
-                if job.visit_complete is False and job.case_id in completed_case_ids:
-                    self.totalmobile_service.delete_job(
-                        world_id, job.reference, "completed in blaise"
+                if job.visit_complete:
+                    continue
+
+                if job.case_id not in completed_case_ids:
+                    logging.error(
+                        f"Unable to find case {job.case_id} for questionnaire {questionnaire_name} in Blaise"
                     )
-                    logging.info(
-                        f"Successfully removed job {job.reference} from Totalmobile"
-                    )
+                    continue
+
+                self.delete_job(world_id, job.reference)
 
     def get_completed_blaise_cases(self, questionnaire_name) -> List[Optional[str]]:
-        cases = self.blaise_service.get_cases(questionnaire_name)
-        return [case.case_id for case in cases if case.outcome_code == 110]
+        try:
+            cases = self.blaise_service.get_cases(questionnaire_name)
+            return [case.case_id for case in cases if case.outcome_code == 110]
+        except Exception as error:
+            logging.error(
+                "Unable to retrieve cases from Blaise",
+                extra={"Exception_reason": str(error)},
+            )
+            return []
 
     @staticmethod
     def questionnaire_has_incomplete_cases(
@@ -54,3 +69,27 @@ class DeleteTotalmobileJobsService:
         for world in world_model.worlds:
             if world.region == "Region 1":
                 return world.id
+
+    def get_jobs_model(
+        self, world_id: str
+    ) -> Optional[TotalmobileGetJobsResponseModel]:
+        try:
+            return self.totalmobile_service.get_jobs_model(world_id)
+        except Exception as error:
+            logging.error(
+                "Unable to retrieve jobs from Totalmobile",
+                extra={"Exception_reason": str(error)},
+            )
+            return None
+
+    def delete_job(self, world_id: str, job_reference: str):
+        try:
+            self.totalmobile_service.delete_job(
+                world_id, job_reference, self._delete_reason
+            )
+            logging.info(f"Successfully removed job {job_reference} from Totalmobile")
+        except Exception as error:
+            logging.error(
+                f"Unable to delete job reference '{job_reference}` from Totalmobile",
+                extra={"Exception_reason": str(error)},
+            )
