@@ -34,39 +34,11 @@ class DeleteTotalmobileJobsService:
 
                 if job.visit_complete or blaise_cases_with_outcomes_dict[
                     job.case_id
-                ] not in [
-                    110,
-                    210,
-                    300,
-                    360,
-                    370,
-                    371,
-                    372,
-                    380,
-                    390,
-                    411,
-                    412,
-                    413,
-                    430,
-                    440,
-                    460,
-                    461,
-                    510,
-                    540,
-                    541,
-                    542,
-                    551,
-                    560,
-                    561,
-                    562,
-                    580,
-                    631,
-                    640,
-                    791,
-                    792,
-                    793,
-                    794,
-                    795,
+                ] in [
+                    0,
+                    120,
+                    310,
+                    320
                 ]:
                     continue
 
