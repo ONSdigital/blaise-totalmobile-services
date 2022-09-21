@@ -37,6 +37,7 @@ def add_header(response):
 @incoming.route("/submitformresultrequest", methods=["POST"])
 @auth.login_required
 def submit_form_result_request():
+    logging.info(request)
     logging.info(f"Incoming request via the 'submitformresultrequest' endpoint")
     try:
         uac_service = UacService(current_app.app_config)
