@@ -8,41 +8,52 @@ from services.totalmobile_service import TotalmobileService
 
 class DeleteTotalmobileJobsService:
     def __init__(
-        self, totalmobile_service: TotalmobileService, blaise_service: BlaiseService
+        self,
+        totalmobile_service: TotalmobileService,
+        blaise_service: BlaiseService,
+        incomplete_job_outcomes=[0, 120, 310, 320],
     ):
         self.totalmobile_service = totalmobile_service
         self.blaise_service = blaise_service
         self._delete_reason = "completed in blaise"
+        self.incomplete_job_outcomes = incomplete_job_outcomes
 
     def delete_totalmobile_jobs_completed_in_blaise(self) -> None:
         world_id = self.get_world_id()
-        questionnaires_with_incomplete_jobs = (
-            self.get_questionnaires_with_incomplete_jobs_by_world(world_id)
+
+        for (
+            questionnaire_name,
+            jobs,
+        ) in self.get_questionnaires_with_incomplete_jobs_by_world(world_id).items():
+            self.delete_jobs_for_questionnaire(questionnaire_name, jobs, world_id)
+
+    def delete_jobs_for_questionnaire(self, questionnaire_name, jobs, world_id):
+        blaise_cases_with_outcomes_dict = self.get_blaise_case_outcomes(
+            questionnaire_name
         )
 
-        for questionnaire_name in questionnaires_with_incomplete_jobs.keys():
-            blaise_cases_with_outcomes_dict = self.get_blaise_case_outcomes(
-                questionnaire_name
+        for job in jobs:
+            self.delete_job_if_completed(
+                job, questionnaire_name, world_id, blaise_cases_with_outcomes_dict
             )
 
-            for job in questionnaires_with_incomplete_jobs[questionnaire_name]:
-                if job.case_id not in blaise_cases_with_outcomes_dict:
-                    logging.error(
-                        f"Unable to find case {job.case_id} for questionnaire {questionnaire_name} in Blaise"
-                    )
-                    continue
+    def delete_job_if_completed(
+        self, job, questionnaire_name, world_id, blaise_cases_with_outcomes_dict
+    ):
+        if job.case_id not in blaise_cases_with_outcomes_dict:
+            logging.error(
+                f"Unable to find case {job.case_id} for questionnaire {questionnaire_name} in Blaise"
+            )
+            return
 
-                if job.visit_complete or blaise_cases_with_outcomes_dict[
-                    job.case_id
-                ] in [
-                    0,
-                    120,
-                    310,
-                    320
-                ]:
-                    continue
+        if (
+            job.visit_complete
+            or blaise_cases_with_outcomes_dict[job.case_id]
+            in self.incomplete_job_outcomes
+        ):
+            return
 
-                self.delete_job(world_id, job.reference)
+        self.delete_job(world_id, job.reference)
 
     def get_blaise_case_outcomes(self, questionnaire_name) -> Dict[Optional[str], int]:
         try:
