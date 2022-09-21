@@ -1,5 +1,7 @@
 from unittest.mock import call, create_autospec
 
+import pytest
+
 from models.totalmobile.totalmobile_get_jobs_response_model import (
     Job,
     TotalmobileGetJobsResponseModel,
@@ -11,7 +13,13 @@ from services.totalmobile_service import TotalmobileService
 from tests.helpers import get_blaise_case_model_helper
 
 
-def test_delete_totalmobile_jobs_completed_in_blaise_deletes_incomplete_jobs_only_for_completed_cases_in_blaise():
+@pytest.mark.parametrize(
+    "outcome_code",
+    [(110), (210)],
+)
+def test_delete_totalmobile_jobs_completed_in_blaise_deletes_incomplete_jobs_only_for_completed_cases_in_blaise(
+    outcome_code,
+):
     # arrange
     world_id = "13013122-d69f-4d6b-gu1d-721f190c4479"
 
@@ -37,13 +45,13 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_incomplete_jobs_onl
 
     mock_blaise_service.get_cases.return_value = [
         get_blaise_case_model_helper.get_populated_case_model(
-            case_id="12345", outcome_code=110
+            case_id="12345", outcome_code=outcome_code
         ),
         get_blaise_case_model_helper.get_populated_case_model(
             case_id="22222", outcome_code=310
         ),
         get_blaise_case_model_helper.get_populated_case_model(
-            case_id="67890", outcome_code=110
+            case_id="67890", outcome_code=outcome_code
         ),
     ]
 

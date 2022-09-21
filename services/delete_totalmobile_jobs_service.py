@@ -32,10 +32,9 @@ class DeleteTotalmobileJobsService:
                     )
                     continue
 
-                if (
-                    job.visit_complete
-                    or blaise_cases_with_outcomes_dict[job.case_id] != 110
-                ):
+                if job.visit_complete or blaise_cases_with_outcomes_dict[
+                    job.case_id
+                ] not in [110, 210]:
                     continue
 
                 self.delete_job(world_id, job.reference)
