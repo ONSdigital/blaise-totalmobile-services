@@ -12,6 +12,36 @@ Feature: Delete jobs
       |outcome_code|
       |110         |
       |210         |
+      |300         |    
+      |360         |    
+      |370         |    
+      |371         |    
+      |372         |    
+      |380         |    
+      |390         |    
+      |411         |    
+      |412         |    
+      |413         |    
+      |430         |    
+      |440         |    
+      |460         |    
+      |461         |    
+      |510         |    
+      |540         |    
+      |541         |    
+      |542         |    
+      |551         |    
+      |560         |    
+      |561         |    
+      |562         |    
+      |580         |    
+      |631         |    
+      |640         |    
+      |791         |    
+      |792         |    
+      |793         |    
+      |794         |    
+      |795         |   
 
   Scenario: A case in Blaise has not been completed
     Given case "12345" for questionnaire "LMS2206_AA1" has not been completed
