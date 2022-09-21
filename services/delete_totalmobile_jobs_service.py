@@ -1,9 +1,7 @@
 import logging
-from typing import List, Optional
+from typing import Dict, List, Optional
 
-from models.totalmobile.totalmobile_get_jobs_response_model import (
-    TotalmobileGetJobsResponseModel,
-)
+from models.totalmobile.totalmobile_get_jobs_response_model import Job
 from services.blaise_service import BlaiseService
 from services.totalmobile_service import TotalmobileService
 
@@ -18,51 +16,40 @@ class DeleteTotalmobileJobsService:
 
     def delete_totalmobile_jobs_completed_in_blaise(self) -> None:
         world_id = self.get_world_id()
-        totalmobile_jobs_model = self.get_jobs_model(world_id)
-        if not totalmobile_jobs_model:
-            return
+        questionnaires_with_incomplete_jobs = (
+            self.get_questionnaires_with_incomplete_jobs_by_world(world_id)
+        )
 
-        for questionnaire_name in totalmobile_jobs_model.questionnaire_jobs.keys():
-            if self.questionnaire_has_incomplete_cases(
-                questionnaire_name, totalmobile_jobs_model
-            ):
-                continue
+        for questionnaire_name in questionnaires_with_incomplete_jobs.keys():
+            blaise_cases_with_outcomes_dict = self.get_blaise_case_outcomes(
+                questionnaire_name
+            )
 
-            completed_case_ids = self.get_completed_blaise_cases(questionnaire_name)
-            if not completed_case_ids:
-                continue
-
-            for job in totalmobile_jobs_model.questionnaire_jobs[questionnaire_name]:
-                if job.visit_complete:
-                    continue
-
-                if job.case_id not in completed_case_ids:
+            for job in questionnaires_with_incomplete_jobs[questionnaire_name]:
+                if job.case_id not in blaise_cases_with_outcomes_dict:
                     logging.error(
                         f"Unable to find case {job.case_id} for questionnaire {questionnaire_name} in Blaise"
                     )
                     continue
 
+                if (
+                    job.visit_complete
+                    or blaise_cases_with_outcomes_dict[job.case_id] != 110
+                ):
+                    continue
+
                 self.delete_job(world_id, job.reference)
 
-    def get_completed_blaise_cases(self, questionnaire_name) -> List[Optional[str]]:
+    def get_blaise_case_outcomes(self, questionnaire_name) -> Dict[Optional[str], int]:
         try:
             cases = self.blaise_service.get_cases(questionnaire_name)
-            return [case.case_id for case in cases if case.outcome_code == 110]
+            return {case.case_id: case.outcome_code for case in cases}
         except Exception as error:
             logging.error(
                 "Unable to retrieve cases from Blaise",
                 extra={"Exception_reason": str(error)},
             )
-            return []
-
-    @staticmethod
-    def questionnaire_has_incomplete_cases(
-        questionnaire_name: str, totalmobile_jobs_model: TotalmobileGetJobsResponseModel
-    ) -> bool:
-        return all(
-            job.visit_complete
-            for job in totalmobile_jobs_model.questionnaire_jobs[questionnaire_name]
-        )
+            return {}
 
     def get_world_id(self):
         world_model = self.totalmobile_service.get_world_model()
@@ -70,17 +57,18 @@ class DeleteTotalmobileJobsService:
             if world.region == "Region 1":
                 return world.id
 
-    def get_jobs_model(
+    def get_questionnaires_with_incomplete_jobs_by_world(
         self, world_id: str
-    ) -> Optional[TotalmobileGetJobsResponseModel]:
+    ) -> Dict[str, List[Job]]:
         try:
-            return self.totalmobile_service.get_jobs_model(world_id)
+            jobs_model = self.totalmobile_service.get_jobs_model(world_id)
+            return jobs_model.questionnaires_with_incomplete_jobs()
         except Exception as error:
             logging.error(
                 "Unable to retrieve jobs from Totalmobile",
                 extra={"Exception_reason": str(error)},
             )
-            return None
+            return {}
 
     def delete_job(self, world_id: str, job_reference: str):
         try:

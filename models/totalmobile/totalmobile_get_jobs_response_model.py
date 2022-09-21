@@ -35,3 +35,19 @@ class TotalmobileGetJobsResponseModel:
                 self.questionnaire_jobs[reference_model.questionnaire_name] = [
                     Job(job_reference, reference_model.case_id, visit_complete)
                 ]
+
+    def questionnaires_with_incomplete_jobs(self) -> Dict[str, List[Job]]:
+        questionnaire_jobs = {}
+
+        for questionnaire_name in self.questionnaire_jobs.keys():
+            if all(
+                job.visit_complete
+                for job in self.questionnaire_jobs[questionnaire_name]
+            ):
+                continue
+
+            questionnaire_jobs[questionnaire_name] = self.questionnaire_jobs[
+                questionnaire_name
+            ]
+
+        return questionnaire_jobs
