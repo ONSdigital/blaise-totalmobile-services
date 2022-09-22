@@ -83,7 +83,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_incomplete_jobs_onl
 ):
     # arrange
     mock_totalmobile_service.get_jobs_model.return_value = (
-        TotalmobileGetJobsResponseModel(
+        TotalmobileGetJobsResponseModel.from_get_jobs_response(
             [
                 {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
                 {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.22222"}},
@@ -126,12 +126,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_job_when_case_is_co
     # arrange
     mock_totalmobile_service.get_jobs_model.return_value = (
         TotalmobileGetJobsResponseModel(
-            [
-                {
-                    "visitComplete": False,
-                    "identity": {"reference": "LMS1111-AA1.67890"},
-                },
-            ]
+            {"LMS1111-AA1": [Job("LMS1111-AA1.67890", "67890", False)]}
         )
     )
 
@@ -158,7 +153,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_jobs_for_completed_
 ):
     # arrange
     mock_totalmobile_service.get_jobs_model.return_value = (
-        TotalmobileGetJobsResponseModel(
+        TotalmobileGetJobsResponseModel.from_get_jobs_response(
             [
                 {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
                 {
@@ -210,7 +205,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_only_calls_case_status_info
 ):
     # arrange
     mock_totalmobile_service.get_jobs_model.return_value = (
-        TotalmobileGetJobsResponseModel(
+        TotalmobileGetJobsResponseModel.from_get_jobs_response(
             [
                 {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
                 {
@@ -273,7 +268,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_not_get_caseids_for_qu
 ):
     # arrange
     mock_totalmobile_service.get_jobs_model.return_value = (
-        TotalmobileGetJobsResponseModel(
+        TotalmobileGetJobsResponseModel.from_get_jobs_response(
             [
                 {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
                 {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.22222"}},
@@ -338,7 +333,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_only_gets_jobs_in_region_1(
     )
 
     mock_totalmobile_service.get_jobs_model.return_value = (
-        TotalmobileGetJobsResponseModel(
+        TotalmobileGetJobsResponseModel.from_get_jobs_response(
             [
                 {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
             ]

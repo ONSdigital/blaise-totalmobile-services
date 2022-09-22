@@ -48,7 +48,7 @@ class FakeTotalmobileService:
             raise Exception("get_jobs_model has errored")
 
         for key in self._jobs.keys():
-            return TotalmobileGetJobsResponseModel(
+            return TotalmobileGetJobsResponseModel.from_get_jobs_response(
                 [
                     {"visitComplete": False, "identity": {"reference": f"{key}"}},
                 ]

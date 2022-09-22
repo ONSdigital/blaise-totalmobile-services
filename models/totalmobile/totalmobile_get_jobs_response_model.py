@@ -1,8 +1,10 @@
 from collections import defaultdict
-from typing import Dict, List
+from typing import Dict, List, Type, TypeVar
 
 from client.optimise import GetJobsResponse
 from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
+
+T = TypeVar("T", bound="TotalmobileGetJobsResponseModel")
 
 
 class Job:
@@ -19,7 +21,8 @@ class Job:
 class TotalmobileGetJobsResponseModel:
     questionnaire_jobs: Dict[str, List[Job]]
 
-    def __init__(self, jobs: GetJobsResponse):
+    @classmethod
+    def from_get_jobs_response(cls: Type[T], jobs: GetJobsResponse) -> T:
         questionnaire_jobs = defaultdict(list)
 
         for job in jobs:
@@ -31,7 +34,10 @@ class TotalmobileGetJobsResponseModel:
             job_instance = Job(job_reference, reference_model.case_id, visit_complete)
             questionnaire_jobs[reference_model.questionnaire_name].append(job_instance)
 
-        self.questionnaire_jobs = dict(questionnaire_jobs)
+        return cls(dict(questionnaire_jobs))
+
+    def __init__(self, questionnaire_jobs: Dict[str, List[Job]]):
+        self.questionnaire_jobs = questionnaire_jobs
 
     def questionnaires_with_incomplete_jobs(self) -> Dict[str, List[Job]]:
         questionnaire_jobs = {}
