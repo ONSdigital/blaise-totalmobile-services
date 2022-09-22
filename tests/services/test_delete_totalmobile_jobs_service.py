@@ -6,16 +6,22 @@ from models.totalmobile.totalmobile_get_jobs_response_model import (
     Job,
     TotalmobileGetJobsResponseModel,
 )
+from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.blaise_service import BlaiseService
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from services.totalmobile_service import TotalmobileService
 from tests.helpers import get_blaise_case_model_helper
 
+INCOMPLETE_JOB_OUTCOMES = [0, 120, 310, 320]
+COMPLETE_JOB_OUTCOMES = [123, 110, 543]
+
 
 @pytest.fixture()
 def delete_totalmobile_jobs_service(mock_totalmobile_service, mock_blaise_service):
-    return DeleteTotalmobileJobsService(mock_totalmobile_service, mock_blaise_service)
+    return DeleteTotalmobileJobsService(
+        mock_totalmobile_service, mock_blaise_service, INCOMPLETE_JOB_OUTCOMES
+    )
 
 
 @pytest.fixture()
@@ -37,104 +43,57 @@ def world_id():
     return "13013122-d69f-4d6b-gu1d-721f190c4479"
 
 
-@pytest.mark.parametrize(
-    "outcome_code",
-    [
-        (110),
-        (210),
-        (300),
-        (360),
-        (370),
-        (371),
-        (372),
-        (380),
-        (390),
-        (411),
-        (412),
-        (413),
-        (430),
-        (440),
-        (460),
-        (461),
-        (510),
-        (540),
-        (541),
-        (542),
-        (551),
-        (560),
-        (561),
-        (562),
-        (580),
-        (631),
-        (640),
-        (791),
-        (792),
-        (793),
-        (794),
-        (795),
-    ],
-)
-def test_delete_totalmobile_jobs_completed_in_blaise_deletes_incomplete_jobs_only_for_completed_cases_in_blaise(
-    outcome_code,
-    mock_totalmobile_service,
-    mock_blaise_service,
-    world_id,
-    delete_totalmobile_jobs_service,
-):
-    # arrange
-    mock_totalmobile_service.get_jobs_model.return_value = (
-        TotalmobileGetJobsResponseModel.from_get_jobs_response(
-            [
-                {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
-                {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.22222"}},
-                {
-                    "visitComplete": False,
-                    "identity": {"reference": "LMS1111-AA1.67890"},
-                },
+@pytest.fixture()
+def create_job_in_totalmobile(mock_totalmobile_service, world_id):
+    def create(job_reference, visit_completed):
+        reference_model = TotalmobileReferenceModel.from_reference(job_reference)
+        results = {
+            world_id: (
+                TotalmobileGetJobsResponseModel(
+                    {
+                        reference_model.questionnaire_name: [
+                            Job(
+                                job_reference,
+                                reference_model.case_id,
+                                visit_completed,
+                            )
+                        ]
+                    }
+                )
+            )
+        }
+        mock_totalmobile_service.get_jobs_model.side_effect = results.get
+
+    return create
+
+
+@pytest.fixture()
+def create_case_in_blaise(mock_blaise_service):
+    def create(questionnaire_name, case_id, outcome_code):
+        results = {
+            questionnaire_name: [
+                get_blaise_case_model_helper.get_populated_case_model(
+                    case_id=case_id, outcome_code=outcome_code
+                )
             ]
-        )
-    )
+        }
+        mock_blaise_service.get_cases.side_effect = results.get
 
-    mock_blaise_service.get_cases.return_value = [
-        get_blaise_case_model_helper.get_populated_case_model(
-            case_id="12345", outcome_code=outcome_code
-        ),
-        get_blaise_case_model_helper.get_populated_case_model(
-            case_id="22222", outcome_code=310
-        ),
-        get_blaise_case_model_helper.get_populated_case_model(
-            case_id="67890", outcome_code=outcome_code
-        ),
-    ]
-
-    # act
-    delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
-
-    # assert
-    assert mock_totalmobile_service.delete_job.call_count == 1
-    mock_totalmobile_service.delete_job.assert_any_call(
-        world_id, "LMS1111-AA1.67890", "completed in blaise"
-    )
+    return create
 
 
+@pytest.mark.parametrize("outcome_code", COMPLETE_JOB_OUTCOMES)
 def test_delete_totalmobile_jobs_completed_in_blaise_deletes_job_when_case_is_completed_and_totalmobile_job_is_incomplete(
     mock_totalmobile_service,
-    mock_blaise_service,
+    create_job_in_totalmobile,
+    create_case_in_blaise,
     world_id,
     delete_totalmobile_jobs_service,
+    outcome_code,
 ):
     # arrange
-    mock_totalmobile_service.get_jobs_model.return_value = (
-        TotalmobileGetJobsResponseModel(
-            {"LMS1111-AA1": [Job("LMS1111-AA1.67890", "67890", False)]}
-        )
-    )
-
-    mock_blaise_service.get_cases.return_value = [
-        get_blaise_case_model_helper.get_populated_case_model(
-            case_id="67890", outcome_code=110
-        )
-    ]
+    create_job_in_totalmobile("LMS1111-AA1.67890", visit_completed=False)
+    create_case_in_blaise("LMS1111_AA1", "67890", outcome_code)
 
     # act
     delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
@@ -143,6 +102,44 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_job_when_case_is_co
     mock_totalmobile_service.delete_job.assert_called_with(
         world_id, "LMS1111-AA1.67890", "completed in blaise"
     )
+
+
+@pytest.mark.parametrize("outcome_code", INCOMPLETE_JOB_OUTCOMES)
+def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_when_case_is_incomplete_and_totalmobile_job_is_incomplete(
+    mock_totalmobile_service,
+    create_job_in_totalmobile,
+    create_case_in_blaise,
+    delete_totalmobile_jobs_service,
+    outcome_code,
+):
+    # arrange
+    create_job_in_totalmobile("LMS1111-AA1.67890", visit_completed=False)
+    create_case_in_blaise("LMS1111_AA1", "67890", outcome_code)
+
+    # act
+    delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
+
+    # assert
+    mock_totalmobile_service.delete_job.assert_not_called()
+
+
+@pytest.mark.parametrize("outcome_code", COMPLETE_JOB_OUTCOMES)
+def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_when_case_is_complete_and_totalmobile_job_is_complete(
+    mock_totalmobile_service,
+    create_job_in_totalmobile,
+    create_case_in_blaise,
+    delete_totalmobile_jobs_service,
+    outcome_code,
+):
+    # arrange
+    create_job_in_totalmobile("LMS1111-AA1.67890", visit_completed=True)
+    create_case_in_blaise("LMS1111_AA1", "67890", outcome_code)
+
+    # act
+    delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
+
+    # assert
+    mock_totalmobile_service.delete_job.assert_not_called()
 
 
 def test_delete_totalmobile_jobs_completed_in_blaise_deletes_jobs_for_completed_cases_in_blaise_for_multiple_questionnaires(
