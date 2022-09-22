@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import Dict, List
 
 from client.optimise import GetJobsResponse
@@ -19,7 +20,7 @@ class TotalmobileGetJobsResponseModel:
     questionnaire_jobs: Dict[str, List[Job]]
 
     def __init__(self, jobs: GetJobsResponse):
-        self.questionnaire_jobs = {}
+        questionnaire_jobs = defaultdict(list)
 
         for job in jobs:
             visit_complete = job["visitComplete"]
@@ -27,14 +28,10 @@ class TotalmobileGetJobsResponseModel:
 
             reference_model = TotalmobileReferenceModel.from_reference(job_reference)
 
-            if reference_model.questionnaire_name in self.questionnaire_jobs.keys():
-                self.questionnaire_jobs[reference_model.questionnaire_name].append(
-                    Job(job_reference, reference_model.case_id, visit_complete)
-                )
-            else:
-                self.questionnaire_jobs[reference_model.questionnaire_name] = [
-                    Job(job_reference, reference_model.case_id, visit_complete)
-                ]
+            job_instance = Job(job_reference, reference_model.case_id, visit_complete)
+            questionnaire_jobs[reference_model.questionnaire_name].append(job_instance)
+
+        self.questionnaire_jobs = dict(questionnaire_jobs)
 
     def questionnaires_with_incomplete_jobs(self) -> Dict[str, List[Job]]:
         questionnaire_jobs = {}
