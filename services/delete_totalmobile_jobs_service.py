@@ -7,16 +7,16 @@ from services.totalmobile_service import TotalmobileService
 
 
 class DeleteTotalmobileJobsService:
+    INCOMPLETE_JOB_OUTCOMES=[0, 120, 310, 320]
+
     def __init__(
         self,
         totalmobile_service: TotalmobileService,
         blaise_service: BlaiseService,
-        incomplete_job_outcomes=[0, 120, 310, 320],
     ):
         self.totalmobile_service = totalmobile_service
         self.blaise_service = blaise_service
         self._delete_reason = "completed in blaise"
-        self.incomplete_job_outcomes = incomplete_job_outcomes
 
     def delete_totalmobile_jobs_completed_in_blaise(self) -> None:
         world_id = self.get_world_id()
@@ -49,7 +49,7 @@ class DeleteTotalmobileJobsService:
         if (
             job.visit_complete
             or blaise_cases_with_outcomes_dict[job.case_id]
-            in self.incomplete_job_outcomes
+            in self.INCOMPLETE_JOB_OUTCOMES
         ):
             return
 

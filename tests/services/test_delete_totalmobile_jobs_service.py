@@ -20,7 +20,7 @@ COMPLETE_JOB_OUTCOMES = [123, 110, 543]
 @pytest.fixture()
 def delete_totalmobile_jobs_service(mock_totalmobile_service, mock_blaise_service):
     return DeleteTotalmobileJobsService(
-        mock_totalmobile_service, mock_blaise_service, INCOMPLETE_JOB_OUTCOMES
+        mock_totalmobile_service, mock_blaise_service
     )
 
 
