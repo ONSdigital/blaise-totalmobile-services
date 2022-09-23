@@ -1,4 +1,5 @@
 from collections import defaultdict
+from dataclasses import dataclass
 from typing import Dict, List, Type, TypeVar
 
 from client.optimise import GetJobsResponse
@@ -7,15 +8,11 @@ from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceM
 T = TypeVar("T", bound="TotalmobileGetJobsResponseModel")
 
 
+@dataclass
 class Job:
     reference: str
     case_id: str
     visit_complete: bool
-
-    def __init__(self, reference: str, case_id: str, visit_complete: bool):
-        self.reference = reference
-        self.case_id = case_id
-        self.visit_complete = visit_complete
 
 
 class TotalmobileGetJobsResponseModel:

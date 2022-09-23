@@ -7,21 +7,20 @@ from models.totalmobile.totalmobile_get_jobs_response_model import (
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 
 
-def nested_dict() -> defaultdict:
-    return defaultdict(nested_dict)
-
-
 class FakeTotalmobileService:
     def __init__(self):
         self._jobs = {}
-        self._delete_jobs = nested_dict()
+        self._delete_jobs = defaultdict(lambda: 0)
         self._errors_when_method_is_called = []
 
     def method_throws_exception(self, method_name: str):
         self._errors_when_method_is_called.append(method_name)
 
-    def add_job(self, reference: str) -> None:
-        self._jobs[reference] = {}
+    def add_job(self, reference: str, visit_complete: bool = False) -> None:
+        self._jobs[reference] = {
+            "visitComplete": visit_complete,
+            "identity": {"reference": reference},
+        }
 
     def job_exists(self, reference: str) -> bool:
         return reference in self._jobs
@@ -33,7 +32,7 @@ class FakeTotalmobileService:
         if "delete_job" in self._errors_when_method_is_called:
             raise Exception("get_jobs_model has errored")
 
-        self._delete_jobs[job] = True
+        self._delete_jobs[job] += 1
 
     def get_world_model(self) -> TotalmobileWorldModel:
         if "get_world_model" in self._errors_when_method_is_called:
@@ -47,11 +46,9 @@ class FakeTotalmobileService:
         if "get_jobs_model" in self._errors_when_method_is_called:
             raise Exception("get_jobs_model has errored")
 
-        for key in self._jobs.keys():
-            return TotalmobileGetJobsResponseModel.from_get_jobs_response(
-                [
-                    {"visitComplete": False, "identity": {"reference": f"{key}"}},
-                ]
-            )
+        if not self._jobs:
+            raise Exception
 
-        raise Exception
+        return TotalmobileGetJobsResponseModel.from_get_jobs_response(
+            self._jobs.values()
+        )

@@ -7,7 +7,7 @@ from services.totalmobile_service import TotalmobileService
 
 
 class DeleteTotalmobileJobsService:
-    INCOMPLETE_JOB_OUTCOMES=[0, 120, 310, 320]
+    INCOMPLETE_JOB_OUTCOMES = [0, 120, 310, 320]
 
     def __init__(
         self,
