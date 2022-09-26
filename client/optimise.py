@@ -32,7 +32,6 @@ class OptimiseClient(BaseClient):
         super().__init__(url, instance, client_id, client_secret)
 
     def create_job(self, world_id: str, job: Dict[Any, Any]) -> requests.Response:
-        # return self._post(f"worlds/{world_id}/jobs", job).json()
         return self._post(f"worlds/{world_id}/jobs", job).status_code
 
     def delete_job(self, world_id: str, job: str, reason: str) -> requests.Response:
