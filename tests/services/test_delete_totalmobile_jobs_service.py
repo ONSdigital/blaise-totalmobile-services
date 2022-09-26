@@ -53,7 +53,6 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_job_when_case_is_co
     fake_totalmobile_service,
     create_job_in_totalmobile,
     create_case_in_blaise,
-    world_id,
     delete_totalmobile_jobs_service,
     outcome_code,
 ):
@@ -66,7 +65,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_job_when_case_is_co
 
     # assert
     # TODO: assert reason
-    assert not fake_totalmobile_service.job_exists("LMS1111-AA1.67890", "world-id-1")
+    assert not fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
 
 
 @pytest.mark.parametrize("outcome_code", INCOMPLETE_JOB_OUTCOMES)
@@ -85,7 +84,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_when_ca
     delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
 
     # assert
-    assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890", "world-id-1")
+    assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
 
 
 @pytest.mark.parametrize("outcome_code", COMPLETE_JOB_OUTCOMES)
@@ -104,20 +103,20 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_when_ca
     delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
 
     # assert
-    assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890", "world-id-1")
+    assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
 
 
 @pytest.mark.parametrize(
-    "region,world_id",
+    "region",
     [
-        ("Region 1", "world-id-1"),
-        ("Region 2", "world-id-2"),
-        ("Region 3", "world-id-3"),
-        ("Region 4", "world-id-4"),
-        ("Region 5", "world-id-5"),
-        ("Region 6", "world-id-6"),
-        ("Region 7", "world-id-7"),
-        ("Region 8", "world-id-8"),
+        ("Region 1"),
+        ("Region 2"),
+        ("Region 3"),
+        ("Region 4"),
+        ("Region 5"),
+        ("Region 6"),
+        ("Region 7"),
+        ("Region 8"),
     ],
 )
 def test_delete_totalmobile_jobs_completed_in_blaise_does_delete_job_for_all_regions_when_case_is_complete_and_totalmobile_job_is_complete(
@@ -126,7 +125,6 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_delete_job_for_all_reg
     create_case_in_blaise,
     delete_totalmobile_jobs_service,
     region,
-    world_id,
 ):
     # arrange
     create_job_in_totalmobile("LMS1111-AA1.67890", region, visit_completed=False)
@@ -136,14 +134,14 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_delete_job_for_all_reg
     delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
 
     # assert
-    assert not fake_totalmobile_service.job_exists("LMS1111-AA1.67890", world_id)
+    assert not fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
 
 
 @pytest.mark.parametrize(
-    "region,world_id",
+    "region",
     [
-        ("Region 0", "world-id-0"),
-        ("Region 9", "world-id-9"),
+        ("Region 0"),
+        ("Region 9"),
     ],
 )
 def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_in_unknown_regions(
@@ -152,7 +150,6 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_in_unkn
     create_case_in_blaise,
     delete_totalmobile_jobs_service,
     region,
-    world_id,
 ):
     # arrange
     create_job_in_totalmobile("LMS1111-AA1.67890", region, visit_completed=False)
@@ -162,14 +159,13 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_in_unkn
     delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
 
     # assert
-    assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890", world_id)
+    assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
 
 
 def test_delete_totalmobile_jobs_completed_in_blaise_deletes_jobs_for_completed_cases_in_blaise_for_multiple_questionnaires(
     fake_totalmobile_service,
     create_job_in_totalmobile,
     create_case_in_blaise,
-    world_id,
     delete_totalmobile_jobs_service,
 ):
     # arrange
@@ -183,8 +179,8 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_jobs_for_completed_
 
     # assert
     # TODO: assert reason and world id
-    assert not fake_totalmobile_service.job_exists("LMS1111-AA1.67890", "world-id-1")
-    assert not fake_totalmobile_service.job_exists("LMS1111-BB2.12345", "world-id-1")
+    assert not fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
+    assert not fake_totalmobile_service.job_exists("LMS1111-BB2.12345")
 
 
 def test_delete_totalmobile_jobs_completed_in_blaise_only_calls_case_status_information_once_per_questionnaire(

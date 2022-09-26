@@ -32,13 +32,19 @@ class FakeTotalmobileService:
         self, reference: str, region: str, visit_complete: bool = False
     ) -> None:
         world_id = self.REGIONS[region]
+        if self.job_exists(reference):
+            raise Exception(f"Job with reference {reference} already exists")
+
         self._jobs[world_id][reference] = {
             "visitComplete": visit_complete,
             "identity": {"reference": reference},
         }
 
-    def job_exists(self, job: str, world_id: str) -> bool:
-        return job in self._jobs[world_id]
+    def job_exists(self, job: str) -> bool:
+        for jobs_in_world in self._jobs.values():
+            if job in jobs_in_world:
+                return True
+        return False
 
     def delete_job(self, world_id: str, job: str, reason: str = "0") -> None:
         if "delete_job" in self._errors_when_method_is_called:
