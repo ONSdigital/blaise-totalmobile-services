@@ -45,7 +45,7 @@ def create_totalmobile_jobs_processor(
     )
     try:
         response = totalmobile_service.create_job(totalmobile_job)
-        logging.info(f"Response: {response.status_code}")
+        logging.info(f"Response: {str(response.status_code)}")
     except BadRequest as err:
         duplicate_error_message = get_duplicate_job_message(err)
         if duplicate_error_message is None:
