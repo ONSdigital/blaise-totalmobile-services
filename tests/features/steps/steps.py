@@ -239,30 +239,14 @@ def step_impl(context):
 @then('the Totalmobile job with reference "{reference}" is deleted')
 def step_impl(context, reference):
     assert not context.totalmobile_service.job_exists(
-        reference, "world-id-1"
+        reference
     ), "The job should not exist in Totalmobile but does"
 
 
 @then('the Totalmobile job with reference "{reference}" is not deleted')
 def step_impl(context, reference):
     assert context.totalmobile_service.job_exists(
-        reference, "world-id-1"
-    ), "The job should exist in Totalmobile but does not"
-
-
-@then('the Totalmobile job with reference "{reference}" in world {world_id} is deleted')
-def step_impl(context, reference, world_id):
-    assert not context.totalmobile_service.job_exists(
-        reference, world_id
-    ), "The job should not exist in Totalmobile but does"
-
-
-@then(
-    'the Totalmobile job with reference "{reference}" in world {world_id} is not deleted'
-)
-def step_impl(context, reference, world_id):
-    assert context.totalmobile_service.job_exists(
-        reference, world_id
+        reference
     ), "The job should exist in Totalmobile but does not"
 
 
