@@ -48,6 +48,7 @@ def test_get_world_model(service: FakeTotalmobileService):
     # assert
     assert isinstance(model, TotalmobileWorldModel)
     assert model.worlds == [
+        World(region="Region 0", id="world-id-0"),
         World(region="Region 1", id="world-id-1"),
         World(region="Region 2", id="world-id-2"),
         World(region="Region 3", id="world-id-3"),
@@ -56,4 +57,5 @@ def test_get_world_model(service: FakeTotalmobileService):
         World(region="Region 6", id="world-id-6"),
         World(region="Region 7", id="world-id-7"),
         World(region="Region 8", id="world-id-8"),
+        World(region="Region 9", id="world-id-9"),
     ]

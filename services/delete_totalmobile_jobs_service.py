@@ -8,6 +8,16 @@ from services.totalmobile_service import TotalmobileService
 
 class DeleteTotalmobileJobsService:
     INCOMPLETE_JOB_OUTCOMES = [0, 120, 310, 320]
+    KNOWN_REGIONS = [
+        "Region 1",
+        "Region 2",
+        "Region 3",
+        "Region 4",
+        "Region 5",
+        "Region 6",
+        "Region 7",
+        "Region 8",
+    ]
 
     def __init__(
         self,
@@ -73,7 +83,11 @@ class DeleteTotalmobileJobsService:
 
     def get_world_ids(self):
         world_model = self._totalmobile_service.get_world_model()
-        return [world.id for world in world_model.worlds]
+        return [
+            world.id
+            for world in world_model.worlds
+            if world.region in self.KNOWN_REGIONS
+        ]
 
     def _get_questionnaires_with_incomplete_jobs(
         self, world_id: str

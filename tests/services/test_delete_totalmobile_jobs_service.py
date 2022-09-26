@@ -1,19 +1,8 @@
-from unittest.mock import call, create_autospec
-
 import pytest
 
-from models.totalmobile.totalmobile_get_jobs_response_model import (
-    Job,
-    TotalmobileGetJobsResponseModel,
-)
-from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
-from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
-from services.blaise_service import BlaiseService
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
-from services.totalmobile_service import TotalmobileService
 from tests.fakes.fake_blaise_service import FakeBlaiseService
 from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
-from tests.helpers import get_blaise_case_model_helper
 
 INCOMPLETE_JOB_OUTCOMES = [0, 120, 310, 320]
 COMPLETE_JOB_OUTCOMES = [123, 110, 543]
@@ -148,6 +137,32 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_delete_job_for_all_reg
 
     # assert
     assert not fake_totalmobile_service.job_exists("LMS1111-AA1.67890", world_id)
+
+
+@pytest.mark.parametrize(
+    "region,world_id",
+    [
+        ("Region 0", "world-id-0"),
+        ("Region 9", "world-id-9"),
+    ],
+)
+def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_in_unknown_regions(
+    fake_totalmobile_service,
+    create_job_in_totalmobile,
+    create_case_in_blaise,
+    delete_totalmobile_jobs_service,
+    region,
+    world_id,
+):
+    # arrange
+    create_job_in_totalmobile("LMS1111-AA1.67890", region, visit_completed=False)
+    create_case_in_blaise("LMS1111_AA1", "67890", 110)
+
+    # act
+    delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
+
+    # assert
+    assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890", world_id)
 
 
 def test_delete_totalmobile_jobs_completed_in_blaise_deletes_jobs_for_completed_cases_in_blaise_for_multiple_questionnaires(
