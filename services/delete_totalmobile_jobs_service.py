@@ -8,6 +8,16 @@ from services.totalmobile_service import TotalmobileService
 
 class DeleteTotalmobileJobsService:
     INCOMPLETE_JOB_OUTCOMES = [0, 120, 310, 320]
+    KNOWN_REGIONS = [
+        "Region 1",
+        "Region 2",
+        "Region 3",
+        "Region 4",
+        "Region 5",
+        "Region 6",
+        "Region 7",
+        "Region 8",
+    ]
 
     def __init__(
         self,
@@ -19,11 +29,13 @@ class DeleteTotalmobileJobsService:
         self._delete_reason = "completed in blaise"
 
     def delete_totalmobile_jobs_completed_in_blaise(self) -> None:
-        world_id = self.get_world_id()
-        incomplete_jobs = self._get_questionnaires_with_incomplete_jobs(world_id)
-
-        for questionnaire_name, jobs in incomplete_jobs.items():
-            self._delete_jobs_for_questionnaire(questionnaire_name, jobs, world_id)
+        world_ids = self.get_world_ids()
+        for world_id in world_ids:
+            for (
+                questionnaire_name,
+                jobs,
+            ) in self._get_questionnaires_with_incomplete_jobs(world_id).items():
+                self._delete_jobs_for_questionnaire(questionnaire_name, jobs, world_id)
 
     def _delete_jobs_for_questionnaire(
         self, questionnaire_name: str, jobs: List[Job], world_id: str
@@ -69,11 +81,13 @@ class DeleteTotalmobileJobsService:
             )
             return {}
 
-    def get_world_id(self):
+    def get_world_ids(self):
         world_model = self._totalmobile_service.get_world_model()
-        for world in world_model.worlds:
-            if world.region == "Region 1":
-                return world.id
+        return [
+            world.id
+            for world in world_model.worlds
+            if world.region in self.KNOWN_REGIONS
+        ]
 
     def _get_questionnaires_with_incomplete_jobs(
         self, world_id: str
