@@ -1,5 +1,6 @@
 import pytest
 
+from models.totalmobile.totalmobile_get_jobs_response_model import Job
 from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
 
 
@@ -30,3 +31,20 @@ def test_remove_job(service: FakeTotalmobileService):
 
     # assert
     assert service.delete_job_has_been_called(reference)
+
+
+def test_get_jobs_model(service: FakeTotalmobileService):
+    # arrange
+    service.add_job("LMS11111-AA1.12345")
+    service.add_job("LMS11111-AA1.56789", True)
+
+    # act
+    jobs_model = service.get_jobs_model("123")
+
+    # assert
+    assert jobs_model.questionnaire_jobs == {
+        "LMS11111_AA1": [
+            Job("LMS11111-AA1.12345", "12345", False),
+            Job("LMS11111-AA1.56789", "56789", True),
+        ]
+    }

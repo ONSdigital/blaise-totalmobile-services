@@ -25,4 +25,4 @@ class TotalmobileService:
 
     def get_jobs_model(self, world_id: str) -> TotalmobileGetJobsResponseModel:
         jobs_response = self.get_jobs(world_id)
-        return TotalmobileGetJobsResponseModel(jobs_response)
+        return TotalmobileGetJobsResponseModel.from_get_jobs_response(jobs_response)

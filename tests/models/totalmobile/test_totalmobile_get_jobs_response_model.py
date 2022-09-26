@@ -9,7 +9,7 @@ def test_total_mobile_job_models_maps_expected_list_of_models_from_job_response(
     job_response = optimise_client_helper.get_jobs_response()
 
     # act
-    result = TotalmobileGetJobsResponseModel(job_response)
+    result = TotalmobileGetJobsResponseModel.from_get_jobs_response(job_response)
 
     # assert
     assert len(result.questionnaire_jobs) == 2
@@ -37,7 +37,7 @@ def test_questionnaires_with_incomplete_jobs_returns_expected_dictionary():
     ]
 
     # act
-    model = TotalmobileGetJobsResponseModel(job_response)
+    model = TotalmobileGetJobsResponseModel.from_get_jobs_response(job_response)
     result = model.questionnaires_with_incomplete_jobs()
 
     # assert

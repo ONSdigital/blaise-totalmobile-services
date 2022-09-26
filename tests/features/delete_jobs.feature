@@ -1,11 +1,76 @@
 Feature: Delete jobs
 
-  Scenario: A case in Blaise has been completed
-    Given case "12345" for questionnaire "LMS2206_AA1" has been completed
+  Scenario Outline: Delete jobs from Totalmobile devices for cases in Blaise that no longer require a K2N
+    Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
+    And the case has an outcome code of <outcome_code>
     And there is an incomplete job in Totalmobile with reference "LMS2206-AA1.12345"
     When delete_totalmobile_jobs_completed_in_blaise is run
     Then the Totalmobile job with reference "LMS2206-AA1.12345" is deleted
     And "Successfully removed job LMS2206-AA1.12345 from Totalmobile" is logged as an information message
+    
+    Examples: HOuts in Blaise that WILL trigger a delete request
+      |outcome_code|
+      |110         |
+      |210         |
+      |300         |    
+      |360         |    
+      |370         |    
+      |371         |    
+      |372         |    
+      |380         |    
+      |390         |    
+      |411         |    
+      |412         |    
+      |413         |    
+      |430         |    
+      |440         |    
+      |460         |    
+      |461         |    
+      |510         |    
+      |540         |    
+      |541         |    
+      |542         |    
+      |551         |    
+      |560         |    
+      |561         |    
+      |562         |    
+      |580         |    
+      |631         |    
+      |640         |    
+      |791         |    
+      |792         |    
+      |793         |    
+      |794         |    
+      |795         |   
+
+  Scenario Outline: Do not delete jobs from Totalmobile devices for cases in Blaise that still require a K2N
+    Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
+    And the case has an outcome code of <outcome_code>
+    And there is an incomplete job in Totalmobile with reference "LMS2206-AA1.12345"
+    When delete_totalmobile_jobs_completed_in_blaise is run
+    Then the Totalmobile job with reference "LMS2206-AA1.12345" is not deleted
+    
+    Examples: HOuts in Blaise that WILL NOT trigger a delete request
+      |outcome_code|
+      |0           | 
+      |120         |
+      |310         |
+      |320         |
+
+  Scenario Outline: Delete jobs from Totalmobile devices for cases in Blaise that have an unknown outcome code
+    Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
+    And the case has an outcome code of <outcome_code>
+    And there is an incomplete job in Totalmobile with reference "LMS2206-AA1.12345"
+    When delete_totalmobile_jobs_completed_in_blaise is run
+    Then the Totalmobile job with reference "LMS2206-AA1.12345" is deleted
+    And "Successfully removed job LMS2206-AA1.12345 from Totalmobile" is logged as an information message
+
+    Examples: HOuts which do not exist in Blaise that WILL trigger a delete request
+      |outcome_code|
+      |1           |
+      |123         |
+      |666         |
+
 
   Scenario: A case in Blaise has not been completed
     Given case "12345" for questionnaire "LMS2206_AA1" has not been completed
