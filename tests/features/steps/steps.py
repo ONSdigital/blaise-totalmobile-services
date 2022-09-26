@@ -209,7 +209,14 @@ def step_impl(context, case_id, questionnaire):
 
 @given('there is an incomplete job in Totalmobile with reference "{reference}"')
 def step_impl(context, reference):
-    context.totalmobile_service.add_job(reference)
+    context.totalmobile_service.add_job(reference, "Region 1")
+
+
+@given(
+    'there is an incomplete job in Totalmobile in region {region} with reference "{reference}"'
+)
+def step_impl(context, reference, region):
+    context.totalmobile_service.add_job(reference, region)
 
 
 @given('case "{case_id}" for questionnaire "{questionnaire}" does not exist in Blaise')
@@ -231,12 +238,12 @@ def step_impl(context):
 
 @then('the Totalmobile job with reference "{reference}" is deleted')
 def step_impl(context, reference):
-    assert context.totalmobile_service.delete_job_has_been_called(reference)
+    assert not context.totalmobile_service.job_exists(reference, "world-id-1")
 
 
 @then('the Totalmobile job with reference "{reference}" is not deleted')
 def step_impl(context, reference):
-    assert not context.totalmobile_service.delete_job_has_been_called(reference)
+    assert context.totalmobile_service.job_exists(reference, "world-id-1")
 
 
 @given("the Totalmobile service errors when retrieving jobs")

@@ -72,6 +72,27 @@ Feature: Delete jobs
       |666         |
 
 
+    Scenario Outline: Delete jobs from Totalmobile devices for cases in Blaise that do not require a K2K for all regions
+      Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
+      And the case has an outcome code of 110
+      And there is an incomplete job in Totalmobile in region <region> with reference "LMS2206-AA1.12345"
+      When delete_totalmobile_jobs_completed_in_blaise is run
+      Then the Totalmobile job with reference "LMS2206-AA1.12345" is deleted
+      And "Successfully removed job LMS2206-AA1.12345 from Totalmobile" is logged as an information message
+
+      Examples:
+      |region  |
+      |Region 1|
+      |Region 2|
+      |Region 3|
+      |Region 4|
+      |Region 5|    
+      |Region 6|
+      |Region 7|
+      |Region 8|
+
+
+
   Scenario: A case in Blaise has not been completed
     Given case "12345" for questionnaire "LMS2206_AA1" has not been completed
     And there is an incomplete job in Totalmobile with reference "LMS2206-AA1.12345"

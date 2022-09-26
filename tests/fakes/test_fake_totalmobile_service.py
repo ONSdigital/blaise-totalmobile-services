@@ -1,6 +1,7 @@
 import pytest
 
 from models.totalmobile.totalmobile_get_jobs_response_model import Job
+from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
 
 
@@ -9,37 +10,27 @@ def service() -> FakeTotalmobileService:
     return FakeTotalmobileService()
 
 
-def test_job_exists(service: FakeTotalmobileService):
-    # arrange & act
-    service.add_job("LMS11111-AA1.12345")
-    service.add_job("LMS22222-BB2.67890")
-
-    # assert
-    assert service.job_exists("LMS11111-AA1.12345")
-    assert service.job_exists("LMS22222-BB2.67890")
-    assert not service.job_exists("LMS88888-CC3.88888")
-    assert not service.job_exists("LMS99999-DD4.99999")
-
-
 def test_remove_job(service: FakeTotalmobileService):
     # arrange
-    reference = "LMS11111-AA1.12345"
+    service.add_job("LMS11111-AA1.12345", "Region 1")
+    service.add_job("LMS11111-AA1.34680", "Region 1")
 
     # act
-    service.add_job(reference)
-    service.delete_job("foo", reference)
+    service.delete_job("world-id-1", "LMS11111-AA1.12345")
 
     # assert
-    assert service.delete_job_has_been_called(reference)
+    assert not service.job_exists("LMS11111-AA1.12345", "world-id-1")
+    assert service.job_exists("LMS11111-AA1.34680", "world-id-1")
 
 
 def test_get_jobs_model(service: FakeTotalmobileService):
     # arrange
-    service.add_job("LMS11111-AA1.12345")
-    service.add_job("LMS11111-AA1.56789", True)
+    service.add_job("LMS11111-AA1.12345", "Region 1")
+    service.add_job("LMS11111-AA1.56789", "Region 1", True)
+    service.add_job("LMS11111-AA1.54321", "Region 2", True)
 
     # act
-    jobs_model = service.get_jobs_model("123")
+    jobs_model = service.get_jobs_model("world-id-1")
 
     # assert
     assert jobs_model.questionnaire_jobs == {
@@ -48,3 +39,21 @@ def test_get_jobs_model(service: FakeTotalmobileService):
             Job("LMS11111-AA1.56789", "56789", True),
         ]
     }
+
+
+def test_get_world_model(service: FakeTotalmobileService):
+    # arrange
+    model = service.get_world_model()
+
+    # assert
+    assert isinstance(model, TotalmobileWorldModel)
+    assert model.worlds == [
+        World(region="Region 1", id="world-id-1"),
+        World(region="Region 2", id="world-id-2"),
+        World(region="Region 3", id="world-id-3"),
+        World(region="Region 4", id="world-id-4"),
+        World(region="Region 5", id="world-id-5"),
+        World(region="Region 6", id="world-id-6"),
+        World(region="Region 7", id="world-id-7"),
+        World(region="Region 8", id="world-id-8"),
+    ]
