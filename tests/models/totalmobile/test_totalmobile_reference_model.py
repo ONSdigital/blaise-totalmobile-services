@@ -1,3 +1,5 @@
+import logging
+
 import pytest
 
 from app.exceptions.custom_exceptions import BadReferenceError, MissingReferenceError
@@ -104,7 +106,7 @@ def test_model_raises_a_missing_reference_error_if_the_request_has_an_empty_refe
     [" ", "LMS2101_AA1-90001", "LMS2101_AA1:90001", "LMS2101_AA1.", ".90001"],
 )
 def test_model_raises_a_bad_reference_error_if_the_request_does_not_have_a_correctly_formatted_reference(
-    reference,
+    reference, caplog
 ):
     # arrange
     incoming_case_request = (
@@ -113,9 +115,16 @@ def test_model_raises_a_bad_reference_error_if_the_request_does_not_have_a_corre
         )
     )
 
-    # assert
-    with pytest.raises(BadReferenceError):
-        TotalmobileReferenceModel.from_request(incoming_case_request)
+    # act & assert
+    with caplog.at_level(logging.ERROR):
+        with pytest.raises(BadReferenceError):
+            TotalmobileReferenceModel.from_request(incoming_case_request)
+
+    assert (
+        "root",
+        logging.ERROR,
+        f"Unique reference appeared to be malformed in the Totalmobile payload (reference='{reference}')",
+    ) in caplog.record_tuples
 
 
 def test_questionnaire_name_and_case_id_properties_are_set_correctly_when_given_a_valid_reference():
