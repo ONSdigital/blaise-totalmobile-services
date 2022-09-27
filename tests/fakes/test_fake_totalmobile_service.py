@@ -19,8 +19,32 @@ def test_remove_job(service: FakeTotalmobileService):
     service.delete_job("world-id-1", "LMS11111-AA1.12345")
 
     # assert
-    assert not service.job_exists("LMS11111-AA1.12345", "world-id-1")
-    assert service.job_exists("LMS11111-AA1.34680", "world-id-1")
+    assert not service.job_exists("LMS11111-AA1.12345")
+    assert service.job_exists("LMS11111-AA1.34680")
+
+
+def test_job_exists(service: FakeTotalmobileService):
+    # arrange
+    service.add_job("LMS11111-AA1.12345", "Region 1")
+    service.add_job("LMS11111-AA1.34680", "Region 2")
+
+    # assert
+    assert service.job_exists("LMS11111-AA1.12345")
+    assert service.job_exists("LMS11111-AA1.34680")
+    assert not service.job_exists("LMS11111-AA1.23456")
+
+
+def test_job_raises_exception_when_adding_job_with_same_reference_twice(
+    service: FakeTotalmobileService,
+):
+    # arrange
+    service.add_job("LMS11111-AA1.12345", "Region 1")
+
+    # assert
+    with pytest.raises(
+        Exception, match="Job with reference LMS11111-AA1.12345 already exists"
+    ):
+        service.add_job("LMS11111-AA1.12345", "Region 2")
 
 
 def test_get_jobs_model(service: FakeTotalmobileService):
