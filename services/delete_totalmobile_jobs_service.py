@@ -7,7 +7,7 @@ from services.totalmobile_service import TotalmobileService
 
 
 class DeleteTotalmobileJobsService:
-    INCOMPLETE_JOB_OUTCOMES = [0, 120, 310, 320]
+    CASE_OUTCOMES_WHOSE_JOBS_SHOULD_NOT_BE_DELETED = [0, 120, 310, 320]
     KNOWN_REGIONS = [
         "Region 1",
         "Region 2",
@@ -61,11 +61,12 @@ class DeleteTotalmobileJobsService:
             )
             return
 
-        blaise_case_incomplete = (
-            blaise_case_outcomes[job.case_id] in self.INCOMPLETE_JOB_OUTCOMES
+        blaise_cases_to_remain = (
+            blaise_case_outcomes[job.case_id]
+            in self.CASE_OUTCOMES_WHOSE_JOBS_SHOULD_NOT_BE_DELETED
         )
 
-        if job.visit_complete or blaise_case_incomplete:
+        if job.visit_complete or blaise_cases_to_remain:
             return
 
         self._delete_job(world_id, job.reference)

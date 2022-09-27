@@ -4,8 +4,7 @@ from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsServic
 from tests.fakes.fake_blaise_service import FakeBlaiseService
 from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
 
-INCOMPLETE_JOB_OUTCOMES = [0, 120, 310, 320]
-COMPLETE_JOB_OUTCOMES = [123, 110, 543]
+CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED = [123, 110, 543]
 
 
 @pytest.fixture()
@@ -48,7 +47,7 @@ def create_case_in_blaise(fake_blaise_service):
     return create
 
 
-@pytest.mark.parametrize("outcome_code", COMPLETE_JOB_OUTCOMES)
+@pytest.mark.parametrize("outcome_code", CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED)
 def test_delete_totalmobile_jobs_completed_in_blaise_deletes_job_when_case_is_completed_and_totalmobile_job_is_incomplete(
     fake_totalmobile_service,
     create_job_in_totalmobile,
@@ -68,7 +67,10 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_job_when_case_is_co
     assert not fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
 
 
-@pytest.mark.parametrize("outcome_code", INCOMPLETE_JOB_OUTCOMES)
+@pytest.mark.parametrize(
+    "outcome_code",
+    DeleteTotalmobileJobsService.CASE_OUTCOMES_WHOSE_JOBS_SHOULD_NOT_BE_DELETED,
+)
 def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_when_case_is_incomplete_and_totalmobile_job_is_incomplete(
     fake_totalmobile_service,
     create_job_in_totalmobile,
@@ -87,7 +89,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_when_ca
     assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
 
 
-@pytest.mark.parametrize("outcome_code", COMPLETE_JOB_OUTCOMES)
+@pytest.mark.parametrize("outcome_code", CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED)
 def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_when_case_is_complete_and_totalmobile_job_is_complete(
     fake_totalmobile_service,
     create_job_in_totalmobile,
@@ -109,14 +111,14 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_when_ca
 @pytest.mark.parametrize(
     "region",
     [
-        ("Region 1"),
-        ("Region 2"),
-        ("Region 3"),
-        ("Region 4"),
-        ("Region 5"),
-        ("Region 6"),
-        ("Region 7"),
-        ("Region 8"),
+        "Region 1",
+        "Region 2",
+        "Region 3",
+        "Region 4",
+        "Region 5",
+        "Region 6",
+        "Region 7",
+        "Region 8",
     ],
 )
 def test_delete_totalmobile_jobs_completed_in_blaise_does_delete_job_for_all_regions_when_case_is_complete_and_totalmobile_job_is_complete(
