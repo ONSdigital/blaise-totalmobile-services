@@ -108,62 +108,6 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_when_ca
     assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
 
 
-@pytest.mark.parametrize(
-    "region",
-    [
-        "Region 1",
-        "Region 2",
-        "Region 3",
-        "Region 4",
-        "Region 5",
-        "Region 6",
-        "Region 7",
-        "Region 8",
-    ],
-)
-def test_delete_totalmobile_jobs_completed_in_blaise_does_delete_job_for_all_regions_when_case_is_complete_and_totalmobile_job_is_complete(
-    fake_totalmobile_service,
-    create_job_in_totalmobile,
-    create_case_in_blaise,
-    delete_totalmobile_jobs_service,
-    region,
-):
-    # arrange
-    create_job_in_totalmobile("LMS1111-AA1.67890", region, visit_completed=False)
-    create_case_in_blaise("LMS1111_AA1", "67890", 110)
-
-    # act
-    delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
-
-    # assert
-    assert not fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
-
-
-@pytest.mark.parametrize(
-    "region",
-    [
-        ("Region 0"),
-        ("Region 9"),
-    ],
-)
-def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_in_unknown_regions(
-    fake_totalmobile_service,
-    create_job_in_totalmobile,
-    create_case_in_blaise,
-    delete_totalmobile_jobs_service,
-    region,
-):
-    # arrange
-    create_job_in_totalmobile("LMS1111-AA1.67890", region, visit_completed=False)
-    create_case_in_blaise("LMS1111_AA1", "67890", 110)
-
-    # act
-    delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
-
-    # assert
-    assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
-
-
 def test_delete_totalmobile_jobs_completed_in_blaise_deletes_jobs_for_completed_cases_in_blaise_for_multiple_questionnaires(
     fake_totalmobile_service,
     create_job_in_totalmobile,
