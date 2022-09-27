@@ -29,7 +29,7 @@ class DeleteTotalmobileJobsService:
         self._delete_reason = "completed in blaise"
 
     def delete_totalmobile_jobs_completed_in_blaise(self) -> None:
-        world_ids = self.get_world_ids()
+        world_ids = self._get_world_ids()
         for world_id in world_ids:
             for (
                 questionnaire_name,
@@ -81,7 +81,7 @@ class DeleteTotalmobileJobsService:
             )
             return {}
 
-    def get_world_ids(self):
+    def _get_world_ids(self):
         world_model = self._totalmobile_service.get_world_model()
         return [
             world.id
