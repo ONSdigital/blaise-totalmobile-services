@@ -21,6 +21,7 @@ class FakeBlaiseService:
         self._questionnaires = {}
         self._updates = nested_dict()
         self._errors_when_method_is_called = []
+        self._get_cases_call_count = defaultdict(lambda: 0)
 
     def method_throws_exception(self, method_name: str):
         self._errors_when_method_is_called.append(method_name)
@@ -100,17 +101,18 @@ class FakeBlaiseService:
             raise Exception("get_case has errored")
 
         self._assert_questionnaire_exists(questionnaire_name)
-
+        self._get_cases_call_count[questionnaire_name] += 1
         cases = self._questionnaires[questionnaire_name]
 
-        for key in cases.keys():
-            return [
-                get_blaise_case_model_helper.get_populated_case_model(
-                    case_id=cases[key].case_id, outcome_code=cases[key].outcome_code
-                ),
-            ]
+        return [
+            get_blaise_case_model_helper.get_populated_case_model(
+                case_id=case.case_id, outcome_code=case.outcome_code
+            )
+            for case in cases.values()
+        ]
 
-        raise Exception
+    def get_cases_call_count(self, questionnaire_name: str) -> int:
+        return self._get_cases_call_count[questionnaire_name]
 
     def get_case(
         self, questionnaire_name: str, case_id: str

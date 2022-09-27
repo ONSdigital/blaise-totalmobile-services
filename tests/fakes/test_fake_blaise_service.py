@@ -197,3 +197,20 @@ def test_get_updates_when_overwrite_occurred(service: FakeBlaiseService):
     assert service.get_updates("LMS12345", "11111") == dict(
         field1="new value", field2="existing"
     )
+
+
+def test_get_cases_called_count(service: FakeBlaiseService):
+    # arrange
+    service.add_questionnaire("LMS12345")
+    service.add_questionnaire("LMS56789")
+    service.add_questionnaire("LMS22468")
+
+    # act
+    service.get_cases("LMS12345")
+    service.get_cases("LMS12345")
+    service.get_cases("LMS56789")
+
+    # assert
+    assert service.get_cases_call_count("LMS12345") == 2
+    assert service.get_cases_call_count("LMS56789") == 1
+    assert service.get_cases_call_count("LMS22468") == 0
