@@ -1,7 +1,7 @@
+import logging
 from unittest import mock
 from unittest.mock import Mock
 
-import logging
 import pytest
 
 from appconfig import Config
