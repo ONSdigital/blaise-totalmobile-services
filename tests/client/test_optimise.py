@@ -3,10 +3,12 @@ import pytest
 from client import AuthException, BadRequest, ServerError
 
 
-def test_create_job(requests_mock, optimise_client, mock_auth_response):
+def test_create_job_returns_status_code(
+    requests_mock, optimise_client, mock_auth_response
+):
     requests_mock.post("/Test/identity/connect/token", json=mock_auth_response)
     requests_mock.post("/Test/api/optimise/worlds/test/jobs", json={})
-    assert optimise_client.create_job("test", {}) == {}
+    assert optimise_client.create_job("test", {}) == 200
 
 
 def test_create_job_failing_auth_403(
