@@ -1,4 +1,5 @@
 from models.totalmobile.totalmobile_get_jobs_response_model import (
+    Job,
     TotalmobileGetJobsResponseModel,
 )
 from tests.helpers import optimise_client_helper
@@ -47,3 +48,25 @@ def test_questionnaires_with_incomplete_jobs_returns_expected_dictionary():
     assert result["LMS2222_BB2"][0].case_id == "22222"
     assert result["LMS2222_BB2"][0].reference == "LMS2222-BB2.22222"
     assert result["LMS2222_BB2"][0].visit_complete is False
+
+
+def test_from_get_jobs_response_skips_jobs_with_bad_references():
+    # arrange
+    job_response = [
+        {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
+        {
+            "visitComplete": False,
+            "identity": {"reference": "this is not a valid reference"},
+        },
+        {"visitComplete": False, "identity": {"reference": "LMS1111-AA1.67890"}},
+    ]
+
+    # act
+    model = TotalmobileGetJobsResponseModel.from_get_jobs_response(job_response)
+    result = model.questionnaires_with_incomplete_jobs()
+
+    # assert
+    assert result["LMS1111_AA1"] == [
+        Job("LMS1111-AA1.12345", "12345", True),
+        Job("LMS1111-AA1.67890", "67890", False),
+    ]
