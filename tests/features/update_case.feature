@@ -27,7 +27,7 @@ Feature: Update case
 
   Scenario Outline: Reference is in the incorrect format
     When Totalmobile sends an update with a malformed reference <reference>
-    Then "Unique reference appeared to be malformed in the Totalmobile payload" is logged as an error message
+    Then "Unique reference appeared to be malformed in the Totalmobile payload (reference='<reference>')" is logged as an error message
     And a "400 Bad Request" response is sent back to Totalmobile
     Examples:
       | reference         |
