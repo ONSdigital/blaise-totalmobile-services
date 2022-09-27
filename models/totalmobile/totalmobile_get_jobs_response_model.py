@@ -2,6 +2,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Dict, List, Type, TypeVar
 
+from app.exceptions.custom_exceptions import BadReferenceError
 from client.optimise import GetJobsResponse
 from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
 
@@ -26,10 +27,18 @@ class TotalmobileGetJobsResponseModel:
             visit_complete = job["visitComplete"]
             job_reference = job["identity"]["reference"]
 
-            reference_model = TotalmobileReferenceModel.from_reference(job_reference)
-
-            job_instance = Job(job_reference, reference_model.case_id, visit_complete)
-            questionnaire_jobs[reference_model.questionnaire_name].append(job_instance)
+            try:
+                reference_model = TotalmobileReferenceModel.from_reference(
+                    job_reference
+                )
+                job_instance = Job(
+                    job_reference, reference_model.case_id, visit_complete
+                )
+                questionnaire_jobs[reference_model.questionnaire_name].append(
+                    job_instance
+                )
+            except BadReferenceError:
+                pass  # The model logs a warning so we just carry on
 
         return cls(dict(questionnaire_jobs))
 
