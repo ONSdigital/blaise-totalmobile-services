@@ -2,11 +2,10 @@ import logging
 from typing import List
 
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 
 
-def get_eligible_cases(
-    cases: List[BlaiseCaseInformationModel],
-) -> List[BlaiseCaseInformationModel]:
+def get_eligible_cases(cases: List[BlaiseCaseInformationModel]) -> List[BlaiseCaseInformationModel]:
     filtered_cases = [
         case
         for case in cases
@@ -17,6 +16,7 @@ def get_eligible_cases(
             and case_is_part_of_wave_1(case)
             and case_has_field_case_of_y(case)
             and case_has_a_desired_outcome_code_of_0_or_310_or_320(case)
+            and case_is_in_a_known_region(case)
         )
     ]
 
@@ -88,5 +88,16 @@ def case_has_a_desired_outcome_code_of_0_or_310_or_320(
 
     logging.info(
         f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a value '{case.outcome_code}' outside of the range '{value_range}' set for the field 'outcome_code'"
+    )
+    return False
+
+
+def case_is_in_a_known_region(case: BlaiseCaseInformationModel) -> bool:
+    value_range = TotalmobileWorldModel.get_available_regions()
+    if case.field_region in value_range:
+        return True
+
+    logging.info(
+        f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a value '{case.field_region}' outside of the range '{value_range}' set for the field 'field_region'"
     )
     return False

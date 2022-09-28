@@ -36,22 +36,6 @@ def get_datastore_records() -> list:
     return list(query.fetch())
 
 
-def get_cases_with_valid_world_ids(
-    filtered_cases: List[BlaiseCaseInformationModel], world_model: TotalmobileWorldModel
-) -> List[BlaiseCaseInformationModel]:
-    cases_with_valid_world_ids = []
-    for case in filtered_cases:
-        if case.field_region == "":
-            logging.warning("Case rejected due to missing field region")
-        elif world_model.get_world_id(case.field_region) is None:
-            logging.warning(
-                f"Case rejected due to invalid field region - {case.field_region}"
-            )
-        else:
-            cases_with_valid_world_ids.append(case)
-    return cases_with_valid_world_ids
-
-
 def map_totalmobile_job_models(
     cases: List[BlaiseCaseInformationModel],
     world_model: TotalmobileWorldModel,
@@ -108,15 +92,9 @@ def create_cloud_tasks(
     )
 
     world_model = totalmobile_service.get_world_model()
-    logging.info(f"Retrieved Totalmobile worlds")
-
-    cases_with_valid_world_ids = get_cases_with_valid_world_ids(
-        eligible_cases, world_model
-    )
-    logging.info(f"Finished filtering Blaise cases with valid worlds")
 
     totalmobile_job_models = map_totalmobile_job_models(
-        cases_with_valid_world_ids, world_model, questionnaire_name
+        eligible_cases, world_model, questionnaire_name
     )
     logging.info(
         f"Finished mapping Totalmobile jobs for questionnaire {questionnaire_name}"
@@ -152,7 +130,7 @@ def create_totalmobile_jobs_trigger(
         get_questionnaires_with_release_date_of_today()
     )
 
-    if questionnaires_with_release_date_of_today == []:
+    if not questionnaires_with_release_date_of_today:
         logging.info("There are no questionnaires with a release date of today")
         return "There are no questionnaires with a release date of today"
 

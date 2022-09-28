@@ -11,7 +11,6 @@ from client.optimise import OptimiseClient
 from cloud_functions.create_totalmobile_jobs_trigger import (
     create_cloud_tasks,
     create_totalmobile_jobs_trigger,
-    get_cases_with_valid_world_ids,
     get_questionnaires_with_release_date_of_today,
     map_totalmobile_job_models,
 )
@@ -174,11 +173,7 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
 
 
 @mock.patch("cloud_functions.create_totalmobile_jobs_trigger.run_async_tasks")
-@mock.patch(
-    "cloud_functions.create_totalmobile_jobs_trigger.get_cases_with_valid_world_ids"
-)
 def test_create_case_tasks_for_questionnaire(
-    mock_get_cases_with_valid_world_ids,
     mock_run_async_tasks,
 ):
     # arrange
@@ -206,19 +201,6 @@ def test_create_case_tasks_for_questionnaire(
 
     questionnaire_service_mock.get_eligible_cases.return_value = questionnaire_cases
 
-    mock_get_cases_with_valid_world_ids.return_value = [
-        get_populated_case_model(
-            case_id="10010",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="1",
-            outcome_code=310,
-            uac_chunks=UacChunks(uac1="8176", uac2="4726", uac3="3991"),
-            field_region="Region 1",
-        )
-    ]
     questionnaire_service_mock.get_wave_from_questionnaire_name.return_value = "1"
     questionnaire_service_mock.get_cases.return_value = []
 
@@ -276,91 +258,3 @@ def test_create_cloud_tasks_when_no_eligible_cases(mock_run_async_tasks):
     assert (
         result == "Exiting as no eligible cases to send for questionnaire LMS2101_AA1"
     )
-
-
-@mock.patch.object(OptimiseClient, "get_worlds")
-def test_get_cases_with_valid_world_ids_logs_a_console_error_when_given_an_unknown_region(
-    _mock_optimise_client, caplog
-):
-    filtered_cases = [get_populated_case_model(field_region="Risca")]
-    world_model = TotalmobileWorldModel(
-        worlds=[World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")]
-    )
-
-    get_cases_with_valid_world_ids(filtered_cases, world_model)
-
-    assert (
-        "root",
-        logging.WARNING,
-        "Case rejected due to invalid field region - Risca",
-    ) in caplog.record_tuples
-
-
-@mock.patch.object(OptimiseClient, "get_worlds")
-def test_get_cases_with_valid_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world(
-    _mock_optimise_client, caplog
-):
-    filtered_cases = [
-        get_populated_case_model(field_region="Risca"),
-        get_populated_case_model(field_region="Region 1"),
-    ]
-    world_model = TotalmobileWorldModel(
-        worlds=[World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")]
-    )
-
-    cases_with_valid_world_ids = get_cases_with_valid_world_ids(
-        filtered_cases, world_model
-    )
-
-    assert len(cases_with_valid_world_ids) == 1
-    assert cases_with_valid_world_ids == [
-        get_populated_case_model(field_region="Region 1")
-    ]
-    assert (
-        "root",
-        logging.WARNING,
-        "Case rejected due to invalid field region - Risca",
-    ) in caplog.record_tuples
-
-
-def test_get_cases_with_valid_world_ids_logs_a_console_error_when_field_region_is_an_empty_value(
-    caplog,
-):
-    filtered_cases = [get_populated_case_model(field_region="")]
-    world_model = TotalmobileWorldModel(
-        worlds=[World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")]
-    )
-    get_cases_with_valid_world_ids(filtered_cases, world_model)
-
-    assert (
-        "root",
-        logging.WARNING,
-        "Case rejected due to missing field region",
-    ) in caplog.record_tuples
-
-
-def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world_and_a_known_world(
-    caplog,
-):
-    filtered_cases = [
-        get_populated_case_model(field_region=""),
-        get_populated_case_model(field_region="Region 1"),
-    ]
-
-    world_model = TotalmobileWorldModel(
-        worlds=[World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")]
-    )
-
-    cases_with_valid_world_ids = get_cases_with_valid_world_ids(
-        filtered_cases, world_model
-    )
-
-    assert len(cases_with_valid_world_ids) == 1
-    assert cases_with_valid_world_ids == [
-        get_populated_case_model(field_region="Region 1")
-    ]
-    assert (
-        "root",
-        logging.WARNING,
-        "Case rejected due to missing field region",
-    ) in caplog.record_tuples
