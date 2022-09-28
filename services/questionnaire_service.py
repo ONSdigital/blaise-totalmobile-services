@@ -65,9 +65,8 @@ class QuestionnaireService:
     def update_case(
         self, questionnaire_name: str, case_id: str, data_fields: Dict[str, str]
     ) -> None:
-        keys_to_log = [key for data_field in data_fields for key in data_field]
         logging.info(
-            f"Attempting to update case {case_id} in questionnaire {questionnaire_name} in Blaise with data fields {keys_to_log}"
+            f"Attempting to update case {case_id} in questionnaire {questionnaire_name} in Blaise"
         )
         return self._blaise_service.update_case(
             questionnaire_name, case_id, data_fields
