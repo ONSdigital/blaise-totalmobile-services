@@ -45,7 +45,9 @@ def create_totalmobile_jobs_processor(
     )
     try:
         status_code = totalmobile_service.create_job(totalmobile_job)
-        logging.info(f"Status {status_code} received when creating a Totalmobile job for questionnaire {totalmobile_job.questionnaire} with case ID {totalmobile_job.case_id}")
+        logging.info(
+            f"Status {status_code} received when creating a Totalmobile job for questionnaire {totalmobile_job.questionnaire} with case ID {totalmobile_job.case_id}"
+        )
     except BadRequest as err:
         duplicate_error_message = get_duplicate_job_message(err)
         if duplicate_error_message is None:
