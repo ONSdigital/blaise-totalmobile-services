@@ -242,5 +242,38 @@ def test_update_case_does_not_log_personal_identifiable_information(
     assert (
         "root",
         logging.INFO,
-        "Attempting to update case 900001 in questionnaire LMS2101_AA1 in Blaise with data fields ['hOut', 'dMktnName', 'qDataBag.TelNo', 'qDataBag.TelNo2']",
+        "Attempting to update case 900001 in questionnaire LMS2101_AA1 in Blaise",
     ) in caplog.record_tuples
+
+    with caplog.at_level(logging.INFO):
+        service.update_case(questionnaire_name, case_id, data_fields)
+    assert (
+        not (
+            "root",
+            logging.INFO,
+            "John Smith",
+        )
+        in caplog.record_tuples
+    )
+
+    with caplog.at_level(logging.INFO):
+        service.update_case(questionnaire_name, case_id, data_fields)
+    assert (
+        not (
+            "root",
+            logging.INFO,
+            "01234 567890",
+        )
+        in caplog.record_tuples
+    )
+
+    with caplog.at_level(logging.INFO):
+        service.update_case(questionnaire_name, case_id, data_fields)
+    assert (
+        not (
+            "root",
+            logging.INFO,
+            "07734 567890",
+        )
+        in caplog.record_tuples
+    )
