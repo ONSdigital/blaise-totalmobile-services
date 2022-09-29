@@ -40,13 +40,11 @@ def add_header(response):
 def submit_form_result_request():
     logging.info(f"Incoming request via the 'submitformresultrequest' endpoint")
     try:
-        uac_service = UacService(current_app.app_config)
         questionnaire_service = QuestionnaireService(
             current_app.app_config,
             blaise_service=current_app.blaise_service,
             eligible_case_service=EligibleCaseService(),
-            uac_service=uac_service,
-            datastore_service=DatastoreService()
+            datastore_service=DatastoreService(),
         )
         update_case_service = UpdateCaseService(questionnaire_service)
         submit_form_result_request_handler(request, update_case_service)

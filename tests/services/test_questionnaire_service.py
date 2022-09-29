@@ -6,7 +6,7 @@ from unittest.mock import Mock
 import pytest
 
 from appconfig import Config
-from models.blaise.uac_model import UacChunks, UacModel
+from models.blaise.questionnaire_uac_model import UacChunks
 from services.questionnaire_service import QuestionnaireService
 from tests.helpers import config_helper, get_blaise_case_model_helper
 from tests.helpers.datastore_helper import DatastoreHelper
@@ -23,11 +23,6 @@ def mock_eligible_case_service():
 
 
 @pytest.fixture()
-def mock_uac_service():
-    return Mock()
-
-
-@pytest.fixture()
 def mock_datastore_service():
     return Mock()
 
@@ -39,14 +34,13 @@ def config() -> Config:
 
 @pytest.fixture()
 def service(
-    config, mock_blaise_service, mock_eligible_case_service, mock_uac_service, mock_datastore_service
+    config, mock_blaise_service, mock_eligible_case_service, mock_datastore_service
 ) -> QuestionnaireService:
     return QuestionnaireService(
         config,
         blaise_service=mock_blaise_service,
         eligible_case_service=mock_eligible_case_service,
-        uac_service=mock_uac_service,
-        datastore_service=mock_datastore_service
+        datastore_service=mock_datastore_service,
     )
 
 
@@ -104,33 +98,19 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
 
 
 def test_get_cases_returns_a_list_of_fully_populated_cases(
-    mock_uac_service,
     service: QuestionnaireService,
     mock_blaise_service,
 ):
     questionnaire_cases = [
         get_blaise_case_model_helper.get_populated_case_model(
-            case_id="20001", uac_chunks=UacChunks(uac1="", uac2="", uac3="")
-        ),
-        get_blaise_case_model_helper.get_populated_case_model(
-            case_id="20003", uac_chunks=UacChunks(uac1="", uac2="", uac3="")
-        ),
-    ]
-
-    questionnaire_uacs = [
-        UacModel(
             case_id="20001", uac_chunks=UacChunks(uac1="2324", uac2="6744", uac3="5646")
         ),
-        UacModel(
-            case_id="20002", uac_chunks=UacChunks(uac1="3324", uac2="7744", uac3="6646")
-        ),
-        UacModel(
+        get_blaise_case_model_helper.get_populated_case_model(
             case_id="20003", uac_chunks=UacChunks(uac1="4324", uac2="8744", uac3="7646")
         ),
     ]
 
     mock_blaise_service.get_cases.return_value = questionnaire_cases
-    mock_uac_service.get_uacs.return_value = questionnaire_uacs
 
     questionnaire_name = "LMS2101_AA1"
 
@@ -149,7 +129,8 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(
 
 
 def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire(
-        service: QuestionnaireService):
+    service: QuestionnaireService,
+):
     # arrange
     questionnaire_name = "OPN2101A"
 
@@ -168,7 +149,8 @@ def test_get_wave_from_questionnaire_name(service):
 
 
 def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error(
-        service: QuestionnaireService):
+    service: QuestionnaireService,
+):
     # assert
     with pytest.raises(Exception) as err:
         service.get_wave_from_questionnaire_name("ABC1234_AA1")
@@ -294,10 +276,16 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_
 ):
     # arrange
     mock_datastore_entity_list = [
-        DatastoreHelper.totalmobile_release_date_entity_builder(1, "LMS2111Z", datetime.today()),
-        DatastoreHelper.totalmobile_release_date_entity_builder(2, "LMS2000Z", datetime(2021, 12, 31)),
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            1, "LMS2111Z", datetime.today()
+        ),
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            2, "LMS2000Z", datetime(2021, 12, 31)
+        ),
     ]
-    mock_datastore_service.get_totalmobile_release_date_records.return_value = mock_datastore_entity_list
+    mock_datastore_service.get_totalmobile_release_date_records.return_value = (
+        mock_datastore_entity_list
+    )
 
     # act
     result = service.get_questionnaires_with_totalmobile_release_date_of_today()
@@ -312,11 +300,17 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_em
 ):
     # arrange
     mock_datastore_entity_list = [
-        DatastoreHelper.totalmobile_release_date_entity_builder(1, "LMS2111Z", datetime(2021, 12, 31)),
-        DatastoreHelper.totalmobile_release_date_entity_builder(2, "LMS2000Z", datetime(2021, 12, 31)),
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            1, "LMS2111Z", datetime(2021, 12, 31)
+        ),
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            2, "LMS2000Z", datetime(2021, 12, 31)
+        ),
     ]
 
-    mock_datastore_service.get_totalmobile_release_date_records.return_value = mock_datastore_entity_list
+    mock_datastore_service.get_totalmobile_release_date_records.return_value = (
+        mock_datastore_entity_list
+    )
 
     # act
     result = service.get_questionnaires_with_totalmobile_release_date_of_today()

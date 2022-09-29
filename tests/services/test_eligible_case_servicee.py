@@ -12,7 +12,9 @@ def service() -> EligibleCaseService:
     return EligibleCaseService()
 
 
-def test_get_eligible_cases_returns_cases_only_where_criteria_is_met(service: EligibleCaseService):
+def test_get_eligible_cases_returns_cases_only_where_criteria_is_met(
+    service: EligibleCaseService,
+):
     # arrange
     cases = [
         # should return
@@ -148,7 +150,9 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met(service: El
     ]
 
 
-def test_get_eligible_cases_logs_all_cases_appropriately(service: EligibleCaseService, caplog):
+def test_get_eligible_cases_logs_all_cases_appropriately(
+    service: EligibleCaseService, caplog
+):
     # arrange
     cases = [
         # should return

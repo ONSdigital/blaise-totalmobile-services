@@ -9,4 +9,3 @@ class DatastoreService:
     def get_totalmobile_release_date_records(self) -> list:
         query = self._datastore_client.query(kind="TmReleaseDate")
         return list(query.fetch())
-

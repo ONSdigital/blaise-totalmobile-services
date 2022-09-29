@@ -3,7 +3,7 @@ from typing import Dict, Type, TypeVar
 
 from client.bus import Uac
 
-T = TypeVar("T", bound="UacModel")
+T = TypeVar("T", bound="QuestionnaireUacModel")
 
 
 @dataclass
@@ -14,17 +14,18 @@ class UacChunks:
 
 
 @dataclass
-class UacModel:
-    questionnaire_uacs: Dict[str, UacChunks]
+class QuestionnaireUacModel:
+    questionnaire_case_uacs: Dict[str, UacChunks]
 
     @classmethod
-    def import_uac_data(cls: Type[T], uac_data_dictionary: Uac) -> T:
-        print(uac_data_dictionary)
-        return cls(
-            case_id=uac_data_dictionary["case_id"],
-            uac_chunks=UacChunks(
-                uac1=uac_data_dictionary["uac_chunks"]["uac1"],
-                uac2=uac_data_dictionary["uac_chunks"]["uac2"],
-                uac3=uac_data_dictionary["uac_chunks"]["uac3"],
-            ),
-        )
+    def import_uac_data(cls: Type[T], uac_data_dictionary: Dict[str, Uac]) -> T:
+
+        _questionnaire_case_uacs: Dict[str, UacChunks] = {}
+        for item in uac_data_dictionary:
+            _questionnaire_case_uacs[item] = UacChunks(
+                uac1=uac_data_dictionary[item]["uac_chunks"]["uac1"],
+                uac2=uac_data_dictionary[item]["uac_chunks"]["uac2"],
+                uac3=uac_data_dictionary[item]["uac_chunks"]["uac3"],
+            )
+
+        return cls(_questionnaire_case_uacs)

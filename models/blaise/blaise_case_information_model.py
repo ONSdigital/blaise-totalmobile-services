@@ -1,9 +1,9 @@
-from dataclasses import dataclass, fields
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List, Optional, Type, TypeVar
 
 from models.base_model import BaseModel
-from models.blaise.uac_model import UacChunks, UacModel
+from models.blaise.questionnaire_uac_model import UacChunks
 
 T = TypeVar("T", bound="BlaiseCaseInformationModel")
 
@@ -42,7 +42,6 @@ class BlaiseCaseInformationModel(BaseModel):
     questionnaire_name: str
     case_id: Optional[str]
     data_model_name: Optional[str]
-    # survey_type: str
     wave: Optional[str]
     address_details: AddressDetails
     contact_details: ContactDetails
@@ -55,12 +54,12 @@ class BlaiseCaseInformationModel(BaseModel):
     uac_chunks: Optional[UacChunks]
     has_call_history: bool
 
-    def populate_uac_data(self, uac_model: Optional[UacModel]):
-        if uac_model is None:
+    def populate_uac_data(self, uac_chunks: Optional[UacChunks]):
+        if uac_chunks is None:
             self.uac_chunks = None
             return
 
-        self.uac_chunks = uac_model.uac_chunks
+        self.uac_chunks = uac_chunks
 
     @classmethod
     def import_case(
@@ -76,7 +75,6 @@ class BlaiseCaseInformationModel(BaseModel):
             questionnaire_name=questionnaire_name,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
             data_model_name=case_data_dictionary.get("dataModelName"),
-            # survey_type=case_data_dictionary.get("qDataBag.TLA"),
             wave=case_data_dictionary.get("qDataBag.Wave"),
             address_details=AddressDetails(
                 address=Address(
@@ -105,7 +103,7 @@ class BlaiseCaseInformationModel(BaseModel):
             field_region=case_data_dictionary.get("qDataBag.FieldRegion"),
             field_team=case_data_dictionary.get("qDataBag.FieldTeam"),
             wave_com_dte=wave_com_dte,
-            uac_chunks=UacChunks(uac1="", uac2="", uac3=""),
+            uac_chunks=None,
             has_call_history=cls.string_to_bool(
                 case_data_dictionary.get("catiMana.CatiCall.RegsCalls[1].DialResult")
             ),

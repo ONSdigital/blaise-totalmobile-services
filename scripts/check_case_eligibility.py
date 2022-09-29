@@ -34,11 +34,10 @@ if __name__ == "__main__":
     config = Config.from_env()
     eligible_case_service = EligibleCaseService()
     questionnaire_service = QuestionnaireService(
-        config,
-        blaise_service=BlaiseService(config),
-        eligible_case_service=eligible_case_service,
-        uac_service=UacService(config),
-        datastore_service=DatastoreService()
+        config=config,
+        blaise_service=BlaiseService(config, UacService(config)),
+        datastore_service=DatastoreService(),
+        eligible_case_service=eligible_case_service
     )
     cases = questionnaire_service.get_cases(questionnaire_name)
     eligible_cases = eligible_case_service.get_eligible_cases(cases)

@@ -24,13 +24,17 @@ class DeleteTotalmobileJobsService:
             for (
                 questionnaire_name,
                 jobs,
-            ) in self._get_questionnaires_which_have_incomplete_jobs_in_totalmobile(world_id).items():
+            ) in self._get_questionnaires_which_have_incomplete_jobs_in_totalmobile(
+                world_id
+            ).items():
                 self._delete_jobs_for_questionnaire(questionnaire_name, jobs, world_id)
 
     def _delete_jobs_for_questionnaire(
         self, questionnaire_name: str, jobs: List[Job], world_id: str
     ):
-        blaise_case_outcomes = self._get_blaise_case_outcomes_for_questionnaire(questionnaire_name)
+        blaise_case_outcomes = self._get_blaise_case_outcomes_for_questionnaire(
+            questionnaire_name
+        )
 
         for job in jobs:
             self._delete_job_if_no_longer_required(
@@ -61,7 +65,9 @@ class DeleteTotalmobileJobsService:
 
         self._delete_job(world_id, job.reference)
 
-    def _get_blaise_case_outcomes_for_questionnaire(self, questionnaire_name: str) -> Dict[str, int]:
+    def _get_blaise_case_outcomes_for_questionnaire(
+        self, questionnaire_name: str
+    ) -> Dict[str, int]:
         try:
             cases = self._blaise_service.get_cases(questionnaire_name)
             return {str(case.case_id): case.outcome_code for case in cases}

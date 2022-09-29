@@ -1,7 +1,7 @@
 import asyncio
 import logging
-
 from typing import List, Tuple
+
 from appconfig import Config
 from cloud_functions.functions import prepare_tasks, run
 from cloud_functions.logging import setup_logger
@@ -50,8 +50,8 @@ def run_async_tasks(tasks: List[Tuple[str, bytes]], queue_id: str, cloud_functio
 
 
 def validate_questionnaire_is_in_wave_1(
-        questionnaire_name: str,
-        questionnaire_service: QuestionnaireService,
+    questionnaire_name: str,
+    questionnaire_service: QuestionnaireService,
 ) -> None:
     wave = questionnaire_service.get_wave_from_questionnaire_name(questionnaire_name)
     if wave != "1":
@@ -64,9 +64,9 @@ def validate_questionnaire_is_in_wave_1(
 
 
 def create_cloud_tasks_for_jobs(
-        questionnaire_name: str,
-        config: Config,
-        totalmobile_job_models: List[TotalmobileCreateJobModel]
+    questionnaire_name: str,
+    config: Config,
+    totalmobile_job_models: List[TotalmobileCreateJobModel],
 ) -> str:
     tasks = [
         (job_model.create_task_name(), job_model.json().encode())
@@ -89,10 +89,10 @@ def create_cloud_tasks_for_jobs(
 
 
 def create_totalmobile_jobs_for_eligible_questionnaire_cases(
-        questionnaire_name: str,
-        config: Config,
-        world_model: TotalmobileWorldModel,
-        questionnaire_service: QuestionnaireService,
+    questionnaire_name: str,
+    config: Config,
+    world_model: TotalmobileWorldModel,
+    questionnaire_service: QuestionnaireService,
 ) -> str:
 
     eligible_cases = questionnaire_service.get_eligible_cases(questionnaire_name)
@@ -114,7 +114,8 @@ def create_totalmobile_jobs_for_eligible_questionnaire_cases(
     return create_cloud_tasks_for_jobs(
         questionnaire_name=questionnaire_name,
         config=config,
-        totalmobile_job_models=totalmobile_job_models)
+        totalmobile_job_models=totalmobile_job_models,
+    )
 
 
 def create_totalmobile_jobs_trigger(
@@ -139,12 +140,14 @@ def create_totalmobile_jobs_trigger(
 
         validate_questionnaire_is_in_wave_1(
             questionnaire_name=questionnaire_name,
-            questionnaire_service=questionnaire_service)
+            questionnaire_service=questionnaire_service,
+        )
 
         create_totalmobile_jobs_for_eligible_questionnaire_cases(
             questionnaire_name=questionnaire_name,
             config=config,
             world_model=world_model,
-            questionnaire_service=questionnaire_service)
+            questionnaire_service=questionnaire_service,
+        )
 
     return "Done"

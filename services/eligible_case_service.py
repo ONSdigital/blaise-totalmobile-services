@@ -6,9 +6,10 @@ from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 
 
 class EligibleCaseService:
-
-    def get_eligible_cases(self, cases: List[BlaiseCaseInformationModel],
-                           ) -> List[BlaiseCaseInformationModel]:
+    def get_eligible_cases(
+        self,
+        cases: List[BlaiseCaseInformationModel],
+    ) -> List[BlaiseCaseInformationModel]:
         filtered_cases = [
             case
             for case in cases

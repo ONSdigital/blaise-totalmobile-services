@@ -5,8 +5,9 @@ from unittest.mock import create_autospec
 
 from cloud_functions.create_totalmobile_jobs_trigger import (
     create_cloud_tasks_for_jobs,
+    create_totalmobile_jobs_for_eligible_questionnaire_cases,
     create_totalmobile_jobs_trigger,
-    map_totalmobile_job_models, create_totalmobile_jobs_for_eligible_questionnaire_cases,
+    map_totalmobile_job_models,
 )
 from models.blaise.blaise_case_information_model import UacChunks
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
@@ -21,14 +22,16 @@ from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
 
 def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_for_release(
-        caplog
+    caplog,
 ):
     # arrange
     config = config_helper.get_default_config()
     total_mobile_service_mock = create_autospec(TotalmobileService)
     questionnaire_service_mock = create_autospec(QuestionnaireService)
 
-    questionnaire_service_mock.get_questionnaires_with_totalmobile_release_date_of_today.return_value = []
+    questionnaire_service_mock.get_questionnaires_with_totalmobile_release_date_of_today.return_value = (
+        []
+    )
     questionnaire_service_mock.get_wave_from_questionnaire_name.return_value = "1"
     questionnaire_service_mock.get_cases.return_value = []
     # act

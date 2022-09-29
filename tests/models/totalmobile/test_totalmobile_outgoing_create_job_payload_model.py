@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 
-from models.blaise.uac_model import UacChunks
+from models.blaise.questionnaire_uac_model import UacChunks
 from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     AdditionalProperty,
     Address,

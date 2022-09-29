@@ -7,7 +7,6 @@ from models.blaise.blaise_case_information_model import BlaiseCaseInformationMod
 from services.blaise_service import BlaiseService
 from services.datastore_service import DatastoreService
 from services.eligible_case_service import EligibleCaseService
-from services.uac_service import UacService
 
 
 class QuestionnaireService:
@@ -16,13 +15,11 @@ class QuestionnaireService:
         config: Config,
         blaise_service: BlaiseService,
         eligible_case_service: EligibleCaseService,
-        uac_service: UacService,
-        datastore_service: DatastoreService
+        datastore_service: DatastoreService,
     ):
         self._config = config
         self._blaise_service = blaise_service
         self._eligible_case_service = eligible_case_service
-        self._uac_service = uac_service
         self._datastore_service = datastore_service
 
     def get_eligible_cases(
@@ -33,24 +30,7 @@ class QuestionnaireService:
         return self._eligible_case_service.get_eligible_cases(questionnaire_cases)
 
     def get_cases(self, questionnaire_name: str) -> List[BlaiseCaseInformationModel]:
-        questionnaire_cases = self._blaise_service.get_cases(questionnaire_name)
-        questionnaire_uacs = self._uac_service.get_uacs(questionnaire_name)
-
-        [
-            questionnaire_case.populate_uac_data(
-                next(
-                    (
-                        x
-                        for x in questionnaire_uacs
-                        if x.case_id == questionnaire_case.case_id
-                    ),
-                    None,
-                )
-            )
-            for questionnaire_case in questionnaire_cases
-        ]
-
-        return questionnaire_cases
+        return self._blaise_service.get_cases(questionnaire_name)
 
     def get_case(
         self, questionnaire_name: str, case_id: str

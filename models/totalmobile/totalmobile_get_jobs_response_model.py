@@ -1,6 +1,6 @@
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Dict, List, Type, TypeVar, Any
+from typing import Any, Dict, List, Type, TypeVar
 
 from app.exceptions.custom_exceptions import BadReferenceError
 from client.optimise import GetJobsResponse
