@@ -60,7 +60,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_job_when_case_is_co
     create_case_in_blaise("LMS1111_AA1", "67890", outcome_code)
 
     # act
-    delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
+    delete_totalmobile_jobs_service.delete_totalmobile_jobs_which_are_no_longer_required()
 
     # assert
     # TODO: assert reason
@@ -83,7 +83,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_when_ca
     create_case_in_blaise("LMS1111_AA1", "67890", outcome_code)
 
     # act
-    delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
+    delete_totalmobile_jobs_service.delete_totalmobile_jobs_which_are_no_longer_required()
 
     # assert
     assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
@@ -102,7 +102,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_when_ca
     create_case_in_blaise("LMS1111_AA1", "67890", outcome_code)
 
     # act
-    delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
+    delete_totalmobile_jobs_service.delete_totalmobile_jobs_which_are_no_longer_required()
 
     # assert
     assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
@@ -121,7 +121,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_jobs_for_completed_
     create_case_in_blaise("LMS1111_BB2", "12345", 456)
 
     # act
-    delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
+    delete_totalmobile_jobs_service.delete_totalmobile_jobs_which_are_no_longer_required()
 
     # assert
     # TODO: assert reason and world id
@@ -143,7 +143,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_only_calls_case_status_info
     create_case_in_blaise("LMS1111_AA1", "67890", 110)
 
     # act
-    delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
+    delete_totalmobile_jobs_service.delete_totalmobile_jobs_which_are_no_longer_required()
 
     # assert
     assert fake_blaise_service.get_cases_call_count("LMS1111_AA1") == 1
@@ -158,7 +158,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_not_get_caseids_for_qu
     create_job_in_totalmobile("LMS1111-AA1.67890", "Region 1", visit_completed=True)
 
     # act
-    delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
+    delete_totalmobile_jobs_service.delete_totalmobile_jobs_which_are_no_longer_required()
 
     # assert
     assert fake_blaise_service.get_cases_call_count("LMS1111_AA1") == 0

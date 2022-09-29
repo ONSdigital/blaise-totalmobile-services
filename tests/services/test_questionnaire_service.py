@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from unittest import mock
 from unittest.mock import Mock
 
@@ -8,6 +9,7 @@ from appconfig import Config
 from models.blaise.uac_model import UacChunks, UacModel
 from services.questionnaire_service import QuestionnaireService
 from tests.helpers import config_helper, get_blaise_case_model_helper
+from tests.helpers.datastore_helper import DatastoreHelper
 
 
 @pytest.fixture()
@@ -26,19 +28,25 @@ def mock_uac_service():
 
 
 @pytest.fixture()
+def mock_datastore_service():
+    return Mock()
+
+
+@pytest.fixture()
 def config() -> Config:
     return config_helper.get_default_config()
 
 
 @pytest.fixture()
 def service(
-    config, mock_blaise_service, mock_eligible_case_service, mock_uac_service
+    config, mock_blaise_service, mock_eligible_case_service, mock_uac_service, mock_datastore_service
 ) -> QuestionnaireService:
     return QuestionnaireService(
         config,
         blaise_service=mock_blaise_service,
         eligible_case_service=mock_eligible_case_service,
         uac_service=mock_uac_service,
+        datastore_service=mock_datastore_service
     )
 
 
@@ -277,3 +285,53 @@ def test_update_case_does_not_log_personal_identifiable_information(
         )
         in caplog.record_tuples
     )
+
+def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_questionnaires_with_todays_date(
+    mock_datastore_service,
+    service,
+):
+    # arrange
+    mock_datastore_entity_list = [
+        DatastoreHelper.totalmobile_release_date_entity_builder(1, "LMS2111Z", datetime.today()),
+        DatastoreHelper.totalmobile_release_date_entity_builder(2, "LMS2000Z", datetime(2021, 12, 31)),
+    ]
+    mock_datastore_service.get_totalmobile_release_date_records.return_value = mock_datastore_entity_list
+
+    # act
+    result = service.get_questionnaires_with_totalmobile_release_date_of_today()
+
+    # assert
+    assert result == ["LMS2111Z"]
+
+
+def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_empty_list_when_there_are_no_release_dates_for_today(
+    mock_datastore_service,
+    service,
+):
+    # arrange
+    mock_datastore_entity_list = [
+        DatastoreHelper.totalmobile_release_date_entity_builder(1, "LMS2111Z", datetime(2021, 12, 31)),
+        DatastoreHelper.totalmobile_release_date_entity_builder(2, "LMS2000Z", datetime(2021, 12, 31)),
+    ]
+
+    mock_datastore_service.get_totalmobile_release_date_records.return_value = mock_datastore_entity_list
+
+    # act
+    result = service.get_questionnaires_with_totalmobile_release_date_of_today()
+
+    # assert
+    assert result == []
+
+
+def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_empty_list_when_there_are_no_records_in_datastore(
+    mock_datastore_service,
+    service,
+):
+    # arrange
+    mock_datastore_service.get_totalmobile_release_date_records.return_value = []
+
+    # act
+    result = service.get_questionnaires_with_totalmobile_release_date_of_today()
+
+    # assert
+    assert result == []

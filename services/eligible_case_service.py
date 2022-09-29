@@ -5,7 +5,9 @@ from models.blaise.blaise_case_information_model import BlaiseCaseInformationMod
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 
 
-def get_eligible_cases(cases: List[BlaiseCaseInformationModel]) -> List[BlaiseCaseInformationModel]:
+def get_eligible_cases(
+    cases: List[BlaiseCaseInformationModel],
+) -> List[BlaiseCaseInformationModel]:
     filtered_cases = [
         case
         for case in cases

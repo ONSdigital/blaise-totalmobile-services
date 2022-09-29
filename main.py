@@ -12,6 +12,7 @@ from client import OptimiseClient
 from cloud_functions.logging import setup_logger
 from services import eligible_case_service
 from services.blaise_service import BlaiseService
+from services.datastore_service import DatastoreService
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from services.questionnaire_service import QuestionnaireService
 from services.totalmobile_service import TotalmobileService
@@ -25,6 +26,7 @@ def create_totalmobile_jobs_trigger(_event, _context) -> str:
         blaise_service=BlaiseService(config),
         eligible_case_service=eligible_case_service,
         uac_service=UacService(config),
+        datastore_service=DatastoreService()
     )
     optimise_client = OptimiseClient(
         config.totalmobile_url,

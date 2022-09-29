@@ -18,26 +18,26 @@ class DeleteTotalmobileJobsService:
         self._blaise_service = blaise_service
         self._delete_reason = "completed in blaise"
 
-    def delete_totalmobile_jobs_completed_in_blaise(self) -> None:
+    def delete_totalmobile_jobs_which_are_no_longer_required(self) -> None:
         world_ids = self._get_world_ids()
         for world_id in world_ids:
             for (
                 questionnaire_name,
                 jobs,
-            ) in self._get_questionnaires_with_incomplete_jobs(world_id).items():
+            ) in self._get_questionnaires_which_have_incomplete_jobs_in_totalmobile(world_id).items():
                 self._delete_jobs_for_questionnaire(questionnaire_name, jobs, world_id)
 
     def _delete_jobs_for_questionnaire(
         self, questionnaire_name: str, jobs: List[Job], world_id: str
     ):
-        blaise_case_outcomes = self._get_blaise_case_outcomes(questionnaire_name)
+        blaise_case_outcomes = self._get_blaise_case_outcomes_for_questionnaire(questionnaire_name)
 
         for job in jobs:
-            self._delete_job_if_completed(
+            self._delete_job_if_no_longer_required(
                 job, questionnaire_name, world_id, blaise_case_outcomes
             )
 
-    def _delete_job_if_completed(
+    def _delete_job_if_no_longer_required(
         self,
         job: Job,
         questionnaire_name: str,
@@ -61,7 +61,7 @@ class DeleteTotalmobileJobsService:
 
         self._delete_job(world_id, job.reference)
 
-    def _get_blaise_case_outcomes(self, questionnaire_name: str) -> Dict[str, int]:
+    def _get_blaise_case_outcomes_for_questionnaire(self, questionnaire_name: str) -> Dict[str, int]:
         try:
             cases = self._blaise_service.get_cases(questionnaire_name)
             return {str(case.case_id): case.outcome_code for case in cases}
@@ -76,7 +76,7 @@ class DeleteTotalmobileJobsService:
         world_model = self._totalmobile_service.get_world_model()
         return world_model.get_available_ids()
 
-    def _get_questionnaires_with_incomplete_jobs(
+    def _get_questionnaires_which_have_incomplete_jobs_in_totalmobile(
         self, world_id: str
     ) -> Dict[str, List[Job]]:
         try:

@@ -1,6 +1,6 @@
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Dict, List, Type, TypeVar
+from typing import Dict, List, Type, TypeVar, Any
 
 from app.exceptions.custom_exceptions import BadReferenceError
 from client.optimise import GetJobsResponse
@@ -46,7 +46,7 @@ class TotalmobileGetJobsResponseModel:
         self.questionnaire_jobs = questionnaire_jobs
 
     def questionnaires_with_incomplete_jobs(self) -> Dict[str, List[Job]]:
-        questionnaire_jobs = {}
+        questionnaire_jobs: dict[str, list[Any]] = {}
 
         for questionnaire_name in self.questionnaire_jobs.keys():
             if all(
@@ -55,8 +55,10 @@ class TotalmobileGetJobsResponseModel:
             ):
                 continue
 
-            questionnaire_jobs[questionnaire_name] = self.questionnaire_jobs[
-                questionnaire_name
-            ]
+            questionnaire_jobs[questionnaire_name] = []
+
+            for job in self.questionnaire_jobs[questionnaire_name]:
+                if not job.visit_complete:
+                    questionnaire_jobs[questionnaire_name].append(job)
 
         return questionnaire_jobs

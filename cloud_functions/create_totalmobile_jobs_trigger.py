@@ -20,22 +20,6 @@ from services.totalmobile_service import TotalmobileService
 setup_logger()
 
 
-def get_questionnaires_with_release_date_of_today() -> list:
-    records = get_datastore_records()
-    today = datetime.today().strftime("%d/%m/%Y")
-    return [
-        record["questionnaire"]
-        for record in records
-        if record["tmreleasedate"].strftime("%d/%m/%Y") == today
-    ]
-
-
-def get_datastore_records() -> list:
-    datastore_client = datastore.Client()
-    query = datastore_client.query(kind="TmReleaseDate")
-    return list(query.fetch())
-
-
 def map_totalmobile_job_models(
     cases: List[BlaiseCaseInformationModel],
     world_model: TotalmobileWorldModel,
@@ -127,7 +111,7 @@ def create_totalmobile_jobs_trigger(
     logging.info("Checking for questionnaire release dates")
 
     questionnaires_with_release_date_of_today = (
-        get_questionnaires_with_release_date_of_today()
+        questionnaire_service.get_questionnaires_with_totalmobile_release_date_of_today()
     )
 
     if not questionnaires_with_release_date_of_today:

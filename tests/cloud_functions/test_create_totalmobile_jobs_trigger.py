@@ -1,17 +1,11 @@
 import json
 import logging
-from datetime import datetime
 from unittest import mock
 from unittest.mock import create_autospec
 
-from google.cloud import datastore
-
-from appconfig import Config
-from client.optimise import OptimiseClient
 from cloud_functions.create_totalmobile_jobs_trigger import (
     create_cloud_tasks,
     create_totalmobile_jobs_trigger,
-    get_questionnaires_with_release_date_of_today,
     map_totalmobile_job_models,
 )
 from models.blaise.blaise_case_information_model import UacChunks
@@ -25,76 +19,15 @@ from tests.helpers import config_helper
 from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
 
-def entity_builder(key, questionnaire, tmreleasedate):
-    entity = datastore.Entity(datastore.Key("TmReleaseDate", key, project="test"))
-    entity["questionnaire"] = questionnaire
-    entity["tmreleasedate"] = tmreleasedate
-    return entity
-
-
-@mock.patch("cloud_functions.create_totalmobile_jobs_trigger.get_datastore_records")
-def test_get_questionnaires_with_release_date_of_today_only_returns_questionnaires_with_todays_date(
-    mock_get_datastore_records,
-):
-    # arrange
-    mock_datastore_entity = [
-        entity_builder(1, "LMS2111Z", datetime.today()),
-        entity_builder(2, "LMS2000Z", datetime(2021, 12, 31)),
-    ]
-    mock_get_datastore_records.return_value = mock_datastore_entity
-
-    # act
-    result = get_questionnaires_with_release_date_of_today()
-
-    # assert
-    assert result == ["LMS2111Z"]
-
-
-@mock.patch("cloud_functions.create_totalmobile_jobs_trigger.get_datastore_records")
-def test_get_questionnaires_with_release_date_of_today_returns_an_empty_list_when_there_are_no_release_dates_for_today(
-    mock_get_datastore_records,
-):
-    # arrange
-    mock_datastore_entity = [
-        entity_builder(1, "LMS2111Z", datetime(2021, 12, 31)),
-        entity_builder(2, "LMS2000Z", datetime(2021, 12, 31)),
-    ]
-    mock_get_datastore_records.return_value = mock_datastore_entity
-
-    # act
-    result = get_questionnaires_with_release_date_of_today()
-
-    # assert
-    assert result == []
-
-
-@mock.patch("cloud_functions.create_totalmobile_jobs_trigger.get_datastore_records")
-def test_get_questionnaires_with_release_date_of_today_returns_an_empty_list_when_there_are_no_records_in_datastore(
-    mock_get_datastore_records,
-):
-    # arrange
-    mock_get_datastore_records.return_value = []
-
-    # act
-    result = get_questionnaires_with_release_date_of_today()
-
-    # assert
-    assert result == []
-
-
-@mock.patch(
-    "cloud_functions.create_totalmobile_jobs_trigger.get_questionnaires_with_release_date_of_today"
-)
 def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_for_release(
-    mock_get_questionnaires_with_todays_release_date, caplog
+        caplog
 ):
     # arrange
     config = config_helper.get_default_config()
-    mock_get_questionnaires_with_todays_release_date.return_value = []
-
     total_mobile_service_mock = create_autospec(TotalmobileService)
     questionnaire_service_mock = create_autospec(QuestionnaireService)
 
+    questionnaire_service_mock.get_questionnaires_with_totalmobile_release_date_of_today.return_value = []
     questionnaire_service_mock.get_wave_from_questionnaire_name.return_value = "1"
     questionnaire_service_mock.get_cases.return_value = []
     # act

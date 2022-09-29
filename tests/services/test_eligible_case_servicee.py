@@ -19,7 +19,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             wave="1",
             field_case="Y",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         ),
         # should not return
         get_populated_case_model(
@@ -30,7 +30,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             wave="1",
             field_case="Y",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         ),
         # should not return
         get_populated_case_model(
@@ -41,7 +41,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             wave="1",
             field_case="Y",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         ),
         # should not return
         get_populated_case_model(
@@ -52,7 +52,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             wave="1",
             field_case="Y",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         ),
         # should not return
         get_populated_case_model(
@@ -63,7 +63,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             wave="2",
             field_case="Y",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         ),
         # should not return
         get_populated_case_model(
@@ -74,7 +74,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             wave="1",
             field_case="N",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         ),
         # should not return
         get_populated_case_model(
@@ -85,7 +85,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             wave="1",
             field_case="Y",
             outcome_code=410,
-            field_region="Region 1"
+            field_region="Region 1",
         ),
         # should return
         get_populated_case_model(
@@ -96,7 +96,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             wave="1",
             field_case="y",
             outcome_code=0,
-            field_region="Region 8"
+            field_region="Region 8",
         ),
         # should not return
         get_populated_case_model(
@@ -107,7 +107,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             wave="1",
             field_case="y",
             outcome_code=0,
-            field_region="Region 9"
+            field_region="Region 9",
         ),
     ]
 
@@ -127,7 +127,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             wave="1",
             field_case="Y",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         ),
         # should return
         get_populated_case_model(
@@ -138,7 +138,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
             wave="1",
             field_case="y",
             outcome_code=0,
-            field_region="Region 8"
+            field_region="Region 8",
         ),
     ]
 
@@ -155,7 +155,7 @@ def test_get_eligible_cases_logs_all_cases_appropriately(caplog):
             wave="1",
             field_case="Y",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         ),
         # should not return
         get_populated_case_model(
@@ -166,7 +166,7 @@ def test_get_eligible_cases_logs_all_cases_appropriately(caplog):
             wave="1",
             field_case="Y",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         ),
         # should not return
         get_populated_case_model(
@@ -177,7 +177,7 @@ def test_get_eligible_cases_logs_all_cases_appropriately(caplog):
             wave="1",
             field_case="Y",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         ),
         # should not return
         get_populated_case_model(
@@ -188,7 +188,7 @@ def test_get_eligible_cases_logs_all_cases_appropriately(caplog):
             wave="1",
             field_case="Y",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         ),
         # should not return
         get_populated_case_model(
@@ -199,7 +199,7 @@ def test_get_eligible_cases_logs_all_cases_appropriately(caplog):
             wave="2",
             field_case="Y",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         ),
         # should not return
         get_populated_case_model(
@@ -210,7 +210,7 @@ def test_get_eligible_cases_logs_all_cases_appropriately(caplog):
             wave="1",
             field_case="N",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         ),
         # should not return
         get_populated_case_model(
@@ -221,7 +221,7 @@ def test_get_eligible_cases_logs_all_cases_appropriately(caplog):
             wave="1",
             field_case="Y",
             outcome_code=410,
-            field_region="Region 1"
+            field_region="Region 1",
         ),
         # should return
         get_populated_case_model(
@@ -232,7 +232,7 @@ def test_get_eligible_cases_logs_all_cases_appropriately(caplog):
             wave="1",
             field_case="y",
             outcome_code=0,
-            field_region="Region 8"
+            field_region="Region 8",
         ),
         # should not return
         get_populated_case_model(
@@ -243,7 +243,7 @@ def test_get_eligible_cases_logs_all_cases_appropriately(caplog):
             wave="1",
             field_case="y",
             outcome_code=0,
-            field_region="Region 9"
+            field_region="Region 9",
         ),
     ]
 
@@ -313,7 +313,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_teleph
             wave="1",
             priority="1",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         )
     ]
 
@@ -343,7 +343,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_teleph
             wave="1",
             priority="1",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         )
     ]
 
@@ -373,7 +373,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_appoin
             wave="1",
             priority="1",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         )
     ]
 
@@ -406,7 +406,7 @@ def test_get_eligible_cases_logs_a_message_when_a_wave_is_not_in_range(
             wave=test_input,
             priority="1",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         )
     ]
 
@@ -439,7 +439,7 @@ def test_get_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(
             wave="1",
             priority="1",
             outcome_code=test_input,
-            field_region="Region 1"
+            field_region="Region 1",
         )
     ]
 
@@ -469,7 +469,7 @@ def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_n(caplog):
             field_case="N",
             priority="1",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         )
     ]
 
@@ -500,7 +500,7 @@ def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_N_and_prior
             wave="1",
             field_case="N",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         )
     ]
 
@@ -531,7 +531,7 @@ def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_an_empty_st
             wave="1",
             field_case="",
             outcome_code=310,
-            field_region="Region 1"
+            field_region="Region 1",
         )
     ]
 
@@ -564,7 +564,7 @@ def test_get_eligible_cases_logs_a_message_when_a_field_region_is_not_in_range(
             wave="1",
             priority="1",
             outcome_code=310,
-            field_region=test_input
+            field_region=test_input,
         )
     ]
 

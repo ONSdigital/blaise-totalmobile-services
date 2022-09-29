@@ -1,9 +1,11 @@
 import logging
+from datetime import datetime
 from typing import Dict, List
 
 from appconfig import Config
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from services.blaise_service import BlaiseService
+from services.datastore_service import DatastoreService
 from services.uac_service import UacService
 
 
@@ -14,11 +16,13 @@ class QuestionnaireService:
         blaise_service: BlaiseService,
         eligible_case_service,
         uac_service: UacService,
+        datastore_service: DatastoreService
     ):
         self._config = config
         self._blaise_service = blaise_service
         self._eligible_case_service = eligible_case_service
         self._uac_service = uac_service
+        self._datastore_service = datastore_service
 
     def get_eligible_cases(
         self, questionnaire_name: str
@@ -71,3 +75,12 @@ class QuestionnaireService:
         return self._blaise_service.update_case(
             questionnaire_name, case_id, data_fields
         )
+
+    def get_questionnaires_with_totalmobile_release_date_of_today(self) -> list:
+        records = self._datastore_service.get_totalmobile_release_date_records()
+        today = datetime.today().strftime("%d/%m/%Y")
+        return [
+            record["questionnaire"]
+            for record in records
+            if record["tmreleasedate"].strftime("%d/%m/%Y") == today
+        ]
