@@ -198,12 +198,12 @@ def test_update_case_calls_the_blaise_service_with_the_correct_parameters(
 ):
     questionnaire_name = "LMS2101_AA1"
     case_id = "900001"
-    data_fields = [
-        {"hOut": "110"},
-        {"dMktnName": "John Smith"},
-        {"qDataBag.TelNo": "01234 567890"},
-        {"qDataBag.TelNo2": "07734 567890"},
-    ]
+    data_fields = {
+        "hOut": "110",
+        "dMktnName": "John Smith",
+        "qDataBag.TelNo": "01234 567890",
+        "qDataBag.TelNo2": "07734 567890",
+    }
 
     # act
     service.update_case(questionnaire_name, case_id, data_fields)

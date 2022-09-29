@@ -37,7 +37,7 @@ if __name__ == "__main__":
         config=config,
         blaise_service=BlaiseService(config, UacService(config)),
         datastore_service=DatastoreService(),
-        eligible_case_service=eligible_case_service
+        eligible_case_service=eligible_case_service,
     )
     cases = questionnaire_service.get_cases(questionnaire_name)
     eligible_cases = eligible_case_service.get_eligible_cases(cases)
