@@ -4,11 +4,12 @@ from unittest import mock
 from unittest.mock import create_autospec
 
 from cloud_functions.create_totalmobile_jobs_trigger import (
-    create_cloud_tasks,
+    create_cloud_tasks_for_jobs,
     create_totalmobile_jobs_trigger,
-    map_totalmobile_job_models,
+    map_totalmobile_job_models, create_totalmobile_jobs_for_eligible_questionnaire_cases,
 )
 from models.blaise.blaise_case_information_model import UacChunks
+from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     TotalMobileOutgoingCreateJobPayloadModel,
 )
@@ -106,14 +107,13 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
 
 
 @mock.patch("cloud_functions.create_totalmobile_jobs_trigger.run_async_tasks")
-def test_create_case_tasks_for_questionnaire(
+def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
     mock_run_async_tasks,
 ):
     # arrange
     config = config_helper.get_default_config()
-    total_mobile_service_mock = create_autospec(TotalmobileService)
     questionnaire_service_mock = create_autospec(QuestionnaireService)
-    total_mobile_service_mock.get_world_model.return_value = TotalmobileWorldModel(
+    totalmobile_world_model = TotalmobileWorldModel(
         worlds=[World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")]
     )
 
@@ -138,10 +138,10 @@ def test_create_case_tasks_for_questionnaire(
     questionnaire_service_mock.get_cases.return_value = []
 
     # act
-    result = create_cloud_tasks(
+    result = create_totalmobile_jobs_for_eligible_questionnaire_cases(
         questionnaire_name,
         config,
-        total_mobile_service_mock,
+        totalmobile_world_model,
         questionnaire_service_mock,
     )
 
@@ -179,7 +179,7 @@ def test_create_cloud_tasks_when_no_eligible_cases(mock_run_async_tasks):
     questionnaire_service_mock.get_cases.return_value = []
 
     # act
-    result = create_cloud_tasks(
+    result = create_totalmobile_jobs_for_eligible_questionnaire_cases(
         questionnaire_name,
         config,
         total_mobile_service_mock,

@@ -22,7 +22,7 @@ def map_totalmobile_job_models(
     world_model: TotalmobileWorldModel,
     questionnaire_name: str,
 ) -> List[TotalmobileCreateJobModel]:
-    return [
+    job_models = [
         TotalmobileCreateJobModel(
             questionnaire_name,
             world_model.get_world_id(case.field_region),
@@ -34,6 +34,12 @@ def map_totalmobile_job_models(
         for case in cases
     ]
 
+    logging.info(
+        f"Finished mapping Totalmobile jobs for questionnaire {questionnaire_name}"
+    )
+
+    return job_models
+
 
 def run_async_tasks(tasks: List[Tuple[str, bytes]], queue_id: str, cloud_function: str):
     task_requests = prepare_tasks(
@@ -43,12 +49,10 @@ def run_async_tasks(tasks: List[Tuple[str, bytes]], queue_id: str, cloud_functio
     asyncio.run(run(task_requests))
 
 
-def create_cloud_tasks(
-    questionnaire_name: str,
-    config: Config,
-    totalmobile_service: TotalmobileService,
-    questionnaire_service: QuestionnaireService,
-) -> str:
+def validate_questionnaire_is_in_wave_1(
+        questionnaire_name: str,
+        questionnaire_service: QuestionnaireService,
+) -> None:
     wave = questionnaire_service.get_wave_from_questionnaire_name(questionnaire_name)
     if wave != "1":
         logging.info(
@@ -58,29 +62,12 @@ def create_cloud_tasks(
             f"Questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported"
         )
 
-    logging.info(f"Creating case tasks for questionnaire {questionnaire_name}")
 
-    eligible_cases = questionnaire_service.get_eligible_cases(questionnaire_name)
-
-    if len(eligible_cases) == 0:
-        logging.info(
-            f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}"
-        )
-        return f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}"
-
-    logging.info(
-        f"Found {len(eligible_cases)} eligible cases for questionnaire {questionnaire_name}"
-    )
-
-    world_model = totalmobile_service.get_world_model()
-
-    totalmobile_job_models = map_totalmobile_job_models(
-        eligible_cases, world_model, questionnaire_name
-    )
-    logging.info(
-        f"Finished mapping Totalmobile jobs for questionnaire {questionnaire_name}"
-    )
-
+def create_cloud_tasks_for_jobs(
+        questionnaire_name: str,
+        config: Config,
+        totalmobile_job_models: List[TotalmobileCreateJobModel]
+) -> str:
     tasks = [
         (job_model.create_task_name(), job_model.json().encode())
         for job_model in totalmobile_job_models
@@ -97,7 +84,37 @@ def create_cloud_tasks(
     logging.info(
         f"Finished creating cloud tasks for questionnaire {questionnaire_name}"
     )
+
     return "Done"
+
+
+def create_totalmobile_jobs_for_eligible_questionnaire_cases(
+        questionnaire_name: str,
+        config: Config,
+        world_model: TotalmobileWorldModel,
+        questionnaire_service: QuestionnaireService,
+) -> str:
+
+    eligible_cases = questionnaire_service.get_eligible_cases(questionnaire_name)
+
+    if len(eligible_cases) == 0:
+        logging.info(
+            f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}"
+        )
+        return f"Exiting as no eligible cases to send for questionnaire {questionnaire_name}"
+
+    logging.info(
+        f"Found {len(eligible_cases)} eligible cases for questionnaire {questionnaire_name}"
+    )
+
+    totalmobile_job_models = map_totalmobile_job_models(
+        eligible_cases, world_model, questionnaire_name
+    )
+
+    return create_cloud_tasks_for_jobs(
+        questionnaire_name=questionnaire_name,
+        config=config,
+        totalmobile_job_models=totalmobile_job_models)
 
 
 def create_totalmobile_jobs_trigger(
@@ -115,10 +132,19 @@ def create_totalmobile_jobs_trigger(
         logging.info("There are no questionnaires with a release date of today")
         return "There are no questionnaires with a release date of today"
 
+    world_model = totalmobile_service.get_world_model()
+
     for questionnaire_name in questionnaires_with_release_date_of_today:
         logging.info(f"Questionnaire {questionnaire_name} has a release date of today")
-        create_cloud_tasks(
-            questionnaire_name, config, totalmobile_service, questionnaire_service
-        )
+
+        validate_questionnaire_is_in_wave_1(
+            questionnaire_name=questionnaire_name,
+            questionnaire_service=questionnaire_service)
+
+        create_totalmobile_jobs_for_eligible_questionnaire_cases(
+            questionnaire_name=questionnaire_name,
+            config=config,
+            world_model=world_model,
+            questionnaire_service=questionnaire_service)
 
     return "Done"
