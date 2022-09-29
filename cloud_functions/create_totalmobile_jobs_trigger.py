@@ -1,10 +1,7 @@
 import asyncio
 import logging
-from datetime import datetime
+
 from typing import List, Tuple
-
-from google.cloud import datastore
-
 from appconfig import Config
 from cloud_functions.functions import prepare_tasks, run
 from cloud_functions.logging import setup_logger

@@ -3,11 +3,16 @@ import logging
 import pytest
 
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from services import eligible_case_service
+from services.eligible_case_service import EligibleCaseService
 from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
 
-def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
+@pytest.fixture()
+def service() -> EligibleCaseService:
+    return EligibleCaseService()
+
+
+def test_get_eligible_cases_returns_cases_only_where_criteria_is_met(service):
     # arrange
     cases = [
         # should return
@@ -112,7 +117,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
     ]
 
     # act
-    result = eligible_case_service.get_eligible_cases(cases)
+    result = service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 2
@@ -143,7 +148,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met():
     ]
 
 
-def test_get_eligible_cases_logs_all_cases_appropriately(caplog):
+def test_get_eligible_cases_logs_all_cases_appropriately(service, caplog):
     # arrange
     cases = [
         # should return
@@ -248,7 +253,7 @@ def test_get_eligible_cases_logs_all_cases_appropriately(caplog):
     ]
 
     # act
-    result = eligible_case_service.get_eligible_cases(cases)
+    result = service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 2
@@ -301,6 +306,7 @@ def test_get_eligible_cases_logs_all_cases_appropriately(caplog):
 
 
 def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_telephone_number_1_has_a_value(
+    service,
     caplog,
 ):
     # arrange
@@ -318,7 +324,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_teleph
     ]
 
     # act
-    result = eligible_case_service.get_eligible_cases(cases)
+    result = service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -331,6 +337,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_teleph
 
 
 def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_telephone_number_2_has_a_value(
+    service,
     caplog,
 ):
     # arrange
@@ -348,7 +355,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_teleph
     ]
 
     # act
-    result = eligible_case_service.get_eligible_cases(cases)
+    result = service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -361,6 +368,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_teleph
 
 
 def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_appointment_telephone_number_has_a_value(
+    service,
     caplog,
 ):
     # arrange
@@ -378,7 +386,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_appoin
     ]
 
     # act
-    result = eligible_case_service.get_eligible_cases(cases)
+    result = service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -392,7 +400,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_appoin
 
 @pytest.mark.parametrize("test_input", ["2", "3", "4", "5"])
 def test_get_eligible_cases_logs_a_message_when_a_wave_is_not_in_range(
-    test_input, caplog
+    test_input, service, caplog
 ):
     # arrange
     value_range = ["1"]
@@ -411,7 +419,7 @@ def test_get_eligible_cases_logs_a_message_when_a_wave_is_not_in_range(
     ]
 
     # act
-    result = eligible_case_service.get_eligible_cases(cases)
+    result = service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -425,7 +433,7 @@ def test_get_eligible_cases_logs_a_message_when_a_wave_is_not_in_range(
 
 @pytest.mark.parametrize("test_input", [110, 210, 410])
 def test_get_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(
-    test_input, caplog
+    test_input, service, caplog
 ):
     # arrange
     value_range = [0, 310, 320]
@@ -444,7 +452,7 @@ def test_get_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(
     ]
 
     # act
-    result = eligible_case_service.get_eligible_cases(cases)
+    result = service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -456,7 +464,7 @@ def test_get_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(
     ) in caplog.record_tuples
 
 
-def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_n(caplog):
+def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_n(service, caplog):
     # arrange
 
     cases = [
@@ -474,7 +482,7 @@ def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_n(caplog):
     ]
 
     # act
-    result = eligible_case_service.get_eligible_cases(cases)
+    result = service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -487,6 +495,7 @@ def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_n(caplog):
 
 
 def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_N_and_priority_is_missing(
+    service,
     caplog,
 ):
     # arrange
@@ -505,7 +514,7 @@ def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_N_and_prior
     ]
 
     # act
-    result = eligible_case_service.get_eligible_cases(cases)
+    result = service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -518,6 +527,7 @@ def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_N_and_prior
 
 
 def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_an_empty_string(
+    service,
     caplog,
 ):
     # arrange
@@ -536,7 +546,7 @@ def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_an_empty_st
     ]
 
     # act
-    result = eligible_case_service.get_eligible_cases(cases)
+    result = service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0
@@ -550,7 +560,7 @@ def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_an_empty_st
 
 @pytest.mark.parametrize("test_input", ["Region 0", "Region 9", "Default"])
 def test_get_eligible_cases_logs_a_message_when_a_field_region_is_not_in_range(
-    test_input, caplog
+    test_input, service, caplog
 ):
     # arrange
     value_range = TotalmobileWorldModel.get_available_regions()
@@ -569,7 +579,7 @@ def test_get_eligible_cases_logs_a_message_when_a_field_region_is_not_in_range(
     ]
 
     # act
-    result = eligible_case_service.get_eligible_cases(cases)
+    result = service.get_eligible_cases(cases)
 
     # assert
     assert len(result) == 0

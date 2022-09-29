@@ -6,6 +6,7 @@ from appconfig import Config
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from services.blaise_service import BlaiseService
 from services.datastore_service import DatastoreService
+from services.eligible_case_service import EligibleCaseService
 from services.uac_service import UacService
 
 
@@ -14,7 +15,7 @@ class QuestionnaireService:
         self,
         config: Config,
         blaise_service: BlaiseService,
-        eligible_case_service,
+        eligible_case_service: EligibleCaseService,
         uac_service: UacService,
         datastore_service: DatastoreService
     ):

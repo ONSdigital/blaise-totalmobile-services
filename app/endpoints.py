@@ -15,8 +15,8 @@ from app.handlers.totalmobile_incoming_handler import (
     submit_form_result_request_handler,
     update_visit_status_request_handler,
 )
-from services import eligible_case_service
 from services.datastore_service import DatastoreService
+from services.eligible_case_service import EligibleCaseService
 from services.questionnaire_service import QuestionnaireService
 from services.uac_service import UacService
 from services.update_case_service import UpdateCaseService
@@ -44,7 +44,7 @@ def submit_form_result_request():
         questionnaire_service = QuestionnaireService(
             current_app.app_config,
             blaise_service=current_app.blaise_service,
-            eligible_case_service=eligible_case_service,
+            eligible_case_service=EligibleCaseService(),
             uac_service=uac_service,
             datastore_service=DatastoreService()
         )

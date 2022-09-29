@@ -2,9 +2,9 @@ import os
 import sys
 
 from appconfig import Config
-from services import eligible_case_service, uac_service
 from services.blaise_service import BlaiseService
 from services.datastore_service import DatastoreService
+from services.eligible_case_service import EligibleCaseService
 from services.questionnaire_service import QuestionnaireService
 from services.uac_service import UacService
 
@@ -32,6 +32,7 @@ if __name__ == "__main__":
     questionnaire_name = sys.argv[1]
 
     config = Config.from_env()
+    eligible_case_service = EligibleCaseService()
     questionnaire_service = QuestionnaireService(
         config,
         blaise_service=BlaiseService(config),
