@@ -270,6 +270,7 @@ def test_update_case_does_not_log_personal_identifiable_information(
         in caplog.record_tuples
     )
 
+
 def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_questionnaires_with_todays_date(
     mock_datastore_service,
     service: QuestionnaireService,
