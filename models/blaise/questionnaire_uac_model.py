@@ -15,8 +15,7 @@ class UacChunks:
 
 @dataclass
 class UacModel:
-    case_id: str
-    uac_chunks: UacChunks
+    questionnaire_uacs: Dict[str, UacChunks]
 
     @classmethod
     def import_uac_data(cls: Type[T], uac_data_dictionary: Uac) -> T:
