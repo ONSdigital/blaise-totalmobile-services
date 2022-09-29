@@ -6,7 +6,3 @@ def delete_totalmobile_jobs_completed_in_blaise(
 ) -> str:
     delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
     return "Done"
-
-
-# TODO:
-# Stop field interviewers going to houses unnecessarily by deleting that shit from Totalmobile

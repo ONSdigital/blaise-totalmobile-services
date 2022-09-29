@@ -63,15 +63,11 @@ class QuestionnaireService:
         return self._blaise_service.questionnaire_exists(questionnaire_name)
 
     def update_case(
-        self,
-        questionnaire_name: str,
-        case_id: str,
-        data_fields: Dict[str, str],
+        self, questionnaire_name: str, case_id: str, data_fields: Dict[str, str]
     ) -> None:
         logging.info(
-            f"Attempting to update case {case_id} in questionnaire {questionnaire_name} in Blaise with data fields {data_fields}"
+            f"Attempting to update case {case_id} in questionnaire {questionnaire_name} in Blaise"
         )
-
         return self._blaise_service.update_case(
             questionnaire_name, case_id, data_fields
         )

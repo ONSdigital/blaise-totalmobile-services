@@ -1,3 +1,4 @@
+import logging
 from unittest import mock
 from unittest.mock import Mock
 
@@ -218,4 +219,61 @@ def test_update_case_calls_the_blaise_service_with_the_correct_parameters(
     # assert
     mock_blaise_service.update_case.assert_called_with(
         questionnaire_name, case_id, data_fields
+    )
+
+
+def test_update_case_does_not_log_personal_identifiable_information(
+    mock_blaise_service, service, caplog
+):
+    # arrange
+    mock_blaise_service.update_case.return_value = None
+    questionnaire_name = "LMS2101_AA1"
+    case_id = "900001"
+    data_fields = [
+        {"hOut": "110"},
+        {"dMktnName": "John Smith"},
+        {"qDataBag.TelNo": "01234 567890"},
+        {"qDataBag.TelNo2": "07734 567890"},
+    ]
+
+    # act & assert
+    with caplog.at_level(logging.INFO):
+        service.update_case(questionnaire_name, case_id, data_fields)
+    assert (
+        "root",
+        logging.INFO,
+        "Attempting to update case 900001 in questionnaire LMS2101_AA1 in Blaise",
+    ) in caplog.record_tuples
+
+    with caplog.at_level(logging.INFO):
+        service.update_case(questionnaire_name, case_id, data_fields)
+    assert (
+        not (
+            "root",
+            logging.INFO,
+            "John Smith",
+        )
+        in caplog.record_tuples
+    )
+
+    with caplog.at_level(logging.INFO):
+        service.update_case(questionnaire_name, case_id, data_fields)
+    assert (
+        not (
+            "root",
+            logging.INFO,
+            "01234 567890",
+        )
+        in caplog.record_tuples
+    )
+
+    with caplog.at_level(logging.INFO):
+        service.update_case(questionnaire_name, case_id, data_fields)
+    assert (
+        not (
+            "root",
+            logging.INFO,
+            "07734 567890",
+        )
+        in caplog.record_tuples
     )
