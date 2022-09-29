@@ -12,7 +12,7 @@ def service() -> EligibleCaseService:
     return EligibleCaseService()
 
 
-def test_get_eligible_cases_returns_cases_only_where_criteria_is_met(service):
+def test_get_eligible_cases_returns_cases_only_where_criteria_is_met(service: EligibleCaseService):
     # arrange
     cases = [
         # should return
@@ -148,7 +148,7 @@ def test_get_eligible_cases_returns_cases_only_where_criteria_is_met(service):
     ]
 
 
-def test_get_eligible_cases_logs_all_cases_appropriately(service, caplog):
+def test_get_eligible_cases_logs_all_cases_appropriately(service: EligibleCaseService, caplog):
     # arrange
     cases = [
         # should return
@@ -306,7 +306,7 @@ def test_get_eligible_cases_logs_all_cases_appropriately(service, caplog):
 
 
 def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_telephone_number_1_has_a_value(
-    service,
+    service: EligibleCaseService,
     caplog,
 ):
     # arrange
@@ -337,7 +337,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_teleph
 
 
 def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_telephone_number_2_has_a_value(
-    service,
+    service: EligibleCaseService,
     caplog,
 ):
     # arrange
@@ -368,7 +368,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_teleph
 
 
 def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_appointment_telephone_number_has_a_value(
-    service,
+    service: EligibleCaseService,
     caplog,
 ):
     # arrange
@@ -400,7 +400,7 @@ def test_get_eligible_cases_logs_a_message_when_a_case_is_not_eligible_as_appoin
 
 @pytest.mark.parametrize("test_input", ["2", "3", "4", "5"])
 def test_get_eligible_cases_logs_a_message_when_a_wave_is_not_in_range(
-    test_input, service, caplog
+    test_input, service: EligibleCaseService, caplog
 ):
     # arrange
     value_range = ["1"]
@@ -433,7 +433,7 @@ def test_get_eligible_cases_logs_a_message_when_a_wave_is_not_in_range(
 
 @pytest.mark.parametrize("test_input", [110, 210, 410])
 def test_get_eligible_cases_logs_a_message_when_a_priority_is_not_in_range(
-    test_input, service, caplog
+    test_input, service: EligibleCaseService, caplog
 ):
     # arrange
     value_range = [0, 310, 320]
@@ -495,7 +495,7 @@ def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_n(service, 
 
 
 def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_N_and_priority_is_missing(
-    service,
+    service: EligibleCaseService,
     caplog,
 ):
     # arrange
@@ -527,7 +527,7 @@ def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_N_and_prior
 
 
 def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_an_empty_string(
-    service,
+    service: EligibleCaseService,
     caplog,
 ):
     # arrange
@@ -560,7 +560,7 @@ def test_get_eligible_cases_logs_a_message_when_field_case_is_set_to_an_empty_st
 
 @pytest.mark.parametrize("test_input", ["Region 0", "Region 9", "Default"])
 def test_get_eligible_cases_logs_a_message_when_a_field_region_is_not_in_range(
-    test_input, service, caplog
+    test_input, service: EligibleCaseService, caplog
 ):
     # arrange
     value_range = TotalmobileWorldModel.get_available_regions()

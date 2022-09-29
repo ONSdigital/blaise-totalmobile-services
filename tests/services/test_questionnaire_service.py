@@ -54,7 +54,7 @@ def service(
 def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
     mock_get_cases,
     mock_eligible_case_service,
-    service,
+    service: QuestionnaireService,
 ):
     questionnaire_cases = [
         get_blaise_case_model_helper.get_populated_case_model(),  # eligible
@@ -82,7 +82,7 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
 def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible_case_service(
     mock_get_cases,
     mock_eligible_case_service,
-    service,
+    service: QuestionnaireService,
 ):
     questionnaire_cases = [
         get_blaise_case_model_helper.get_populated_case_model(),  # eligible
@@ -105,7 +105,7 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
 
 def test_get_cases_returns_a_list_of_fully_populated_cases(
     mock_uac_service,
-    service,
+    service: QuestionnaireService,
     mock_blaise_service,
 ):
     questionnaire_cases = [
@@ -148,7 +148,8 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(
     ]
 
 
-def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire(service):
+def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire(
+        service: QuestionnaireService):
     # arrange
     questionnaire_name = "OPN2101A"
 
@@ -166,7 +167,8 @@ def test_get_wave_from_questionnaire_name(service):
     assert service.get_wave_from_questionnaire_name("LMS1234_ZZ2") == "2"
 
 
-def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error(service):
+def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error(
+        service: QuestionnaireService):
     # assert
     with pytest.raises(Exception) as err:
         service.get_wave_from_questionnaire_name("ABC1234_AA1")
@@ -195,7 +197,7 @@ def test_questionnaire_exists_returns_correct_response(
     api_response,
     mock_blaise_service,
     expected_response,
-    service,
+    service: QuestionnaireService,
 ):
     questionnaire_name = "LMS2101_AA1"
     mock_blaise_service.questionnaire_exists.return_value = api_response
@@ -209,7 +211,7 @@ def test_questionnaire_exists_returns_correct_response(
 
 def test_update_case_calls_the_blaise_service_with_the_correct_parameters(
     mock_blaise_service,
-    service,
+    service: QuestionnaireService,
     config,
 ):
     questionnaire_name = "LMS2101_AA1"
@@ -288,7 +290,7 @@ def test_update_case_does_not_log_personal_identifiable_information(
 
 def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_questionnaires_with_todays_date(
     mock_datastore_service,
-    service,
+    service: QuestionnaireService,
 ):
     # arrange
     mock_datastore_entity_list = [
@@ -306,7 +308,7 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_
 
 def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_empty_list_when_there_are_no_release_dates_for_today(
     mock_datastore_service,
-    service,
+    service: QuestionnaireService,
 ):
     # arrange
     mock_datastore_entity_list = [
@@ -325,7 +327,7 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_em
 
 def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_empty_list_when_there_are_no_records_in_datastore(
     mock_datastore_service,
-    service,
+    service: QuestionnaireService,
 ):
     # arrange
     mock_datastore_service.get_totalmobile_release_date_records.return_value = []
