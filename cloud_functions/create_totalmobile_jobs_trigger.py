@@ -6,6 +6,7 @@ from appconfig import Config
 from cloud_functions.functions import prepare_tasks, run
 from cloud_functions.logging import setup_logger
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+from models.blaise.questionnaire_uac_model import QuestionnaireUacModel
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     TotalMobileOutgoingCreateJobPayloadModel,
@@ -13,6 +14,7 @@ from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 from services.questionnaire_service import QuestionnaireService
 from services.totalmobile_service import TotalmobileService
+from services.uac_service import UacService
 
 setup_logger()
 
@@ -21,6 +23,7 @@ def map_totalmobile_job_models(
     cases: List[BlaiseCaseInformationModel],
     world_model: TotalmobileWorldModel,
     questionnaire_name: str,
+    questionnaire_uac_model: QuestionnaireUacModel,
 ) -> List[TotalmobileCreateJobModel]:
     job_models = [
         TotalmobileCreateJobModel(
@@ -28,7 +31,9 @@ def map_totalmobile_job_models(
             world_model.get_world_id(case.field_region),
             case.case_id,
             TotalMobileOutgoingCreateJobPayloadModel.import_case(
-                questionnaire_name, case
+                questionnaire_name,
+                case,
+                questionnaire_uac_model.get_uac_chunks(case.case_id),
             ).to_payload(),
         )
         for case in cases
@@ -93,6 +98,7 @@ def create_totalmobile_jobs_for_eligible_questionnaire_cases(
     config: Config,
     world_model: TotalmobileWorldModel,
     questionnaire_service: QuestionnaireService,
+    uac_service: UacService,
 ) -> str:
 
     eligible_cases = questionnaire_service.get_eligible_cases(questionnaire_name)
@@ -107,8 +113,15 @@ def create_totalmobile_jobs_for_eligible_questionnaire_cases(
         f"Found {len(eligible_cases)} eligible cases for questionnaire {questionnaire_name}"
     )
 
+    questionnaire_uac_model = uac_service.get_questionnaire_uac_model(
+        questionnaire_name
+    )
+
     totalmobile_job_models = map_totalmobile_job_models(
-        eligible_cases, world_model, questionnaire_name
+        cases=eligible_cases,
+        world_model=world_model,
+        questionnaire_name=questionnaire_name,
+        questionnaire_uac_model=questionnaire_uac_model,
     )
 
     return create_cloud_tasks_for_jobs(
@@ -122,6 +135,7 @@ def create_totalmobile_jobs_trigger(
     config: Config,
     totalmobile_service: TotalmobileService,
     questionnaire_service: QuestionnaireService,
+    uac_service: UacService,
 ) -> str:
     logging.info("Checking for questionnaire release dates")
 
@@ -148,6 +162,7 @@ def create_totalmobile_jobs_trigger(
             config=config,
             world_model=world_model,
             questionnaire_service=questionnaire_service,
+            uac_service=uac_service,
         )
 
     return "Done"

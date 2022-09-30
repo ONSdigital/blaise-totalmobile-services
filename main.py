@@ -11,7 +11,6 @@ from appconfig import Config
 from client import OptimiseClient
 from cloud_functions.logging import setup_logger
 from services.blaise_service import BlaiseService
-from services.datastore_service import DatastoreService
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from services.eligible_case_service import EligibleCaseService
 from services.questionnaire_service import QuestionnaireService
@@ -24,7 +23,7 @@ def create_totalmobile_jobs_trigger(_event, _context) -> str:
 
     questionnaire_service = QuestionnaireService(
         config=config,
-        blaise_service=BlaiseService(config, UacService(config)),
+        blaise_service=BlaiseService(config),
         eligible_case_service=EligibleCaseService(),
     )
     optimise_client = OptimiseClient(
@@ -35,9 +34,14 @@ def create_totalmobile_jobs_trigger(_event, _context) -> str:
     )
     totalmobile_service = TotalmobileService(optimise_client)
 
+    uac_service = UacService(config=config)
+
     return (
         cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
-            config, totalmobile_service, questionnaire_service
+            config=config,
+            totalmobile_service=totalmobile_service,
+            questionnaire_service=questionnaire_service,
+            uac_service=uac_service,
         )
     )
 
@@ -65,7 +69,7 @@ def delete_totalmobile_jobs_completed_in_blaise(_event, _context) -> str:
         config.totalmobile_client_secret,
     )
     totalmobile_service = TotalmobileService(optimise_client)
-    blaise_service = BlaiseService(config, UacService(config))
+    blaise_service = BlaiseService(config)
     delete_jobs_service = DeleteTotalmobileJobsService(
         totalmobile_service, blaise_service
     )

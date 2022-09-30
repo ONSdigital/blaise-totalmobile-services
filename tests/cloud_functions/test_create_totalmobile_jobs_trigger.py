@@ -1,22 +1,23 @@
 import json
 import logging
+from typing import Dict
 from unittest import mock
 from unittest.mock import create_autospec
 
+from client.bus import Uac
 from cloud_functions.create_totalmobile_jobs_trigger import (
-    create_cloud_tasks_for_jobs,
     create_totalmobile_jobs_for_eligible_questionnaire_cases,
     create_totalmobile_jobs_trigger,
     map_totalmobile_job_models,
 )
-from models.blaise.blaise_case_information_model import UacChunks
-from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
+from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
 from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     TotalMobileOutgoingCreateJobPayloadModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.questionnaire_service import QuestionnaireService
 from services.totalmobile_service import TotalmobileService
+from services.uac_service import UacService
 from tests.helpers import config_helper
 from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
@@ -28,6 +29,7 @@ def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_
     config = config_helper.get_default_config()
     total_mobile_service_mock = create_autospec(TotalmobileService)
     questionnaire_service_mock = create_autospec(QuestionnaireService)
+    uac_service_mock = create_autospec(UacService)
 
     questionnaire_service_mock.get_questionnaires_with_totalmobile_release_date_of_today.return_value = (
         []
@@ -36,7 +38,7 @@ def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_
     questionnaire_service_mock.get_cases.return_value = []
     # act
     result = create_totalmobile_jobs_trigger(
-        config, total_mobile_service_mock, questionnaire_service_mock
+        config, total_mobile_service_mock, questionnaire_service_mock, uac_service_mock
     )
 
     # assert
@@ -64,6 +66,23 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
         ),
     ]
 
+    uac_data_dictionary: Dict[str, Uac] = {
+        "10010": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10010",
+            "uac_chunks": {"uac1": "8175", "uac2": "4725", "uac3": "3990"},
+            "full_uac": "817647263991",
+        },
+        "10020": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10020",
+            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990"},
+            "full_uac": "417657266991",
+        },
+    }
+
+    questionnaire_uac_model = QuestionnaireUacModel.import_uac_data(uac_data_dictionary)
+
     world_model = TotalmobileWorldModel(
         worlds=[
             World(region="region1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6"),
@@ -73,7 +92,9 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     )
 
     # act
-    result = map_totalmobile_job_models(case_data, world_model, questionnaire_name)
+    result = map_totalmobile_job_models(
+        case_data, world_model, questionnaire_name, questionnaire_uac_model
+    )
 
     # assert
     assert len(result) == 3
@@ -84,9 +105,12 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     assert (
         result[0].payload
         == TotalMobileOutgoingCreateJobPayloadModel.import_case(
-            questionnaire_name, case_data[0]
+            questionnaire_name,
+            case_data[0],
+            questionnaire_uac_model.get_uac_chunks("10010"),
         ).to_payload()
     )
+    assert result[0].payload["description"].startswith("UAC: 8175 4725 3990")
 
     assert result[1].questionnaire == "LMS2101_AA1"
     assert result[1].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa7"
@@ -94,9 +118,12 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     assert (
         result[1].payload
         == TotalMobileOutgoingCreateJobPayloadModel.import_case(
-            questionnaire_name, case_data[1]
+            questionnaire_name,
+            case_data[1],
+            questionnaire_uac_model.get_uac_chunks("10020"),
         ).to_payload()
     )
+    assert result[1].payload["description"].startswith("UAC: 4175 5725 6990")
 
     assert result[2].questionnaire == "LMS2101_AA1"
     assert result[2].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
@@ -104,9 +131,12 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     assert (
         result[2].payload
         == TotalMobileOutgoingCreateJobPayloadModel.import_case(
-            questionnaire_name, case_data[2]
+            questionnaire_name,
+            case_data[2],
+            questionnaire_uac_model.get_uac_chunks("10030"),
         ).to_payload()
     )
+    assert result[2].payload["description"].startswith("UAC: \nDue Date")
 
 
 @mock.patch("cloud_functions.create_totalmobile_jobs_trigger.run_async_tasks")
@@ -116,6 +146,7 @@ def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
     # arrange
     config = config_helper.get_default_config()
     questionnaire_service_mock = create_autospec(QuestionnaireService)
+    uac_service_mock = create_autospec(UacService)
     totalmobile_world_model = TotalmobileWorldModel(
         worlds=[World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")]
     )
@@ -130,7 +161,6 @@ def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
             wave="1",
             priority="1",
             outcome_code=310,
-            uac_chunks=UacChunks(uac1="8176", uac2="4726", uac3="3991"),
             field_region="Region 1",
         ),
     ]
@@ -140,12 +170,32 @@ def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
     questionnaire_service_mock.get_wave_from_questionnaire_name.return_value = "1"
     questionnaire_service_mock.get_cases.return_value = []
 
+    uac_data_dictionary: Dict[str, Uac] = {
+        "10010": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10010",
+            "uac_chunks": {"uac1": "8175", "uac2": "4725", "uac3": "3990"},
+            "full_uac": "817647263991",
+        },
+        "10020": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10020",
+            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990"},
+            "full_uac": "417657266991",
+        },
+    }
+
+    questionnaire_uac_model = QuestionnaireUacModel.import_uac_data(uac_data_dictionary)
+
+    uac_service_mock.get_questionnaire_uac_model.return_value = questionnaire_uac_model
+
     # act
     result = create_totalmobile_jobs_for_eligible_questionnaire_cases(
         questionnaire_name,
         config,
         totalmobile_world_model,
         questionnaire_service_mock,
+        uac_service_mock,
     )
 
     # assert
@@ -164,7 +214,9 @@ def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
         "world_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "case_id": "10010",
         "payload": TotalMobileOutgoingCreateJobPayloadModel.import_case(
-            "LMS2101_AA1", questionnaire_cases[0]
+            "LMS2101_AA1",
+            questionnaire_cases[0],
+            UacChunks(uac1="8175", uac2="4725", uac3="3990"),
         ).to_payload(),
     }
     assert result == "Done"
@@ -177,6 +229,7 @@ def test_create_cloud_tasks_when_no_eligible_cases(mock_run_async_tasks):
     questionnaire_name = "LMS2101_AA1"
     total_mobile_service_mock = create_autospec(TotalmobileService)
     questionnaire_service_mock = create_autospec(QuestionnaireService)
+    uac_service_mock = create_autospec(UacService)
 
     questionnaire_service_mock.get_wave_from_questionnaire_name.return_value = "1"
     questionnaire_service_mock.get_cases.return_value = []
@@ -187,6 +240,7 @@ def test_create_cloud_tasks_when_no_eligible_cases(mock_run_async_tasks):
         config,
         total_mobile_service_mock,
         questionnaire_service_mock,
+        uac_service_mock,
     )
 
     # assert

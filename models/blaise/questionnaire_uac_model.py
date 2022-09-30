@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, Type, TypeVar
+from typing import Dict, Optional, Type, TypeVar
 
 from client.bus import Uac
 
@@ -16,6 +16,12 @@ class UacChunks:
 @dataclass
 class QuestionnaireUacModel:
     questionnaire_case_uacs: Dict[str, UacChunks]
+
+    def get_uac_chunks(self, case_id: Optional[str]):
+        if not case_id or case_id not in self.questionnaire_case_uacs.keys():
+            return None
+
+        return self.questionnaire_case_uacs[case_id]
 
     @classmethod
     def import_uac_data(cls: Type[T], uac_data_dictionary: Dict[str, Uac]) -> T:

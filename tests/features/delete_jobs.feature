@@ -146,7 +146,7 @@ Feature: Delete jobs
     When delete_totalmobile_jobs_completed_in_blaise is run
     Then "Unable to find case 12345 for questionnaire LMS2206_AA1 in Blaise" is logged as an error message
 
-  Scenario: Fail to delete Totalmobile job
+  Scenario: Fails to delete Totalmobile job
     Given case "12345" for questionnaire "LMS2206_AA1" has been completed
     And there is an incomplete job in Totalmobile with reference "LMS2206-AA1.12345"
     And the Totalmobile service errors when deleting jobs

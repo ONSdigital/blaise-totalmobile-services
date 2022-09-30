@@ -3,10 +3,8 @@ import sys
 
 from appconfig import Config
 from services.blaise_service import BlaiseService
-from services.datastore_service import DatastoreService
 from services.eligible_case_service import EligibleCaseService
 from services.questionnaire_service import QuestionnaireService
-from services.uac_service import UacService
 
 
 def __check_for_env_var(name: str):
@@ -35,7 +33,7 @@ if __name__ == "__main__":
     eligible_case_service = EligibleCaseService()
     questionnaire_service = QuestionnaireService(
         config=config,
-        blaise_service=BlaiseService(config, UacService(config)),
+        blaise_service=BlaiseService(config),
         eligible_case_service=eligible_case_service,
     )
     cases = questionnaire_service.get_cases(questionnaire_name)

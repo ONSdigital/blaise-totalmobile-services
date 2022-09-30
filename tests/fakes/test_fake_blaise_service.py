@@ -138,7 +138,6 @@ def test_get_case_when_case_exists(service: FakeBlaiseService):
         field_region=None,
         field_team=None,
         wave_com_dte=None,
-        uac_chunks=None,
         has_call_history=False,
     )
 

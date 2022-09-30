@@ -6,13 +6,11 @@ from urllib3.exceptions import HTTPError
 from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
 from appconfig import Config
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
-from services.uac_service import UacService
 
 
 class BlaiseService:
-    def __init__(self, config: Config, uac_service: UacService):
+    def __init__(self, config: Config):
         self._config = config
-        self._uac_service = uac_service
         self.restapi_client = blaise_restapi.Client(self._config.blaise_api_url)
 
     def get_cases(self, questionnaire_name: str) -> List[BlaiseCaseInformationModel]:
@@ -23,24 +21,12 @@ class BlaiseService:
             BlaiseCaseInformationModel.required_fields_from_blaise(),
         )
 
-        questionnaire_uac_model = self._uac_service.get_questionnaire_uac_model(
-            questionnaire_name
-        )
-
         questionnaire_cases: List[BlaiseCaseInformationModel] = []
 
         for case_data_item in questionnaire_case_data["reportingData"]:
             case = BlaiseCaseInformationModel.import_case(
                 questionnaire_name, case_data_item
             )
-            if (
-                case.case_id
-                and case.case_id
-                in questionnaire_uac_model.questionnaire_case_uacs.keys()
-            ):
-                case.populate_uac_data(
-                    questionnaire_uac_model.questionnaire_case_uacs[case.case_id]
-                )
 
             questionnaire_cases.append(case)
 

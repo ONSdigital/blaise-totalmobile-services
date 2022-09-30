@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import Dict, List, Optional, Type, TypeVar
 
 from models.base_model import BaseModel
-from models.blaise.questionnaire_uac_model import UacChunks
 
 T = TypeVar("T", bound="BlaiseCaseInformationModel")
 
@@ -51,15 +50,7 @@ class BlaiseCaseInformationModel(BaseModel):
     field_region: Optional[str]
     field_team: Optional[str]
     wave_com_dte: Optional[datetime]
-    uac_chunks: Optional[UacChunks]
     has_call_history: bool
-
-    def populate_uac_data(self, uac_chunks: Optional[UacChunks]):
-        if uac_chunks is None:
-            self.uac_chunks = None
-            return
-
-        self.uac_chunks = uac_chunks
 
     @classmethod
     def import_case(
@@ -103,7 +94,6 @@ class BlaiseCaseInformationModel(BaseModel):
             field_region=case_data_dictionary.get("qDataBag.FieldRegion"),
             field_team=case_data_dictionary.get("qDataBag.FieldTeam"),
             wave_com_dte=wave_com_dte,
-            uac_chunks=None,
             has_call_history=cls.string_to_bool(
                 case_data_dictionary.get("catiMana.CatiCall.RegsCalls[1].DialResult")
             ),

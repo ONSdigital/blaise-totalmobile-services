@@ -1,6 +1,5 @@
 from datetime import datetime
 from unittest import mock
-from unittest.mock import Mock
 
 import blaise_restapi
 import pytest
@@ -9,9 +8,7 @@ from urllib3.exceptions import HTTPError
 from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
 from appconfig import Config
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
-from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
 from services.blaise_service import BlaiseService
-from services.uac_service import UacService
 from tests.helpers import config_helper
 
 
@@ -21,13 +18,8 @@ def config() -> Config:
 
 
 @pytest.fixture()
-def mock_uac_service(config) -> UacService:
-    return Mock()
-
-
-@pytest.fixture()
-def blaise_service(config, mock_uac_service) -> BlaiseService:
-    return BlaiseService(config=config, uac_service=mock_uac_service)
+def blaise_service(config) -> BlaiseService:
+    return BlaiseService(config=config)
 
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
@@ -50,7 +42,7 @@ def test_get_cases_calls_the_rest_api_client_with_the_correct_parameters(
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
 def test_get_cases_returns_a_list_of_case_models(
-    _mock_rest_api_client_get_questionnaire, mock_uac_service, blaise_service
+    _mock_rest_api_client_get_questionnaire, blaise_service
 ):
     # arrange
     _mock_rest_api_client_get_questionnaire.return_value = {
@@ -68,14 +60,6 @@ def test_get_cases_returns_a_list_of_case_models(
         ],
     }
 
-    mock_uac_service.get_questionnaire_uac_model.return_value = QuestionnaireUacModel(
-        {
-            "10010": UacChunks(uac1="2324", uac2="6744", uac3="5646"),
-            "10020": UacChunks(uac1="3324", uac2="7744", uac3="6646"),
-            "10030": UacChunks(uac1="4324", uac2="8744", uac3="7646"),
-        }
-    )
-
     questionnaire_name = "LMS2101_AA1"
 
     # act
@@ -87,34 +71,22 @@ def test_get_cases_returns_a_list_of_case_models(
     assert result[0].case_id == "10010"
     assert result[0].outcome_code == 110
     assert result[0].wave_com_dte == datetime(2023, 1, 31)
-    assert result[0].uac_chunks.uac1 == "2324"
-    assert result[0].uac_chunks.uac2 == "6744"
-    assert result[0].uac_chunks.uac3 == "5646"
 
     assert result[1].case_id == "10020"
     assert result[1].outcome_code == 210
     assert result[1].wave_com_dte is None
-    assert result[1].uac_chunks.uac1 == "3324"
-    assert result[1].uac_chunks.uac2 == "7744"
-    assert result[1].uac_chunks.uac3 == "6646"
 
     assert result[2].case_id == "10030"
     assert result[2].outcome_code == 310
     assert result[2].wave_com_dte is None
-    assert result[2].uac_chunks.uac1 == "4324"
-    assert result[2].uac_chunks.uac2 == "8744"
-    assert result[2].uac_chunks.uac3 == "7646"
 
     assert result[3].case_id == "10040"
     assert result[3].outcome_code == 310
     assert result[3].wave_com_dte is None
-    assert result[3].uac_chunks is None
 
 
 @mock.patch.object(blaise_restapi.Client, "get_case")
-def test_get_case_calls_the_correct_services(
-    _mock_rest_api_client, mock_uac_service, blaise_service
-):
+def test_get_case_calls_the_correct_services(_mock_rest_api_client, blaise_service):
     # arrange
     blaise_server_park = "gusty"
     questionnaire_name = "LMS2101_AA1"
@@ -137,13 +109,9 @@ def test_get_case_calls_the_correct_services(
         blaise_server_park, questionnaire_name, case_id
     )
 
-    assert not mock_uac_service.called
-
 
 @mock.patch.object(blaise_restapi.Client, "get_case")
-def test_get_case_returns_an_expected_case_model(
-    _mock_rest_api_client, mock_uac_service, blaise_service
-):
+def test_get_case_returns_an_expected_case_model(_mock_rest_api_client, blaise_service):
     # arrange
     questionnaire_name = "LMS2101_AA1"
     case_id = "10010"
@@ -162,7 +130,6 @@ def test_get_case_returns_an_expected_case_model(
     # assert
     assert result.case_id == "10010"
     assert result.outcome_code == 110
-    assert result.uac_chunks is None
 
 
 @mock.patch.object(blaise_restapi.Client, "get_case")

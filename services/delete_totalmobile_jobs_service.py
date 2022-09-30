@@ -36,6 +36,9 @@ class DeleteTotalmobileJobsService:
             questionnaire_name
         )
 
+        if not blaise_case_outcomes:
+            return
+
         for job in jobs:
             self._delete_job_if_no_longer_required(
                 job, questionnaire_name, world_id, blaise_case_outcomes
@@ -76,7 +79,8 @@ class DeleteTotalmobileJobsService:
                 "Unable to retrieve cases from Blaise",
                 extra={"Exception_reason": str(error)},
             )
-            raise
+
+        return {}
 
     def _get_world_ids(self):
         world_model = self._totalmobile_service.get_world_model()

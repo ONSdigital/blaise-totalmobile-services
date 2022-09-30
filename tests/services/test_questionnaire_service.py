@@ -6,7 +6,6 @@ from unittest.mock import Mock
 import pytest
 
 from appconfig import Config
-from models.blaise.questionnaire_uac_model import UacChunks
 from services.datastore_service import DatastoreService
 from services.questionnaire_service import QuestionnaireService
 from tests.helpers import config_helper, get_blaise_case_model_helper
@@ -97,12 +96,8 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(
     mock_blaise_service,
 ):
     questionnaire_cases = [
-        get_blaise_case_model_helper.get_populated_case_model(
-            case_id="20001", uac_chunks=UacChunks(uac1="2324", uac2="6744", uac3="5646")
-        ),
-        get_blaise_case_model_helper.get_populated_case_model(
-            case_id="20003", uac_chunks=UacChunks(uac1="4324", uac2="8744", uac3="7646")
-        ),
+        get_blaise_case_model_helper.get_populated_case_model(case_id="20001"),
+        get_blaise_case_model_helper.get_populated_case_model(case_id="20003"),
     ]
 
     mock_blaise_service.get_cases.return_value = questionnaire_cases
@@ -113,14 +108,7 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(
     result = service.get_cases(questionnaire_name)
 
     # assert
-    assert result == [
-        get_blaise_case_model_helper.get_populated_case_model(
-            case_id="20001", uac_chunks=UacChunks(uac1="2324", uac2="6744", uac3="5646")
-        ),
-        get_blaise_case_model_helper.get_populated_case_model(
-            case_id="20003", uac_chunks=UacChunks(uac1="4324", uac2="8744", uac3="7646")
-        ),
-    ]
+    assert result == questionnaire_cases
 
 
 def test_get_case_returns_a_case(

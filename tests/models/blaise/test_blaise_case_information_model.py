@@ -1,10 +1,6 @@
 from datetime import datetime
 
-import pytest
-
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
-from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
-from tests.helpers import get_blaise_case_model_helper
 
 
 def test_import_case_returns_a_populated_model():
@@ -60,7 +56,6 @@ def test_import_case_returns_a_populated_model():
     assert result.field_team == "B-Team"
     assert result.wave_com_dte == datetime(2023, 1, 31)
     assert result.has_call_history is False
-    assert result.uac_chunks is None
 
 
 def test_import_case_returns_a_valid_object_when_a_blaise_field_is_incorrectly_typed():
@@ -114,7 +109,6 @@ def test_import_case_returns_a_valid_object_when_a_blaise_field_is_incorrectly_t
     assert result.field_team == "B-Team"
     assert result.wave_com_dte == datetime(2023, 1, 31)
     assert result.has_call_history is True
-    assert result.uac_chunks is None
 
 
 def test_import_case_sets_outcome_code_to_zero_if_empty():
@@ -235,26 +229,6 @@ def test_import_case_sets_has_call_history_to_false_when_blaise_case_is_missing_
     )
 
     assert result.has_call_history is False
-
-
-def test_populate_uac_data_populates_uac_fields_if_supplied():
-    case_model = get_blaise_case_model_helper.get_populated_case_model(case_id="10020")
-
-    uac_chunks = UacChunks(uac1="8176", uac2="4726", uac3="3992")
-
-    case_model.populate_uac_data(uac_chunks)
-
-    assert case_model.uac_chunks is not None
-    assert case_model.uac_chunks.uac1 == "8176"
-    assert case_model.uac_chunks.uac2 == "4726"
-    assert case_model.uac_chunks.uac3 == "3992"
-
-
-def test_populate_uac_data_does_not_populate_uac_fields_if_not_supplied():
-    case_model = get_blaise_case_model_helper.get_populated_case_model(case_id="10010")
-    case_model.populate_uac_data(None)
-
-    assert case_model.uac_chunks is None
 
 
 def test_import_case_sets_date_to_none_if_date_is_an_empty_string():
