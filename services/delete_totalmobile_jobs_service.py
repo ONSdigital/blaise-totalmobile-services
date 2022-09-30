@@ -76,7 +76,7 @@ class DeleteTotalmobileJobsService:
                 "Unable to retrieve cases from Blaise",
                 extra={"Exception_reason": str(error)},
             )
-            return {}
+            raise
 
     def _get_world_ids(self):
         world_model = self._totalmobile_service.get_world_model()
