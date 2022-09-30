@@ -26,7 +26,6 @@ def create_totalmobile_jobs_trigger(_event, _context) -> str:
         config=config,
         blaise_service=BlaiseService(config, UacService(config)),
         eligible_case_service=EligibleCaseService(),
-        datastore_service=DatastoreService(),
     )
     optimise_client = OptimiseClient(
         config.totalmobile_url,

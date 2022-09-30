@@ -7,6 +7,7 @@ import pytest
 
 from appconfig import Config
 from models.blaise.questionnaire_uac_model import UacChunks
+from services.datastore_service import DatastoreService
 from services.questionnaire_service import QuestionnaireService
 from tests.helpers import config_helper, get_blaise_case_model_helper
 from tests.helpers.datastore_helper import DatastoreHelper
@@ -23,24 +24,18 @@ def mock_eligible_case_service():
 
 
 @pytest.fixture()
-def mock_datastore_service():
-    return Mock()
-
-
-@pytest.fixture()
 def config() -> Config:
     return config_helper.get_default_config()
 
 
 @pytest.fixture()
 def service(
-    config, mock_blaise_service, mock_eligible_case_service, mock_datastore_service
+    config, mock_blaise_service, mock_eligible_case_service
 ) -> QuestionnaireService:
     return QuestionnaireService(
         config,
         blaise_service=mock_blaise_service,
         eligible_case_service=mock_eligible_case_service,
-        datastore_service=mock_datastore_service,
     )
 
 
@@ -142,7 +137,7 @@ def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire(
     assert str(err.value) == "Invalid format for questionnaire name: OPN2101A"
 
 
-def test_get_wave_from_questionnaire_name(service):
+def test_get_wave_from_questionnaire_name(service: QuestionnaireService):
     # assert
     assert service.get_wave_from_questionnaire_name("LMS2101_AA1") == "1"
     assert service.get_wave_from_questionnaire_name("LMS1234_ZZ2") == "2"
@@ -160,7 +155,7 @@ def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error(
 
 def test_questionnaire_exists_calls_the_blaise_service_with_the_correct_parameters(
     mock_blaise_service,
-    service,
+    service: QuestionnaireService,
     config,
 ):
     questionnaire_name = "LMS2101_AA1"
@@ -215,18 +210,18 @@ def test_update_case_calls_the_blaise_service_with_the_correct_parameters(
 
 
 def test_update_case_does_not_log_personal_identifiable_information(
-    mock_blaise_service, service, caplog
+    mock_blaise_service, service: QuestionnaireService, caplog
 ):
     # arrange
     mock_blaise_service.update_case.return_value = None
     questionnaire_name = "LMS2101_AA1"
     case_id = "900001"
-    data_fields = [
-        {"hOut": "110"},
-        {"dMktnName": "John Smith"},
-        {"qDataBag.TelNo": "01234 567890"},
-        {"qDataBag.TelNo2": "07734 567890"},
-    ]
+    data_fields = {
+        "hOut": "110",
+        "dMktnName": "John Smith",
+        "qDataBag.TelNo": "01234 567890",
+        "qDataBag.TelNo2": "07734 567890",
+    }
 
     # act & assert
     with caplog.at_level(logging.INFO):
@@ -271,6 +266,7 @@ def test_update_case_does_not_log_personal_identifiable_information(
     )
 
 
+@mock.patch.object(DatastoreService, "get_totalmobile_release_date_records")
 def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_questionnaires_with_todays_date(
     mock_datastore_service,
     service: QuestionnaireService,
@@ -284,9 +280,7 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_
             2, "LMS2000Z", datetime(2021, 12, 31)
         ),
     ]
-    mock_datastore_service.get_totalmobile_release_date_records.return_value = (
-        mock_datastore_entity_list
-    )
+    mock_datastore_service.return_value = mock_datastore_entity_list
 
     # act
     result = service.get_questionnaires_with_totalmobile_release_date_of_today()
@@ -295,6 +289,7 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_
     assert result == ["LMS2111Z"]
 
 
+@mock.patch.object(DatastoreService, "get_totalmobile_release_date_records")
 def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_empty_list_when_there_are_no_release_dates_for_today(
     mock_datastore_service,
     service: QuestionnaireService,
@@ -309,9 +304,7 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_em
         ),
     ]
 
-    mock_datastore_service.get_totalmobile_release_date_records.return_value = (
-        mock_datastore_entity_list
-    )
+    mock_datastore_service.return_value = mock_datastore_entity_list
 
     # act
     result = service.get_questionnaires_with_totalmobile_release_date_of_today()
@@ -320,12 +313,13 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_em
     assert result == []
 
 
+@mock.patch.object(DatastoreService, "get_totalmobile_release_date_records")
 def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_empty_list_when_there_are_no_records_in_datastore(
     mock_datastore_service,
     service: QuestionnaireService,
 ):
     # arrange
-    mock_datastore_service.get_totalmobile_release_date_records.return_value = []
+    mock_datastore_service.return_value = []
 
     # act
     result = service.get_questionnaires_with_totalmobile_release_date_of_today()
