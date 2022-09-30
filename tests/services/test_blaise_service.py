@@ -112,7 +112,7 @@ def test_get_cases_returns_a_list_of_case_models(
 
 
 @mock.patch.object(blaise_restapi.Client, "get_case")
-def test_get_case_calls_the_rest_api_client_with_the_correct_parameters(
+def test_get_case_calls_the_correct_services(
     _mock_rest_api_client, mock_uac_service, blaise_service
 ):
     # arrange
@@ -129,10 +129,6 @@ def test_get_case_calls_the_rest_api_client_with_the_correct_parameters(
         },
     }
 
-    mock_uac_service.get_questionnaire_uac_model.return_value = QuestionnaireUacModel(
-        {"10010": UacChunks(uac1="2324", uac2="6744", uac3="5646")}
-    )
-
     # act
     blaise_service.get_case(questionnaire_name, case_id)
 
@@ -141,9 +137,11 @@ def test_get_case_calls_the_rest_api_client_with_the_correct_parameters(
         blaise_server_park, questionnaire_name, case_id
     )
 
+    assert not mock_uac_service.called
+
 
 @mock.patch.object(blaise_restapi.Client, "get_case")
-def test_get_case_returns_an_expected_case_model_where_a_uac_exists(
+def test_get_case_returns_an_expected_case_model(
     _mock_rest_api_client, mock_uac_service, blaise_service
 ):
     # arrange
@@ -157,41 +155,6 @@ def test_get_case_returns_an_expected_case_model_where_a_uac_exists(
             "qDataBag.WaveComDTE": "31-01-2023",
         },
     }
-
-    mock_uac_service.get_questionnaire_uac_model.return_value = QuestionnaireUacModel(
-        {"10010": UacChunks(uac1="2324", uac2="6744", uac3="5646")}
-    )
-
-    # act
-    result = blaise_service.get_case(questionnaire_name, case_id)
-
-    # assert
-    assert result.case_id == "10010"
-    assert result.outcome_code == 110
-    assert result.uac_chunks.uac1 == "2324"
-    assert result.uac_chunks.uac2 == "6744"
-    assert result.uac_chunks.uac3 == "5646"
-
-
-@mock.patch.object(blaise_restapi.Client, "get_case")
-def test_get_case_returns_an_expected_case_model_where_a_uac_does_not_exist(
-    _mock_rest_api_client, mock_uac_service, blaise_service
-):
-    # arrange
-    questionnaire_name = "LMS2101_AA1"
-    case_id = "10010"
-    _mock_rest_api_client.return_value = {
-        "caseId": "2000000001",
-        "fieldData": {
-            "qiD.Serial_Number": "10010",
-            "hOut": "110",
-            "qDataBag.WaveComDTE": "31-01-2023",
-        },
-    }
-
-    mock_uac_service.get_questionnaire_uac_model.return_value = QuestionnaireUacModel(
-        {"10020": UacChunks(uac1="2324", uac2="6744", uac3="5646")}
-    )
 
     # act
     result = blaise_service.get_case(questionnaire_name, case_id)

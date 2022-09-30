@@ -57,23 +57,9 @@ class BlaiseService:
         except HTTPError:
             raise QuestionnaireCaseDoesNotExistError()
 
-        questionnaire_uac_model = self._uac_service.get_questionnaire_uac_model(
-            questionnaire_name
-        )
-
-        case = BlaiseCaseInformationModel.import_case(
+        return BlaiseCaseInformationModel.import_case(
             questionnaire_name, questionnaire_case_data["fieldData"]
         )
-
-        if (
-            case.case_id
-            and case.case_id in questionnaire_uac_model.questionnaire_case_uacs.keys()
-        ):
-            case.populate_uac_data(
-                questionnaire_uac_model.questionnaire_case_uacs[case.case_id]
-            )
-
-        return case
 
     def questionnaire_exists(self, questionnaire_name: str) -> bool:
 

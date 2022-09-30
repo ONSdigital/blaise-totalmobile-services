@@ -123,6 +123,26 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(
     ]
 
 
+def test_get_case_returns_a_case(
+    service: QuestionnaireService,
+    mock_blaise_service,
+):
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+        case_id="10010"
+    )
+
+    mock_blaise_service.get_case.return_value = questionnaire_case
+
+    questionnaire_name = "LMS2101_AA1"
+    case_id = "10010"
+
+    # act
+    result = service.get_case(questionnaire_name, case_id)
+
+    # assert
+    assert result == questionnaire_case
+
+
 def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire(
     service: QuestionnaireService,
 ):
