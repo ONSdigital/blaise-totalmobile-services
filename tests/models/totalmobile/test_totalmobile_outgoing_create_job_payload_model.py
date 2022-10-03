@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 
-from models.blaise.uac_model import UacChunks
+from models.blaise.questionnaire_uac_model import UacChunks
 from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     AdditionalProperty,
     Address,
@@ -41,12 +41,13 @@ def test_import_case_returns_a_populated_model():
         field_region="Gwent",
         field_team="B-Team",
         wave_com_dte=datetime(2023, 1, 31),
-        uac_chunks=UacChunks(uac1="3456", uac2="3453", uac3="4546"),
     )
+
+    uac_chunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")
 
     # act
     result = TotalMobileOutgoingCreateJobPayloadModel.import_case(
-        questionnaire_name, questionnaire_case
+        questionnaire_name, questionnaire_case, uac_chunks
     )
 
     # assert
@@ -110,13 +111,11 @@ def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uac
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
-    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
-        uac_chunks=None
-    )
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model()
 
     # act
     result = TotalMobileOutgoingCreateJobPayloadModel.import_case(
-        questionnaire_name, questionnaire_case
+        questionnaire_name, questionnaire_case, None
     )
 
     # assert
@@ -147,7 +146,7 @@ def test_import_case_does_not_populate_lat_and_lon_if_both_are_not_supplied(
 
     # act
     result = TotalMobileOutgoingCreateJobPayloadModel.import_case(
-        questionnaire_name, questionnaire_case
+        questionnaire_name, questionnaire_case, None
     )
 
     # assert
@@ -262,7 +261,7 @@ def test_to_payload_sends_an_empty_string_to_totalmobile_if_the_due_date_is_miss
     )
 
     case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
-        questionnaire_name, questionnaire_case
+        questionnaire_name, questionnaire_case, None
     )
     result = case.to_payload()
 
@@ -276,17 +275,18 @@ def test_create_description_returns_a_correctly_formatted_description():
         case_id="12345",
         data_model_name="LMS2201_AA1",
         wave_com_dte=datetime(2022, 1, 31),
-        uac_chunks=UacChunks(uac1="1234", uac2="1235", uac3="1236"),
     )
+
+    uac_chunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")
 
     # Act
     case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
-        questionnaire_name, questionnaire_case
+        questionnaire_name, questionnaire_case, uac_chunks
     )
 
     # Assert
     assert case.description == (
-        "UAC: 1234 1235 1236\n"
+        "UAC: 3456 3453 4546\n"
         "Due Date: 31/01/2022\n"
         "Study: LMS2201_AA1\n"
         "Case ID: 12345"
@@ -297,12 +297,12 @@ def test_create_description_returns_a_correctly_formatted_description_when_all_v
     # Arrange
     questionnaire_name = "LMS2201_AA1"
     questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
-        case_id="1234", data_model_name="", wave_com_dte=None, uac_chunks=None
+        case_id="1234", data_model_name="", wave_com_dte=None
     )
 
     # Act
     case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
-        questionnaire_name, questionnaire_case
+        questionnaire_name, questionnaire_case, None
     )
 
     # Assert
@@ -325,7 +325,7 @@ def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_all
 
     # Act
     case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
-        questionnaire_name, questionnaire_case
+        questionnaire_name, questionnaire_case, None
     )
 
     # Assert
@@ -349,7 +349,7 @@ def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_not
 
     # Act
     case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
-        questionnaire_name, questionnaire_case
+        questionnaire_name, questionnaire_case, None
     )
 
     # Assert

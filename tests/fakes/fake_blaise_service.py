@@ -58,7 +58,6 @@ class FakeBlaiseService:
             field_region=None,
             field_team=None,
             wave_com_dte=None,
-            uac_chunks=None,
             has_call_history=False,
         )
 

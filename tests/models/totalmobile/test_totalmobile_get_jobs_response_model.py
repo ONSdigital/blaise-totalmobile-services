@@ -34,6 +34,7 @@ def test_questionnaires_with_incomplete_jobs_returns_expected_dictionary():
     job_response = [
         {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
         {"visitComplete": False, "identity": {"reference": "LMS2222-BB2.22222"}},
+        {"visitComplete": True, "identity": {"reference": "LMS2222-BB2.33333"}},
         {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.67890"}},
     ]
 
@@ -53,7 +54,7 @@ def test_questionnaires_with_incomplete_jobs_returns_expected_dictionary():
 def test_from_get_jobs_response_skips_jobs_with_bad_references():
     # arrange
     job_response = [
-        {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
+        {"visitComplete": False, "identity": {"reference": "LMS1111-AA1.12345"}},
         {
             "visitComplete": False,
             "identity": {"reference": "this is not a valid reference"},
@@ -67,6 +68,6 @@ def test_from_get_jobs_response_skips_jobs_with_bad_references():
 
     # assert
     assert result["LMS1111_AA1"] == [
-        Job("LMS1111-AA1.12345", "12345", True),
+        Job("LMS1111-AA1.12345", "12345", False),
         Job("LMS1111-AA1.67890", "67890", False),
     ]

@@ -19,13 +19,14 @@ def config() -> Config:
 
 @pytest.fixture()
 def blaise_service(config) -> BlaiseService:
-    return BlaiseService(config)
+    return BlaiseService(config=config)
 
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
 def test_get_cases_calls_the_rest_api_client_with_the_correct_parameters(
     _mock_rest_api_client, blaise_service
 ):
+    # arrange
     blaise_server_park = "gusty"
     questionnaire_name = "DST2106Z"
     fields = BlaiseCaseInformationModel.required_fields_from_blaise()
@@ -55,15 +56,17 @@ def test_get_cases_returns_a_list_of_case_models(
             },
             {"qiD.Serial_Number": "10020", "hOut": "210", "qDataBag.WaveComDTE": ""},
             {"qiD.Serial_Number": "10030", "hOut": "310", "qDataBag.WaveComDTE": ""},
+            {"qiD.Serial_Number": "10040", "hOut": "310", "qDataBag.WaveComDTE": ""},
         ],
     }
+
     questionnaire_name = "LMS2101_AA1"
 
     # act
     result = blaise_service.get_cases(questionnaire_name)
 
     # assert
-    assert len(result) == 3
+    assert len(result) == 4
 
     assert result[0].case_id == "10010"
     assert result[0].outcome_code == 110
@@ -77,17 +80,20 @@ def test_get_cases_returns_a_list_of_case_models(
     assert result[2].outcome_code == 310
     assert result[2].wave_com_dte is None
 
+    assert result[3].case_id == "10040"
+    assert result[3].outcome_code == 310
+    assert result[3].wave_com_dte is None
+
 
 @mock.patch.object(blaise_restapi.Client, "get_case")
-def test_get_case_calls_the_rest_api_client_with_the_correct_parameters(
-    _mock_rest_api_client, blaise_service
-):
+def test_get_case_calls_the_correct_services(_mock_rest_api_client, blaise_service):
+    # arrange
     blaise_server_park = "gusty"
     questionnaire_name = "LMS2101_AA1"
-    case_id = "9001"
+    case_id = "10010"
 
     _mock_rest_api_client.return_value = {
-        "caseId": "2000000001",
+        "caseId": "10010",
         "fieldData": {
             "qiD.Serial_Number": "10010",
             "hOut": "110",
@@ -105,10 +111,10 @@ def test_get_case_calls_the_rest_api_client_with_the_correct_parameters(
 
 
 @mock.patch.object(blaise_restapi.Client, "get_case")
-def test_get_case_returns_a_case_model(_mock_rest_api_client, blaise_service):
+def test_get_case_returns_an_expected_case_model(_mock_rest_api_client, blaise_service):
     # arrange
     questionnaire_name = "LMS2101_AA1"
-    case_id = "9001"
+    case_id = "10010"
     _mock_rest_api_client.return_value = {
         "caseId": "2000000001",
         "fieldData": {
@@ -145,6 +151,7 @@ def test_get_case_throws_a_case_does_not_exist_error_if_the_case_does_not_exist(
 def test_questionnaire_exists_calls_the_rest_api_client_with_the_correct_parameters(
     _mock_rest_api_client, blaise_service
 ):
+    # arrange
     blaise_server_park = "gusty"
     questionnaire_name = "LMS2101_AA1"
 
@@ -162,6 +169,7 @@ def test_questionnaire_exists_calls_the_rest_api_client_with_the_correct_paramet
 def test_questionnaire_exists_returns_correct_response(
     _mock_rest_api_client, api_response, expected_response, blaise_service
 ):
+    # arrange
     questionnaire_name = "LMS2101_AA1"
     _mock_rest_api_client.return_value = api_response
 
@@ -176,6 +184,7 @@ def test_questionnaire_exists_returns_correct_response(
 def test_update_case_calls_the_rest_api_client_with_the_correct_parameters(
     _mock_rest_api_client, blaise_service
 ):
+    # arrange
     blaise_server_park = "gusty"
     questionnaire_name = "LMS2101_AA1"
     case_id = "900001"
