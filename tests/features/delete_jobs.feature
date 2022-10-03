@@ -152,3 +152,12 @@ Feature: Delete jobs
     And the Totalmobile service errors when deleting jobs
     When delete_totalmobile_jobs_completed_in_blaise is run
     Then "Unable to delete job reference 'LMS2206-AA1.12345` from Totalmobile" is logged as an error message
+
+  Scenario: Incomplete Totalmobile jobs within 3 days of due date are deleted
+    Given there is an incomplete job in Totalmobile with reference "LMS2206-AA1.12345"
+    And job reference "LMS2209-AA1.12345" has a dueDate that ends in 3 days time or less
+    When delete_totalmobile_jobs_past_field_period is run
+    Then the Totalmobile job with reference "LMS2209-AA1.12345" is deleted
+    And "past field period" is provided as the reason
+
+

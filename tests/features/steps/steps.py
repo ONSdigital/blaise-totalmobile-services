@@ -263,3 +263,9 @@ def step_impl(context):
 @given("the Blaise service errors when retrieving cases")
 def step_impl(context):
     context.blaise_service.method_throws_exception("get_cases")
+
+
+@given('job reference "{reference}" has a dueDate that ends in 3 days time or less')
+def step_impl(context, reference):
+    raise NotImplementedError(
+        u'STEP: And job reference "LMS2209-AA1.12345" has a dueDate that ends in 3 days time or less')
