@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List, Optional, Type, TypeVar
 
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+from models.blaise.questionnaire_uac_model import UacChunks
 from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
 
 T = TypeVar("T", bound="TotalMobileOutgoingCreateJobPayloadModel")
@@ -87,12 +88,14 @@ class TotalMobileOutgoingCreateJobPayloadModel:
 
     @staticmethod
     def create_description(
-        questionnaire_name: str, questionnaire_case: BlaiseCaseInformationModel
+        questionnaire_name: str,
+        questionnaire_case: BlaiseCaseInformationModel,
+        uac_chunks: Optional[UacChunks],
     ) -> str:
         uac_string = (
             ""
-            if questionnaire_case.uac_chunks is None
-            else f"{questionnaire_case.uac_chunks.uac1} {questionnaire_case.uac_chunks.uac2} {questionnaire_case.uac_chunks.uac3}"
+            if uac_chunks is None
+            else f"{uac_chunks.uac1} {uac_chunks.uac2} {uac_chunks.uac3}"
         )
         due_date_string = (
             ""
@@ -138,6 +141,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         cls: Type[T],
         questionnaire_name: str,
         questionnaire_case: BlaiseCaseInformationModel,
+        uac_chunks: Optional[UacChunks],
     ) -> T:
         total_mobile_case = cls(
             identity=Reference(
@@ -145,7 +149,9 @@ class TotalMobileOutgoingCreateJobPayloadModel:
                     questionnaire_name, questionnaire_case.case_id
                 )
             ),
-            description=cls.create_description(questionnaire_name, questionnaire_case),
+            description=cls.create_description(
+                questionnaire_name, questionnaire_case, uac_chunks
+            ),
             origin="ONS",
             duration=15,
             workType="LMS",
@@ -191,18 +197,12 @@ class TotalMobileOutgoingCreateJobPayloadModel:
             ],
         )
 
-        if questionnaire_case.uac_chunks is not None:
+        if uac_chunks is not None:
             total_mobile_case.additionalProperties.extend(
                 [
-                    AdditionalProperty(
-                        name="uac1", value=questionnaire_case.uac_chunks.uac1
-                    ),
-                    AdditionalProperty(
-                        name="uac2", value=questionnaire_case.uac_chunks.uac2
-                    ),
-                    AdditionalProperty(
-                        name="uac3", value=questionnaire_case.uac_chunks.uac3
-                    ),
+                    AdditionalProperty(name="uac1", value=uac_chunks.uac1),
+                    AdditionalProperty(name="uac2", value=uac_chunks.uac2),
+                    AdditionalProperty(name="uac3", value=uac_chunks.uac3),
                 ]
             )
 

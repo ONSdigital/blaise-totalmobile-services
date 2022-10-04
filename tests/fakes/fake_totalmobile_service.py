@@ -57,7 +57,11 @@ class FakeTotalmobileService:
             raise Exception("get_jobs_model has errored")
 
         return TotalmobileWorldModel(
-            worlds=[World(region=region, id=id) for region, id in self.REGIONS.items()]
+            worlds=[
+                World(region=region, id=id)
+                for region, id in self.REGIONS.items()
+                if region in TotalmobileWorldModel.get_available_regions()
+            ]
         )
 
     def get_jobs_model(self, world_id: str) -> TotalmobileGetJobsResponseModel:
