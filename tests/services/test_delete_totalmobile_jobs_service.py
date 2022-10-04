@@ -305,7 +305,15 @@ def test_delete_jobs_past_field_period_deletes_job_when_field_period_has_expired
                         visit_complete=False,
                         past_field_period=True,
                     )
-                ]
+                ],
+                "LMS1111_BB2": [
+                    Job(
+                        reference="LMS1111-BB2.12345",
+                        case_id="12345",
+                        visit_complete=False,
+                        past_field_period=True,
+                    )
+                ],
             }
         )
     )
@@ -314,8 +322,11 @@ def test_delete_jobs_past_field_period_deletes_job_when_field_period_has_expired
     delete_totalmobile_jobs_service.delete_jobs_past_field_period()
 
     # assert
-    mock_totalmobile_service.delete_job.assert_called_with(
-        world_id, "LMS1111-AA1.67890", "past field period"
+    mock_totalmobile_service.delete_job.assert_has_calls(
+        [
+            call(world_id, "LMS1111-AA1.67890", "past field period"),
+            call(world_id, "LMS1111-BB2.12345", "past field period"),
+        ]
     )
 
 
