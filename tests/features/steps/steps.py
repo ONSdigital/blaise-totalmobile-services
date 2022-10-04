@@ -2,7 +2,7 @@
 
 import base64
 import logging
-from datetime import datetime, timedelta, date
+from datetime import date, datetime, timedelta
 
 from behave import given, then, when
 
@@ -222,7 +222,8 @@ def step_impl(context, region, reference):
 
 @given('job reference "{reference}" has a dueDate that ends in {days} days')
 def step_impl(context, reference, days):
-    due_date = date.today() + timedelta(days=int(days))
+    desired_due_date = datetime.today().date() + timedelta(int(days))
+    due_date = datetime.combine(desired_due_date, datetime.min.time())
     context.totalmobile_service.update_due_date(reference, "Region 1", due_date)
 
 
@@ -265,9 +266,13 @@ def step_impl(context, reference):
     ), "The job should exist in Totalmobile but does not"
 
 
-@then('{reason} is provided as the reason for deleting job with reference "{reference}"')
+@then(
+    '"{reason}" is provided as the reason for deleting job with reference "{reference}"'
+)
 def step_impl(context, reason, reference):
-    assert context.totalmobile_service.deleted_with_reason(reason, reference), "The job should have been deleted with the correct reason"
+    assert context.totalmobile_service.deleted_with_reason(
+        reference, reason
+    ), "The job should have been deleted with the correct reason"
 
 
 @given("the Totalmobile service errors when retrieving jobs")

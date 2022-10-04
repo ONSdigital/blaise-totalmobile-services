@@ -16,7 +16,6 @@ class DeleteTotalmobileJobsService:
     ):
         self._totalmobile_service = totalmobile_service
         self._blaise_service = blaise_service
-        self._delete_reason = "completed in blaise"
 
     def delete_jobs_for_completed_cases(self) -> None:
         world_ids = self._get_world_ids()
@@ -24,10 +23,10 @@ class DeleteTotalmobileJobsService:
             for (
                 questionnaire_name,
                 jobs,
-            ) in self._get_incomplete_jobs_from_totalmobile(
-                world_id
-            ).items():
-                self._delete_jobs_for_completed_cases_by_questionnaire(questionnaire_name, jobs, world_id)
+            ) in self._get_incomplete_jobs_from_totalmobile(world_id).items():
+                self._delete_jobs_for_completed_cases_by_questionnaire(
+                    questionnaire_name, jobs, world_id
+                )
 
     def delete_jobs_past_field_period(self) -> None:
         world_ids = self._get_world_ids()
@@ -53,7 +52,7 @@ class DeleteTotalmobileJobsService:
     def _delete_jobs_past_field_period(self, jobs: List[Job], world_id: str):
         for job in jobs:
             if job.past_field_period:
-                self._delete_job(world_id, job.reference)
+                self._delete_job(world_id, job.reference, "past field period")
 
     def _delete_job_if_no_longer_required(
         self,
@@ -77,7 +76,7 @@ class DeleteTotalmobileJobsService:
         if job.visit_complete or blaise_cases_to_remain:
             return
 
-        self._delete_job(world_id, job.reference)
+        self._delete_job(world_id, job.reference, "completed in blaise")
 
     def _get_blaise_case_outcomes_for_questionnaire(
         self, questionnaire_name: str
@@ -110,11 +109,9 @@ class DeleteTotalmobileJobsService:
             )
             return {}
 
-    def _delete_job(self, world_id: str, job_reference: str):
+    def _delete_job(self, world_id: str, job_reference: str, reason: str):
         try:
-            self._totalmobile_service.delete_job(
-                world_id, job_reference, self._delete_reason
-            )
+            self._totalmobile_service.delete_job(world_id, job_reference, reason)
             logging.info(f"Successfully removed job {job_reference} from Totalmobile")
         except Exception as error:
             logging.error(

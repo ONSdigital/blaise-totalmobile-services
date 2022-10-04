@@ -1,8 +1,7 @@
-
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Type, TypeVar, Optional
+from typing import Any, Dict, List, Optional, Type, TypeVar
 
 from app.exceptions.custom_exceptions import BadReferenceError
 from client.optimise import GetJobsResponse
@@ -38,7 +37,10 @@ class TotalmobileGetJobsResponseModel:
                     job_reference
                 )
                 job_instance = Job(
-                    job_reference, reference_model.case_id, visit_complete, past_field_period
+                    job_reference,
+                    reference_model.case_id,
+                    visit_complete,
+                    past_field_period,
                 )
                 questionnaire_jobs[reference_model.questionnaire_name].append(
                     job_instance
@@ -77,4 +79,3 @@ class TotalmobileGetJobsResponseModel:
         days = (due_date.date() - datetime.today().date()).days
 
         return days <= 3
-

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict, List, TypedDict, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 import requests
 

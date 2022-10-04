@@ -1,27 +1,38 @@
-from datetime import date, timedelta
+from unittest.mock import Mock, call, create_autospec
 
 import pytest
 
+from models.totalmobile.totalmobile_get_jobs_response_model import (
+    Job,
+    TotalmobileGetJobsResponseModel,
+)
+from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
-from tests.fakes.fake_blaise_service import FakeBlaiseService
-from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
+from services.totalmobile_service import TotalmobileService
+from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
 CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED = [123, 110, 543]
 
 
 @pytest.fixture()
-def delete_totalmobile_jobs_service(fake_totalmobile_service, fake_blaise_service):
-    return DeleteTotalmobileJobsService(fake_totalmobile_service, fake_blaise_service)
+def delete_totalmobile_jobs_service(mock_totalmobile_service, mock_blaise_service):
+    return DeleteTotalmobileJobsService(
+        totalmobile_service=mock_totalmobile_service, blaise_service=mock_blaise_service
+    )
 
 
 @pytest.fixture()
-def fake_totalmobile_service():
-    return FakeTotalmobileService()
+def mock_totalmobile_service(world_id):
+    mock_totalmobile_service = create_autospec(TotalmobileService)
+    mock_totalmobile_service.get_world_model.return_value = TotalmobileWorldModel(
+        worlds=[World(region="Region 1", id=world_id)]
+    )
+    return mock_totalmobile_service
 
 
 @pytest.fixture()
-def fake_blaise_service():
-    return FakeBlaiseService()
+def mock_blaise_service():
+    return Mock()
 
 
 @pytest.fixture()
@@ -29,44 +40,41 @@ def world_id():
     return "13013122-d69f-4d6b-gu1d-721f190c4479"
 
 
-@pytest.fixture()
-def create_job_in_totalmobile(fake_totalmobile_service):
-    def create(job_reference, region, visit_completed, due_date=None):
-        fake_totalmobile_service.add_job(job_reference, region, visit_completed, due_date)
-
-    return create
-
-
-@pytest.fixture()
-def create_case_in_blaise(fake_blaise_service):
-    def create(questionnaire_name, case_id, outcome_code):
-        fake_blaise_service.add_questionnaire(questionnaire_name)
-        fake_blaise_service.add_case_to_questionnaire(questionnaire_name, case_id)
-        fake_blaise_service.update_outcome_code_of_case_in_questionnaire(
-            questionnaire_name, case_id, outcome_code
-        )
-
-    return create
-
-
 @pytest.mark.parametrize("outcome_code", CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED)
 def test_delete_jobs_for_completed_cases_deletes_job_when_case_is_completed_and_totalmobile_job_is_incomplete(
-        fake_totalmobile_service,
-        create_job_in_totalmobile,
-        create_case_in_blaise,
-        delete_totalmobile_jobs_service,
-        outcome_code,
+    mock_totalmobile_service,
+    mock_blaise_service,
+    delete_totalmobile_jobs_service,
+    world_id,
+    outcome_code,
 ):
     # arrange
-    create_job_in_totalmobile("LMS1111-AA1.67890", "Region 1", visit_completed=False)
-    create_case_in_blaise("LMS1111_AA1", "67890", outcome_code)
+    mock_totalmobile_service.get_jobs_model.return_value = (
+        TotalmobileGetJobsResponseModel(
+            questionnaire_jobs={
+                "LMS1111_AA1": [
+                    Job(
+                        reference="LMS1111-AA1.67890",
+                        case_id="67890",
+                        visit_complete=False,
+                        past_field_period=False,
+                    )
+                ]
+            }
+        )
+    )
+
+    mock_blaise_service.get_cases.return_value = [
+        get_populated_case_model(case_id="67890", outcome_code=outcome_code)
+    ]
 
     # act
     delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
 
     # assert
-    # TODO: assert reason
-    assert not fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
+    mock_totalmobile_service.delete_job.assert_called_with(
+        world_id, "LMS1111-AA1.67890", "completed in blaise"
+    )
 
 
 @pytest.mark.parametrize(
@@ -74,141 +82,265 @@ def test_delete_jobs_for_completed_cases_deletes_job_when_case_is_completed_and_
     DeleteTotalmobileJobsService.CASE_OUTCOMES_WHOSE_JOBS_SHOULD_NOT_BE_DELETED,
 )
 def test_delete_jobs_for_completed_cases_does_not_delete_job_when_case_is_incomplete_and_totalmobile_job_is_incomplete(
-        fake_totalmobile_service,
-        create_job_in_totalmobile,
-        create_case_in_blaise,
-        delete_totalmobile_jobs_service,
-        outcome_code,
+    mock_totalmobile_service,
+    mock_blaise_service,
+    delete_totalmobile_jobs_service,
+    outcome_code,
 ):
     # arrange
-    create_job_in_totalmobile("LMS1111-AA1.67890", "Region 1", visit_completed=False)
-    create_case_in_blaise("LMS1111_AA1", "67890", outcome_code)
+    mock_totalmobile_service.get_jobs_model.return_value = (
+        TotalmobileGetJobsResponseModel(
+            questionnaire_jobs={
+                "LMS1111_AA1": [
+                    Job(
+                        reference="LMS1111-AA1.67890",
+                        case_id="67890",
+                        visit_complete=False,
+                        past_field_period=False,
+                    )
+                ]
+            }
+        )
+    )
+
+    mock_blaise_service.get_cases.return_value = [
+        get_populated_case_model(case_id="67890", outcome_code=outcome_code)
+    ]
 
     # act
     delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
 
     # assert
-    assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
+    mock_totalmobile_service.delete_job.assert_not_called()
 
 
 @pytest.mark.parametrize("outcome_code", CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED)
 def test_delete_jobs_for_completed_cases_does_not_delete_job_when_case_is_complete_and_totalmobile_job_is_complete(
-        fake_totalmobile_service,
-        create_job_in_totalmobile,
-        create_case_in_blaise,
-        delete_totalmobile_jobs_service,
-        outcome_code,
+    mock_totalmobile_service,
+    mock_blaise_service,
+    delete_totalmobile_jobs_service,
+    outcome_code,
 ):
     # arrange
-    create_job_in_totalmobile("LMS1111-AA1.67890", "Region 1", visit_completed=True)
-    create_case_in_blaise("LMS1111_AA1", "67890", outcome_code)
+    mock_totalmobile_service.get_jobs_model.return_value = (
+        TotalmobileGetJobsResponseModel(
+            questionnaire_jobs={
+                "LMS1111_AA1": [
+                    Job(
+                        reference="LMS1111-AA1.67890",
+                        case_id="67890",
+                        visit_complete=True,
+                        past_field_period=False,
+                    )
+                ]
+            }
+        )
+    )
+
+    mock_blaise_service.get_cases.return_value = [
+        get_populated_case_model(case_id="67890", outcome_code=outcome_code)
+    ]
 
     # act
     delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
 
     # assert
-    assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
+    mock_totalmobile_service.delete_job.assert_not_called()
 
 
 def test_delete_jobs_for_completed_cases_deletes_jobs_for_completed_cases_in_blaise_for_multiple_questionnaires(
-        fake_totalmobile_service,
-        create_job_in_totalmobile,
-        create_case_in_blaise,
-        delete_totalmobile_jobs_service,
+    mock_totalmobile_service,
+    mock_blaise_service,
+    delete_totalmobile_jobs_service,
+    world_id,
 ):
     # arrange
-    create_job_in_totalmobile("LMS1111-AA1.67890", "Region 1", visit_completed=False)
-    create_case_in_blaise("LMS1111_AA1", "67890", 123)
-    create_job_in_totalmobile("LMS1111-BB2.12345", "Region 1", visit_completed=False)
-    create_case_in_blaise("LMS1111_BB2", "12345", 456)
+    mock_totalmobile_service.get_jobs_model.return_value = (
+        TotalmobileGetJobsResponseModel(
+            questionnaire_jobs={
+                "LMS1111_AA1": [
+                    Job(
+                        reference="LMS1111-AA1.67890",
+                        case_id="67890",
+                        visit_complete=False,
+                        past_field_period=False,
+                    )
+                ],
+                "LMS1111_BB2": [
+                    Job(
+                        reference="LMS1111-BB2.12345",
+                        case_id="12345",
+                        visit_complete=False,
+                        past_field_period=False,
+                    )
+                ],
+            }
+        )
+    )
+
+    mock_blaise_service.get_cases.side_effect = [
+        [get_populated_case_model(case_id="67890", outcome_code=123)],
+        [get_populated_case_model(case_id="12345", outcome_code=456)],
+    ]
 
     # act
     delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
 
     # assert
-    # TODO: assert reason and world id
-    assert not fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
-    assert not fake_totalmobile_service.job_exists("LMS1111-BB2.12345")
+    mock_totalmobile_service.delete_job.assert_has_calls(
+        [
+            call(world_id, "LMS1111-AA1.67890", "completed in blaise"),
+            call(world_id, "LMS1111-BB2.12345", "completed in blaise"),
+        ]
+    )
 
 
-def test_delete_jobs_for_completed_cases_only_calls_case_status_information_once_per_questionnaire(
-        fake_blaise_service,
-        delete_totalmobile_jobs_service,
-        create_case_in_blaise,
-        create_job_in_totalmobile,
+def test_delete_jobs_for_completed_cases_only_calls_get_cases_once_per_questionnaire(
+    mock_totalmobile_service,
+    mock_blaise_service,
+    delete_totalmobile_jobs_service,
 ):
     # arrange
-    create_job_in_totalmobile("LMS1111-AA1.12345", "Region 1", visit_completed=True)
-    create_job_in_totalmobile("LMS1111-AA1.67890", "Region 1", visit_completed=False)
+    mock_totalmobile_service.get_jobs_model.return_value = (
+        TotalmobileGetJobsResponseModel(
+            questionnaire_jobs={
+                "LMS1111_AA1": [
+                    Job(
+                        reference="LMS1111-AA1.67890",
+                        case_id="67890",
+                        visit_complete=False,
+                        past_field_period=False,
+                    ),
+                    Job(
+                        reference="LMS1111-AA1.23423",
+                        case_id="23423",
+                        visit_complete=False,
+                        past_field_period=False,
+                    ),
+                ],
+                "LMS1111_BB2": [
+                    Job(
+                        reference="LMS1111-BB2.12345",
+                        case_id="12345",
+                        visit_complete=False,
+                        past_field_period=False,
+                    )
+                ],
+            }
+        )
+    )
 
-    create_case_in_blaise("LMS1111_AA1", "12345", 310)
-    create_case_in_blaise("LMS1111_AA1", "67890", 110)
+    mock_blaise_service.get_cases.side_effect = [
+        [
+            get_populated_case_model(case_id="67890", outcome_code=123),
+            get_populated_case_model(case_id="23423", outcome_code=110),
+        ],
+        [get_populated_case_model(case_id="12345", outcome_code=456)],
+    ]
 
     # act
     delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
 
     # assert
-    assert fake_blaise_service.get_cases_call_count("LMS1111_AA1") == 1
+    mock_blaise_service.get_cases.assert_has_calls(
+        [call("LMS1111_AA1"), call("LMS1111_BB2")]
+    )
 
 
 def test_delete_jobs_for_completed_cases_does_not_get_caseids_for_questionnaires_that_have_no_incomplete_jobs(
-        fake_blaise_service, delete_totalmobile_jobs_service, create_job_in_totalmobile
+    mock_totalmobile_service,
+    mock_blaise_service,
+    delete_totalmobile_jobs_service,
 ):
     # arrange
-    create_job_in_totalmobile("LMS1111-AA1.12345", "Region 1", visit_completed=True)
-    create_job_in_totalmobile("LMS1111-AA1.22222", "Region 1", visit_completed=True)
-    create_job_in_totalmobile("LMS1111-AA1.67890", "Region 1", visit_completed=True)
+    mock_totalmobile_service.get_jobs_model.return_value = (
+        TotalmobileGetJobsResponseModel(
+            questionnaire_jobs={
+                "LMS1111_AA1": [
+                    Job(
+                        reference="LMS1111-AA1.67890",
+                        case_id="67890",
+                        visit_complete=True,
+                        past_field_period=False,
+                    ),
+                    Job(
+                        reference="LMS1111-AA1.23423",
+                        case_id="23423",
+                        visit_complete=True,
+                        past_field_period=False,
+                    ),
+                ],
+                "LMS1111_BB2": [
+                    Job(
+                        reference="LMS1111-BB2.12345",
+                        case_id="12345",
+                        visit_complete=True,
+                        past_field_period=False,
+                    )
+                ],
+            }
+        )
+    )
 
     # act
     delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
 
     # assert
-    assert fake_blaise_service.get_cases_call_count("LMS1111_AA1") == 0
+    mock_blaise_service.get_cases.assert_not_called()
 
 
-@pytest.mark.parametrize("days", [-2, -1, 0, 1, 2])
 def test_delete_jobs_past_field_period_deletes_job_when_field_period_has_expired(
-        fake_totalmobile_service,
-        create_job_in_totalmobile,
-        delete_totalmobile_jobs_service,
-        days
+    mock_totalmobile_service,
+    delete_totalmobile_jobs_service,
+    world_id,
 ):
     # arrange
-    due_date = date.today() + timedelta(days=int(days))
-
-    create_job_in_totalmobile(
-        job_reference="LMS1111-AA1.67890",
-        region="Region 1",
-        visit_completed=False,
-        due_date=due_date)
+    mock_totalmobile_service.get_jobs_model.return_value = (
+        TotalmobileGetJobsResponseModel(
+            questionnaire_jobs={
+                "LMS1111_AA1": [
+                    Job(
+                        reference="LMS1111-AA1.67890",
+                        case_id="67890",
+                        visit_complete=False,
+                        past_field_period=True,
+                    )
+                ]
+            }
+        )
+    )
 
     # act
     delete_totalmobile_jobs_service.delete_jobs_past_field_period()
 
     # assert
-    # TODO: assert reason
-    assert not fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
+    mock_totalmobile_service.delete_job.assert_called_with(
+        world_id, "LMS1111-AA1.67890", "past field period"
+    )
 
 
-@pytest.mark.parametrize("days", [4, 5, 6])
 def test_delete_jobs_past_field_period_does_not_delete_job_when_field_period_has_not_expired(
-        fake_totalmobile_service,
-        create_job_in_totalmobile,
-        delete_totalmobile_jobs_service,
-        days
+    mock_totalmobile_service,
+    delete_totalmobile_jobs_service,
 ):
     # arrange
-    due_date = date.today() + timedelta(days=int(days))
-
-    create_job_in_totalmobile(
-        job_reference="LMS1111-AA1.67890",
-        region="Region 1",
-        visit_completed=False,
-        due_date=due_date)
+    mock_totalmobile_service.get_jobs_model.return_value = (
+        TotalmobileGetJobsResponseModel(
+            questionnaire_jobs={
+                "LMS1111_AA1": [
+                    Job(
+                        reference="LMS1111-AA1.67890",
+                        case_id="67890",
+                        visit_complete=False,
+                        past_field_period=False,
+                    )
+                ]
+            }
+        )
+    )
 
     # act
     delete_totalmobile_jobs_service.delete_jobs_past_field_period()
 
     # assert
-    # TODO: assert reason
-    assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
+    mock_totalmobile_service.delete_job.assert_not_called()

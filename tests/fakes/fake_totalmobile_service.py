@@ -1,5 +1,6 @@
 from collections import defaultdict
 from datetime import datetime
+from typing import Optional
 
 from models.totalmobile.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
@@ -30,7 +31,11 @@ class FakeTotalmobileService:
         self._errors_when_method_is_called.append(method_name)
 
     def add_job(
-            self, reference: str, region: str, visit_complete: bool = False, due_date: datetime = None
+        self,
+        reference: str,
+        region: str,
+        visit_complete: bool = False,
+        due_date: Optional[datetime] = None,
     ) -> None:
         world_id = self.REGIONS[region]
         if self.job_exists(reference):
@@ -39,13 +44,13 @@ class FakeTotalmobileService:
         self._jobs[world_id][reference] = {
             "visitComplete": visit_complete,
             "identity": {"reference": reference},
-            "dueDate": {"end": due_date}
+            "dueDate": {"end": due_date},
         }
 
     def update_due_date(self, reference: str, region: str, due_date: datetime) -> None:
         world_id = self.REGIONS[region]
         job = self._jobs[world_id][reference]
-        job["dueDate"] = {"end": f"{due_date}"}
+        job["dueDate"] = {"end": due_date}
 
     def job_exists(self, job: str) -> bool:
         for jobs_in_world in self._jobs.values():

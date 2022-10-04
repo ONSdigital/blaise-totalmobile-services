@@ -49,7 +49,7 @@ def test_job_raises_exception_when_adding_job_with_same_reference_twice(
 
 def test_get_jobs_model(service: FakeTotalmobileService):
     # arrange
-    service.add_job("LMS11111-AA1.12345", "Region 1")
+    service.add_job("LMS11111-AA1.12345", "Region 1", False)
     service.add_job("LMS11111-AA1.56789", "Region 1", True)
     service.add_job("LMS11111-AA1.54321", "Region 2", True)
 
