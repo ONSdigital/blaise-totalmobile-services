@@ -233,7 +233,7 @@ def step_impl(context):
     delete_totalmobile_service = DeleteTotalmobileJobsService(
         context.totalmobile_service, context.blaise_service
     )
-    delete_totalmobile_service.delete_totalmobile_jobs_completed_in_blaise()
+    delete_totalmobile_service.delete_totalmobile_jobs_which_are_no_longer_required()
 
 
 @then('the Totalmobile job with reference "{reference}" is deleted')

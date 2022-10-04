@@ -7,17 +7,7 @@ from services.totalmobile_service import TotalmobileService
 
 
 class DeleteTotalmobileJobsService:
-    INCOMPLETE_JOB_OUTCOMES = [0, 120, 310, 320]
-    KNOWN_REGIONS = [
-        "Region 1",
-        "Region 2",
-        "Region 3",
-        "Region 4",
-        "Region 5",
-        "Region 6",
-        "Region 7",
-        "Region 8",
-    ]
+    CASE_OUTCOMES_WHOSE_JOBS_SHOULD_NOT_BE_DELETED = [0, 120, 310, 320]
 
     def __init__(
         self,
@@ -28,26 +18,33 @@ class DeleteTotalmobileJobsService:
         self._blaise_service = blaise_service
         self._delete_reason = "completed in blaise"
 
-    def delete_totalmobile_jobs_completed_in_blaise(self) -> None:
+    def delete_totalmobile_jobs_which_are_no_longer_required(self) -> None:
         world_ids = self._get_world_ids()
         for world_id in world_ids:
             for (
                 questionnaire_name,
                 jobs,
-            ) in self._get_questionnaires_with_incomplete_jobs(world_id).items():
+            ) in self._get_questionnaires_which_have_incomplete_jobs_in_totalmobile(
+                world_id
+            ).items():
                 self._delete_jobs_for_questionnaire(questionnaire_name, jobs, world_id)
 
     def _delete_jobs_for_questionnaire(
         self, questionnaire_name: str, jobs: List[Job], world_id: str
     ):
-        blaise_case_outcomes = self._get_blaise_case_outcomes(questionnaire_name)
+        blaise_case_outcomes = self._get_blaise_case_outcomes_for_questionnaire(
+            questionnaire_name
+        )
+
+        if not blaise_case_outcomes:
+            return
 
         for job in jobs:
-            self._delete_job_if_completed(
+            self._delete_job_if_no_longer_required(
                 job, questionnaire_name, world_id, blaise_case_outcomes
             )
 
-    def _delete_job_if_completed(
+    def _delete_job_if_no_longer_required(
         self,
         job: Job,
         questionnaire_name: str,
@@ -61,16 +58,19 @@ class DeleteTotalmobileJobsService:
             )
             return
 
-        blaise_case_incomplete = (
-            blaise_case_outcomes[job.case_id] in self.INCOMPLETE_JOB_OUTCOMES
+        blaise_cases_to_remain = (
+            blaise_case_outcomes[job.case_id]
+            in self.CASE_OUTCOMES_WHOSE_JOBS_SHOULD_NOT_BE_DELETED
         )
 
-        if job.visit_complete or blaise_case_incomplete:
+        if job.visit_complete or blaise_cases_to_remain:
             return
 
         self._delete_job(world_id, job.reference)
 
-    def _get_blaise_case_outcomes(self, questionnaire_name: str) -> Dict[str, int]:
+    def _get_blaise_case_outcomes_for_questionnaire(
+        self, questionnaire_name: str
+    ) -> Dict[str, int]:
         try:
             cases = self._blaise_service.get_cases(questionnaire_name)
             return {str(case.case_id): case.outcome_code for case in cases}
@@ -79,17 +79,14 @@ class DeleteTotalmobileJobsService:
                 "Unable to retrieve cases from Blaise",
                 extra={"Exception_reason": str(error)},
             )
-            return {}
+
+        return {}
 
     def _get_world_ids(self):
         world_model = self._totalmobile_service.get_world_model()
-        return [
-            world.id
-            for world in world_model.worlds
-            if world.region in self.KNOWN_REGIONS
-        ]
+        return world_model.get_available_ids()
 
-    def _get_questionnaires_with_incomplete_jobs(
+    def _get_questionnaires_which_have_incomplete_jobs_in_totalmobile(
         self, world_id: str
     ) -> Dict[str, List[Job]]:
         try:

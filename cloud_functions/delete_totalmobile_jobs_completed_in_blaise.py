@@ -4,5 +4,5 @@ from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsServic
 def delete_totalmobile_jobs_completed_in_blaise(
     delete_totalmobile_jobs_service: DeleteTotalmobileJobsService,
 ) -> str:
-    delete_totalmobile_jobs_service.delete_totalmobile_jobs_completed_in_blaise()
+    delete_totalmobile_jobs_service.delete_totalmobile_jobs_which_are_no_longer_required()
     return "Done"

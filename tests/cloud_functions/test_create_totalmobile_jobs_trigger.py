@@ -1,106 +1,44 @@
 import json
 import logging
-from datetime import datetime
+from typing import Dict
 from unittest import mock
 from unittest.mock import create_autospec
 
-from google.cloud import datastore
-
-from appconfig import Config
-from client.optimise import OptimiseClient
+from client.bus import Uac
 from cloud_functions.create_totalmobile_jobs_trigger import (
-    create_cloud_tasks,
+    create_totalmobile_jobs_for_eligible_questionnaire_cases,
     create_totalmobile_jobs_trigger,
-    get_cases_with_valid_world_ids,
-    get_questionnaires_with_release_date_of_today,
     map_totalmobile_job_models,
 )
-from models.blaise.blaise_case_information_model import UacChunks
+from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
 from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     TotalMobileOutgoingCreateJobPayloadModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.questionnaire_service import QuestionnaireService
 from services.totalmobile_service import TotalmobileService
+from services.uac_service import UacService
 from tests.helpers import config_helper
 from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
 
-def entity_builder(key, questionnaire, tmreleasedate):
-    entity = datastore.Entity(datastore.Key("TmReleaseDate", key, project="test"))
-    entity["questionnaire"] = questionnaire
-    entity["tmreleasedate"] = tmreleasedate
-    return entity
-
-
-@mock.patch("cloud_functions.create_totalmobile_jobs_trigger.get_datastore_records")
-def test_get_questionnaires_with_release_date_of_today_only_returns_questionnaires_with_todays_date(
-    mock_get_datastore_records,
-):
-    # arrange
-    mock_datastore_entity = [
-        entity_builder(1, "LMS2111Z", datetime.today()),
-        entity_builder(2, "LMS2000Z", datetime(2021, 12, 31)),
-    ]
-    mock_get_datastore_records.return_value = mock_datastore_entity
-
-    # act
-    result = get_questionnaires_with_release_date_of_today()
-
-    # assert
-    assert result == ["LMS2111Z"]
-
-
-@mock.patch("cloud_functions.create_totalmobile_jobs_trigger.get_datastore_records")
-def test_get_questionnaires_with_release_date_of_today_returns_an_empty_list_when_there_are_no_release_dates_for_today(
-    mock_get_datastore_records,
-):
-    # arrange
-    mock_datastore_entity = [
-        entity_builder(1, "LMS2111Z", datetime(2021, 12, 31)),
-        entity_builder(2, "LMS2000Z", datetime(2021, 12, 31)),
-    ]
-    mock_get_datastore_records.return_value = mock_datastore_entity
-
-    # act
-    result = get_questionnaires_with_release_date_of_today()
-
-    # assert
-    assert result == []
-
-
-@mock.patch("cloud_functions.create_totalmobile_jobs_trigger.get_datastore_records")
-def test_get_questionnaires_with_release_date_of_today_returns_an_empty_list_when_there_are_no_records_in_datastore(
-    mock_get_datastore_records,
-):
-    # arrange
-    mock_get_datastore_records.return_value = []
-
-    # act
-    result = get_questionnaires_with_release_date_of_today()
-
-    # assert
-    assert result == []
-
-
-@mock.patch(
-    "cloud_functions.create_totalmobile_jobs_trigger.get_questionnaires_with_release_date_of_today"
-)
 def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_for_release(
-    mock_get_questionnaires_with_todays_release_date, caplog
+    caplog,
 ):
     # arrange
     config = config_helper.get_default_config()
-    mock_get_questionnaires_with_todays_release_date.return_value = []
-
     total_mobile_service_mock = create_autospec(TotalmobileService)
     questionnaire_service_mock = create_autospec(QuestionnaireService)
+    uac_service_mock = create_autospec(UacService)
 
+    questionnaire_service_mock.get_questionnaires_with_totalmobile_release_date_of_today.return_value = (
+        []
+    )
     questionnaire_service_mock.get_wave_from_questionnaire_name.return_value = "1"
     questionnaire_service_mock.get_cases.return_value = []
     # act
     result = create_totalmobile_jobs_trigger(
-        config, total_mobile_service_mock, questionnaire_service_mock
+        config, total_mobile_service_mock, questionnaire_service_mock, uac_service_mock
     )
 
     # assert
@@ -128,6 +66,23 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
         ),
     ]
 
+    uac_data_dictionary: Dict[str, Uac] = {
+        "10010": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10010",
+            "uac_chunks": {"uac1": "8175", "uac2": "4725", "uac3": "3990"},
+            "full_uac": "817647263991",
+        },
+        "10020": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10020",
+            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990"},
+            "full_uac": "417657266991",
+        },
+    }
+
+    questionnaire_uac_model = QuestionnaireUacModel.import_uac_data(uac_data_dictionary)
+
     world_model = TotalmobileWorldModel(
         worlds=[
             World(region="region1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6"),
@@ -137,7 +92,9 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     )
 
     # act
-    result = map_totalmobile_job_models(case_data, world_model, questionnaire_name)
+    result = map_totalmobile_job_models(
+        case_data, world_model, questionnaire_name, questionnaire_uac_model
+    )
 
     # assert
     assert len(result) == 3
@@ -148,9 +105,12 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     assert (
         result[0].payload
         == TotalMobileOutgoingCreateJobPayloadModel.import_case(
-            questionnaire_name, case_data[0]
+            questionnaire_name,
+            case_data[0],
+            questionnaire_uac_model.get_uac_chunks("10010"),
         ).to_payload()
     )
+    assert result[0].payload["description"].startswith("UAC: 8175 4725 3990")
 
     assert result[1].questionnaire == "LMS2101_AA1"
     assert result[1].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa7"
@@ -158,9 +118,12 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     assert (
         result[1].payload
         == TotalMobileOutgoingCreateJobPayloadModel.import_case(
-            questionnaire_name, case_data[1]
+            questionnaire_name,
+            case_data[1],
+            questionnaire_uac_model.get_uac_chunks("10020"),
         ).to_payload()
     )
+    assert result[1].payload["description"].startswith("UAC: 4175 5725 6990")
 
     assert result[2].questionnaire == "LMS2101_AA1"
     assert result[2].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
@@ -168,24 +131,23 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     assert (
         result[2].payload
         == TotalMobileOutgoingCreateJobPayloadModel.import_case(
-            questionnaire_name, case_data[2]
+            questionnaire_name,
+            case_data[2],
+            questionnaire_uac_model.get_uac_chunks("10030"),
         ).to_payload()
     )
+    assert result[2].payload["description"].startswith("UAC: \nDue Date")
 
 
 @mock.patch("cloud_functions.create_totalmobile_jobs_trigger.run_async_tasks")
-@mock.patch(
-    "cloud_functions.create_totalmobile_jobs_trigger.get_cases_with_valid_world_ids"
-)
-def test_create_case_tasks_for_questionnaire(
-    mock_get_cases_with_valid_world_ids,
+def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
     mock_run_async_tasks,
 ):
     # arrange
     config = config_helper.get_default_config()
-    total_mobile_service_mock = create_autospec(TotalmobileService)
     questionnaire_service_mock = create_autospec(QuestionnaireService)
-    total_mobile_service_mock.get_world_model.return_value = TotalmobileWorldModel(
+    uac_service_mock = create_autospec(UacService)
+    totalmobile_world_model = TotalmobileWorldModel(
         worlds=[World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")]
     )
 
@@ -199,35 +161,41 @@ def test_create_case_tasks_for_questionnaire(
             wave="1",
             priority="1",
             outcome_code=310,
-            uac_chunks=UacChunks(uac1="8176", uac2="4726", uac3="3991"),
             field_region="Region 1",
         ),
     ]
 
     questionnaire_service_mock.get_eligible_cases.return_value = questionnaire_cases
 
-    mock_get_cases_with_valid_world_ids.return_value = [
-        get_populated_case_model(
-            case_id="10010",
-            telephone_number_1="",
-            telephone_number_2="",
-            appointment_telephone_number="",
-            wave="1",
-            priority="1",
-            outcome_code=310,
-            uac_chunks=UacChunks(uac1="8176", uac2="4726", uac3="3991"),
-            field_region="Region 1",
-        )
-    ]
     questionnaire_service_mock.get_wave_from_questionnaire_name.return_value = "1"
     questionnaire_service_mock.get_cases.return_value = []
 
+    uac_data_dictionary: Dict[str, Uac] = {
+        "10010": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10010",
+            "uac_chunks": {"uac1": "8175", "uac2": "4725", "uac3": "3990"},
+            "full_uac": "817647263991",
+        },
+        "10020": {
+            "instrument_name": "OPN2101A",
+            "case_id": "10020",
+            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990"},
+            "full_uac": "417657266991",
+        },
+    }
+
+    questionnaire_uac_model = QuestionnaireUacModel.import_uac_data(uac_data_dictionary)
+
+    uac_service_mock.get_questionnaire_uac_model.return_value = questionnaire_uac_model
+
     # act
-    result = create_cloud_tasks(
+    result = create_totalmobile_jobs_for_eligible_questionnaire_cases(
         questionnaire_name,
         config,
-        total_mobile_service_mock,
+        totalmobile_world_model,
         questionnaire_service_mock,
+        uac_service_mock,
     )
 
     # assert
@@ -246,7 +214,9 @@ def test_create_case_tasks_for_questionnaire(
         "world_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "case_id": "10010",
         "payload": TotalMobileOutgoingCreateJobPayloadModel.import_case(
-            "LMS2101_AA1", questionnaire_cases[0]
+            "LMS2101_AA1",
+            questionnaire_cases[0],
+            UacChunks(uac1="8175", uac2="4725", uac3="3990"),
         ).to_payload(),
     }
     assert result == "Done"
@@ -259,16 +229,18 @@ def test_create_cloud_tasks_when_no_eligible_cases(mock_run_async_tasks):
     questionnaire_name = "LMS2101_AA1"
     total_mobile_service_mock = create_autospec(TotalmobileService)
     questionnaire_service_mock = create_autospec(QuestionnaireService)
+    uac_service_mock = create_autospec(UacService)
 
     questionnaire_service_mock.get_wave_from_questionnaire_name.return_value = "1"
     questionnaire_service_mock.get_cases.return_value = []
 
     # act
-    result = create_cloud_tasks(
+    result = create_totalmobile_jobs_for_eligible_questionnaire_cases(
         questionnaire_name,
         config,
         total_mobile_service_mock,
         questionnaire_service_mock,
+        uac_service_mock,
     )
 
     # assert
@@ -276,91 +248,3 @@ def test_create_cloud_tasks_when_no_eligible_cases(mock_run_async_tasks):
     assert (
         result == "Exiting as no eligible cases to send for questionnaire LMS2101_AA1"
     )
-
-
-@mock.patch.object(OptimiseClient, "get_worlds")
-def test_get_cases_with_valid_world_ids_logs_a_console_error_when_given_an_unknown_region(
-    _mock_optimise_client, caplog
-):
-    filtered_cases = [get_populated_case_model(field_region="Risca")]
-    world_model = TotalmobileWorldModel(
-        worlds=[World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")]
-    )
-
-    get_cases_with_valid_world_ids(filtered_cases, world_model)
-
-    assert (
-        "root",
-        logging.WARNING,
-        "Case rejected due to invalid field region - Risca",
-    ) in caplog.record_tuples
-
-
-@mock.patch.object(OptimiseClient, "get_worlds")
-def test_get_cases_with_valid_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world(
-    _mock_optimise_client, caplog
-):
-    filtered_cases = [
-        get_populated_case_model(field_region="Risca"),
-        get_populated_case_model(field_region="Region 1"),
-    ]
-    world_model = TotalmobileWorldModel(
-        worlds=[World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")]
-    )
-
-    cases_with_valid_world_ids = get_cases_with_valid_world_ids(
-        filtered_cases, world_model
-    )
-
-    assert len(cases_with_valid_world_ids) == 1
-    assert cases_with_valid_world_ids == [
-        get_populated_case_model(field_region="Region 1")
-    ]
-    assert (
-        "root",
-        logging.WARNING,
-        "Case rejected due to invalid field region - Risca",
-    ) in caplog.record_tuples
-
-
-def test_get_cases_with_valid_world_ids_logs_a_console_error_when_field_region_is_an_empty_value(
-    caplog,
-):
-    filtered_cases = [get_populated_case_model(field_region="")]
-    world_model = TotalmobileWorldModel(
-        worlds=[World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")]
-    )
-    get_cases_with_valid_world_ids(filtered_cases, world_model)
-
-    assert (
-        "root",
-        logging.WARNING,
-        "Case rejected due to missing field region",
-    ) in caplog.record_tuples
-
-
-def test_get_world_ids_logs_a_console_error_and_returns_data_when_given_an_unknown_world_and_a_known_world_and_a_known_world(
-    caplog,
-):
-    filtered_cases = [
-        get_populated_case_model(field_region=""),
-        get_populated_case_model(field_region="Region 1"),
-    ]
-
-    world_model = TotalmobileWorldModel(
-        worlds=[World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")]
-    )
-
-    cases_with_valid_world_ids = get_cases_with_valid_world_ids(
-        filtered_cases, world_model
-    )
-
-    assert len(cases_with_valid_world_ids) == 1
-    assert cases_with_valid_world_ids == [
-        get_populated_case_model(field_region="Region 1")
-    ]
-    assert (
-        "root",
-        logging.WARNING,
-        "Case rejected due to missing field region",
-    ) in caplog.record_tuples

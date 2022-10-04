@@ -8,7 +8,7 @@ from models.blaise.blaise_case_information_model import (
     BlaiseCaseInformationModel,
     ContactDetails,
 )
-from models.blaise.uac_model import UacChunks
+from models.blaise.questionnaire_uac_model import UacChunks
 
 
 def get_populated_case_model(
@@ -33,7 +33,6 @@ def get_populated_case_model(
     field_region: str = "Region 1",
     field_team: str = "B-Team",
     wave_com_dte: Optional[datetime] = datetime(2023, 1, 31),
-    uac_chunks: UacChunks = UacChunks(uac1="3456", uac2="3453", uac3="4546"),
 ):
     return BlaiseCaseInformationModel(
         questionnaire_name=questionnaire_name,
@@ -65,6 +64,5 @@ def get_populated_case_model(
         field_region=field_region,
         field_team=field_team,
         wave_com_dte=wave_com_dte,
-        uac_chunks=uac_chunks,
         has_call_history=False,
     )

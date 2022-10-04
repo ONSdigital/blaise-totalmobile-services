@@ -11,28 +11,33 @@ from models.blaise.blaise_case_information_model import BlaiseCaseInformationMod
 class BlaiseService:
     def __init__(self, config: Config):
         self._config = config
+        self.restapi_client = blaise_restapi.Client(self._config.blaise_api_url)
 
     def get_cases(self, questionnaire_name: str) -> List[BlaiseCaseInformationModel]:
-        restapi_client = blaise_restapi.Client(self._config.blaise_api_url)
 
-        questionnaire_case_data = restapi_client.get_questionnaire_data(
+        questionnaire_case_data = self.restapi_client.get_questionnaire_data(
             self._config.blaise_server_park,
             questionnaire_name,
             BlaiseCaseInformationModel.required_fields_from_blaise(),
         )
 
-        return [
-            BlaiseCaseInformationModel.import_case(questionnaire_name, case_data_item)
-            for case_data_item in questionnaire_case_data["reportingData"]
-        ]
+        questionnaire_cases: List[BlaiseCaseInformationModel] = []
+
+        for case_data_item in questionnaire_case_data["reportingData"]:
+            case = BlaiseCaseInformationModel.import_case(
+                questionnaire_name, case_data_item
+            )
+
+            questionnaire_cases.append(case)
+
+        return questionnaire_cases
 
     def get_case(
         self, questionnaire_name: str, case_id: str
     ) -> BlaiseCaseInformationModel:
-        restapi_client = blaise_restapi.Client(self._config.blaise_api_url)
 
         try:
-            questionnaire_case_data = restapi_client.get_case(
+            questionnaire_case_data = self.restapi_client.get_case(
                 self._config.blaise_server_park, questionnaire_name, case_id
             )
         except HTTPError:
@@ -43,17 +48,15 @@ class BlaiseService:
         )
 
     def questionnaire_exists(self, questionnaire_name: str) -> bool:
-        restapi_client = blaise_restapi.Client(self._config.blaise_api_url)
 
-        return restapi_client.questionnaire_exists_on_server_park(
+        return self.restapi_client.questionnaire_exists_on_server_park(
             self._config.blaise_server_park, questionnaire_name
         )
 
     def update_case(
         self, questionnaire_name: str, case_id: str, data_fields: Dict[str, str]
     ) -> None:
-        restapi_client = blaise_restapi.Client(self._config.blaise_api_url)
 
-        restapi_client.patch_case_data(
+        self.restapi_client.patch_case_data(
             self._config.blaise_server_park, questionnaire_name, case_id, data_fields
         )
