@@ -1,3 +1,9 @@
+from datetime import datetime
+from typing import List
+
+from client.optimise import Identity, DueDate, GetJobResponse
+
+
 def get_worlds_response():
     return [
         {
@@ -28,9 +34,12 @@ def get_worlds_response():
     ]
 
 
-def get_jobs_response():
+def get_jobs_response(due_date: datetime = datetime.today()) -> List[GetJobResponse]:
     return [
-        {"visitComplete": True, "identity": {"reference": "LMS1111-AA1.12345"}},
-        {"visitComplete": False, "identity": {"reference": "LMS2222-BB2.22222"}},
-        {"visitComplete": False, "identity": {"reference": "LMS1111-AA1.67890"}},
+        GetJobResponse(identity=Identity(reference="LMS1111-AA1.12345"),
+                       dueDate=DueDate(end=due_date), visitComplete=True),
+        GetJobResponse(identity=Identity(reference="LMS2222-BB2.22222"),
+                       dueDate=DueDate(end=due_date), visitComplete=False),
+        GetJobResponse(identity=Identity(reference="LMS1111-AA1.67890"),
+                       dueDate=DueDate(end=due_date), visitComplete=False),
     ]

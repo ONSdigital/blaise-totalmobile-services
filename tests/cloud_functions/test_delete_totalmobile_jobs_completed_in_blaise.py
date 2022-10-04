@@ -27,4 +27,4 @@ def test_delete_totalmobile_jobs_completed_in_blaise_calls_the_correct_service()
     delete_totalmobile_jobs_completed_in_blaise(mock_delete_totalmobile_jobs_service)
 
     # assert
-    mock_delete_totalmobile_jobs_service.delete_totalmobile_jobs_which_are_no_longer_required.assert_called()
+    mock_delete_totalmobile_jobs_service.delete_jobs_for_completed_cases.assert_called()

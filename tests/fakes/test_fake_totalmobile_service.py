@@ -59,8 +59,8 @@ def test_get_jobs_model(service: FakeTotalmobileService):
     # assert
     assert jobs_model.questionnaire_jobs == {
         "LMS11111_AA1": [
-            Job("LMS11111-AA1.12345", "12345", False),
-            Job("LMS11111-AA1.56789", "56789", True),
+            Job("LMS11111-AA1.12345", "12345", False, False),
+            Job("LMS11111-AA1.56789", "56789", True, False),
         ]
     }
 

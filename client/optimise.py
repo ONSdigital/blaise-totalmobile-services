@@ -6,7 +6,7 @@ import requests
 from client.base import BaseClient
 
 
-class DueDate:
+class DueDate(TypedDict):
     end: Optional[datetime]
 
 

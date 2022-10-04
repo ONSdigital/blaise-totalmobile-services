@@ -23,14 +23,14 @@ class FakeTotalmobileService:
 
     def __init__(self):
         self._jobs = defaultdict(dict)
-        self._delete_jobs = defaultdict(lambda: 0)
+        self._delete_jobs_reason = {}
         self._errors_when_method_is_called = []
 
     def method_throws_exception(self, method_name: str):
         self._errors_when_method_is_called.append(method_name)
 
     def add_job(
-        self, reference: str, region: str, visit_complete: bool = False
+            self, reference: str, region: str, visit_complete: bool = False, due_date: datetime = None
     ) -> None:
         world_id = self.REGIONS[region]
         if self.job_exists(reference):
@@ -39,7 +39,13 @@ class FakeTotalmobileService:
         self._jobs[world_id][reference] = {
             "visitComplete": visit_complete,
             "identity": {"reference": reference},
+            "dueDate": {"end": due_date}
         }
+
+    def update_due_date(self, reference: str, region: str, due_date: datetime) -> None:
+        world_id = self.REGIONS[region]
+        job = self._jobs[world_id][reference]
+        job["dueDate"] = {"end": f"{due_date}"}
 
     def job_exists(self, job: str) -> bool:
         for jobs_in_world in self._jobs.values():
@@ -47,11 +53,18 @@ class FakeTotalmobileService:
                 return True
         return False
 
-    def delete_job(self, world_id: str, job: str, reason: str = "0") -> None:
+    def delete_job(self, world_id: str, reference: str, reason: str = "0") -> None:
         if "delete_job" in self._errors_when_method_is_called:
             raise Exception("get_jobs_model has errored")
 
-        del self._jobs[world_id][job]
+        self._delete_jobs_reason[reference] = reason
+        del self._jobs[world_id][reference]
+
+    def deleted_with_reason(self, reference: str, reason: str = "0") -> bool:
+        if reference not in self._delete_jobs_reason.keys():
+            return False
+
+        return self._delete_jobs_reason[reference] == reason
 
     def get_world_model(self) -> TotalmobileWorldModel:
         if "get_world_model" in self._errors_when_method_is_called:

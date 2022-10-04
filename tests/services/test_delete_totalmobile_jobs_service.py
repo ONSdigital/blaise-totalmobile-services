@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 import pytest
 
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
@@ -29,8 +31,8 @@ def world_id():
 
 @pytest.fixture()
 def create_job_in_totalmobile(fake_totalmobile_service):
-    def create(job_reference, region, visit_completed):
-        fake_totalmobile_service.add_job(job_reference, region, visit_completed)
+    def create(job_reference, region, visit_completed, due_date=None):
+        fake_totalmobile_service.add_job(job_reference, region, visit_completed, due_date)
 
     return create
 
@@ -48,19 +50,19 @@ def create_case_in_blaise(fake_blaise_service):
 
 
 @pytest.mark.parametrize("outcome_code", CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED)
-def test_delete_totalmobile_jobs_completed_in_blaise_deletes_job_when_case_is_completed_and_totalmobile_job_is_incomplete(
-    fake_totalmobile_service,
-    create_job_in_totalmobile,
-    create_case_in_blaise,
-    delete_totalmobile_jobs_service,
-    outcome_code,
+def test_delete_jobs_for_completed_cases_deletes_job_when_case_is_completed_and_totalmobile_job_is_incomplete(
+        fake_totalmobile_service,
+        create_job_in_totalmobile,
+        create_case_in_blaise,
+        delete_totalmobile_jobs_service,
+        outcome_code,
 ):
     # arrange
     create_job_in_totalmobile("LMS1111-AA1.67890", "Region 1", visit_completed=False)
     create_case_in_blaise("LMS1111_AA1", "67890", outcome_code)
 
     # act
-    delete_totalmobile_jobs_service.delete_totalmobile_jobs_which_are_no_longer_required()
+    delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
 
     # assert
     # TODO: assert reason
@@ -71,48 +73,48 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_job_when_case_is_co
     "outcome_code",
     DeleteTotalmobileJobsService.CASE_OUTCOMES_WHOSE_JOBS_SHOULD_NOT_BE_DELETED,
 )
-def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_when_case_is_incomplete_and_totalmobile_job_is_incomplete(
-    fake_totalmobile_service,
-    create_job_in_totalmobile,
-    create_case_in_blaise,
-    delete_totalmobile_jobs_service,
-    outcome_code,
+def test_delete_jobs_for_completed_cases_does_not_delete_job_when_case_is_incomplete_and_totalmobile_job_is_incomplete(
+        fake_totalmobile_service,
+        create_job_in_totalmobile,
+        create_case_in_blaise,
+        delete_totalmobile_jobs_service,
+        outcome_code,
 ):
     # arrange
     create_job_in_totalmobile("LMS1111-AA1.67890", "Region 1", visit_completed=False)
     create_case_in_blaise("LMS1111_AA1", "67890", outcome_code)
 
     # act
-    delete_totalmobile_jobs_service.delete_totalmobile_jobs_which_are_no_longer_required()
+    delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
 
     # assert
     assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
 
 
 @pytest.mark.parametrize("outcome_code", CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED)
-def test_delete_totalmobile_jobs_completed_in_blaise_does_not_delete_job_when_case_is_complete_and_totalmobile_job_is_complete(
-    fake_totalmobile_service,
-    create_job_in_totalmobile,
-    create_case_in_blaise,
-    delete_totalmobile_jobs_service,
-    outcome_code,
+def test_delete_jobs_for_completed_cases_does_not_delete_job_when_case_is_complete_and_totalmobile_job_is_complete(
+        fake_totalmobile_service,
+        create_job_in_totalmobile,
+        create_case_in_blaise,
+        delete_totalmobile_jobs_service,
+        outcome_code,
 ):
     # arrange
     create_job_in_totalmobile("LMS1111-AA1.67890", "Region 1", visit_completed=True)
     create_case_in_blaise("LMS1111_AA1", "67890", outcome_code)
 
     # act
-    delete_totalmobile_jobs_service.delete_totalmobile_jobs_which_are_no_longer_required()
+    delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
 
     # assert
     assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
 
 
-def test_delete_totalmobile_jobs_completed_in_blaise_deletes_jobs_for_completed_cases_in_blaise_for_multiple_questionnaires(
-    fake_totalmobile_service,
-    create_job_in_totalmobile,
-    create_case_in_blaise,
-    delete_totalmobile_jobs_service,
+def test_delete_jobs_for_completed_cases_deletes_jobs_for_completed_cases_in_blaise_for_multiple_questionnaires(
+        fake_totalmobile_service,
+        create_job_in_totalmobile,
+        create_case_in_blaise,
+        delete_totalmobile_jobs_service,
 ):
     # arrange
     create_job_in_totalmobile("LMS1111-AA1.67890", "Region 1", visit_completed=False)
@@ -121,7 +123,7 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_jobs_for_completed_
     create_case_in_blaise("LMS1111_BB2", "12345", 456)
 
     # act
-    delete_totalmobile_jobs_service.delete_totalmobile_jobs_which_are_no_longer_required()
+    delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
 
     # assert
     # TODO: assert reason and world id
@@ -129,11 +131,11 @@ def test_delete_totalmobile_jobs_completed_in_blaise_deletes_jobs_for_completed_
     assert not fake_totalmobile_service.job_exists("LMS1111-BB2.12345")
 
 
-def test_delete_totalmobile_jobs_completed_in_blaise_only_calls_case_status_information_once_per_questionnaire(
-    fake_blaise_service,
-    delete_totalmobile_jobs_service,
-    create_case_in_blaise,
-    create_job_in_totalmobile,
+def test_delete_jobs_for_completed_cases_only_calls_case_status_information_once_per_questionnaire(
+        fake_blaise_service,
+        delete_totalmobile_jobs_service,
+        create_case_in_blaise,
+        create_job_in_totalmobile,
 ):
     # arrange
     create_job_in_totalmobile("LMS1111-AA1.12345", "Region 1", visit_completed=True)
@@ -143,14 +145,14 @@ def test_delete_totalmobile_jobs_completed_in_blaise_only_calls_case_status_info
     create_case_in_blaise("LMS1111_AA1", "67890", 110)
 
     # act
-    delete_totalmobile_jobs_service.delete_totalmobile_jobs_which_are_no_longer_required()
+    delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
 
     # assert
     assert fake_blaise_service.get_cases_call_count("LMS1111_AA1") == 1
 
 
-def test_delete_totalmobile_jobs_completed_in_blaise_does_not_get_caseids_for_questionnaires_that_have_no_incomplete_jobs(
-    fake_blaise_service, delete_totalmobile_jobs_service, create_job_in_totalmobile
+def test_delete_jobs_for_completed_cases_does_not_get_caseids_for_questionnaires_that_have_no_incomplete_jobs(
+        fake_blaise_service, delete_totalmobile_jobs_service, create_job_in_totalmobile
 ):
     # arrange
     create_job_in_totalmobile("LMS1111-AA1.12345", "Region 1", visit_completed=True)
@@ -158,7 +160,55 @@ def test_delete_totalmobile_jobs_completed_in_blaise_does_not_get_caseids_for_qu
     create_job_in_totalmobile("LMS1111-AA1.67890", "Region 1", visit_completed=True)
 
     # act
-    delete_totalmobile_jobs_service.delete_totalmobile_jobs_which_are_no_longer_required()
+    delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
 
     # assert
     assert fake_blaise_service.get_cases_call_count("LMS1111_AA1") == 0
+
+
+@pytest.mark.parametrize("days", [-2, -1, 0, 1, 2])
+def test_delete_jobs_past_field_period_deletes_job_when_field_period_has_expired(
+        fake_totalmobile_service,
+        create_job_in_totalmobile,
+        delete_totalmobile_jobs_service,
+        days
+):
+    # arrange
+    due_date = date.today() + timedelta(days=int(days))
+
+    create_job_in_totalmobile(
+        job_reference="LMS1111-AA1.67890",
+        region="Region 1",
+        visit_completed=False,
+        due_date=due_date)
+
+    # act
+    delete_totalmobile_jobs_service.delete_jobs_past_field_period()
+
+    # assert
+    # TODO: assert reason
+    assert not fake_totalmobile_service.job_exists("LMS1111-AA1.67890")
+
+
+@pytest.mark.parametrize("days", [4, 5, 6])
+def test_delete_jobs_past_field_period_does_not_delete_job_when_field_period_has_not_expired(
+        fake_totalmobile_service,
+        create_job_in_totalmobile,
+        delete_totalmobile_jobs_service,
+        days
+):
+    # arrange
+    due_date = date.today() + timedelta(days=int(days))
+
+    create_job_in_totalmobile(
+        job_reference="LMS1111-AA1.67890",
+        region="Region 1",
+        visit_completed=False,
+        due_date=due_date)
+
+    # act
+    delete_totalmobile_jobs_service.delete_jobs_past_field_period()
+
+    # assert
+    # TODO: assert reason
+    assert fake_totalmobile_service.job_exists("LMS1111-AA1.67890")

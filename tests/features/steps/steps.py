@@ -2,6 +2,7 @@
 
 import base64
 import logging
+from datetime import datetime, timedelta, date
 
 from behave import given, then, when
 
@@ -215,8 +216,14 @@ def step_impl(context, reference):
 @given(
     'there is an incomplete job in Totalmobile in region {region} with reference "{reference}"'
 )
-def step_impl(context, reference, region):
+def step_impl(context, region, reference):
     context.totalmobile_service.add_job(reference, region)
+
+
+@given('job reference "{reference}" has a dueDate that ends in {days} days')
+def step_impl(context, reference, days):
+    due_date = date.today() + timedelta(days=int(days))
+    context.totalmobile_service.update_due_date(reference, "Region 1", due_date)
 
 
 @given('case "{case_id}" for questionnaire "{questionnaire}" does not exist in Blaise')
@@ -233,7 +240,15 @@ def step_impl(context):
     delete_totalmobile_service = DeleteTotalmobileJobsService(
         context.totalmobile_service, context.blaise_service
     )
-    delete_totalmobile_service.delete_totalmobile_jobs_which_are_no_longer_required()
+    delete_totalmobile_service.delete_jobs_for_completed_cases()
+
+
+@when("delete_totalmobile_jobs_past_field_period is run")
+def step_impl(context):
+    delete_totalmobile_service = DeleteTotalmobileJobsService(
+        context.totalmobile_service, context.blaise_service
+    )
+    delete_totalmobile_service.delete_jobs_past_field_period()
 
 
 @then('the Totalmobile job with reference "{reference}" is deleted')
@@ -250,6 +265,11 @@ def step_impl(context, reference):
     ), "The job should exist in Totalmobile but does not"
 
 
+@then('{reason} is provided as the reason for deleting job with reference "{reference}"')
+def step_impl(context, reason, reference):
+    assert context.totalmobile_service.deleted_with_reason(reason, reference), "The job should have been deleted with the correct reason"
+
+
 @given("the Totalmobile service errors when retrieving jobs")
 def step_impl(context):
     context.totalmobile_service.method_throws_exception("get_jobs_model")
@@ -263,9 +283,3 @@ def step_impl(context):
 @given("the Blaise service errors when retrieving cases")
 def step_impl(context):
     context.blaise_service.method_throws_exception("get_cases")
-
-
-@given('job reference "{reference}" has a dueDate that ends in 3 days time or less')
-def step_impl(context, reference):
-    raise NotImplementedError(
-        u'STEP: And job reference "LMS2209-AA1.12345" has a dueDate that ends in 3 days time or less')

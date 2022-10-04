@@ -1,6 +1,8 @@
+
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Any, Dict, List, Type, TypeVar
+from datetime import datetime
+from typing import Any, Dict, List, Type, TypeVar, Optional
 
 from app.exceptions.custom_exceptions import BadReferenceError
 from client.optimise import GetJobsResponse
@@ -14,6 +16,7 @@ class Job:
     reference: str
     case_id: str
     visit_complete: bool
+    past_field_period: bool
 
 
 class TotalmobileGetJobsResponseModel:
@@ -26,13 +29,16 @@ class TotalmobileGetJobsResponseModel:
         for job in jobs:
             visit_complete = job["visitComplete"]
             job_reference = job["identity"]["reference"]
+            due_date = job["dueDate"]["end"]
+
+            past_field_period = cls.field_period_has_expired(due_date=due_date)
 
             try:
                 reference_model = TotalmobileReferenceModel.from_reference(
                     job_reference
                 )
                 job_instance = Job(
-                    job_reference, reference_model.case_id, visit_complete
+                    job_reference, reference_model.case_id, visit_complete, past_field_period
                 )
                 questionnaire_jobs[reference_model.questionnaire_name].append(
                     job_instance
@@ -62,3 +68,13 @@ class TotalmobileGetJobsResponseModel:
                     questionnaire_jobs[questionnaire_name].append(job)
 
         return questionnaire_jobs
+
+    @staticmethod
+    def field_period_has_expired(due_date: Optional[datetime]) -> bool:
+        if due_date is None:
+            return False
+
+        days = (due_date.date() - datetime.today().date()).days
+
+        return days <= 3
+
