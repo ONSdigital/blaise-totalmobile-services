@@ -35,7 +35,7 @@ class FakeTotalmobileService:
         reference: str,
         region: str,
         visit_complete: bool = False,
-        due_date: Optional[datetime] = None,
+        due_date: Optional[str] = None,
     ) -> None:
         world_id = self.REGIONS[region]
         if self.job_exists(reference):
@@ -47,7 +47,7 @@ class FakeTotalmobileService:
             "dueDate": {"end": due_date},
         }
 
-    def update_due_date(self, reference: str, region: str, due_date: datetime) -> None:
+    def update_due_date(self, reference: str, region: str, due_date: str) -> None:
         world_id = self.REGIONS[region]
         job = self._jobs[world_id][reference]
         job["dueDate"] = {"end": due_date}

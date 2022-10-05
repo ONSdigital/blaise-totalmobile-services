@@ -141,9 +141,7 @@ def test_field_period_has_expired_returns_false_when_due_date_is_more_than_3_day
     days: int,
 ):
     # arrange
-    desired_due_date = datetime.today().date() + timedelta(days)
-    due_date = datetime.combine(desired_due_date, datetime.min.time())
-    due_date_str = format_date_as_totalmobile_formatted_string(due_date)
+    due_date_str = get_date_as_totalmobile_formatted_string(days)
 
     # act
     result = TotalmobileGetJobsResponseModel.field_period_has_expired(due_date_str)
@@ -157,9 +155,7 @@ def test_field_period_has_expired_returns_true_when_due_date_is_less_than_3_days
     days: int,
 ):
     # arrange
-    desired_due_date = datetime.today().date() + timedelta(days)
-    due_date = datetime.combine(desired_due_date, datetime.min.time())
-    due_date_str = format_date_as_totalmobile_formatted_string(due_date)
+    due_date_str = get_date_as_totalmobile_formatted_string(days)
 
     # act
     result = TotalmobileGetJobsResponseModel.field_period_has_expired(due_date_str)
@@ -170,9 +166,7 @@ def test_field_period_has_expired_returns_true_when_due_date_is_less_than_3_days
 
 def test_field_period_has_expired_returns_true_when_due_date_is_3_days_in_the_future():
     # arrange
-    desired_due_date = datetime.today().date() + timedelta(3)
-    due_date = datetime.combine(desired_due_date, datetime.min.time())
-    due_date_str = format_date_as_totalmobile_formatted_string(due_date)
+    due_date_str = get_date_as_totalmobile_formatted_string(3)
 
     # act
     result = TotalmobileGetJobsResponseModel.field_period_has_expired(due_date_str)

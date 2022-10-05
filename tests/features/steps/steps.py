@@ -8,6 +8,7 @@ from behave import given, then, when
 
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from tests.helpers import incoming_request_helper
+from tests.helpers.date_helper import get_date_as_totalmobile_formatted_string
 
 
 @given('there is a questionnaire "{questionnaire}" with case "{case_id}" in Blaise')
@@ -222,9 +223,8 @@ def step_impl(context, region, reference):
 
 @given('job reference "{reference}" has a dueDate that ends in {days} days')
 def step_impl(context, reference, days):
-    desired_due_date = datetime.today().date() + timedelta(int(days))
-    due_date = datetime.combine(desired_due_date, datetime.min.time())
-    context.totalmobile_service.update_due_date(reference, "Region 1", due_date)
+    due_date_string = get_date_as_totalmobile_formatted_string(int(days))
+    context.totalmobile_service.update_due_date(reference, "Region 1", due_date_string)
 
 
 @given('case "{case_id}" for questionnaire "{questionnaire}" does not exist in Blaise')
