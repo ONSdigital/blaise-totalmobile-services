@@ -63,23 +63,53 @@ def test_create_job_bad_request_with_json(
     )
 
 
-def test_get_jobs(requests_mock, optimise_client, mock_auth_response, mock_jobs):
+def test_get_jobs(requests_mock, optimise_client, mock_auth_response, mock_empty_jobs):
     requests_mock.post("/Test/identity/connect/token", json=mock_auth_response)
     requests_mock.get(
-        "/Test/api/optimise/worlds/test/jobs?pageSize=1000", json=mock_jobs
+        "/Test/api/optimise/worlds/test/jobs?pageSize=1000", json=mock_empty_jobs
     )
     assert optimise_client.get_jobs("test") == [{}]
 
 
+def test_get_jobs_returns_an_expected_model(
+    requests_mock, optimise_client, mock_auth_response, mock_jobs
+):
+    # arrange
+    requests_mock.post("/Test/identity/connect/token", json=mock_auth_response)
+    requests_mock.get(
+        "/Test/api/optimise/worlds/test/jobs?pageSize=1000", json=mock_jobs
+    )
+
+    # act
+    result = optimise_client.get_jobs("test")
+
+    # assert
+    assert len(result) == 2
+
+    assert result[0]["identity"]["reference"] == "LMS2208-EJ1.1"
+    assert result[0]["visitComplete"] is True
+    assert result[0]["dueDate"]["end"] is None
+
+    assert result[1]["identity"]["reference"] == "LMS2208-EJ1.10"
+    assert result[1]["visitComplete"] is False
+    assert result[1]["dueDate"]["end"] == "2023-10-03T00:00:00"
+
+
 def test_get_jobs_multi_page(
-    requests_mock, optimise_client, mock_auth_response, mock_jobs, mock_jobs_multi_page
+    requests_mock,
+    optimise_client,
+    mock_auth_response,
+    mock_empty_jobs,
+    mock_empty_jobs_multi_page,
 ):
     requests_mock.post("/Test/identity/connect/token", json=mock_auth_response)
     requests_mock.get(
-        "/Test/api/optimise/worlds/test/jobs?pageSize=1000", json=mock_jobs_multi_page
+        "/Test/api/optimise/worlds/test/jobs?pageSize=1000",
+        json=mock_empty_jobs_multi_page,
     )
     requests_mock.get(
-        "/Test/api/optimise/worlds/test/jobs?pageSize=1000&pageNo=2", json=mock_jobs
+        "/Test/api/optimise/worlds/test/jobs?pageSize=1000&pageNo=2",
+        json=mock_empty_jobs,
     )
     assert optimise_client.get_jobs("test") == [{}, {}]
 

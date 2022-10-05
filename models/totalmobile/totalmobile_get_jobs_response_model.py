@@ -30,7 +30,7 @@ class TotalmobileGetJobsResponseModel:
             job_reference = job["identity"]["reference"]
             due_date = job["dueDate"]["end"]
 
-            past_field_period = cls.field_period_has_expired(due_date=due_date)
+            past_field_period = cls.field_period_has_expired(due_date)
 
             try:
                 reference_model = TotalmobileReferenceModel.from_reference(
@@ -72,9 +72,11 @@ class TotalmobileGetJobsResponseModel:
         return questionnaire_jobs
 
     @staticmethod
-    def field_period_has_expired(due_date: Optional[datetime]) -> bool:
-        if due_date is None:
+    def field_period_has_expired(due_date_string: Optional[str]) -> bool:
+        if due_date_string is None:
             return False
+
+        due_date = datetime.strptime(due_date_string, "%Y-%m-%dT00:00:00")
 
         days = (due_date.date() - datetime.today().date()).days
 

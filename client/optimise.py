@@ -7,7 +7,7 @@ from client.base import BaseClient
 
 
 class DueDate(TypedDict):
-    end: Optional[datetime]
+    end: Optional[str]
 
 
 class Identity(TypedDict):
