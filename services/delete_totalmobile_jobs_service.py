@@ -51,6 +51,7 @@ class DeleteTotalmobileJobsService:
 
     def _delete_jobs_past_field_period(self, jobs: List[Job], world_id: str):
         for job in jobs:
+            logging.info(f"job with case ID {job.case_id} has past field period value of {job.past_field_period}")
             if job.past_field_period:
                 self._delete_job(world_id, job.reference, "past field period")
 
@@ -101,6 +102,10 @@ class DeleteTotalmobileJobsService:
     ) -> Dict[str, List[Job]]:
         try:
             jobs_model = self._totalmobile_service.get_jobs_model(world_id)
+            logging.info(
+                f"Found {jobs_model.total_number_of_incomplete_jobs()} incomplete jobs in totalmobile"
+            )
+
             return jobs_model.questionnaires_with_incomplete_jobs()
         except Exception as error:
             logging.error(

@@ -196,3 +196,38 @@ def test_field_period_has_expired_returns_false_when_due_date_not_provided():
 
     # assert
     assert result is False
+
+
+def test_total_number_of_incomplete_jobs_returns_expected_number():
+    # arrange
+
+    job_response = [
+        GetJobResponse(
+            identity=Identity(reference="LMS1111-AA1.12345"),
+            dueDate=DueDate(end=get_date_as_totalmobile_formatted_string(4)),
+            visitComplete=True,
+        ),
+        GetJobResponse(
+            identity=Identity(reference="LMS2222-BB2.22222"),
+            dueDate=DueDate(end=get_date_as_totalmobile_formatted_string(2)),
+            visitComplete=False,
+        ),
+        GetJobResponse(
+            identity=Identity(reference="LMS1111-AA1.67890"),
+            dueDate=DueDate(end=get_date_as_totalmobile_formatted_string(3)),
+            visitComplete=False,
+        ),
+        GetJobResponse(
+            identity=Identity(reference="LMS1111-AA1.45678"),
+            dueDate=DueDate(end=None),
+            visitComplete=False,
+        ),
+    ]
+
+    model = TotalmobileGetJobsResponseModel.from_get_jobs_response(job_response)
+
+    # act
+    result = model.total_number_of_incomplete_jobs()
+
+    # assert
+    assert result == 3

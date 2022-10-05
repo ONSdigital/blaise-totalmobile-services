@@ -71,6 +71,14 @@ class TotalmobileGetJobsResponseModel:
 
         return questionnaire_jobs
 
+    def total_number_of_incomplete_jobs(self) -> int:
+        total = 0
+        questionnaires_with_incomplete_jobs = self.questionnaires_with_incomplete_jobs()
+        for job_list in questionnaires_with_incomplete_jobs.values():
+            total += len(job_list)
+
+        return total
+
     @staticmethod
     def field_period_has_expired(due_date_string: Optional[str]) -> bool:
         if due_date_string is None:
