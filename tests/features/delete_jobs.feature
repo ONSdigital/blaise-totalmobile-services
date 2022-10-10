@@ -6,6 +6,7 @@ Feature: Delete jobs
     And there is an incomplete job in Totalmobile with reference "LMS2206-AA1.12345"
     When delete_totalmobile_jobs_completed_in_blaise is run
     Then the Totalmobile job with reference "LMS2206-AA1.12345" is deleted
+    And "completed in blaise" is provided as the reason for deleting job with reference "LMS2206-AA1.12345"
     And "Successfully removed job LMS2206-AA1.12345 from Totalmobile" is logged as an information message
     
     Examples: HOuts in Blaise that WILL trigger a delete request
@@ -63,6 +64,7 @@ Feature: Delete jobs
     And there is an incomplete job in Totalmobile with reference "LMS2206-AA1.12345"
     When delete_totalmobile_jobs_completed_in_blaise is run
     Then the Totalmobile job with reference "LMS2206-AA1.12345" is deleted
+    And "completed in blaise" is provided as the reason for deleting job with reference "LMS2206-AA1.12345"
     And "Successfully removed job LMS2206-AA1.12345 from Totalmobile" is logged as an information message
 
     Examples: HOuts which do not exist in Blaise that WILL trigger a delete request
@@ -77,6 +79,7 @@ Feature: Delete jobs
       And there is an incomplete job in Totalmobile in region <region> with reference "LMS2206-AA1.12345"
       When delete_totalmobile_jobs_completed_in_blaise is run
       Then the Totalmobile job with reference "LMS2206-AA1.12345" is deleted
+      And "completed in blaise" is provided as the reason for deleting job with reference "LMS2206-AA1.12345"
       And "Successfully removed job LMS2206-AA1.12345 from Totalmobile" is logged as an information message
 
       Examples:
@@ -152,3 +155,18 @@ Feature: Delete jobs
     And the Totalmobile service errors when deleting jobs
     When delete_totalmobile_jobs_completed_in_blaise is run
     Then "Unable to delete job reference 'LMS2206-AA1.12345` from Totalmobile" is logged as an error message
+
+  Scenario: Incomplete Totalmobile jobs within 3 days of due date are deleted
+    Given there is an incomplete job in Totalmobile with reference "LMS2209-AA1.12345"
+    And job reference "LMS2209-AA1.12345" has a dueDate that ends in 3 days
+    When delete_totalmobile_jobs_past_field_period is run
+    Then the Totalmobile job with reference "LMS2209-AA1.12345" is deleted
+    And "past field period" is provided as the reason for deleting job with reference "LMS2209-AA1.12345"
+
+  Scenario: Incomplete Totalmobile jobs more than 3 days of due date are not deleted
+    Given there is an incomplete job in Totalmobile with reference "LMS2209-AA1.12345"
+    And job reference "LMS2209-AA1.12345" has a dueDate that ends in 4 days
+    When delete_totalmobile_jobs_past_field_period is run
+    Then the Totalmobile job with reference "LMS2209-AA1.12345" is not deleted
+
+

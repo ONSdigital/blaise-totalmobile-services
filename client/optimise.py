@@ -1,8 +1,13 @@
-from typing import Any, Dict, List, TypedDict
+from datetime import datetime
+from typing import Any, Dict, List, Optional, TypedDict
 
 import requests
 
 from client.base import BaseClient
+
+
+class DueDate(TypedDict):
+    end: Optional[str]
 
 
 class Identity(TypedDict):
@@ -19,6 +24,7 @@ GetWorldsResponse = List[GetWorldResponse]
 
 class GetJobResponse(TypedDict):
     identity: Identity
+    dueDate: DueDate
     visitComplete: bool
 
 
