@@ -72,6 +72,3 @@ if __name__ == "__main__":
     else:
         print("Did not run 'delete_job' as 'totalmobile_url' was not pointing to 'dev'")
         exit(1)
-
-# TODO:
-# map 'Region 1' etc. for logging? - better than '1234 12134 132423' in the logs?

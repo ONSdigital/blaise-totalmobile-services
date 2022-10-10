@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import cloud_functions.create_totalmobile_jobs_processor
 import cloud_functions.create_totalmobile_jobs_trigger
 import cloud_functions.delete_totalmobile_jobs_completed_in_blaise
+import cloud_functions.delete_totalmobile_jobs_past_field_period
 from app.app import load_config, setup_app
 from appconfig import Config
 from client import OptimiseClient
@@ -74,6 +75,24 @@ def delete_totalmobile_jobs_completed_in_blaise(_event, _context) -> str:
         totalmobile_service, blaise_service
     )
     return cloud_functions.delete_totalmobile_jobs_completed_in_blaise.delete_totalmobile_jobs_completed_in_blaise(
+        delete_jobs_service
+    )
+
+
+def delete_totalmobile_jobs_past_field_period(_event, _context) -> str:
+    config = Config.from_env()
+    optimise_client = OptimiseClient(
+        config.totalmobile_url,
+        config.totalmobile_instance,
+        config.totalmobile_client_id,
+        config.totalmobile_client_secret,
+    )
+    totalmobile_service = TotalmobileService(optimise_client)
+    blaise_service = BlaiseService(config)
+    delete_jobs_service = DeleteTotalmobileJobsService(
+        totalmobile_service, blaise_service
+    )
+    return cloud_functions.delete_totalmobile_jobs_past_field_period.delete_totalmobile_jobs_past_field_period(
         delete_jobs_service
     )
 

@@ -1,6 +1,7 @@
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Any, Dict, List, Type, TypeVar
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Type, TypeVar
 
 from app.exceptions.custom_exceptions import BadReferenceError
 from client.optimise import GetJobsResponse
@@ -14,6 +15,7 @@ class Job:
     reference: str
     case_id: str
     visit_complete: bool
+    past_field_period: bool
 
 
 class TotalmobileGetJobsResponseModel:
@@ -26,13 +28,19 @@ class TotalmobileGetJobsResponseModel:
         for job in jobs:
             visit_complete = job["visitComplete"]
             job_reference = job["identity"]["reference"]
+            due_date = job["dueDate"]["end"]
+
+            past_field_period = cls.field_period_has_expired(due_date)
 
             try:
                 reference_model = TotalmobileReferenceModel.from_reference(
                     job_reference
                 )
                 job_instance = Job(
-                    job_reference, reference_model.case_id, visit_complete
+                    job_reference,
+                    reference_model.case_id,
+                    visit_complete,
+                    past_field_period,
                 )
                 questionnaire_jobs[reference_model.questionnaire_name].append(
                     job_instance
@@ -62,3 +70,22 @@ class TotalmobileGetJobsResponseModel:
                     questionnaire_jobs[questionnaire_name].append(job)
 
         return questionnaire_jobs
+
+    def total_number_of_incomplete_jobs(self) -> int:
+        total = 0
+        questionnaires_with_incomplete_jobs = self.questionnaires_with_incomplete_jobs()
+        for job_list in questionnaires_with_incomplete_jobs.values():
+            total += len(job_list)
+
+        return total
+
+    @staticmethod
+    def field_period_has_expired(due_date_string: Optional[str]) -> bool:
+        if due_date_string is None:
+            return False
+
+        due_date = datetime.strptime(due_date_string, "%Y-%m-%dT00:00:00")
+
+        days = (due_date.date() - datetime.today().date()).days
+
+        return days <= 3

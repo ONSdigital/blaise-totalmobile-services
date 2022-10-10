@@ -2,11 +2,13 @@
 
 import base64
 import logging
+from datetime import date, datetime, timedelta
 
 from behave import given, then, when
 
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from tests.helpers import incoming_request_helper
+from tests.helpers.date_helper import get_date_as_totalmobile_formatted_string
 
 
 @given('there is a questionnaire "{questionnaire}" with case "{case_id}" in Blaise')
@@ -215,8 +217,14 @@ def step_impl(context, reference):
 @given(
     'there is an incomplete job in Totalmobile in region {region} with reference "{reference}"'
 )
-def step_impl(context, reference, region):
+def step_impl(context, region, reference):
     context.totalmobile_service.add_job(reference, region)
+
+
+@given('job reference "{reference}" has a dueDate that ends in {days} days')
+def step_impl(context, reference, days):
+    due_date_string = get_date_as_totalmobile_formatted_string(int(days))
+    context.totalmobile_service.update_due_date(reference, "Region 1", due_date_string)
 
 
 @given('case "{case_id}" for questionnaire "{questionnaire}" does not exist in Blaise')
@@ -233,7 +241,15 @@ def step_impl(context):
     delete_totalmobile_service = DeleteTotalmobileJobsService(
         context.totalmobile_service, context.blaise_service
     )
-    delete_totalmobile_service.delete_totalmobile_jobs_which_are_no_longer_required()
+    delete_totalmobile_service.delete_jobs_for_completed_cases()
+
+
+@when("delete_totalmobile_jobs_past_field_period is run")
+def step_impl(context):
+    delete_totalmobile_service = DeleteTotalmobileJobsService(
+        context.totalmobile_service, context.blaise_service
+    )
+    delete_totalmobile_service.delete_jobs_past_field_period()
 
 
 @then('the Totalmobile job with reference "{reference}" is deleted')
@@ -248,6 +264,15 @@ def step_impl(context, reference):
     assert context.totalmobile_service.job_exists(
         reference
     ), "The job should exist in Totalmobile but does not"
+
+
+@then(
+    '"{reason}" is provided as the reason for deleting job with reference "{reference}"'
+)
+def step_impl(context, reason, reference):
+    assert context.totalmobile_service.deleted_with_reason(
+        reference, reason
+    ), "The job should have been deleted with the correct reason"
 
 
 @given("the Totalmobile service errors when retrieving jobs")

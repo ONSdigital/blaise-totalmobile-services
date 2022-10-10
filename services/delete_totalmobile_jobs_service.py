@@ -16,20 +16,25 @@ class DeleteTotalmobileJobsService:
     ):
         self._totalmobile_service = totalmobile_service
         self._blaise_service = blaise_service
-        self._delete_reason = "completed in blaise"
 
-    def delete_totalmobile_jobs_which_are_no_longer_required(self) -> None:
+    def delete_jobs_for_completed_cases(self) -> None:
         world_ids = self._get_world_ids()
         for world_id in world_ids:
             for (
                 questionnaire_name,
                 jobs,
-            ) in self._get_questionnaires_which_have_incomplete_jobs_in_totalmobile(
-                world_id
-            ).items():
-                self._delete_jobs_for_questionnaire(questionnaire_name, jobs, world_id)
+            ) in self._get_incomplete_jobs_from_totalmobile(world_id).items():
+                self._delete_jobs_for_completed_cases_by_questionnaire(
+                    questionnaire_name, jobs, world_id
+                )
 
-    def _delete_jobs_for_questionnaire(
+    def delete_jobs_past_field_period(self) -> None:
+        world_ids = self._get_world_ids()
+        for world_id in world_ids:
+            for jobs in self._get_incomplete_jobs_from_totalmobile(world_id).values():
+                self._delete_jobs_past_field_period(jobs, world_id)
+
+    def _delete_jobs_for_completed_cases_by_questionnaire(
         self, questionnaire_name: str, jobs: List[Job], world_id: str
     ):
         blaise_case_outcomes = self._get_blaise_case_outcomes_for_questionnaire(
@@ -43,6 +48,14 @@ class DeleteTotalmobileJobsService:
             self._delete_job_if_no_longer_required(
                 job, questionnaire_name, world_id, blaise_case_outcomes
             )
+
+    def _delete_jobs_past_field_period(self, jobs: List[Job], world_id: str):
+        for job in jobs:
+            logging.info(
+                f"job with case ID {job.case_id} has past field period value of {job.past_field_period}"
+            )
+            if job.past_field_period:
+                self._delete_job(world_id, job.reference, "past field period")
 
     def _delete_job_if_no_longer_required(
         self,
@@ -66,7 +79,7 @@ class DeleteTotalmobileJobsService:
         if job.visit_complete or blaise_cases_to_remain:
             return
 
-        self._delete_job(world_id, job.reference)
+        self._delete_job(world_id, job.reference, "completed in blaise")
 
     def _get_blaise_case_outcomes_for_questionnaire(
         self, questionnaire_name: str
@@ -86,11 +99,15 @@ class DeleteTotalmobileJobsService:
         world_model = self._totalmobile_service.get_world_model()
         return world_model.get_available_ids()
 
-    def _get_questionnaires_which_have_incomplete_jobs_in_totalmobile(
+    def _get_incomplete_jobs_from_totalmobile(
         self, world_id: str
     ) -> Dict[str, List[Job]]:
         try:
             jobs_model = self._totalmobile_service.get_jobs_model(world_id)
+            logging.info(
+                f"Found {jobs_model.total_number_of_incomplete_jobs()} incomplete jobs in totalmobile for world {world_id}"
+            )
+
             return jobs_model.questionnaires_with_incomplete_jobs()
         except Exception as error:
             logging.error(
@@ -99,11 +116,9 @@ class DeleteTotalmobileJobsService:
             )
             return {}
 
-    def _delete_job(self, world_id: str, job_reference: str):
+    def _delete_job(self, world_id: str, job_reference: str, reason: str):
         try:
-            self._totalmobile_service.delete_job(
-                world_id, job_reference, self._delete_reason
-            )
+            self._totalmobile_service.delete_job(world_id, job_reference, reason)
             logging.info(f"Successfully removed job {job_reference} from Totalmobile")
         except Exception as error:
             logging.error(
