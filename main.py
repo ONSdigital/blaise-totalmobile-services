@@ -108,4 +108,4 @@ load_config(app)
 if __name__ == "__main__":
     setup_logger()
     print("Running Flask application")
-    app.run(host="0.0.0.0", port=5011)
+    app.run_tasks(host="0.0.0.0", port=5011)
