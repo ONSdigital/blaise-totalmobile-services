@@ -29,7 +29,7 @@ class FakeBlaiseService:
     def add_questionnaire(self, questionnaire_name: str) -> None:
         self._questionnaires[questionnaire_name] = {}
 
-    def add_case_to_questionnaire(self, questionnaire: str, case_id: str) -> None:
+    def add_case_to_questionnaire(self, questionnaire: str, case_id: str, outcome_code: str = None) -> None:
         self._assert_questionnaire_exists(questionnaire)
         self._questionnaires[questionnaire][case_id] = BlaiseCaseInformationModel(
             questionnaire_name=questionnaire,
@@ -52,7 +52,7 @@ class FakeBlaiseService:
                 telephone_number_2=None,
                 appointment_telephone_number=None,
             ),
-            outcome_code=0,
+            outcome_code=0 if not outcome_code else outcome_code,
             priority=None,
             field_case=None,
             field_region=None,
