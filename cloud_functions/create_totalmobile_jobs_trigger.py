@@ -1,12 +1,12 @@
-import asyncio
 import logging
-from typing import List, Tuple
+from typing import List
 
 from appconfig import Config
-from cloud_functions.functions import prepare_tasks, run
 from cloud_functions.logging import setup_logger
+from cloud_functions.task_provider import TaskProvider
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from models.blaise.questionnaire_uac_model import QuestionnaireUacModel
+from models.cloud_tasks.task_request_model import TaskRequestModel
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     TotalMobileOutgoingCreateJobPayloadModel,
@@ -46,14 +46,6 @@ def map_totalmobile_job_models(
     return job_models
 
 
-def run_async_tasks(tasks: List[Tuple[str, bytes]], queue_id: str, cloud_function: str):
-    task_requests = prepare_tasks(
-        tasks=tasks, queue_id=queue_id, cloud_function_name=cloud_function
-    )
-
-    asyncio.run(run(task_requests))
-
-
 def validate_questionnaire_is_in_wave_1(
     questionnaire_name: str,
     questionnaire_service: QuestionnaireService,
@@ -72,17 +64,18 @@ def create_cloud_tasks_for_jobs(
     questionnaire_name: str,
     config: Config,
     totalmobile_job_models: List[TotalmobileCreateJobModel],
+    task_provider: TaskProvider
 ) -> str:
-    tasks = [
-        (job_model.create_task_name(), job_model.json().encode())
+    task_request_models = [
+        TaskRequestModel(task_name=job_model.create_task_name(), task_body=job_model.json().encode())
         for job_model in totalmobile_job_models
     ]
     logging.info(
-        f"Creating {len(tasks)} cloud tasks for questionnaire {questionnaire_name}"
+        f"Creating {len(task_request_models)} task request models for questionnaire {questionnaire_name}"
     )
 
-    run_async_tasks(
-        tasks=tasks,
+    task_provider.create_and_run_tasks(
+        task_request_models=task_request_models,
         queue_id=config.create_totalmobile_jobs_task_queue_id,
         cloud_function="bts-create-totalmobile-jobs-processor",
     )
@@ -99,6 +92,7 @@ def create_totalmobile_jobs_for_eligible_questionnaire_cases(
     world_model: TotalmobileWorldModel,
     questionnaire_service: QuestionnaireService,
     uac_service: UacService,
+    task_provider: TaskProvider
 ) -> str:
 
     eligible_cases = questionnaire_service.get_eligible_cases(questionnaire_name)
@@ -128,6 +122,7 @@ def create_totalmobile_jobs_for_eligible_questionnaire_cases(
         questionnaire_name=questionnaire_name,
         config=config,
         totalmobile_job_models=totalmobile_job_models,
+        task_provider=task_provider
     )
 
 
@@ -136,6 +131,7 @@ def create_totalmobile_jobs_trigger(
     totalmobile_service: TotalmobileService,
     questionnaire_service: QuestionnaireService,
     uac_service: UacService,
+    task_provider: TaskProvider
 ) -> str:
     logging.info("Checking for questionnaire release dates")
 
@@ -163,6 +159,7 @@ def create_totalmobile_jobs_trigger(
             world_model=world_model,
             questionnaire_service=questionnaire_service,
             uac_service=uac_service,
+            task_provider=task_provider
         )
 
     return "Done"
