@@ -16,8 +16,18 @@ def step_impl(context, questionnaire, case_id):
     context.blaise_service.add_questionnaire(questionnaire)
     context.questionnaire_name = questionnaire
 
-    context.blaise_service.add_case_to_questionnaire(questionnaire, case_id)
+    if not context.table:
+        context.blaise_service.add_case_to_questionnaire(questionnaire, case_id)
+    else:
+        data_fields = {row["field_name"]: row["value"] for row in context.table}
+        outcome_code = data_fields["outcome_code"]
+        context.blaise_service.add_case_to_questionnaire(questionnaire, case_id, outcome_code)
     context.case_id = case_id
+
+
+@given('there is a questionnaire "{questionnaire}" in Blaise')
+def step_impl(context, questionnaire):
+    context.blaise_service.add_questionnaire(questionnaire)
 
 
 @given("the case has an outcome code of {outcome_code}")
@@ -45,11 +55,6 @@ def step_impl(context):
 def step_impl(context, questionnaire):
     # State is reset before every scenario - leaving test empty to ensure no questionnaires are added
     pass
-
-
-@given('there is a questionnaire "{questionnaire}" in Blaise')
-def step_impl(context, questionnaire):
-    context.blaise_service.add_questionnaire(questionnaire)
 
 
 @given('there is no case "{case_id}" for questionnaire "{questionnaire}" in Blaise')
@@ -288,3 +293,20 @@ def step_impl(context):
 @given("the Blaise service errors when retrieving cases")
 def step_impl(context):
     context.blaise_service.method_throws_exception("get_cases")
+
+
+#
+#
+# @when("create_totalmobile_jobs_trigger is run")
+# def step_impl(context):
+#     create_totalmobile_jobs_trigger()
+#
+#
+# @then("Then case <case_id> for questionnaire {questionnaire_name} is sent to Totalmobile with reference {tm_job_ref}")
+# def step_impl(context):
+#     pass
+#
+#
+# @then("Then case {case_id} for questionnaire {questionnaire_name} is not sent to Totalmobile")
+# def step_impl(context):
+#     pass
