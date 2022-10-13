@@ -1,7 +1,6 @@
 import json
 import logging
 from typing import Dict
-from unittest import mock
 from unittest.mock import create_autospec
 
 from client.bus import Uac
@@ -10,6 +9,7 @@ from cloud_functions.create_totalmobile_jobs_trigger import (
     create_totalmobile_jobs_trigger,
     map_totalmobile_job_models,
 )
+from cloud_functions.task_provider import TaskProvider
 from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
 from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     TotalMobileOutgoingCreateJobPayloadModel,
@@ -30,6 +30,7 @@ def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_
     total_mobile_service_mock = create_autospec(TotalmobileService)
     questionnaire_service_mock = create_autospec(QuestionnaireService)
     uac_service_mock = create_autospec(UacService)
+    task_provider_mock = create_autospec(TaskProvider)
 
     questionnaire_service_mock.get_questionnaires_with_totalmobile_release_date_of_today.return_value = (
         []
@@ -38,7 +39,11 @@ def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_
     questionnaire_service_mock.get_cases.return_value = []
     # act
     result = create_totalmobile_jobs_trigger(
-        config, total_mobile_service_mock, questionnaire_service_mock, uac_service_mock
+        config,
+        total_mobile_service_mock,
+        questionnaire_service_mock,
+        uac_service_mock,
+        task_provider_mock
     )
 
     # assert
@@ -139,10 +144,7 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models():
     assert result[2].payload["description"].startswith("UAC: \nDue Date")
 
 
-@mock.patch("cloud_functions.create_totalmobile_jobs_trigger.run_async_tasks")
-def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
-    mock_run_async_tasks,
-):
+def test_create_totalmobile_jobs_for_eligible_questionnaire_cases():
     # arrange
     config = config_helper.get_default_config()
     questionnaire_service_mock = create_autospec(QuestionnaireService)
@@ -150,6 +152,7 @@ def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
     totalmobile_world_model = TotalmobileWorldModel(
         worlds=[World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6")]
     )
+    task_provider_mock = create_autospec(TaskProvider)
 
     questionnaire_name = "LMS2101_AA1"
     questionnaire_cases = [
@@ -196,20 +199,21 @@ def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
         totalmobile_world_model,
         questionnaire_service_mock,
         uac_service_mock,
+        task_provider_mock
     )
 
     # assert
     questionnaire_service_mock.get_eligible_cases.assert_called_with("LMS2101_AA1")
 
-    mock_run_async_tasks.assert_called_once()
-    kwargs = mock_run_async_tasks.call_args.kwargs
+    task_provider_mock.create_and_run_tasks.assert_called_once()
+    kwargs = task_provider_mock.create_and_run_tasks.call_args.kwargs
     assert kwargs["cloud_function"] == "bts-create-totalmobile-jobs-processor"
     assert kwargs["queue_id"] == config.create_totalmobile_jobs_task_queue_id
-    assert len(kwargs["tasks"]) == 1
-    task = kwargs["tasks"][0]
-    assert task[0][0:3] == "LMS"
-    print(json.loads(task[1]))
-    assert json.loads(task[1]) == {
+    assert len(kwargs["task_request_models"]) == 1
+    task_request_model = kwargs["task_request_models"][0]
+    assert task_request_model.task_name.startswith("LMS")
+    print(json.loads(task_request_model.task_body))
+    assert json.loads(task_request_model.task_body) == {
         "questionnaire": "LMS2101_AA1",
         "world_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "case_id": "10010",
@@ -222,14 +226,14 @@ def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
     assert result == "Done"
 
 
-@mock.patch("cloud_functions.create_totalmobile_jobs_trigger.run_async_tasks")
-def test_create_cloud_tasks_when_no_eligible_cases(mock_run_async_tasks):
+def test_create_cloud_tasks_when_no_eligible_cases():
     # arrange
     config = config_helper.get_default_config()
     questionnaire_name = "LMS2101_AA1"
     total_mobile_service_mock = create_autospec(TotalmobileService)
     questionnaire_service_mock = create_autospec(QuestionnaireService)
     uac_service_mock = create_autospec(UacService)
+    task_provider_mock = create_autospec(TaskProvider)
 
     questionnaire_service_mock.get_wave_from_questionnaire_name.return_value = "1"
     questionnaire_service_mock.get_cases.return_value = []
@@ -241,10 +245,11 @@ def test_create_cloud_tasks_when_no_eligible_cases(mock_run_async_tasks):
         total_mobile_service_mock,
         questionnaire_service_mock,
         uac_service_mock,
+        task_provider_mock
     )
 
     # assert
-    mock_run_async_tasks.assert_not_called()
+    task_provider_mock.create_and_run_tasks.assert_not_called()
     assert (
         result == "Exiting as no eligible cases to send for questionnaire LMS2101_AA1"
     )

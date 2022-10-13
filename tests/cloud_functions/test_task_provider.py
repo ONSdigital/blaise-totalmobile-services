@@ -1,37 +1,35 @@
-from unittest import mock
 from unittest.mock import Mock
 
+import pytest
 from google.cloud import tasks_v2
 
 from appconfig import Config
-from cloud_functions.functions import create_tasks, prepare_tasks
+from cloud_functions.task_provider import TaskProvider
+from models.cloud_tasks.task_request_model import TaskRequestModel
+from tests.helpers import config_helper
 
 
-@mock.patch.object(Config, "from_env")
-def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(
-    mock_config_from_env,
-):
-    # arrange
-    mock_config_from_env.return_value = Config(
-        "totalmobile_url",
-        "totalmobile_instance",
-        "totalmobile_client_id",
-        "totalmobile_client_secret",
-        "create_totalmobile_jobs_task_queue_id",
-        "gcloud_project",
-        "region",
-        "rest_api_url",
-        "blaise_server_park",
-        "cloud_function_sa",
-        "bus_api_url",
-        "bus_client_id",
+@pytest.fixture()
+def config() -> Config:
+    return config_helper.get_default_config()
+
+
+@pytest.fixture()
+def service(config) -> TaskProvider:
+    return TaskProvider(
+        config=config,
     )
 
-    tasks = [("task1", b"task1body"), ("task2", b"task2body")]
+
+def test_create_task_requests_returns_expected_task_requests_when_given_a_list_of_task_request_models(
+    service: TaskProvider
+):
+    # arrange
+    task_request_models = [TaskRequestModel("task1", b"task1body"), TaskRequestModel("task2", b"task2body")]
 
     # act
-    result = prepare_tasks(
-        tasks=tasks,
+    result = service.create_task_requests(
+        task_request_models=task_request_models,
         queue_id="create_totalmobile_jobs_task_queue_id",
         cloud_function_name="cloud_function",
     )
@@ -62,7 +60,9 @@ def test_prepare_tasks_returns_expected_tasks_when_given_a_list_of_job_models(
     )
 
 
-def test_create_tasks_gets_called_once_for_each_task_given_to_it():
+def test_create_tasks_gets_called_once_for_each_task_given_to_it(
+        service: TaskProvider
+):
     # arrange
     task_requests = [
         tasks_v2.CreateTaskRequest(parent="qid1", task=tasks_v2.Task()),
@@ -72,7 +72,7 @@ def test_create_tasks_gets_called_once_for_each_task_given_to_it():
     task_client.create_task.side_effect = lambda task: f"created {task.parent}"
 
     # act
-    tasks = create_tasks(task_requests, task_client)
+    tasks = service.create_tasks(task_requests, task_client)
 
     # # assert
     assert tasks == ["created qid1", "created qid2"]

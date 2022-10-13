@@ -14,13 +14,13 @@ class TaskProvider:
         self.config = config
 
     def create_and_run_tasks(self, task_request_models: List[TaskRequestModel], queue_id: str, cloud_function: str):
-        task_requests = self._create_task_requests(
+        task_requests = self.create_task_requests(
             task_request_models=task_request_models, queue_id=queue_id, cloud_function_name=cloud_function
         )
 
         asyncio.run(self._run_tasks(task_requests))
 
-    def _create_task_requests(self, task_request_models: List[TaskRequestModel], queue_id, cloud_function_name
+    def create_task_requests(self, task_request_models: List[TaskRequestModel], queue_id, cloud_function_name
                               ) -> List[tasks_v2.CreateTaskRequest]:
         duration = Duration()
         duration.FromTimedelta(timedelta(minutes=30))
@@ -47,10 +47,10 @@ class TaskProvider:
         return task_requests
 
     @staticmethod
-    def _create_tasks(task_requests: List[tasks_v2.CreateTaskRequest], task_client
-                      ) -> List[Coroutine[Any, Any, tasks_v2.Task]]:
+    def create_tasks(task_requests: List[tasks_v2.CreateTaskRequest], task_client
+                     ) -> List[Coroutine[Any, Any, tasks_v2.Task]]:
         return [task_client.create_task(request) for request in task_requests]
 
     async def _run_tasks(self, task_requests: List[tasks_v2.CreateTaskRequest]) -> None:
         task_client = tasks_v2.CloudTasksAsyncClient()
-        await asyncio.gather(*self._create_tasks(task_requests, task_client))
+        await asyncio.gather(*self.create_tasks(task_requests, task_client))
