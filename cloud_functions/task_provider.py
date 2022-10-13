@@ -13,7 +13,7 @@ class TaskProvider:
     def __init__(self, config: Config):
         self.config = config
 
-    def create_and_run_tasks(self, task_request_models: List[TaskRequestModel], queue_id: str, cloud_function: str):
+    def create_and_run_tasks(self, task_request_models: List[TaskRequestModel], queue_id: str, cloud_function: str) -> None:
         task_requests = self.create_task_requests(
             task_request_models=task_request_models, queue_id=queue_id, cloud_function_name=cloud_function
         )
