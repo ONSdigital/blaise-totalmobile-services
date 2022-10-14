@@ -6,6 +6,7 @@ from datetime import date, datetime, timedelta
 
 from behave import given, then, when
 
+from main import create_totalmobile_jobs_trigger
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from tests.helpers import incoming_request_helper
 from tests.helpers.date_helper import get_date_as_totalmobile_formatted_string
@@ -295,18 +296,38 @@ def step_impl(context):
     context.blaise_service.method_throws_exception("get_cases")
 
 
-#
-#
-# @when("create_totalmobile_jobs_trigger is run")
-# def step_impl(context):
-#     create_totalmobile_jobs_trigger()
-#
-#
-# @then("Then case <case_id> for questionnaire {questionnaire_name} is sent to Totalmobile with reference {tm_job_ref}")
-# def step_impl(context):
-#     pass
-#
-#
-# @then("Then case {case_id} for questionnaire {questionnaire_name} is not sent to Totalmobile")
-# def step_impl(context):
-#     pass
+@given('case <case_id> for <questionnaire_name> has the following data')
+def step_impl(context, case_id, questionnaire_name):
+    context.blaise_service.add_questionnaire(questionnaire_name)
+    context.questionnaire_name = questionnaire_name
+
+    if not context.table:
+        context.blaise_service.add_case_to_questionnaire(questionnaire_name, case_id)
+    else:
+        data_fields = {row["field_name"]: row["value"] for row in context.table}
+        outcome_code = data_fields["outcome_code"]
+        wave = data_fields["wave"]
+        field_case = data_fields["fieldcase"]
+        telno1 = data_fields["telno1"]
+        telno2 = data_fields["telno2"]
+        context.blaise_service.add_case_to_questionnaire(
+            questionnaire_name,
+            case_id,
+            outcome_code,
+            wave,
+            field_case,
+            telno1,
+            telno2,
+        )
+        context.blaise_service.add_case_to_questionnaire(questionnaire_name, case_id, outcome_code)
+    context.case_id = case_id
+
+
+@when("create_totalmobile_jobs_trigger is run")
+def step_impl(context):
+    context.create_totalmobile_jobs_trigger()
+
+
+@then("Then case <case_id> for questionnaire {questionnaire_name} is sent to Totalmobile with reference {tm_job_ref}")
+def step_impl(context):
+    pass
