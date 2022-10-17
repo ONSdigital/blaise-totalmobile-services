@@ -9,13 +9,14 @@ from appconfig import Config
 from models.cloud_tasks.task_request_model import TaskRequestModel
 
 
-class TaskProvider:
-    def __init__(self, config: Config):
+class CloudTaskService:
+    def __init__(self, config: Config, task_queue_id: str):
         self.config = config
+        self.task_queue_id = task_queue_id
 
-    def create_and_run_tasks(self, task_request_models: List[TaskRequestModel], queue_id: str, cloud_function: str) -> None:
+    def create_and_run_tasks(self, task_request_models: List[TaskRequestModel], cloud_function: str) -> None:
         task_requests = self.create_task_requests(
-            task_request_models=task_request_models, queue_id=queue_id, cloud_function_name=cloud_function
+            task_request_models=task_request_models, queue_id=self.task_queue_id, cloud_function_name=cloud_function
         )
 
         asyncio.run(self._run_tasks(task_requests))

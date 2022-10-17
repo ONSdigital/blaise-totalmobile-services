@@ -1,5 +1,4 @@
 from collections import defaultdict
-from datetime import datetime
 from typing import Optional
 
 from models.totalmobile.totalmobile_get_jobs_response_model import (

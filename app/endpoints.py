@@ -15,6 +15,7 @@ from app.handlers.totalmobile_incoming_handler import (
     submit_form_result_request_handler,
     update_visit_status_request_handler,
 )
+from services.datastore_service import DatastoreService
 from services.eligible_case_service import EligibleCaseService
 from services.questionnaire_service import QuestionnaireService
 from services.update_case_service import UpdateCaseService
@@ -39,9 +40,9 @@ def submit_form_result_request():
     logging.info(f"Incoming request via the 'submitformresultrequest' endpoint")
     try:
         questionnaire_service = QuestionnaireService(
-            current_app.app_config,
             blaise_service=current_app.blaise_service,
             eligible_case_service=EligibleCaseService(),
+            datastore_service=DatastoreService()
         )
         update_case_service = UpdateCaseService(questionnaire_service)
         submit_form_result_request_handler(request, update_case_service)

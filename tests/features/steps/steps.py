@@ -2,11 +2,11 @@
 
 import base64
 import logging
-from datetime import date, datetime, timedelta
 
 from behave import given, then, when
 
-from main import create_totalmobile_jobs_trigger
+from cloud_functions import create_totalmobile_jobs_trigger
+from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from tests.helpers import incoming_request_helper
 from tests.helpers.date_helper import get_date_as_totalmobile_formatted_string
@@ -296,38 +296,38 @@ def step_impl(context):
     context.blaise_service.method_throws_exception("get_cases")
 
 
-@given('case <case_id> for <questionnaire_name> has the following data')
+@given("case {case_id} for {questionnaire_name} has the following data")
 def step_impl(context, case_id, questionnaire_name):
     context.blaise_service.add_questionnaire(questionnaire_name)
     context.questionnaire_name = questionnaire_name
 
-    if not context.table:
-        context.blaise_service.add_case_to_questionnaire(questionnaire_name, case_id)
-    else:
-        data_fields = {row["field_name"]: row["value"] for row in context.table}
-        outcome_code = data_fields["outcome_code"]
-        wave = data_fields["wave"]
-        field_case = data_fields["fieldcase"]
-        telno1 = data_fields["telno1"]
-        telno2 = data_fields["telno2"]
-        context.blaise_service.add_case_to_questionnaire(
-            questionnaire_name,
-            case_id,
-            outcome_code,
-            wave,
-            field_case,
-            telno1,
-            telno2,
-        )
-        context.blaise_service.add_case_to_questionnaire(questionnaire_name, case_id, outcome_code)
+    data_fields: dict = {row["field_name"]: row["value"] for row in context.table}
+    outcome_code = data_fields["outcome_code"]
+    context.blaise_service.add_case_to_questionnaire(
+        questionnaire=questionnaire_name,
+        case_id=case_id,
+        outcome_code=outcome_code,
+        wave=data_fields["qDataBag.Wave"],
+        field_case=data_fields["qDataBag.FieldCase"],
+        telephone_number_1=data_fields["qDataBag.TelNo"],
+        telephone_number_2=data_fields["qDataBag.TelNo2"],
+    )
+    context.blaise_service.add_case_to_questionnaire(questionnaire_name, case_id, outcome_code)
     context.case_id = case_id
 
 
-@when("create_totalmobile_jobs_trigger is run")
+@when("create_totalmobile_jobs is run")
 def step_impl(context):
-    context.create_totalmobile_jobs_trigger()
+    create_totalmobile_jobs_service = CreateTotalmobileJobsService(
+        totalmobile_service=context.totalmobile_service,
+        questionnaire_service=context.questionnaire_service,
+        uac_service=context.uac_service,
+        cloud_task_service=context.cloud_task_service
+    )
+
+    return create_totalmobile_jobs_service.create_totalmobile_jobs()
 
 
-@then("Then case <case_id> for questionnaire {questionnaire_name} is sent to Totalmobile with reference {tm_job_ref}")
-def step_impl(context):
+@then("case {case_id} for questionnaire {questionnaire_name} is sent to Totalmobile with reference {tm_job_ref}")
+def step_impl(context, case_id: str, questionnaire_name: str, tm_job_ref:str):
     pass

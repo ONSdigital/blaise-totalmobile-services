@@ -4,7 +4,7 @@ import pytest
 from google.cloud import tasks_v2
 
 from appconfig import Config
-from cloud_functions.task_provider import TaskProvider
+from services.cloud_task_service import CloudTaskService
 from models.cloud_tasks.task_request_model import TaskRequestModel
 from tests.helpers import config_helper
 
@@ -15,14 +15,15 @@ def config() -> Config:
 
 
 @pytest.fixture()
-def service(config) -> TaskProvider:
-    return TaskProvider(
+def service(config) -> CloudTaskService:
+    return CloudTaskService(
         config=config,
+        task_queue_id="create_totalmobile_jobs_task_queue_id"
     )
 
 
 def test_create_task_requests_returns_expected_task_requests_when_given_a_list_of_task_request_models(
-    service: TaskProvider
+    service: CloudTaskService
 ):
     # arrange
     task_request_models = [TaskRequestModel("task1", b"task1body"), TaskRequestModel("task2", b"task2body")]
@@ -61,7 +62,7 @@ def test_create_task_requests_returns_expected_task_requests_when_given_a_list_o
 
 
 def test_create_tasks_gets_called_once_for_each_task_given_to_it(
-        service: TaskProvider
+        service: CloudTaskService
 ):
     # arrange
     task_requests = [

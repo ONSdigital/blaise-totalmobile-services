@@ -2,13 +2,13 @@ Feature: Filter wave 1 cases
 
   Scenario Outline: Eligible LMS cases are sent to Totalmobile
     Given case <case_id> for <questionnaire_name> has the following data
-      | field              | value          |
+      | field_name         | value          |
       | outcome_code       | <outcome_code> |
       | qDataBag.Wave      | <wave>         |
       | qDataBag.FieldCase | <fieldcase>    |
       | qDataBag.TelNo     | <telno1>       |
       | qDataBag.TelNo2    | <telno2>       |
-    When create_totalmobile_jobs_trigger is run
+    When create_totalmobile_jobs is run
     Then case <case_id> for questionnaire <questionnaire_name> is sent to Totalmobile with reference <tm_job_ref>
     Examples:
       | case_id | questionnaire_name | tm_job_ref        | outcome_code | wave | fieldcase | telno1 | telno2 |

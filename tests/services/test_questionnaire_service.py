@@ -1,14 +1,11 @@
 import logging
 from datetime import datetime
-from unittest import mock
 from unittest.mock import Mock
 
 import pytest
 
-from appconfig import Config
-from services.datastore_service import DatastoreService
 from services.questionnaire_service import QuestionnaireService
-from tests.helpers import config_helper, get_blaise_case_model_helper
+from tests.helpers import get_blaise_case_model_helper
 from tests.helpers.datastore_helper import DatastoreHelper
 
 
@@ -23,24 +20,23 @@ def mock_eligible_case_service():
 
 
 @pytest.fixture()
-def config() -> Config:
-    return config_helper.get_default_config()
+def mock_datastore_service():
+    return Mock()
 
 
 @pytest.fixture()
 def service(
-    config, mock_blaise_service, mock_eligible_case_service
+    mock_blaise_service, mock_eligible_case_service, mock_datastore_service
 ) -> QuestionnaireService:
     return QuestionnaireService(
-        config,
         blaise_service=mock_blaise_service,
         eligible_case_service=mock_eligible_case_service,
+        datastore_service=mock_datastore_service
     )
 
 
-@mock.patch.object(QuestionnaireService, "get_cases")
 def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
-    mock_get_cases,
+    mock_blaise_service,
     mock_eligible_case_service,
     service: QuestionnaireService,
 ):
@@ -51,7 +47,7 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
 
     eligible_cases = [questionnaire_cases[0]]
 
-    mock_get_cases.return_value = questionnaire_cases
+    mock_blaise_service.get_cases.return_value = questionnaire_cases
     mock_eligible_case_service.get_eligible_cases.return_value = eligible_cases
 
     questionnaire_name = "LMS2101_AA1"
@@ -60,15 +56,14 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
     service.get_eligible_cases(questionnaire_name)
 
     # assert
-    mock_get_cases.assert_called_with(questionnaire_name)
+    mock_blaise_service.get_cases.assert_called_with(questionnaire_name)
     mock_eligible_case_service.get_eligible_cases.assert_called_with(
         questionnaire_cases
     )
 
 
-@mock.patch.object(QuestionnaireService, "get_cases")
 def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible_case_service(
-    mock_get_cases,
+    mock_blaise_service,
     mock_eligible_case_service,
     service: QuestionnaireService,
 ):
@@ -79,7 +74,7 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
 
     eligible_cases = [questionnaire_cases[0]]
 
-    mock_get_cases.return_value = questionnaire_cases
+    mock_blaise_service.get_cases.return_value = questionnaire_cases
     mock_eligible_case_service.get_eligible_cases.return_value = eligible_cases
 
     questionnaire_name = "LMS2101_AA1"
@@ -164,7 +159,6 @@ def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error(
 def test_questionnaire_exists_calls_the_blaise_service_with_the_correct_parameters(
     mock_blaise_service,
     service: QuestionnaireService,
-    config,
 ):
     questionnaire_name = "LMS2101_AA1"
 
@@ -197,7 +191,6 @@ def test_questionnaire_exists_returns_correct_response(
 def test_update_case_calls_the_blaise_service_with_the_correct_parameters(
     mock_blaise_service,
     service: QuestionnaireService,
-    config,
 ):
     questionnaire_name = "LMS2101_AA1"
     case_id = "900001"
@@ -274,7 +267,6 @@ def test_update_case_does_not_log_personal_identifiable_information(
     )
 
 
-@mock.patch.object(DatastoreService, "get_totalmobile_release_date_records")
 def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_questionnaires_with_todays_date(
     mock_datastore_service,
     service: QuestionnaireService,
@@ -288,7 +280,7 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_
             2, "LMS2000Z", datetime(2021, 12, 31)
         ),
     ]
-    mock_datastore_service.return_value = mock_datastore_entity_list
+    mock_datastore_service.get_totalmobile_release_date_records.return_value = mock_datastore_entity_list
 
     # act
     result = service.get_questionnaires_with_totalmobile_release_date_of_today()
@@ -297,7 +289,6 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_
     assert result == ["LMS2111Z"]
 
 
-@mock.patch.object(DatastoreService, "get_totalmobile_release_date_records")
 def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_empty_list_when_there_are_no_release_dates_for_today(
     mock_datastore_service,
     service: QuestionnaireService,
@@ -312,7 +303,7 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_em
         ),
     ]
 
-    mock_datastore_service.return_value = mock_datastore_entity_list
+    mock_datastore_service.get_totalmobile_release_date_records.return_value = mock_datastore_entity_list
 
     # act
     result = service.get_questionnaires_with_totalmobile_release_date_of_today()
@@ -321,13 +312,12 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_em
     assert result == []
 
 
-@mock.patch.object(DatastoreService, "get_totalmobile_release_date_records")
 def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_empty_list_when_there_are_no_records_in_datastore(
     mock_datastore_service,
     service: QuestionnaireService,
 ):
     # arrange
-    mock_datastore_service.return_value = []
+    mock_datastore_service.get_totalmobile_release_date_records.return_value = []
 
     # act
     result = service.get_questionnaires_with_totalmobile_release_date_of_today()
