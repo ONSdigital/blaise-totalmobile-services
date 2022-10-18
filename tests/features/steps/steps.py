@@ -1,11 +1,12 @@
 # type: ignore[no-redef]
 
 import base64
+import json
+from datetime import datetime
 import logging
 
 from behave import given, then, when
 
-from cloud_functions import create_totalmobile_jobs_trigger
 from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from tests.helpers import incoming_request_helper
@@ -296,13 +297,19 @@ def step_impl(context):
     context.blaise_service.method_throws_exception("get_cases")
 
 
+@given("there is a {questionnaire_name} with a totalmobile release date of today")
+def step_impl(context, questionnaire_name):
+    context.blaise_service.add_questionnaire(questionnaire_name)
+    context.datastore_service.add_record(questionnaire_name, datetime.today())
+
+
 @given("case {case_id} for {questionnaire_name} has the following data")
 def step_impl(context, case_id, questionnaire_name):
     context.blaise_service.add_questionnaire(questionnaire_name)
     context.questionnaire_name = questionnaire_name
 
     data_fields: dict = {row["field_name"]: row["value"] for row in context.table}
-    outcome_code = data_fields["outcome_code"]
+    outcome_code = int(data_fields["outcome_code"])
     context.blaise_service.add_case_to_questionnaire(
         questionnaire=questionnaire_name,
         case_id=case_id,
@@ -311,8 +318,9 @@ def step_impl(context, case_id, questionnaire_name):
         field_case=data_fields["qDataBag.FieldCase"],
         telephone_number_1=data_fields["qDataBag.TelNo"],
         telephone_number_2=data_fields["qDataBag.TelNo2"],
+        appointment_telephone_number=data_fields["telNoAppt"],
+        field_region=data_fields["qDataBag.FieldRegion"]
     )
-    context.blaise_service.add_case_to_questionnaire(questionnaire_name, case_id, outcome_code)
     context.case_id = case_id
 
 
@@ -328,6 +336,14 @@ def step_impl(context):
     return create_totalmobile_jobs_service.create_totalmobile_jobs()
 
 
-@then("case {case_id} for questionnaire {questionnaire_name} is sent to Totalmobile with reference {tm_job_ref}")
-def step_impl(context, case_id: str, questionnaire_name: str, tm_job_ref:str):
-    pass
+@then("a cloud task is created for case {case_id} in questionnaire {questionnaire_name} with the reference {tm_job_ref}")
+def step_impl(context, case_id, questionnaire_name, tm_job_ref: str):
+    task_request_models = context.cloud_task_service.get_task_request_models()
+
+    assert len(task_request_models) == 1
+    task_body_json = json.loads(task_request_models[0].task_body)
+
+    assert task_body_json["questionnaire"] == questionnaire_name
+    assert task_body_json["case_id"] == case_id
+    assert task_body_json["payload"]["identity"]["reference"] == tm_job_ref
+

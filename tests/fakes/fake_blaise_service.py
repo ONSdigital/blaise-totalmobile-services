@@ -38,6 +38,8 @@ class FakeBlaiseService:
             field_case: str = None,
             telephone_number_1: str = None,
             telephone_number_2: str = None,
+            appointment_telephone_number: str = None,
+            field_region: str = None
     ) -> None:
         self._assert_questionnaire_exists(questionnaire)
         self._questionnaires[questionnaire][case_id] = BlaiseCaseInformationModel(
@@ -59,12 +61,12 @@ class FakeBlaiseService:
             contact_details=ContactDetails(
                 telephone_number_1=telephone_number_1,
                 telephone_number_2=telephone_number_2,
-                appointment_telephone_number=None,
+                appointment_telephone_number=appointment_telephone_number,
             ),
             outcome_code=0 if not outcome_code else outcome_code,
             priority=None,
             field_case=field_case,
-            field_region=None,
+            field_region=field_region,
             field_team=None,
             wave_com_dte=None,
             has_call_history=False,
@@ -114,7 +116,14 @@ class FakeBlaiseService:
 
         return [
             get_blaise_case_model_helper.get_populated_case_model(
-                case_id=case.case_id, outcome_code=case.outcome_code
+                case_id=case.case_id,
+                outcome_code=case.outcome_code,
+                wave=case.wave,
+                field_case=case.field_case,
+                telephone_number_1=case.contact_details.telephone_number_1,
+                telephone_number_2=case.contact_details.telephone_number_2,
+                appointment_telephone_number=case.contact_details.appointment_telephone_number,
+                field_region=case.field_region
             )
             for case in cases.values()
         ]
