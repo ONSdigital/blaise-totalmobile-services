@@ -2,8 +2,8 @@
 
 import base64
 import json
-from datetime import datetime
 import logging
+from datetime import datetime
 
 from behave import given, then, when
 
@@ -23,7 +23,9 @@ def step_impl(context, questionnaire, case_id):
     else:
         data_fields = {row["field_name"]: row["value"] for row in context.table}
         outcome_code = data_fields["outcome_code"]
-        context.blaise_service.add_case_to_questionnaire(questionnaire, case_id, outcome_code)
+        context.blaise_service.add_case_to_questionnaire(
+            questionnaire, case_id, outcome_code
+        )
     context.case_id = case_id
 
 
@@ -319,7 +321,7 @@ def step_impl(context, case_id, questionnaire_name):
         telephone_number_1=data_fields["qDataBag.TelNo"],
         telephone_number_2=data_fields["qDataBag.TelNo2"],
         appointment_telephone_number=data_fields["telNoAppt"],
-        field_region=data_fields["qDataBag.FieldRegion"]
+        field_region=data_fields["qDataBag.FieldRegion"],
     )
     context.case_id = case_id
 
@@ -330,13 +332,15 @@ def step_impl(context):
         totalmobile_service=context.totalmobile_service,
         questionnaire_service=context.questionnaire_service,
         uac_service=context.uac_service,
-        cloud_task_service=context.cloud_task_service
+        cloud_task_service=context.cloud_task_service,
     )
 
     return create_totalmobile_jobs_service.create_totalmobile_jobs()
 
 
-@then("a cloud task is created for case {case_id} in questionnaire {questionnaire_name} with the reference {tm_job_ref}")
+@then(
+    "a cloud task is created for case {case_id} in questionnaire {questionnaire_name} with the reference {tm_job_ref}"
+)
 def step_impl(context, case_id, questionnaire_name, tm_job_ref: str):
     task_request_models = context.cloud_task_service.get_task_request_models()
 
@@ -353,4 +357,3 @@ def step_impl(context):
     task_request_models = context.cloud_task_service.get_task_request_models()
 
     assert not task_request_models
-

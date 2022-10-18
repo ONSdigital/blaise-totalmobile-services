@@ -1,9 +1,10 @@
 import json
 import logging
 from typing import Dict
+from unittest.mock import Mock
 
 import pytest
-from unittest.mock import Mock
+
 from client.bus import Uac
 from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
 from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
@@ -36,13 +37,16 @@ def mock_cloud_task_service():
 
 @pytest.fixture()
 def service(
-     mock_totalmobile_service, mock_questionnaire_service, mock_uac_service, mock_cloud_task_service
+    mock_totalmobile_service,
+    mock_questionnaire_service,
+    mock_uac_service,
+    mock_cloud_task_service,
 ) -> CreateTotalmobileJobsService:
     return CreateTotalmobileJobsService(
         totalmobile_service=mock_totalmobile_service,
         questionnaire_service=mock_questionnaire_service,
         uac_service=mock_uac_service,
-        cloud_task_service=mock_cloud_task_service
+        cloud_task_service=mock_cloud_task_service,
     )
 
 
@@ -72,9 +76,8 @@ def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_
 
 
 def test_map_totalmobile_job_models_maps_the_correct_list_of_models(
-        mock_totalmobile_service,
-        mock_uac_service,
-        service: CreateTotalmobileJobsService):
+    mock_totalmobile_service, mock_uac_service, service: CreateTotalmobileJobsService
+):
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
@@ -120,8 +123,7 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models(
 
     # act
     result = service.map_totalmobile_job_models(
-        questionnaire_name=questionnaire_name,
-        cases=case_data
+        questionnaire_name=questionnaire_name, cases=case_data
     )
 
     # assert
@@ -168,11 +170,11 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models(
 
 
 def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
-        mock_questionnaire_service,
-        mock_totalmobile_service,
-        mock_uac_service,
-        mock_cloud_task_service,
-        service: CreateTotalmobileJobsService
+    mock_questionnaire_service,
+    mock_totalmobile_service,
+    mock_uac_service,
+    mock_cloud_task_service,
+    service: CreateTotalmobileJobsService,
 ):
     # arrange
     questionnaire_name = "LMS2101_AA1"
@@ -248,9 +250,9 @@ def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
 
 
 def test_create_cloud_tasks_when_no_eligible_cases(
-        mock_questionnaire_service,
-        mock_cloud_task_service,
-        service: CreateTotalmobileJobsService
+    mock_questionnaire_service,
+    mock_cloud_task_service,
+    service: CreateTotalmobileJobsService,
 ):
     # arrange
     questionnaire_name = "LMS2101_AA1"

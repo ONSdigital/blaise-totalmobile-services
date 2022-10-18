@@ -4,7 +4,9 @@ from typing import List
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from models.cloud_tasks.task_request_model import TaskRequestModel
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
-from models.totalmobile.totalmobile_outgoing_create_job_payload_model import TotalMobileOutgoingCreateJobPayloadModel
+from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
+    TotalMobileOutgoingCreateJobPayloadModel,
+)
 from services.cloud_task_service import CloudTaskService
 from services.questionnaire_service import QuestionnaireService
 from services.totalmobile_service import TotalmobileService
@@ -13,11 +15,11 @@ from services.uac_service import UacService
 
 class CreateTotalmobileJobsService:
     def __init__(
-            self,
-            totalmobile_service: TotalmobileService,
-            questionnaire_service: QuestionnaireService,
-            uac_service: UacService,
-            cloud_task_service: CloudTaskService
+        self,
+        totalmobile_service: TotalmobileService,
+        questionnaire_service: QuestionnaireService,
+        uac_service: UacService,
+        cloud_task_service: CloudTaskService,
     ):
         self._totalmobile_service = totalmobile_service
         self._questionnaire_service = questionnaire_service
@@ -36,17 +38,27 @@ class CreateTotalmobileJobsService:
             return "There are no questionnaires with a release date of today"
 
         for questionnaire_name in questionnaires_with_release_date_of_today:
-            logging.info(f"Questionnaire {questionnaire_name} has a release date of today")
+            logging.info(
+                f"Questionnaire {questionnaire_name} has a release date of today"
+            )
 
-            self.validate_questionnaire_is_in_wave_1(questionnaire_name=questionnaire_name)
+            self.validate_questionnaire_is_in_wave_1(
+                questionnaire_name=questionnaire_name
+            )
 
-            self.create_totalmobile_jobs_for_eligible_questionnaire_cases(questionnaire_name=questionnaire_name)
+            self.create_totalmobile_jobs_for_eligible_questionnaire_cases(
+                questionnaire_name=questionnaire_name
+            )
 
         return "Done"
 
-    def create_totalmobile_jobs_for_eligible_questionnaire_cases(self, questionnaire_name: str) -> str:
+    def create_totalmobile_jobs_for_eligible_questionnaire_cases(
+        self, questionnaire_name: str
+    ) -> str:
 
-        eligible_cases = self._questionnaire_service.get_eligible_cases(questionnaire_name)
+        eligible_cases = self._questionnaire_service.get_eligible_cases(
+            questionnaire_name
+        )
 
         if len(eligible_cases) == 0:
             logging.info(
@@ -68,12 +80,16 @@ class CreateTotalmobileJobsService:
             totalmobile_job_models=totalmobile_job_models,
         )
 
-    def create_cloud_tasks_for_jobs(self,
-            questionnaire_name: str,
-            totalmobile_job_models: List[TotalmobileCreateJobModel],
+    def create_cloud_tasks_for_jobs(
+        self,
+        questionnaire_name: str,
+        totalmobile_job_models: List[TotalmobileCreateJobModel],
     ) -> str:
         task_request_models = [
-            TaskRequestModel(task_name=job_model.create_task_name(), task_body=job_model.json().encode())
+            TaskRequestModel(
+                task_name=job_model.create_task_name(),
+                task_body=job_model.json().encode(),
+            )
             for job_model in totalmobile_job_models
         ]
         logging.info(
@@ -90,12 +106,15 @@ class CreateTotalmobileJobsService:
 
         return "Done"
 
-    def map_totalmobile_job_models(self,
-            questionnaire_name: str,
-            cases: List[BlaiseCaseInformationModel],
+    def map_totalmobile_job_models(
+        self,
+        questionnaire_name: str,
+        cases: List[BlaiseCaseInformationModel],
     ) -> List[TotalmobileCreateJobModel]:
         world_model = self._totalmobile_service.get_world_model()
-        questionnaire_uac_model = self._uac_service.get_questionnaire_uac_model(questionnaire_name)
+        questionnaire_uac_model = self._uac_service.get_questionnaire_uac_model(
+            questionnaire_name
+        )
 
         job_models = [
             TotalmobileCreateJobModel(
@@ -118,7 +137,9 @@ class CreateTotalmobileJobsService:
         return job_models
 
     def validate_questionnaire_is_in_wave_1(self, questionnaire_name: str) -> None:
-        wave = self._questionnaire_service.get_wave_from_questionnaire_name(questionnaire_name)
+        wave = self._questionnaire_service.get_wave_from_questionnaire_name(
+            questionnaire_name
+        )
         if wave != "1":
             logging.info(
                 f"Questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported"

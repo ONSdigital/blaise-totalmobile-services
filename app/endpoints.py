@@ -42,7 +42,7 @@ def submit_form_result_request():
         questionnaire_service = QuestionnaireService(
             blaise_service=current_app.blaise_service,
             eligible_case_service=EligibleCaseService(),
-            datastore_service=DatastoreService()
+            datastore_service=DatastoreService(),
         )
         update_case_service = UpdateCaseService(questionnaire_service)
         submit_form_result_request_handler(request, update_case_service)

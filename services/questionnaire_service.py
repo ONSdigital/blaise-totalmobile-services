@@ -13,7 +13,7 @@ class QuestionnaireService:
         self,
         blaise_service: BlaiseService,
         eligible_case_service: EligibleCaseService,
-        datastore_service: DatastoreService
+        datastore_service: DatastoreService,
     ):
         self._blaise_service = blaise_service
         self._eligible_case_service = eligible_case_service

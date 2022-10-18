@@ -28,7 +28,7 @@ def create_totalmobile_jobs_trigger(_event, _context) -> str:
     questionnaire_service = QuestionnaireService(
         blaise_service=BlaiseService(config),
         eligible_case_service=EligibleCaseService(),
-        datastore_service=DatastoreService()
+        datastore_service=DatastoreService(),
     )
     optimise_client = OptimiseClient(
         config.totalmobile_url,
@@ -39,7 +39,9 @@ def create_totalmobile_jobs_trigger(_event, _context) -> str:
 
     totalmobile_service = TotalmobileService(optimise_client)
     uac_service = UacService(config=config)
-    cloud_task_service = CloudTaskService(config=config, task_queue_id=config.create_totalmobile_jobs_task_queue_id)
+    cloud_task_service = CloudTaskService(
+        config=config, task_queue_id=config.create_totalmobile_jobs_task_queue_id
+    )
 
     return (
         cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
@@ -47,7 +49,7 @@ def create_totalmobile_jobs_trigger(_event, _context) -> str:
                 totalmobile_service=totalmobile_service,
                 questionnaire_service=questionnaire_service,
                 uac_service=uac_service,
-                cloud_task_service=cloud_task_service
+                cloud_task_service=cloud_task_service,
             )
         )
     )
@@ -63,8 +65,7 @@ def create_totalmobile_jobs_processor(request: flask.Request) -> str:
     )
     totalmobile_service = TotalmobileService(optimise_client)
     return cloud_functions.create_totalmobile_jobs_processor.create_totalmobile_jobs_processor(
-        request=request,
-        totalmobile_service=totalmobile_service
+        request=request, totalmobile_service=totalmobile_service
     )
 
 

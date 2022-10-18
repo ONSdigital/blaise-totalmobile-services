@@ -14,15 +14,20 @@ class CloudTaskService:
         self.config = config
         self.task_queue_id = task_queue_id
 
-    def create_and_run_tasks(self, task_request_models: List[TaskRequestModel], cloud_function: str) -> None:
+    def create_and_run_tasks(
+        self, task_request_models: List[TaskRequestModel], cloud_function: str
+    ) -> None:
         task_requests = self.create_task_requests(
-            task_request_models=task_request_models, queue_id=self.task_queue_id, cloud_function_name=cloud_function
+            task_request_models=task_request_models,
+            queue_id=self.task_queue_id,
+            cloud_function_name=cloud_function,
         )
 
         asyncio.run(self._run_tasks(task_requests))
 
-    def create_task_requests(self, task_request_models: List[TaskRequestModel], queue_id, cloud_function_name
-                              ) -> List[tasks_v2.CreateTaskRequest]:
+    def create_task_requests(
+        self, task_request_models: List[TaskRequestModel], queue_id, cloud_function_name
+    ) -> List[tasks_v2.CreateTaskRequest]:
         duration = Duration()
         duration.FromTimedelta(timedelta(minutes=30))
 
@@ -39,7 +44,9 @@ class CloudTaskService:
                         headers={
                             "Content-Type": "application/json",
                         },
-                        oidc_token={"service_account_email": self.config.cloud_function_sa},
+                        oidc_token={
+                            "service_account_email": self.config.cloud_function_sa
+                        },
                     ),
                     dispatch_deadline=duration,
                 ),
@@ -48,8 +55,9 @@ class CloudTaskService:
         return task_requests
 
     @staticmethod
-    def create_tasks(task_requests: List[tasks_v2.CreateTaskRequest], task_client
-                     ) -> List[Coroutine[Any, Any, tasks_v2.Task]]:
+    def create_tasks(
+        task_requests: List[tasks_v2.CreateTaskRequest], task_client
+    ) -> List[Coroutine[Any, Any, tasks_v2.Task]]:
         return [task_client.create_task(request) for request in task_requests]
 
     async def _run_tasks(self, task_requests: List[tasks_v2.CreateTaskRequest]) -> None:

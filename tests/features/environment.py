@@ -19,9 +19,7 @@ def before_scenario(context, scenario):
     context.totalmobile_service = app.totalmobile_service
     context.datastore_service = FakeDatastoreService()
     context.questionnaire_service = QuestionnaireService(
-        app.blaise_service,
-        EligibleCaseService(),
-        context.datastore_service
+        app.blaise_service, EligibleCaseService(), context.datastore_service
     )
 
     context.uac_service = FakeUacService()

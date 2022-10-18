@@ -31,7 +31,7 @@ def service(
     return QuestionnaireService(
         blaise_service=mock_blaise_service,
         eligible_case_service=mock_eligible_case_service,
-        datastore_service=mock_datastore_service
+        datastore_service=mock_datastore_service,
     )
 
 
@@ -280,7 +280,9 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_
             2, "LMS2000Z", datetime(2021, 12, 31)
         ),
     ]
-    mock_datastore_service.get_totalmobile_release_date_records.return_value = mock_datastore_entity_list
+    mock_datastore_service.get_totalmobile_release_date_records.return_value = (
+        mock_datastore_entity_list
+    )
 
     # act
     result = service.get_questionnaires_with_totalmobile_release_date_of_today()
@@ -303,7 +305,9 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_em
         ),
     ]
 
-    mock_datastore_service.get_totalmobile_release_date_records.return_value = mock_datastore_entity_list
+    mock_datastore_service.get_totalmobile_release_date_records.return_value = (
+        mock_datastore_entity_list
+    )
 
     # act
     result = service.get_questionnaires_with_totalmobile_release_date_of_today()

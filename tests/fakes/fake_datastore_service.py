@@ -10,7 +10,7 @@ class FakeDatastoreService:
 
     def add_record(self, questionnaire_name: str, release_date: datetime):
         record = DatastoreHelper.totalmobile_release_date_entity_builder(
-            len(self._datastore_records)+1, questionnaire_name, release_date
+            len(self._datastore_records) + 1, questionnaire_name, release_date
         )
         self._datastore_records.append(record)
 
