@@ -33,7 +33,7 @@ class FakeBlaiseService:
         self,
         questionnaire: str,
         case_id: str,
-        outcome_code: str = None,
+        outcome_code: int = None,
         wave: str = None,
         field_case: str = None,
         telephone_number_1: str = None,
