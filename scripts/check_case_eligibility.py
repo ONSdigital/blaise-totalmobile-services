@@ -3,6 +3,7 @@ import sys
 
 from appconfig import Config
 from services.blaise_service import BlaiseService
+from services.datastore_service import DatastoreService
 from services.eligible_case_service import EligibleCaseService
 from services.questionnaire_service import QuestionnaireService
 
@@ -32,9 +33,9 @@ if __name__ == "__main__":
     config = Config.from_env()
     eligible_case_service = EligibleCaseService()
     questionnaire_service = QuestionnaireService(
-        config=config,
         blaise_service=BlaiseService(config),
         eligible_case_service=eligible_case_service,
+        datastore_service=DatastoreService()
     )
     cases = questionnaire_service.get_cases(questionnaire_name)
     eligible_cases = eligible_case_service.get_eligible_cases(cases)
