@@ -10,9 +10,13 @@ from services.totalmobile_service import TotalmobileService
 from tests.helpers import optimise_client_helper
 
 
-def test_get_world_model_returns_a_world_model():
+@pytest.fixture()
+def optimise_client_mock():
+    return create_autospec(OptimiseClient)
+
+
+def test_get_world_model_returns_a_world_model(optimise_client_mock):
     # arrange
-    optimise_client_mock = create_autospec(OptimiseClient)
     optimise_client_mock.get_worlds.return_value = (
         optimise_client_helper.get_worlds_response()
     )
@@ -35,9 +39,8 @@ def test_get_world_model_returns_a_world_model():
     )
 
 
-def test_create_job_calls_the_client_with_the_correct_parameters():
+def test_create_job_calls_the_client_with_the_correct_parameters(optimise_client_mock):
     # arrange
-    optimise_client_mock = create_autospec(OptimiseClient)
     totalmobile_job_model = TotalmobileCreateJobModel(
         questionnaire="LMS2101_AA1",
         case_id="900001",
@@ -56,9 +59,8 @@ def test_create_job_calls_the_client_with_the_correct_parameters():
     )
 
 
-def test_create_job_auth_error():
+def test_create_job_auth_error(optimise_client_mock):
     # arrange
-    optimise_client_mock = create_autospec(OptimiseClient)
     optimise_client_mock.create_job.side_effect = AuthException()
 
     totalmobile_job_model = TotalmobileCreateJobModel(
@@ -75,9 +77,8 @@ def test_create_job_auth_error():
         totalmobile_service.create_job(totalmobile_job_model)
 
 
-def test_get_jobs_calls_the_client_with_the_correct_parameters():
+def test_get_jobs_calls_the_client_with_the_correct_parameters(optimise_client_mock):
     # arrange
-    optimise_client_mock = create_autospec(OptimiseClient)
     optimise_client_mock.get_jobs.return_value = {}
     world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
     totalmobile_service = TotalmobileService(optimise_client_mock)
@@ -89,9 +90,8 @@ def test_get_jobs_calls_the_client_with_the_correct_parameters():
     optimise_client_mock.get_jobs.assert_called_with(world_id)
 
 
-def test_get_jobs_model_returns_a_jobs_model():
+def test_get_jobs_model_returns_a_jobs_model(optimise_client_mock):
     # arrange
-    optimise_client_mock = create_autospec(OptimiseClient)
     optimise_client_mock.get_jobs.return_value = (
         optimise_client_helper.get_jobs_response()
     )
@@ -118,9 +118,8 @@ def test_get_jobs_model_returns_a_jobs_model():
     assert result.questionnaire_jobs["LMS2222_BB2"][0].visit_complete is False
 
 
-def test_get_jobs_model_calls_the_client_with_the_correct_parameters():
+def test_get_jobs_model_calls_the_client_with_the_correct_parameters(optimise_client_mock):
     # arrange
-    optimise_client_mock = create_autospec(OptimiseClient)
     optimise_client_mock.get_jobs.return_value = {}
     world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
     totalmobile_service = TotalmobileService(optimise_client_mock)
@@ -132,9 +131,8 @@ def test_get_jobs_model_calls_the_client_with_the_correct_parameters():
     optimise_client_mock.get_jobs.assert_called_with(world_id)
 
 
-def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_no_reason_json_passed():
+def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_no_reason_json_passed(optimise_client_mock):
     # arrange
-    optimise_client_mock = create_autospec(OptimiseClient)
     world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
     job = "1234"
     totalmobile_service = TotalmobileService(optimise_client_mock)
@@ -146,9 +144,8 @@ def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_no_reason
     optimise_client_mock.delete_job.assert_called_with(world_id, job, "0")
 
 
-def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_reason_json_passed():
+def test_delete_jobs_calls_the_client_with_the_correct_parameters_when_reason_json_passed(optimise_client_mock):
     # arrange
-    optimise_client_mock = create_autospec(OptimiseClient)
     world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
     job = "1234"
     totalmobile_service = TotalmobileService(optimise_client_mock)
