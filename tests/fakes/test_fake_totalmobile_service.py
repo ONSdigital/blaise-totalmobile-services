@@ -59,8 +59,8 @@ def test_get_jobs_model(service: FakeTotalmobileService):
     # assert
     assert jobs_model.questionnaire_jobs == {
         "LMS11111_AA1": [
-            Job("LMS11111-AA1.12345", "12345", False, False),
-            Job("LMS11111-AA1.56789", "56789", True, False),
+            Job("LMS11111-AA1.12345", "12345", False, False, "carl.minion", "LMS"),
+            Job("LMS11111-AA1.56789", "56789", True, False, "carl.minion", "LMS"),
         ]
     }
 
@@ -81,3 +81,22 @@ def test_get_world_model(service: FakeTotalmobileService):
         World(region="Region 7", id="world-id-7"),
         World(region="Region 8", id="world-id-8"),
     ]
+
+
+class TestJobHasBeenRecalled:
+    def test_returns_false_when_no_jobs_have_been_recalled(
+        self, service: FakeTotalmobileService
+    ):
+        assert service.job_has_been_recalled("LMS2206-AA1.11111") is False
+
+    def test_returns_true_when_the_job_has_been_recalled(
+        self, service: FakeTotalmobileService
+    ):
+        service.recall_job("bob.minion", "LMS", "LMS2206-AA1.22222")
+        assert service.job_has_been_recalled("LMS2206-AA1.22222") is True
+
+    def test_returns_false_when_a_different_job_has_been_recalled(
+        self, service: FakeTotalmobileService
+    ):
+        service.recall_job("bob.minion", "LMS", "LMS2206-AA1.22222")
+        assert service.job_has_been_recalled("LMS2206-AA1.11111") is False

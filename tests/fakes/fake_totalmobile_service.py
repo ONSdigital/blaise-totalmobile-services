@@ -1,6 +1,7 @@
 from collections import defaultdict
-from typing import Optional
+from typing import Dict, Optional
 
+from client.optimise import GetJobResponse
 from models.totalmobile.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
 )
@@ -22,9 +23,10 @@ class FakeTotalmobileService:
     }
 
     def __init__(self):
-        self._jobs = defaultdict(dict)
+        self._jobs: Dict[str, Dict[str, GetJobResponse]] = defaultdict(dict)
         self._delete_jobs_reason = {}
         self._errors_when_method_is_called = []
+        self._recalled_jobs = {}
 
     def method_throws_exception(self, method_name: str):
         self._errors_when_method_is_called.append(method_name)
@@ -44,6 +46,8 @@ class FakeTotalmobileService:
             "visitComplete": visit_complete,
             "identity": {"reference": reference},
             "dueDate": {"end": due_date},
+            "allocatedResource": {"reference": "carl.minion"},
+            "workType": "LMS",
         }
 
     def update_due_date(self, reference: str, region: str, due_date: str) -> None:
@@ -56,6 +60,14 @@ class FakeTotalmobileService:
             if job in jobs_in_world:
                 return True
         return False
+
+    def job_has_been_recalled(self, reference: str) -> bool:
+        return self._recalled_jobs.get(reference, False)
+
+    def recall_job(
+        self, _allocated_resource_reference: str, _work_type: str, job_reference: str
+    ) -> None:
+        self._recalled_jobs[job_reference] = True
 
     def delete_job(self, world_id: str, reference: str, reason: str = "0") -> None:
         if "delete_job" in self._errors_when_method_is_called:
@@ -90,5 +102,5 @@ class FakeTotalmobileService:
             raise Exception
 
         return TotalmobileGetJobsResponseModel.from_get_jobs_response(
-            self._jobs[world_id].values()
+            list(self._jobs[world_id].values())
         )

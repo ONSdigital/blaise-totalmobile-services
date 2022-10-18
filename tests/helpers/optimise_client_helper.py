@@ -41,15 +41,21 @@ def get_jobs_response(due_date: datetime = datetime.today()) -> List[GetJobRespo
             identity=Identity(reference="LMS1111-AA1.12345"),
             dueDate=DueDate(end=format_date_as_totalmobile_formatted_string(due_date)),
             visitComplete=True,
+            allocatedResource=None,
+            workType="LMS",
         ),
         GetJobResponse(
             identity=Identity(reference="LMS2222-BB2.22222"),
             dueDate=DueDate(end=format_date_as_totalmobile_formatted_string(due_date)),
             visitComplete=False,
+            allocatedResource=None,
+            workType="LMS",
         ),
         GetJobResponse(
             identity=Identity(reference="LMS1111-AA1.67890"),
             dueDate=DueDate(end=format_date_as_totalmobile_formatted_string(due_date)),
             visitComplete=False,
+            allocatedResource=None,
+            workType="LMS",
         ),
     ]

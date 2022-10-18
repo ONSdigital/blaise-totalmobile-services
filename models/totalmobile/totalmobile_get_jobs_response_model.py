@@ -16,6 +16,8 @@ class Job:
     case_id: str
     visit_complete: bool
     past_field_period: bool
+    allocated_resource_reference: Optional[str]
+    work_type: str
 
 
 class TotalmobileGetJobsResponseModel:
@@ -29,6 +31,12 @@ class TotalmobileGetJobsResponseModel:
             visit_complete = job["visitComplete"]
             job_reference = job["identity"]["reference"]
             due_date = job["dueDate"]["end"]
+            allocated_resource_reference = (
+                job["allocatedResource"]["reference"]
+                if job["allocatedResource"] is not None
+                else None
+            )
+            work_type = job["workType"]
 
             past_field_period = cls.field_period_has_expired(due_date)
 
@@ -41,6 +49,8 @@ class TotalmobileGetJobsResponseModel:
                     reference_model.case_id,
                     visit_complete,
                     past_field_period,
+                    allocated_resource_reference,
+                    work_type,
                 )
                 questionnaire_jobs[reference_model.questionnaire_name].append(
                     job_instance

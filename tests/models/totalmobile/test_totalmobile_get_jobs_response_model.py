@@ -21,21 +21,29 @@ def test_total_mobile_job_models_maps_expected_list_of_models_from_job_response(
             identity=Identity(reference="LMS1111-AA1.12345"),
             dueDate=DueDate(end=get_date_as_totalmobile_formatted_string(4)),
             visitComplete=True,
+            allocatedResource=None,
+            workType="LMS",
         ),
         GetJobResponse(
             identity=Identity(reference="LMS2222-BB2.22222"),
             dueDate=DueDate(end=get_date_as_totalmobile_formatted_string(2)),
             visitComplete=False,
+            allocatedResource=None,
+            workType="LMS",
         ),
         GetJobResponse(
             identity=Identity(reference="LMS1111-AA1.67890"),
             dueDate=DueDate(end=get_date_as_totalmobile_formatted_string(3)),
             visitComplete=False,
+            allocatedResource=None,
+            workType="LMS",
         ),
         GetJobResponse(
             identity=Identity(reference="LMS1111-AA1.45678"),
             dueDate=DueDate(end=None),
             visitComplete=False,
+            allocatedResource=None,
+            workType="LMS",
         ),
     ]
 
@@ -75,21 +83,29 @@ def test_questionnaires_with_incomplete_jobs_returns_expected_dictionary():
             identity=Identity(reference="LMS1111-AA1.12345"),
             dueDate=DueDate(end=None),
             visitComplete=True,
+            allocatedResource=None,
+            workType="LMS",
         ),
         GetJobResponse(
             identity=Identity(reference="LMS2222-BB2.22222"),
             dueDate=DueDate(end=None),
             visitComplete=False,
+            allocatedResource=None,
+            workType="LMS",
         ),
         GetJobResponse(
             identity=Identity(reference="LMS2222-BB2.33333"),
             dueDate=DueDate(end=None),
             visitComplete=True,
+            allocatedResource=None,
+            workType="LMS",
         ),
         GetJobResponse(
             identity=Identity(reference="LMS1111-AA1.67890"),
             dueDate=DueDate(end=None),
             visitComplete=True,
+            allocatedResource=None,
+            workType="LMS",
         ),
     ]
 
@@ -101,7 +117,7 @@ def test_questionnaires_with_incomplete_jobs_returns_expected_dictionary():
     assert len(result) == 1
 
     assert result["LMS2222_BB2"] == [
-        Job("LMS2222-BB2.22222", "22222", False, False),
+        Job("LMS2222-BB2.22222", "22222", False, False, None, "LMS"),
     ]
 
 
@@ -112,16 +128,22 @@ def test_from_get_jobs_response_skips_jobs_with_bad_references():
             identity=Identity(reference="LMS1111-AA1.12345"),
             dueDate=DueDate(end=None),
             visitComplete=False,
+            allocatedResource=None,
+            workType="LMS",
         ),
         GetJobResponse(
             identity=Identity(reference="this is not a valid reference"),
             dueDate=DueDate(end=None),
             visitComplete=False,
+            allocatedResource=None,
+            workType="LMS",
         ),
         GetJobResponse(
             identity=Identity(reference="LMS1111-AA1.67890"),
             dueDate=DueDate(end=None),
             visitComplete=False,
+            allocatedResource=dict(reference="stuart.minion"),
+            workType="LMS",
         ),
     ]
 
@@ -131,8 +153,8 @@ def test_from_get_jobs_response_skips_jobs_with_bad_references():
 
     # assert
     assert result["LMS1111_AA1"] == [
-        Job("LMS1111-AA1.12345", "12345", False, False),
-        Job("LMS1111-AA1.67890", "67890", False, False),
+        Job("LMS1111-AA1.12345", "12345", False, False, None, "LMS"),
+        Job("LMS1111-AA1.67890", "67890", False, False, "stuart.minion", "LMS"),
     ]
 
 
@@ -206,21 +228,29 @@ def test_total_number_of_incomplete_jobs_returns_expected_number():
             identity=Identity(reference="LMS1111-AA1.12345"),
             dueDate=DueDate(end=get_date_as_totalmobile_formatted_string(4)),
             visitComplete=True,
+            allocatedResource=None,
+            workType="LMS",
         ),
         GetJobResponse(
             identity=Identity(reference="LMS2222-BB2.22222"),
             dueDate=DueDate(end=get_date_as_totalmobile_formatted_string(2)),
             visitComplete=False,
+            allocatedResource=None,
+            workType="LMS",
         ),
         GetJobResponse(
             identity=Identity(reference="LMS1111-AA1.67890"),
             dueDate=DueDate(end=get_date_as_totalmobile_formatted_string(3)),
             visitComplete=False,
+            allocatedResource=None,
+            workType="LMS",
         ),
         GetJobResponse(
             identity=Identity(reference="LMS1111-AA1.45678"),
             dueDate=DueDate(end=None),
             visitComplete=False,
+            allocatedResource=None,
+            workType="LMS",
         ),
     ]
 

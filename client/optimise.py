@@ -14,6 +14,10 @@ class Identity(TypedDict):
     reference: str
 
 
+class AllocatedResource(TypedDict):
+    reference: str
+
+
 class GetWorldResponse(TypedDict):
     id: str
     identity: Identity
@@ -26,6 +30,8 @@ class GetJobResponse(TypedDict):
     identity: Identity
     dueDate: DueDate
     visitComplete: bool
+    allocatedResource: Optional[AllocatedResource]
+    workType: str
 
 
 GetJobsResponse = List[GetJobResponse]

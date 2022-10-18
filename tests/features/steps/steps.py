@@ -261,6 +261,13 @@ def step_impl(context):
     delete_totalmobile_service.delete_jobs_past_field_period()
 
 
+@then('the Totalmobile job with reference "{reference}" is recalled')
+def step_impl(context, reference):
+    assert context.totalmobile_service.job_has_been_recalled(
+        reference
+    ), f"The job {reference} has not been recalled"
+
+
 @then('the Totalmobile job with reference "{reference}" is deleted')
 def step_impl(context, reference):
     assert not context.totalmobile_service.job_exists(
