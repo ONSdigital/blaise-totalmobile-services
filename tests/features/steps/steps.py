@@ -1,11 +1,13 @@
 # type: ignore[no-redef]
 
 import base64
+import json
 import logging
-from datetime import date, datetime, timedelta
+from datetime import datetime
 
 from behave import given, then, when
 
+from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from tests.helpers import incoming_request_helper
 from tests.helpers.date_helper import get_date_as_totalmobile_formatted_string
@@ -16,8 +18,20 @@ def step_impl(context, questionnaire, case_id):
     context.blaise_service.add_questionnaire(questionnaire)
     context.questionnaire_name = questionnaire
 
-    context.blaise_service.add_case_to_questionnaire(questionnaire, case_id)
+    if not context.table:
+        context.blaise_service.add_case_to_questionnaire(questionnaire, case_id)
+    else:
+        data_fields = {row["field_name"]: row["value"] for row in context.table}
+        outcome_code = data_fields["outcome_code"]
+        context.blaise_service.add_case_to_questionnaire(
+            questionnaire, case_id, outcome_code
+        )
     context.case_id = case_id
+
+
+@given('there is a questionnaire "{questionnaire}" in Blaise')
+def step_impl(context, questionnaire):
+    context.blaise_service.add_questionnaire(questionnaire)
 
 
 @given("the case has an outcome code of {outcome_code}")
@@ -45,11 +59,6 @@ def step_impl(context):
 def step_impl(context, questionnaire):
     # State is reset before every scenario - leaving test empty to ensure no questionnaires are added
     pass
-
-
-@given('there is a questionnaire "{questionnaire}" in Blaise')
-def step_impl(context, questionnaire):
-    context.blaise_service.add_questionnaire(questionnaire)
 
 
 @given('there is no case "{case_id}" for questionnaire "{questionnaire}" in Blaise')
@@ -288,3 +297,63 @@ def step_impl(context):
 @given("the Blaise service errors when retrieving cases")
 def step_impl(context):
     context.blaise_service.method_throws_exception("get_cases")
+
+
+@given("there is a {questionnaire_name} with a totalmobile release date of today")
+def step_impl(context, questionnaire_name):
+    context.blaise_service.add_questionnaire(questionnaire_name)
+    context.datastore_service.add_record(questionnaire_name, datetime.today())
+
+
+@given("case {case_id} for {questionnaire_name} has the following data")
+def step_impl(context, case_id, questionnaire_name):
+    context.blaise_service.add_questionnaire(questionnaire_name)
+    context.questionnaire_name = questionnaire_name
+
+    data_fields: dict = {row["field_name"]: row["value"] for row in context.table}
+    outcome_code = int(data_fields["outcome_code"])
+    context.blaise_service.add_case_to_questionnaire(
+        questionnaire=questionnaire_name,
+        case_id=case_id,
+        outcome_code=outcome_code,
+        wave=data_fields["qDataBag.Wave"],
+        field_case=data_fields["qDataBag.FieldCase"],
+        telephone_number_1=data_fields["qDataBag.TelNo"],
+        telephone_number_2=data_fields["qDataBag.TelNo2"],
+        appointment_telephone_number=data_fields["telNoAppt"],
+        field_region=data_fields["qDataBag.FieldRegion"],
+    )
+    context.case_id = case_id
+
+
+@when("create_totalmobile_jobs is run")
+def step_impl(context):
+    create_totalmobile_jobs_service = CreateTotalmobileJobsService(
+        totalmobile_service=context.totalmobile_service,
+        questionnaire_service=context.questionnaire_service,
+        uac_service=context.uac_service,
+        cloud_task_service=context.cloud_task_service,
+    )
+
+    return create_totalmobile_jobs_service.create_totalmobile_jobs()
+
+
+@then(
+    "a cloud task is created for case {case_id} in questionnaire {questionnaire_name} with the reference {tm_job_ref}"
+)
+def step_impl(context, case_id, questionnaire_name, tm_job_ref: str):
+    task_request_models = context.cloud_task_service.get_task_request_models()
+
+    assert len(task_request_models) == 1
+    task_body_json = json.loads(task_request_models[0].task_body)
+
+    assert task_body_json["questionnaire"] == questionnaire_name
+    assert task_body_json["case_id"] == case_id
+    assert task_body_json["payload"]["identity"]["reference"] == tm_job_ref
+
+
+@then("no cloud tasks are created")
+def step_impl(context):
+    task_request_models = context.cloud_task_service.get_task_request_models()
+
+    assert not task_request_models
