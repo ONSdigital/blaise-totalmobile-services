@@ -15,14 +15,17 @@ def optimise_client_mock():
     return create_autospec(OptimiseClient)
 
 
+@pytest.fixture()
+def totalmobile_service(optimise_client_mock):
+    return TotalmobileService(optimise_client_mock)
+
+
 class TestGetWorldModel:
-    def test_returns_a_world_model(self, optimise_client_mock):
+    def test_returns_a_world_model(self, totalmobile_service, optimise_client_mock):
         # arrange
         optimise_client_mock.get_worlds.return_value = (
             optimise_client_helper.get_worlds_response()
         )
-
-        totalmobile_service = TotalmobileService(optimise_client_mock)
 
         # act
         result = totalmobile_service.get_world_model()
@@ -41,7 +44,7 @@ class TestGetWorldModel:
 
 
 class TestCreateJob:
-    def test_create_job_calls_the_client_with_the_correct_parameters(self, optimise_client_mock):
+    def test_create_job_calls_the_client_with_the_correct_parameters(self, totalmobile_service, optimise_client_mock):
         # arrange
         totalmobile_job_model = TotalmobileCreateJobModel(
             questionnaire="LMS2101_AA1",
@@ -49,8 +52,6 @@ class TestCreateJob:
             world_id="3fa85f64-5717-4562-b3fc-2c963f66afa7",
             payload={},
         )
-
-        totalmobile_service = TotalmobileService(optimise_client_mock)
 
         # act
         totalmobile_service.create_job(totalmobile_job_model)
@@ -60,7 +61,7 @@ class TestCreateJob:
             "3fa85f64-5717-4562-b3fc-2c963f66afa7", {}
         )
 
-    def test_create_job_auth_error(self, optimise_client_mock):
+    def test_create_job_auth_error(self, totalmobile_service, optimise_client_mock):
         # arrange
         optimise_client_mock.create_job.side_effect = AuthException()
 
@@ -71,19 +72,16 @@ class TestCreateJob:
             payload={},
         )
 
-        totalmobile_service = TotalmobileService(optimise_client_mock)
-
         # act & assert
         with pytest.raises(AuthException):
             totalmobile_service.create_job(totalmobile_job_model)
 
 
 class TestGetJob:
-    def test_calls_the_client_with_the_correct_parameters(self, optimise_client_mock):
+    def test_calls_the_client_with_the_correct_parameters(self, totalmobile_service, optimise_client_mock):
         # arrange
         optimise_client_mock.get_jobs.return_value = {}
         world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
-        totalmobile_service = TotalmobileService(optimise_client_mock)
 
         # act
         totalmobile_service.get_jobs(world_id)
@@ -93,13 +91,12 @@ class TestGetJob:
 
 
 class TestGetJobsModel:
-    def test_returns_a_jobs_model(self, optimise_client_mock):
+    def test_returns_a_jobs_model(self, totalmobile_service, optimise_client_mock):
         # arrange
         optimise_client_mock.get_jobs.return_value = (
             optimise_client_helper.get_jobs_response()
         )
         world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
-        totalmobile_service = TotalmobileService(optimise_client_mock)
 
         # act
         result = totalmobile_service.get_jobs_model(world_id)
@@ -120,11 +117,10 @@ class TestGetJobsModel:
         assert result.questionnaire_jobs["LMS2222_BB2"][0].reference == "LMS2222-BB2.22222"
         assert result.questionnaire_jobs["LMS2222_BB2"][0].visit_complete is False
 
-    def test_calls_the_client_with_the_correct_parameters(self, optimise_client_mock):
+    def test_calls_the_client_with_the_correct_parameters(self, totalmobile_service, optimise_client_mock):
         # arrange
         optimise_client_mock.get_jobs.return_value = {}
         world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
-        totalmobile_service = TotalmobileService(optimise_client_mock)
 
         # act
         totalmobile_service.get_jobs_model(world_id)
@@ -134,11 +130,10 @@ class TestGetJobsModel:
 
 
 class TestDeleteJobs:
-    def test_calls_the_client_with_the_correct_parameters_when_no_reason_json_passed(self, optimise_client_mock):
+    def test_calls_the_client_with_the_correct_parameters_when_no_reason_json_passed(self, totalmobile_service, optimise_client_mock):
         # arrange
         world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
         job = "1234"
-        totalmobile_service = TotalmobileService(optimise_client_mock)
 
         # act
         totalmobile_service.delete_job(world_id, job)
@@ -146,11 +141,10 @@ class TestDeleteJobs:
         # assert
         optimise_client_mock.delete_job.assert_called_with(world_id, job, "0")
 
-    def test_calls_the_client_with_the_correct_parameters_when_reason_json_passed(self, optimise_client_mock):
+    def test_calls_the_client_with_the_correct_parameters_when_reason_json_passed(self, totalmobile_service, optimise_client_mock):
         # arrange
         world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
         job = "1234"
-        totalmobile_service = TotalmobileService(optimise_client_mock)
 
         # act
         totalmobile_service.delete_job(world_id, job, "110")
