@@ -3,7 +3,7 @@ from typing import Dict, List
 
 from models.totalmobile.totalmobile_get_jobs_response_model import Job
 from services.blaise_service import BlaiseService
-from services.totalmobile_service import TotalmobileService
+from services.totalmobile_service import RecallJobError, TotalmobileService
 
 
 class DeleteTotalmobileJobsService:
@@ -132,7 +132,7 @@ class DeleteTotalmobileJobsService:
             logging.info(
                 f"Successfully recalled job {job.reference} from {job.allocated_resource_reference} on Totalmobile"
             )
-        except Exception as error:
+        except RecallJobError as error:
             logging.error(
                 f"Failed to recall job {job.reference} from {job.allocated_resource_reference} on Totalmobile",
                 extra={"previous_exception": str(error)},

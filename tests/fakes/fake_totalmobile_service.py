@@ -37,6 +37,7 @@ class FakeTotalmobileService:
         region: str,
         visit_complete: bool = False,
         due_date: Optional[str] = None,
+        allocated_resource_reference: Optional[str] = None,
     ) -> None:
         world_id = self.REGIONS[region]
         if self.job_exists(reference):
@@ -46,7 +47,11 @@ class FakeTotalmobileService:
             "visitComplete": visit_complete,
             "identity": {"reference": reference},
             "dueDate": {"end": due_date},
-            "allocatedResource": {"reference": "carl.minion"},
+            "allocatedResource": (
+                {"reference": allocated_resource_reference}
+                if allocated_resource_reference
+                else None
+            ),
             "workType": "LMS",
         }
 
@@ -61,13 +66,18 @@ class FakeTotalmobileService:
                 return True
         return False
 
-    def job_has_been_recalled(self, reference: str) -> bool:
-        return self._recalled_jobs.get(reference, False)
+    def job_has_been_recalled(
+        self, allocated_resource_reference: str, job_reference: str
+    ) -> bool:
+        result = self._recalled_jobs.get(
+            f"{job_reference}::{allocated_resource_reference}", False
+        )
+        return result
 
     def recall_job(
-        self, _allocated_resource_reference: str, _work_type: str, job_reference: str
+        self, allocated_resource_reference: str, _work_type: str, job_reference: str
     ) -> None:
-        self._recalled_jobs[job_reference] = True
+        self._recalled_jobs[f"{job_reference}::{allocated_resource_reference}"] = True
 
     def delete_job(self, world_id: str, reference: str, reason: str = "0") -> None:
         if "delete_job" in self._errors_when_method_is_called:
@@ -99,7 +109,7 @@ class FakeTotalmobileService:
             raise Exception("get_jobs_model has errored")
 
         if not self._jobs:
-            raise Exception
+            raise Exception("get_jobs_models was called when no jobs were present")
 
         return TotalmobileGetJobsResponseModel.from_get_jobs_response(
             list(self._jobs[world_id].values())

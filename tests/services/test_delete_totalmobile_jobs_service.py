@@ -483,3 +483,39 @@ def test_delete_jobs_for_completed_cases_continues_to_delete_when_a_recall_fails
     mock_totalmobile_service.delete_job.assert_called_with(
         world_id, "LMS1111-AA1.67890", "completed in blaise"
     )
+
+
+def test_delete_jobs_for_completed_cases_raises_if_an_unexpected_exception_occurs(
+    mock_totalmobile_service,
+    mock_blaise_service,
+    delete_totalmobile_jobs_service,
+    world_id,
+    caplog,
+):
+    # arrange
+    mock_totalmobile_service.get_jobs_model.return_value = (
+        TotalmobileGetJobsResponseModel(
+            questionnaire_jobs={
+                "LMS1111_AA1": [
+                    Job(
+                        reference="LMS1111-AA1.67890",
+                        case_id="67890",
+                        visit_complete=False,
+                        past_field_period=False,
+                        allocated_resource_reference="stuart.minion",
+                        work_type="LMS",
+                    )
+                ]
+            }
+        )
+    )
+
+    mock_blaise_service.get_cases.return_value = [
+        get_populated_case_model(case_id="67890", outcome_code=110)
+    ]
+
+    mock_totalmobile_service.recall_job.side_effect = Exception("Unexpected")
+
+    # act
+    with pytest.raises(Exception, match="Unexpected"):
+        delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()

@@ -5,8 +5,7 @@ Feature: Delete jobs
     And the case has an outcome code of <outcome_code>
     And there is an incomplete job in Totalmobile with reference "LMS2206-AA1.12345"
     When delete_totalmobile_jobs_completed_in_blaise is run
-    Then the Totalmobile job with reference "LMS2206-AA1.12345" is recalled
-    And the Totalmobile job with reference "LMS2206-AA1.12345" is deleted
+    Then the Totalmobile job with reference "LMS2206-AA1.12345" is deleted
     And "completed in blaise" is provided as the reason for deleting job with reference "LMS2206-AA1.12345"
     And "Successfully removed job LMS2206-AA1.12345 from Totalmobile" is logged as an information message
     
@@ -170,4 +169,10 @@ Feature: Delete jobs
     When delete_totalmobile_jobs_past_field_period is run
     Then the Totalmobile job with reference "LMS2209-AA1.12345" is not deleted
 
+  Scenario: Recall jobs from Totalmobile devices for cases assigned cases due to be deleted
+    Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
+    And the case has a complete outcome code
+    And there is an incomplete job in Totalmobile with reference "LMS2206-AA1.12345" assigned to "richmond.rice"
+    When delete_totalmobile_jobs_completed_in_blaise is run
+    Then the Totalmobile job with reference "LMS2206-AA1.12345" is recalled from "richmond.rice"
 
