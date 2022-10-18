@@ -347,3 +347,10 @@ def step_impl(context, case_id, questionnaire_name, tm_job_ref: str):
     assert task_body_json["case_id"] == case_id
     assert task_body_json["payload"]["identity"]["reference"] == tm_job_ref
 
+
+@then("no cloud tasks are created")
+def step_impl(context):
+    task_request_models = context.cloud_task_service.get_task_request_models()
+
+    assert not task_request_models
+
