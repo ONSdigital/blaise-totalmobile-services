@@ -18,6 +18,7 @@ from services.create_totalmobile_jobs_service import CreateTotalmobileJobsServic
 from services.datastore_service import DatastoreService
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from services.eligible_case_service import EligibleCaseService
+from services.logging_totalmobile_service import LoggingTotalmobileService
 from services.questionnaire_service import QuestionnaireService
 from services.totalmobile_service import TotalmobileService
 from services.uac_service import UacService
@@ -79,7 +80,7 @@ def delete_totalmobile_jobs_completed_in_blaise(_event, _context) -> str:
     totalmobile_service = _create_totalmobile_service(config)
     blaise_service = BlaiseService(config)
     delete_jobs_service = DeleteTotalmobileJobsService(
-        totalmobile_service, blaise_service
+        LoggingTotalmobileService(totalmobile_service), blaise_service
     )
     return cloud_functions.delete_totalmobile_jobs_completed_in_blaise.delete_totalmobile_jobs_completed_in_blaise(
         delete_totalmobile_jobs_service=delete_jobs_service

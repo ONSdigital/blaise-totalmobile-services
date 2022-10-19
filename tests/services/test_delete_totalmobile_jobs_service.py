@@ -18,7 +18,8 @@ CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED = [123, 110, 543]
 @pytest.fixture()
 def delete_totalmobile_jobs_service(mock_totalmobile_service, mock_blaise_service):
     return DeleteTotalmobileJobsService(
-        totalmobile_service=mock_totalmobile_service, blaise_service=mock_blaise_service
+        totalmobile_service=mock_totalmobile_service,
+        blaise_service=mock_blaise_service,
     )
 
 

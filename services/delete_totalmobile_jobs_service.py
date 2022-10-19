@@ -3,6 +3,7 @@ from typing import Dict, List
 
 from models.totalmobile.totalmobile_get_jobs_response_model import Job
 from services.blaise_service import BlaiseService
+from services.logging_totalmobile_service import LoggingTotalmobileService
 from services.totalmobile_service import ITotalmobileService, RecallJobError
 
 
@@ -14,7 +15,7 @@ class DeleteTotalmobileJobsService:
         totalmobile_service: ITotalmobileService,
         blaise_service: BlaiseService,
     ):
-        self._totalmobile_service = totalmobile_service
+        self._totalmobile_service = LoggingTotalmobileService(totalmobile_service)
         self._blaise_service = blaise_service
 
     def delete_jobs_for_completed_cases(self) -> None:
@@ -105,9 +106,6 @@ class DeleteTotalmobileJobsService:
     ) -> Dict[str, List[Job]]:
         try:
             jobs_model = self._totalmobile_service.get_jobs_model(world_id)
-            logging.info(
-                f"Found {jobs_model.total_number_of_incomplete_jobs()} incomplete jobs in totalmobile for world {world_id}"
-            )
 
             return jobs_model.questionnaires_with_incomplete_jobs()
         except Exception as error:
@@ -132,18 +130,11 @@ class DeleteTotalmobileJobsService:
             logging.info(
                 f"Successfully recalled job {job.reference} from {job.allocated_resource_reference} on Totalmobile"
             )
-        except RecallJobError as error:
-            logging.error(
-                f"Failed to recall job {job.reference} from {job.allocated_resource_reference} on Totalmobile (previous: {str(error)})",
-                extra={"previous_exception": str(error)},
-            )
+        except RecallJobError:
+            pass  # Swallow the exception and continue to the next job
 
     def _delete_job(self, world_id: str, job_reference: str, reason: str):
         try:
             self._totalmobile_service.delete_job(world_id, job_reference, reason)
-            logging.info(f"Successfully removed job {job_reference} from Totalmobile")
-        except Exception as error:
-            logging.error(
-                f"Unable to delete job reference '{job_reference}` from Totalmobile",
-                extra={"Exception_reason": str(error)},
-            )
+        except Exception:
+            pass  # Swallow the exception and continue to the next job
