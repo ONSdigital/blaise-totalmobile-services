@@ -176,3 +176,9 @@ Feature: Delete jobs
     When delete_totalmobile_jobs_completed_in_blaise is run
     Then the Totalmobile job with reference "LMS2206-AA1.12345" is recalled from "richmond.rice"
 
+  Scenario: Incomplete Totalmobile jobs within 3 days of due date are recalled
+    Given there is an incomplete job in Totalmobile with reference "LMS2209-AA1.12345" assigned to "richmond.rice"
+    And job reference "LMS2209-AA1.12345" has a dueDate that ends in 3 days
+    When delete_totalmobile_jobs_past_field_period is run
+    Then the Totalmobile job with reference "LMS2209-AA1.12345" is recalled from "richmond.rice"
+
