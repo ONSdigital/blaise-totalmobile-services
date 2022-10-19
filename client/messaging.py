@@ -6,8 +6,10 @@ from client.base import BaseClient
 
 
 class MessagingClient(BaseClient):
+    "https://ons-dev.totalmobile-cloud.com/Test/api/messaging/forcerecallvisit"
+
     def __init__(self, url: str, instance: str, client_id: str, client_secret: str):
-        super().__init__(url, instance, client_id, client_secret)
+        super().__init__(url, instance, client_id, client_secret, "messagingApi")
 
     def force_recall_visit(
         self, allocated_resource_reference: str, work_type: str, job_reference: str

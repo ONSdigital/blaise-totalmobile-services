@@ -41,7 +41,7 @@ class OptimiseClient(BaseClient):
     def __init__(
         self, url: str, instance: str, client_id: str, client_secret: str
     ) -> None:
-        super().__init__(url, instance, client_id, client_secret)
+        super().__init__(url, instance, client_id, client_secret, "optimiseApi")
 
     def create_job(self, world_id: str, job: Dict[Any, Any]) -> requests.Response:
         return self._post(f"worlds/{world_id}/jobs", job).status_code

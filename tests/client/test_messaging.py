@@ -1,3 +1,5 @@
+from urllib.parse import parse_qs
+
 import pytest
 
 from client.messaging import MessagingClient
@@ -30,6 +32,16 @@ class TestForceRecallVisit:
             instance="instance1",
             client_id="client1",
             client_secret="topsecret",
+        )
+
+    def test_requests_scope(self, requests_mock, access_token, client):
+        client.force_recall_visit("richmond.rice", "LMS", "LMS2208-AA1.12345")
+        auth_token_call = requests_mock.request_history[0]
+        assert parse_qs(auth_token_call.text) == dict(
+            client_id=["client1"],
+            client_secret=["topsecret"],
+            grant_type=["client_credentials"],
+            scope=["messagingApi"],
         )
 
     def test_sends_access_token(self, requests_mock, access_token, client):
