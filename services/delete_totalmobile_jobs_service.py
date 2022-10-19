@@ -3,7 +3,7 @@ from typing import Dict, List
 
 from models.totalmobile.totalmobile_get_jobs_response_model import Job
 from services.blaise_service import BlaiseService
-from services.totalmobile_service import RecallJobError, TotalmobileService
+from services.totalmobile_service import ITotalmobileService, RecallJobError
 
 
 class DeleteTotalmobileJobsService:
@@ -11,7 +11,7 @@ class DeleteTotalmobileJobsService:
 
     def __init__(
         self,
-        totalmobile_service: TotalmobileService,
+        totalmobile_service: ITotalmobileService,
         blaise_service: BlaiseService,
     ):
         self._totalmobile_service = totalmobile_service

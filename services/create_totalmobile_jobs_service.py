@@ -9,14 +9,14 @@ from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
 )
 from services.cloud_task_service import CloudTaskService
 from services.questionnaire_service import QuestionnaireService
-from services.totalmobile_service import TotalmobileService
+from services.totalmobile_service import ITotalmobileService
 from services.uac_service import UacService
 
 
 class CreateTotalmobileJobsService:
     def __init__(
         self,
-        totalmobile_service: TotalmobileService,
+        totalmobile_service: ITotalmobileService,
         questionnaire_service: QuestionnaireService,
         uac_service: UacService,
         cloud_task_service: CloudTaskService,

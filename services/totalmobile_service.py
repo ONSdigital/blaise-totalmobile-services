@@ -1,3 +1,5 @@
+from typing import Protocol
+
 import requests
 
 from client.messaging import MessagingClient
@@ -11,6 +13,30 @@ from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 
 class RecallJobError(Exception):
     pass
+
+
+class ITotalmobileService(Protocol):
+    def get_world_model(self) -> TotalmobileWorldModel:
+        pass
+
+    def create_job(self, job: TotalmobileCreateJobModel) -> requests.Response:
+        pass
+
+    def recall_job(
+        self, allocated_resource_reference: str, work_type: str, job_reference: str
+    ) -> None:
+        pass
+
+    def delete_job(
+        self, world_id: str, job: str, reason: str = "0"
+    ) -> requests.Response:
+        pass
+
+    def get_jobs(self, world_id: str) -> GetJobsResponse:
+        pass
+
+    def get_jobs_model(self, world_id: str) -> TotalmobileGetJobsResponseModel:
+        pass
 
 
 class TotalmobileService:
