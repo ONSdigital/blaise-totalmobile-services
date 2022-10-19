@@ -478,7 +478,7 @@ def test_delete_jobs_for_completed_cases_continues_to_delete_when_a_recall_fails
     assert (
         "root",
         logging.ERROR,
-        "Failed to recall job LMS1111-AA1.67890 from stuart.minion on Totalmobile",
+        "Failed to recall job LMS1111-AA1.67890 from stuart.minion on Totalmobile (previous: Error occurred)",
     ) in caplog.record_tuples
     mock_totalmobile_service.delete_job.assert_called_with(
         world_id, "LMS1111-AA1.67890", "completed in blaise"

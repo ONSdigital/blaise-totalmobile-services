@@ -134,7 +134,7 @@ class DeleteTotalmobileJobsService:
             )
         except RecallJobError as error:
             logging.error(
-                f"Failed to recall job {job.reference} from {job.allocated_resource_reference} on Totalmobile",
+                f"Failed to recall job {job.reference} from {job.allocated_resource_reference} on Totalmobile (previous: {str(error)})",
                 extra={"previous_exception": str(error)},
             )
 
