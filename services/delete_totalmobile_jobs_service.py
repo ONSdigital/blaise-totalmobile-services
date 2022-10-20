@@ -3,7 +3,8 @@ from typing import Dict, List
 
 from models.totalmobile.totalmobile_get_jobs_response_model import Job
 from services.blaise_service import BlaiseService
-from services.totalmobile_service import RecallJobError, TotalmobileService
+from services.delete_totalmobile_job_service import DeleteTotalmobileJobService
+from services.totalmobile_service import TotalmobileService
 
 
 class DeleteTotalmobileJobsService:
@@ -13,9 +14,11 @@ class DeleteTotalmobileJobsService:
         self,
         totalmobile_service: TotalmobileService,
         blaise_service: BlaiseService,
+        delete_totalmobile_job_service: DeleteTotalmobileJobService,
     ):
         self._totalmobile_service = totalmobile_service
         self._blaise_service = blaise_service
+        self._delete_job_service = delete_totalmobile_job_service
 
     def delete_jobs_for_completed_cases(self) -> None:
         world_ids = self._get_world_ids()
@@ -55,8 +58,7 @@ class DeleteTotalmobileJobsService:
                 f"job with case ID {job.case_id} has past field period value of {job.past_field_period}"
             )
             if job.past_field_period:
-                self._recall_job(job)
-                self._delete_job(world_id, job.reference, "past field period")
+                self._delete_job_service.delete_job(world_id, job, "past field period")
 
     def _delete_job_if_no_longer_required(
         self,
@@ -80,7 +82,7 @@ class DeleteTotalmobileJobsService:
         if job.visit_complete or blaise_cases_to_remain:
             return
 
-        self._recall_and_delete_job(job, world_id)
+        self._delete_job_service.delete_job(world_id, job, "completed in blaise")
 
     def _get_blaise_case_outcomes_for_questionnaire(
         self, questionnaire_name: str
@@ -105,9 +107,6 @@ class DeleteTotalmobileJobsService:
     ) -> Dict[str, List[Job]]:
         try:
             jobs_model = self._totalmobile_service.get_jobs_model(world_id)
-            logging.info(
-                f"Found {jobs_model.total_number_of_incomplete_jobs()} incomplete jobs in totalmobile for world {world_id}"
-            )
 
             return jobs_model.questionnaires_with_incomplete_jobs()
         except Exception as error:
@@ -116,34 +115,3 @@ class DeleteTotalmobileJobsService:
                 extra={"Exception_reason": str(error)},
             )
             return {}
-
-    def _recall_and_delete_job(self, job, world_id):
-        self._recall_job(job)
-        self._delete_job(world_id, job.reference, "completed in blaise")
-
-    def _recall_job(self, job: Job):
-        if not job.allocated_resource_reference:
-            return
-
-        try:
-            self._totalmobile_service.recall_job(
-                job.allocated_resource_reference, job.work_type, job.reference
-            )
-            logging.info(
-                f"Successfully recalled job {job.reference} from {job.allocated_resource_reference} on Totalmobile"
-            )
-        except RecallJobError as error:
-            logging.error(
-                f"Failed to recall job {job.reference} from {job.allocated_resource_reference} on Totalmobile (previous: {str(error)})",
-                extra={"previous_exception": str(error)},
-            )
-
-    def _delete_job(self, world_id: str, job_reference: str, reason: str):
-        try:
-            self._totalmobile_service.delete_job(world_id, job_reference, reason)
-            logging.info(f"Successfully removed job {job_reference} from Totalmobile")
-        except Exception as error:
-            logging.error(
-                f"Unable to delete job reference '{job_reference}` from Totalmobile",
-                extra={"Exception_reason": str(error)},
-            )

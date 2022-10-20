@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Dict, List
 
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
-from services.blaise_service import BlaiseService
+from services.blaise_service import RealBlaiseService
 from services.datastore_service import DatastoreService
 from services.eligible_case_service import EligibleCaseService
 
@@ -11,7 +11,7 @@ from services.eligible_case_service import EligibleCaseService
 class QuestionnaireService:
     def __init__(
         self,
-        blaise_service: BlaiseService,
+        blaise_service: RealBlaiseService,
         eligible_case_service: EligibleCaseService,
         datastore_service: DatastoreService,
     ):

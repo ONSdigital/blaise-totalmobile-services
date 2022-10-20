@@ -8,7 +8,11 @@ from client.messaging import MessagingClient
 from client.optimise import OptimiseClient
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
-from services.totalmobile_service import RecallJobError, TotalmobileService
+from services.totalmobile_service import (
+    DeleteJobError,
+    RealTotalmobileService,
+    RecallJobError,
+)
 from tests.helpers import optimise_client_helper
 
 
@@ -34,7 +38,7 @@ def messaging_client_mock():
 
 @pytest.fixture()
 def totalmobile_service(optimise_client_mock, messaging_client_mock):
-    return TotalmobileService(optimise_client_mock, messaging_client_mock)
+    return RealTotalmobileService(optimise_client_mock, messaging_client_mock)
 
 
 class TestGetWorldModel:
@@ -158,7 +162,7 @@ class TestGetJobsModel:
         optimise_client_mock.get_jobs.assert_called_with(world_id)
 
 
-class TestDeleteJobs:
+class TestDeleteJob:
     def test_calls_the_client_with_the_correct_parameters_when_no_reason_json_passed(
         self, totalmobile_service, optimise_client_mock
     ):
@@ -184,6 +188,23 @@ class TestDeleteJobs:
 
         # assert
         optimise_client_mock.delete_job.assert_called_with(world_id, job, "110")
+
+    def test_raises_an_exception_when_the_client_raises_an_exception(
+        self, totalmobile_service, optimise_client_mock
+    ):
+        # arrange
+        client_error = RuntimeError("Random error")
+        optimise_client_mock.delete_job.side_effect = client_error
+
+        # act & assert
+        with pytest.raises(
+            DeleteJobError, match="The optimise client raise an error"
+        ) as error:
+            totalmobile_service.delete_job(
+                "3fa85f64-5717-4562-b3fc-2c963f66afa7", "1234", "110"
+            )
+
+        assert error.value.args[1] == client_error
 
 
 class TestRecallJob:

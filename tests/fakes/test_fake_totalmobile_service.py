@@ -2,6 +2,7 @@ import pytest
 
 from models.totalmobile.totalmobile_get_jobs_response_model import Job
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
+from services.totalmobile_service import DeleteJobError
 from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
 
 
@@ -10,7 +11,7 @@ def service() -> FakeTotalmobileService:
     return FakeTotalmobileService()
 
 
-def test_remove_job(service: FakeTotalmobileService):
+def test_delete_job(service: FakeTotalmobileService):
     # arrange
     service.add_job("LMS11111-AA1.12345", "Region 1")
     service.add_job("LMS11111-AA1.34680", "Region 1")
@@ -21,6 +22,16 @@ def test_remove_job(service: FakeTotalmobileService):
     # assert
     assert not service.job_exists("LMS11111-AA1.12345")
     assert service.job_exists("LMS11111-AA1.34680")
+
+
+def test_delete_job_raises_when_set_to_error(service: FakeTotalmobileService):
+    # arrange
+    service.add_job("LMS11111-AA1.12345", "Region 1")
+    service.method_throws_exception("delete_job")
+
+    # act & assert
+    with pytest.raises(DeleteJobError):
+        service.delete_job("world-id-1", "LMS11111-AA1.12345")
 
 
 def test_job_exists(service: FakeTotalmobileService):
