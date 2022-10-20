@@ -11,7 +11,9 @@ from client import OptimiseClient
 
 @pytest.fixture
 def optimise_client() -> OptimiseClient:
-    return OptimiseClient("http://localhost", "Test", "", "")
+    return OptimiseClient(
+        "http://localhost", "Test", "optimise_client_id", "optimise_client_secret"
+    )
 
 
 @pytest.fixture

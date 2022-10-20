@@ -8,12 +8,13 @@ from client.errors import AuthException, BadRequest, ServerError
 
 class BaseClient:
     def __init__(
-        self, url: str, instance: str, client_id: str, client_secret: str
+        self, url: str, instance: str, client_id: str, client_secret: str, scope: str
     ) -> None:
         self._url = url
         self._instance = instance
         self._client_id = client_id
         self._client_secret = client_secret
+        self._scope = scope
         self.__access_token = ""
         self.__expires_at = datetime.now()
 
@@ -62,7 +63,7 @@ class BaseClient:
                     "grant_type": "client_credentials",
                     "client_id": self._client_id,
                     "client_secret": self._client_secret,
-                    "scope": "optimiseApi",
+                    "scope": self._scope,
                 },
             )
             access_token = response.json()

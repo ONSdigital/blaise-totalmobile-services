@@ -3,7 +3,7 @@ from typing import Dict, List
 
 from models.totalmobile.totalmobile_get_jobs_response_model import Job
 from services.blaise_service import BlaiseService
-from services.totalmobile_service import TotalmobileService
+from services.totalmobile_service import RecallJobError, TotalmobileService
 
 
 class DeleteTotalmobileJobsService:
@@ -55,6 +55,7 @@ class DeleteTotalmobileJobsService:
                 f"job with case ID {job.case_id} has past field period value of {job.past_field_period}"
             )
             if job.past_field_period:
+                self._recall_job(job)
                 self._delete_job(world_id, job.reference, "past field period")
 
     def _delete_job_if_no_longer_required(
@@ -79,7 +80,7 @@ class DeleteTotalmobileJobsService:
         if job.visit_complete or blaise_cases_to_remain:
             return
 
-        self._delete_job(world_id, job.reference, "completed in blaise")
+        self._recall_and_delete_job(job, world_id)
 
     def _get_blaise_case_outcomes_for_questionnaire(
         self, questionnaire_name: str
@@ -115,6 +116,27 @@ class DeleteTotalmobileJobsService:
                 extra={"Exception_reason": str(error)},
             )
             return {}
+
+    def _recall_and_delete_job(self, job, world_id):
+        self._recall_job(job)
+        self._delete_job(world_id, job.reference, "completed in blaise")
+
+    def _recall_job(self, job: Job):
+        if not job.allocated_resource_reference:
+            return
+
+        try:
+            self._totalmobile_service.recall_job(
+                job.allocated_resource_reference, job.work_type, job.reference
+            )
+            logging.info(
+                f"Successfully recalled job {job.reference} from {job.allocated_resource_reference} on Totalmobile"
+            )
+        except RecallJobError as error:
+            logging.error(
+                f"Failed to recall job {job.reference} from {job.allocated_resource_reference} on Totalmobile (previous: {str(error)})",
+                extra={"previous_exception": str(error)},
+            )
 
     def _delete_job(self, world_id: str, job_reference: str, reason: str):
         try:

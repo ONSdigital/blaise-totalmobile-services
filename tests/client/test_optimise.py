@@ -1,6 +1,22 @@
+from urllib.parse import parse_qs
+
 import pytest
 
 from client import AuthException, BadRequest, ServerError
+
+
+def test_requests_the_correct_permissions(
+    requests_mock, optimise_client, mock_auth_response
+):
+    requests_mock.post("/Test/identity/connect/token", json=mock_auth_response)
+    requests_mock.post("/Test/api/optimise/worlds/test/jobs", json={})
+    optimise_client.create_job("test", {})
+    assert parse_qs(requests_mock.request_history[0].text) == dict(
+        client_id=["optimise_client_id"],
+        client_secret=["optimise_client_secret"],
+        grant_type=["client_credentials"],
+        scope=["optimiseApi"],
+    )
 
 
 def test_create_job_returns_status_code(

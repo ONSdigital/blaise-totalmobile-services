@@ -34,6 +34,13 @@ def step_impl(context, questionnaire):
     context.blaise_service.add_questionnaire(questionnaire)
 
 
+@given("the case has a complete outcome code")
+def step_impl(context):
+    context.blaise_service.update_outcome_code_of_case_in_questionnaire(
+        context.questionnaire_name, context.case_id, "110"
+    )
+
+
 @given("the case has an outcome code of {outcome_code}")
 def step_impl(context, outcome_code):
     context.blaise_service.update_outcome_code_of_case_in_questionnaire(
@@ -218,16 +225,25 @@ def step_impl(context, case_id, questionnaire):
     )
 
 
-@given('there is an incomplete job in Totalmobile with reference "{reference}"')
+@given('there is an incomplete job in Totalmobile with reference "{reference:S}"')
 def step_impl(context, reference):
     context.totalmobile_service.add_job(reference, "Region 1")
 
 
 @given(
-    'there is an incomplete job in Totalmobile in region {region} with reference "{reference}"'
+    'there is an incomplete job in Totalmobile in region {region} with reference "{reference:S}"'
 )
 def step_impl(context, region, reference):
     context.totalmobile_service.add_job(reference, region)
+
+
+@given(
+    'there is an incomplete job in Totalmobile with reference "{reference:S}" assigned to "{resource:S}"'
+)
+def step_impl(context, reference, resource):
+    context.totalmobile_service.add_job(
+        reference, "Region 1", allocated_resource_reference=resource
+    )
 
 
 @given('job reference "{reference}" has a dueDate that ends in {days} days')
@@ -259,6 +275,13 @@ def step_impl(context):
         context.totalmobile_service, context.blaise_service
     )
     delete_totalmobile_service.delete_jobs_past_field_period()
+
+
+@then('the Totalmobile job with reference "{reference}" is recalled from "{resource}"')
+def step_impl(context, reference, resource):
+    assert context.totalmobile_service.job_has_been_recalled(
+        resource, reference
+    ), f"The job {reference} has not been recalled from {resource}"
 
 
 @then('the Totalmobile job with reference "{reference}" is deleted')
