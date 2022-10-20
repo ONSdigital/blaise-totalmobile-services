@@ -5,11 +5,11 @@ from scripts.delete_totalmobile_jobs import (
     __get_active_world_ids,
     __map_world_id_to_job_reference,
 )
-from services.totalmobile_service import TotalmobileService
+from services.totalmobile_service import RealTotalmobileService
 
 
 def test_get_list_of_active_world_ids_returns_a_list_of_active_world_ids():
-    totalmobile_service_mock = create_autospec(TotalmobileService)
+    totalmobile_service_mock = create_autospec(RealTotalmobileService)
     totalmobile_service_mock.get_world_model.return_value = TotalmobileWorldModel(
         worlds=[
             World(region="Region 1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6"),
@@ -28,7 +28,7 @@ def test_build_dictionary():
         "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "3fa85f64-5717-4562-b3fc-2c963f66afa7",
     ]
-    totalmobile_service_mock = create_autospec(TotalmobileService)
+    totalmobile_service_mock = create_autospec(RealTotalmobileService)
     totalmobile_service_mock.get_jobs.return_value = [
         {"identity": {"reference": "Foo"}, "visitComplete": False},
         {"identity": {"reference": "Bar"}, "visitComplete": False},
