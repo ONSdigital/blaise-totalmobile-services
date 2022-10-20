@@ -19,11 +19,10 @@ CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED = [123, 110, 543]
 
 @pytest.fixture()
 def delete_totalmobile_jobs_service(mock_totalmobile_service, mock_blaise_service):
-    totalmobile_service = LoggingTotalmobileService(mock_totalmobile_service)
     return DeleteTotalmobileJobsService(
-        totalmobile_service=totalmobile_service,
+        totalmobile_service=(mock_totalmobile_service),
         blaise_service=mock_blaise_service,
-        delete_totalmobile_job_service=DeleteTotalmobileJobService(totalmobile_service),
+        delete_totalmobile_job_service=DeleteTotalmobileJobService(mock_totalmobile_service),
     )
 
 
@@ -403,47 +402,6 @@ def test_delete_jobs_past_field_period_does_not_delete_job_when_field_period_has
     mock_totalmobile_service.delete_job.assert_not_called()
 
 
-def test_delete_jobs_for_completed_cases_logs_when_a_log_is_recalled(
-    mock_totalmobile_service,
-    mock_blaise_service,
-    delete_totalmobile_jobs_service,
-    world_id,
-    caplog,
-):
-    # arrange
-    mock_totalmobile_service.get_jobs_model.return_value = (
-        TotalmobileGetJobsResponseModel(
-            questionnaire_jobs={
-                "LMS1111_AA1": [
-                    Job(
-                        reference="LMS1111-AA1.67890",
-                        case_id="67890",
-                        visit_complete=False,
-                        past_field_period=False,
-                        allocated_resource_reference="stuart.minion",
-                        work_type="LMS",
-                    )
-                ]
-            }
-        )
-    )
-
-    mock_blaise_service.get_cases.return_value = [
-        get_populated_case_model(case_id="67890", outcome_code=110)
-    ]
-
-    # act
-    with caplog.at_level(level=logging.INFO):
-        delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
-
-    # assert
-    assert (
-        "root",
-        logging.INFO,
-        "Successfully recalled job LMS1111-AA1.67890 from stuart.minion on Totalmobile",
-    ) in caplog.record_tuples
-
-
 def test_delete_jobs_for_completed_cases_continues_to_delete_when_a_recall_fails(
     mock_totalmobile_service,
     mock_blaise_service,
@@ -480,11 +438,6 @@ def test_delete_jobs_for_completed_cases_continues_to_delete_when_a_recall_fails
         delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
 
     # assert
-    assert (
-        "root",
-        logging.ERROR,
-        "Failed to recall job LMS1111-AA1.67890 from stuart.minion on Totalmobile (previous: Error occurred)",
-    ) in caplog.record_tuples
     mock_totalmobile_service.delete_job.assert_called_with(
         world_id, "LMS1111-AA1.67890", "completed in blaise"
     )
