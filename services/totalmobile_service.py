@@ -19,7 +19,7 @@ class DeleteJobError(Exception):
     pass
 
 
-class ITotalmobileService(Protocol):
+class TotalmobileService(Protocol):
     def get_world_model(self) -> TotalmobileWorldModel:
         pass
 
@@ -43,7 +43,7 @@ class ITotalmobileService(Protocol):
         pass
 
 
-class TotalmobileService:
+class RealTotalmobileService:
     def __init__(
         self, optimise_client: OptimiseClient, messaging_client: MessagingClient
     ):

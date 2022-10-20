@@ -10,8 +10,8 @@ from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJob
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.totalmobile_service import (
     DeleteJobError,
+    RealTotalmobileService,
     RecallJobError,
-    TotalmobileService,
 )
 from tests.helpers import optimise_client_helper
 
@@ -38,7 +38,7 @@ def messaging_client_mock():
 
 @pytest.fixture()
 def totalmobile_service(optimise_client_mock, messaging_client_mock):
-    return TotalmobileService(optimise_client_mock, messaging_client_mock)
+    return RealTotalmobileService(optimise_client_mock, messaging_client_mock)
 
 
 class TestGetWorldModel:

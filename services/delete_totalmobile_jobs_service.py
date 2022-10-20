@@ -2,9 +2,9 @@ import logging
 from typing import Dict, List
 
 from models.totalmobile.totalmobile_get_jobs_response_model import Job
-from services.blaise_service import IBlaiseService
+from services.blaise_service import BlaiseService
 from services.delete_totalmobile_job_service import DeleteTotalmobileJobService
-from services.totalmobile_service import ITotalmobileService
+from services.totalmobile_service import TotalmobileService
 
 
 class DeleteTotalmobileJobsService:
@@ -12,8 +12,8 @@ class DeleteTotalmobileJobsService:
 
     def __init__(
         self,
-        totalmobile_service: ITotalmobileService,
-        blaise_service: IBlaiseService,
+        totalmobile_service: TotalmobileService,
+        blaise_service: BlaiseService,
         delete_totalmobile_job_service: DeleteTotalmobileJobService,
     ):
         self._totalmobile_service = totalmobile_service

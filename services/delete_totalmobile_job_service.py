@@ -1,13 +1,13 @@
 from models.totalmobile.totalmobile_get_jobs_response_model import Job
 from services.totalmobile_service import (
     DeleteJobError,
-    ITotalmobileService,
     RecallJobError,
+    TotalmobileService,
 )
 
 
 class DeleteTotalmobileJobService:
-    def __init__(self, totalmobile_service: ITotalmobileService):
+    def __init__(self, totalmobile_service: TotalmobileService):
         self._totalmobile_service = totalmobile_service
 
     def delete_job(self, world_id: str, job: Job, reason: str) -> None:

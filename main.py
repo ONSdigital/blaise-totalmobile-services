@@ -12,7 +12,7 @@ from appconfig import Config
 from client import OptimiseClient
 from client.messaging import MessagingClient
 from cloud_functions.logging import setup_logger
-from services.blaise_service import BlaiseService
+from services.blaise_service import RealBlaiseService
 from services.cloud_task_service import CloudTaskService
 from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 from services.datastore_service import DatastoreService
@@ -20,11 +20,11 @@ from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsServic
 from services.eligible_case_service import EligibleCaseService
 from services.logging_totalmobile_service import LoggingTotalmobileService
 from services.questionnaire_service import QuestionnaireService
-from services.totalmobile_service import TotalmobileService
+from services.totalmobile_service import RealTotalmobileService
 from services.uac_service import UacService
 
 
-def _create_totalmobile_service(config: Config) -> TotalmobileService:
+def _create_totalmobile_service(config: Config) -> RealTotalmobileService:
     optimise_client = OptimiseClient(
         config.totalmobile_url,
         config.totalmobile_instance,
@@ -37,14 +37,14 @@ def _create_totalmobile_service(config: Config) -> TotalmobileService:
         config.totalmobile_client_id,
         config.totalmobile_client_secret,
     )
-    return TotalmobileService(optimise_client, messaging_client)
+    return RealTotalmobileService(optimise_client, messaging_client)
 
 
 def create_totalmobile_jobs_trigger(_event, _context) -> str:
     config = Config.from_env()
 
     questionnaire_service = QuestionnaireService(
-        blaise_service=BlaiseService(config),
+        blaise_service=RealBlaiseService(config),
         eligible_case_service=EligibleCaseService(),
         datastore_service=DatastoreService(),
     )
@@ -79,7 +79,7 @@ def delete_totalmobile_jobs_completed_in_blaise(_event, _context) -> str:
     config = Config.from_env()
 
     return cloud_functions.delete_totalmobile_jobs_completed_in_blaise.delete_totalmobile_jobs_completed_in_blaise(
-        BlaiseService(config),
+        RealBlaiseService(config),
         _create_totalmobile_service(config),
     )
 
@@ -87,7 +87,7 @@ def delete_totalmobile_jobs_completed_in_blaise(_event, _context) -> str:
 def delete_totalmobile_jobs_past_field_period(_event, _context) -> str:
     config = Config.from_env()
     totalmobile_service = _create_totalmobile_service(config)
-    blaise_service = BlaiseService(config)
+    blaise_service = RealBlaiseService(config)
 
     return cloud_functions.delete_totalmobile_jobs_past_field_period.delete_totalmobile_jobs_past_field_period(
         blaise_service, totalmobile_service

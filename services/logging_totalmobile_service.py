@@ -8,11 +8,11 @@ from models.totalmobile.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from services.totalmobile_service import ITotalmobileService, RecallJobError
+from services.totalmobile_service import RecallJobError, TotalmobileService
 
 
 class LoggingTotalmobileService:
-    def __init__(self, service: ITotalmobileService):
+    def __init__(self, service: TotalmobileService):
         self._service = service
 
     def get_world_model(self) -> TotalmobileWorldModel:

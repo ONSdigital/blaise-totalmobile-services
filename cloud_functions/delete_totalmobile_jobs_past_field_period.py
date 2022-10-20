@@ -1,12 +1,12 @@
-from services.blaise_service import IBlaiseService
+from services.blaise_service import BlaiseService
 from services.delete_totalmobile_job_service import DeleteTotalmobileJobService
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from services.logging_totalmobile_service import LoggingTotalmobileService
-from services.totalmobile_service import ITotalmobileService
+from services.totalmobile_service import TotalmobileService
 
 
 def delete_totalmobile_jobs_past_field_period(
-    blaise_service: IBlaiseService, totalmobile_service: ITotalmobileService
+    blaise_service: BlaiseService, totalmobile_service: TotalmobileService
 ) -> str:
     logging_totalmobile_service = LoggingTotalmobileService(totalmobile_service)
     DeleteTotalmobileJobsService(

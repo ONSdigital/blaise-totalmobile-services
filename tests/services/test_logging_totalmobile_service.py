@@ -13,16 +13,16 @@ from models.totalmobile.totalmobile_get_jobs_response_model import (
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.logging_totalmobile_service import LoggingTotalmobileService
-from services.totalmobile_service import ITotalmobileService
+from services.totalmobile_service import TotalmobileService
 
 
 @pytest.fixture()
-def inner_service() -> ITotalmobileService:
-    return create_autospec(ITotalmobileService)
+def inner_service() -> TotalmobileService:
+    return create_autospec(TotalmobileService)
 
 
 @pytest.fixture()
-def logging_service(inner_service) -> ITotalmobileService:
+def logging_service(inner_service) -> TotalmobileService:
     return LoggingTotalmobileService(inner_service)
 
 

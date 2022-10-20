@@ -8,7 +8,7 @@ from appconfig import Config
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 
 
-class IBlaiseService(Protocol):
+class BlaiseService(Protocol):
     def get_cases(self, questionnaire_name: str) -> List[BlaiseCaseInformationModel]:
         pass
 
@@ -26,7 +26,7 @@ class IBlaiseService(Protocol):
         pass
 
 
-class BlaiseService:
+class RealBlaiseService:
     def __init__(self, config: Config):
         self._config = config
         self.restapi_client = blaise_restapi.Client(self._config.blaise_api_url)

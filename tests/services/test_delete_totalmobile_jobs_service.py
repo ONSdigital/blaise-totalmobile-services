@@ -9,7 +9,7 @@ from models.totalmobile.totalmobile_get_jobs_response_model import (
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.delete_totalmobile_job_service import DeleteTotalmobileJobService
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
-from services.totalmobile_service import TotalmobileService
+from services.totalmobile_service import RealTotalmobileService
 from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
 CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED = [123, 110, 543]
@@ -28,7 +28,7 @@ def delete_totalmobile_jobs_service(
 
 @pytest.fixture()
 def mock_totalmobile_service(world_id):
-    mock_totalmobile_service = create_autospec(TotalmobileService)
+    mock_totalmobile_service = create_autospec(RealTotalmobileService)
     mock_totalmobile_service.get_world_model.return_value = TotalmobileWorldModel(
         worlds=[World(region="Region 1", id=world_id)]
     )

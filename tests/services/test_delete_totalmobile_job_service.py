@@ -6,14 +6,14 @@ from models.totalmobile.totalmobile_get_jobs_response_model import Job
 from services.delete_totalmobile_job_service import DeleteTotalmobileJobService
 from services.totalmobile_service import (
     DeleteJobError,
-    ITotalmobileService,
     RecallJobError,
+    TotalmobileService,
 )
 
 
 @pytest.fixture()
 def totalmobile_service():
-    return create_autospec(ITotalmobileService)
+    return create_autospec(TotalmobileService)
 
 
 @pytest.fixture()
