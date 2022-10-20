@@ -10,18 +10,23 @@ from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
 
 @pytest.fixture()
-def mock_case_filter():
+def mock_case_filter_wave_1():
     return create_autospec(CaseFilterBase)
 
 
 @pytest.fixture()
-def service(mock_case_filter) -> EligibleCaseService:
-    return EligibleCaseService(wave_filters=[mock_case_filter])
+def mock_case_filter_wave_2():
+    return create_autospec(CaseFilterBase)
 
 
-def test_get_eligible_cases_returns_expected_list_of_cases(
-    mock_case_filter: CaseFilterBase,
-    service: EligibleCaseService,
+@pytest.fixture()
+def service(mock_case_filter_wave_1):
+    return EligibleCaseService(wave_filters=[mock_case_filter_wave_1])
+
+
+def test_get_eligible_cases_returns_expected_list_of_cases_with_one_filter(
+    mock_case_filter_wave_1: CaseFilterBase,
+    service
 ):
     # arrange
     cases = [
@@ -31,7 +36,7 @@ def test_get_eligible_cases_returns_expected_list_of_cases(
         get_populated_case_model(case_id="90004")
     ]
 
-    mock_case_filter.case_is_eligible.side_effect = [True, False, True, True]
+    mock_case_filter_wave_1.case_is_eligible.side_effect = [True, False, True, True]
 
     # act
     result = service.get_eligible_cases(cases)
@@ -46,8 +51,39 @@ def test_get_eligible_cases_returns_expected_list_of_cases(
     ]
 
 
+def test_get_eligible_cases_returns_expected_list_of_cases_with_two_filters(
+    mock_case_filter_wave_1: CaseFilterBase,
+    mock_case_filter_wave_2: CaseFilterBase
+):
+    # arrange
+    cases = [
+        get_populated_case_model(case_id="90001"),
+        get_populated_case_model(case_id="90002"),
+        get_populated_case_model(case_id="90003"),
+        get_populated_case_model(case_id="90004")
+    ]
+
+    mock_case_filter_wave_1.case_is_eligible.side_effect = [True, False, True, True] #false will pass down to filter 2
+    mock_case_filter_wave_2.case_is_eligible.side_effect = [True]
+
+    service = EligibleCaseService(wave_filters=[mock_case_filter_wave_1, mock_case_filter_wave_2])
+
+    # act
+    result = service.get_eligible_cases(cases)
+
+    # assert
+    assert len(result) == 4
+
+    assert result == [
+        get_populated_case_model(case_id="90001"),
+        get_populated_case_model(case_id="90002"),
+        get_populated_case_model(case_id="90003"),
+        get_populated_case_model(case_id="90004")
+    ]
+
+
 def test_get_eligible_cases_logs_filtered_cases(
-    mock_case_filter: CaseFilterBase,
+    mock_case_filter_wave_1: CaseFilterBase,
     service: EligibleCaseService,
     caplog
 ):
@@ -59,7 +95,7 @@ def test_get_eligible_cases_logs_filtered_cases(
         get_populated_case_model(case_id="90004")
     ]
 
-    mock_case_filter.case_is_eligible.side_effect = [True, False, True, True]
+    mock_case_filter_wave_1.case_is_eligible.side_effect = [True, False, True, True]
 
     # act && assert
     with caplog.at_level(logging.INFO):
