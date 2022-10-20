@@ -79,6 +79,7 @@ def delete_totalmobile_jobs_completed_in_blaise(_event, _context) -> str:
     config = Config.from_env()
     totalmobile_service = _create_totalmobile_service(config)
     blaise_service = BlaiseService(config)
+
     delete_jobs_service = DeleteTotalmobileJobsService(
         LoggingTotalmobileService(totalmobile_service), blaise_service
     )
@@ -91,6 +92,7 @@ def delete_totalmobile_jobs_past_field_period(_event, _context) -> str:
     config = Config.from_env()
     totalmobile_service = _create_totalmobile_service(config)
     blaise_service = BlaiseService(config)
+
     delete_jobs_service = DeleteTotalmobileJobsService(
         totalmobile_service, blaise_service
     )
