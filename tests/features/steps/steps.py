@@ -340,7 +340,7 @@ def step_impl(context, case_id, questionnaire_name):
         questionnaire=questionnaire_name,
         case_id=case_id,
         outcome_code=outcome_code,
-        wave=data_fields["qDataBag.Wave"],
+        wave=int(data_fields["qDataBag.Wave"]),
         field_case=data_fields["qDataBag.FieldCase"],
         telephone_number_1=data_fields["qDataBag.TelNo"],
         telephone_number_2=data_fields["qDataBag.TelNo2"],

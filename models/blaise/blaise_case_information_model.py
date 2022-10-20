@@ -41,7 +41,7 @@ class BlaiseCaseInformationModel(BaseModel):
     questionnaire_name: str
     case_id: Optional[str]
     data_model_name: Optional[str]
-    wave: Optional[str]
+    wave: Optional[int]
     address_details: AddressDetails
     contact_details: ContactDetails
     outcome_code: int
@@ -62,11 +62,13 @@ class BlaiseCaseInformationModel(BaseModel):
             if wave_com_dte_str != ""
             else None
         )
+        wave = case_data_dictionary.get("qDataBag.Wave")
+
         return cls(
             questionnaire_name=questionnaire_name,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
             data_model_name=case_data_dictionary.get("dataModelName"),
-            wave=case_data_dictionary.get("qDataBag.Wave"),
+            wave=int(wave) if wave else None,
             address_details=AddressDetails(
                 address=Address(
                     address_line_1=case_data_dictionary.get("qDataBag.Prem1"),

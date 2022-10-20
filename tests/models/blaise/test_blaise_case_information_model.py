@@ -4,12 +4,13 @@ from models.blaise.blaise_case_information_model import BlaiseCaseInformationMod
 
 
 def test_import_case_returns_a_populated_model():
+    # arrange
     questionnaire_name = "LMS2101_AA1"
 
     case_data_dictionary = {
         "qiD.Serial_Number": "90000000",
         "dataModelName": "LM2007",
-        "qDataBag.Wave": "1",
+        "qDataBag.Wave": 1,
         "qDataBag.Prem1": "12 Blaise Street",
         "qDataBag.Prem2": "Blaise Hill",
         "qDataBag.Prem3": "Blaiseville",
@@ -30,14 +31,16 @@ def test_import_case_returns_a_populated_model():
         "catiMana.CatiCall.RegsCalls[1].DialResult": "",
     }
 
+    # act
     result = BlaiseCaseInformationModel.import_case(
         questionnaire_name, case_data_dictionary
     )
 
+    # assert
     assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id == "90000000"
     assert result.data_model_name == "LM2007"
-    assert result.wave == "1"
+    assert result.wave == 1
     assert result.address_details.address.address_line_1 == "12 Blaise Street"
     assert result.address_details.address.address_line_2 == "Blaise Hill"
     assert result.address_details.address.address_line_3 == "Blaiseville"
@@ -59,12 +62,13 @@ def test_import_case_returns_a_populated_model():
 
 
 def test_import_case_returns_a_valid_object_when_a_blaise_field_is_incorrectly_typed():
+    # arrange
     questionnaire_name = "LMS2101_AA1"
 
     case_data_dictionary = {
         "qdatabag.Serial_Number": "90000000",
         "dataModelName": "LM2007",
-        "qDataBag.Wave": "1",
+        "qDataBag.Wave": 1,
         "qDataBag.Prem1": "12 Blaise Street",
         "qDataBag.Prem2": "Blaise Hill",
         "qDataBag.Prem3": "Blaiseville",
@@ -84,14 +88,16 @@ def test_import_case_returns_a_valid_object_when_a_blaise_field_is_incorrectly_t
         "catiMana.CatiCall.RegsCalls[1].DialResult": "1",
     }
 
+    # act
     result = BlaiseCaseInformationModel.import_case(
         questionnaire_name, case_data_dictionary
     )
 
+    # assert
     assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id is None
     assert result.data_model_name == "LM2007"
-    assert result.wave == "1"
+    assert result.wave == 1
     assert result.address_details.address.address_line_1 == "12 Blaise Street"
     assert result.address_details.address.address_line_2 == "Blaise Hill"
     assert result.address_details.address.address_line_3 == "Blaiseville"
@@ -112,35 +118,40 @@ def test_import_case_returns_a_valid_object_when_a_blaise_field_is_incorrectly_t
 
 
 def test_import_case_sets_outcome_code_to_zero_if_empty():
+    # arrange
     questionnaire_name = "LMS2101_AA1"
-
     case_data_dictionary = {"hOut": "", "qDataBag.WaveComDTE": "31-01-2023"}
 
+    # act
     result = BlaiseCaseInformationModel.import_case(
         questionnaire_name, case_data_dictionary
     )
 
+    # assert
     assert result.outcome_code == 0
 
 
 def test_import_case_sets_outcome_code_to_zero_if_not_supplied():
+    # arrange
     questionnaire_name = "LMS2101_AA1"
-
     case_data_dictionary = {"qDataBag.WaveComDTE": "31-01-2023"}
 
+    # act
     result = BlaiseCaseInformationModel.import_case(
         questionnaire_name, case_data_dictionary
     )
 
+    # assert
     assert result.outcome_code == 0
 
 
 def test_import_case_returns_a_valid_object_when_an_optional_blaise_field_is_missing():
+    # arrange
     questionnaire_name = "LMS2101_AA1"
 
     case_data_dictionary = {
         "dataModelName": "LM2007",
-        "qDataBag.Wave": "1",
+        "qDataBag.Wave": 1,
         "qDataBag.Prem1": "12 Blaise Street",
         "qDataBag.Prem2": "Blaise Hill",
         "qDataBag.Prem3": "Blaiseville",
@@ -160,14 +171,16 @@ def test_import_case_returns_a_valid_object_when_an_optional_blaise_field_is_mis
         "catiMana.CatiCall.RegsCalls[1].DialResult": "",
     }
 
+    # act
     result = BlaiseCaseInformationModel.import_case(
         questionnaire_name, case_data_dictionary
     )
 
+    # assert
     assert result.questionnaire_name == "LMS2101_AA1"
     assert result.case_id is None
     assert result.data_model_name == "LM2007"
-    assert result.wave == "1"
+    assert result.wave == 1
     assert result.address_details.address.address_line_1 == "12 Blaise Street"
     assert result.address_details.address.address_line_2 == "Blaise Hill"
     assert result.address_details.address.address_line_3 == "Blaiseville"
@@ -188,6 +201,7 @@ def test_import_case_returns_a_valid_object_when_an_optional_blaise_field_is_mis
 
 
 def test_import_case_sets_has_call_history_to_true_when_blaise_case_has_call_history():
+    # arrange
     questionnaire_name = "LMS2101_AA1"
 
     case_data_dictionary = {
@@ -195,14 +209,17 @@ def test_import_case_sets_has_call_history_to_true_when_blaise_case_has_call_his
         "catiMana.CatiCall.RegsCalls[1].DialResult": "1",
     }
 
+    # act
     result = BlaiseCaseInformationModel.import_case(
         questionnaire_name, case_data_dictionary
     )
 
+    # assert
     assert result.has_call_history is True
 
 
 def test_import_case_sets_has_call_history_to_false_when_blaise_case_has_no_call_history():
+    # arrange
     questionnaire_name = "LMS2101_AA1"
 
     case_data_dictionary = {
@@ -210,33 +227,39 @@ def test_import_case_sets_has_call_history_to_false_when_blaise_case_has_no_call
         "catiMana.CatiCall.RegsCalls[1].DialResult": "",
     }
 
+    # act
     result = BlaiseCaseInformationModel.import_case(
         questionnaire_name, case_data_dictionary
     )
 
+    # assert
     assert result.has_call_history is False
 
 
 def test_import_case_sets_has_call_history_to_false_when_blaise_case_is_missing_call_history():
+    # arrange
     questionnaire_name = "LMS2101_AA1"
 
     case_data_dictionary = {
         "qDataBag.WaveComDTE": "31-01-2023",
     }
 
+    # act
     result = BlaiseCaseInformationModel.import_case(
         questionnaire_name, case_data_dictionary
     )
 
+    # assert
     assert result.has_call_history is False
 
 
 def test_import_case_sets_date_to_none_if_date_is_an_empty_string():
+    # arrange
     case_data_dictionary = {
         "qiD.Serial_Number": "90000000",
         "dataModelName": "LM2007",
         "qDataBag.TLA": "LMS",
-        "qDataBag.Wave": "1",
+        "qDataBag.Wave": 1,
         "qDataBag.Prem1": "12 Blaise Street",
         "qDataBag.Prem2": "Blaise Hill",
         "qDataBag.Prem3": "Blaiseville",
@@ -255,6 +278,8 @@ def test_import_case_sets_date_to_none_if_date_is_an_empty_string():
         "qDataBag.WaveComDTE": "",
     }
 
+    # act
     result = BlaiseCaseInformationModel.import_case("LMS", case_data_dictionary)
 
+    # assert
     assert result.wave_com_dte is None

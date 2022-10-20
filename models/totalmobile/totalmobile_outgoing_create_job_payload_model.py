@@ -186,7 +186,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
                     name="surveyName", value=questionnaire_case.data_model_name
                 ),
                 AdditionalProperty(name="tla", value="LMS"),
-                AdditionalProperty(name="wave", value=questionnaire_case.wave),
+                AdditionalProperty(name="wave", value=str(questionnaire_case.wave)),
                 AdditionalProperty(name="priority", value=questionnaire_case.priority),
                 AdditionalProperty(
                     name="fieldRegion", value=questionnaire_case.field_region

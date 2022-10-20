@@ -1,0 +1,88 @@
+from abc import abstractmethod
+import logging
+
+from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
+
+
+class CaseFilterBase:
+
+    @property
+    @abstractmethod
+    def wave_number(self) -> int:
+        pass
+
+    @abstractmethod
+    def case_is_eligible(self, case: BlaiseCaseInformationModel) -> bool:
+        pass
+
+    @staticmethod
+    def case_is_part_of_wave(wave_number: int, case: BlaiseCaseInformationModel) -> bool:
+        if case.wave == wave_number:
+            return True
+
+        return False
+
+    @staticmethod
+    def telephone_number_is_empty(case: BlaiseCaseInformationModel) -> bool:
+        if case.contact_details.telephone_number_1 == "":
+            return True
+
+        logging.info(
+            f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a value set for the field 'telephone_number_1'"
+        )
+        return False
+
+    @staticmethod
+    def telephone_number_2_is_empty(case: BlaiseCaseInformationModel) -> bool:
+        if case.contact_details.telephone_number_2 == "":
+            return True
+
+        logging.info(
+            f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a value set for the field 'telephone_number_2'"
+        )
+        return False
+
+    @staticmethod
+    def appointment_telephone_number_is_empty(case: BlaiseCaseInformationModel) -> bool:
+        if case.contact_details.appointment_telephone_number == "":
+            return True
+
+        logging.info(
+            f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a value set for the field 'appointment_telephone_number'"
+        )
+        return False
+
+    @staticmethod
+    def case_has_field_case_of_y(case: BlaiseCaseInformationModel) -> bool:
+        if case.field_case == "Y" or case.field_case == "y":
+            return True
+
+        logging.info(
+            f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a field case value of '{case.field_case}', not 'Y'"
+        )
+        return False
+
+    @staticmethod
+    def case_has_a_desired_outcome_code_of_0_or_310_or_320(
+        case: BlaiseCaseInformationModel,
+    ) -> bool:
+        value_range = [0, 310, 320]
+        if case.outcome_code in value_range:
+            return True
+
+        logging.info(
+            f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a value '{case.outcome_code}' outside of the range '{value_range}' set for the field 'outcome_code'"
+        )
+        return False
+
+    @staticmethod
+    def case_is_in_a_known_region(case: BlaiseCaseInformationModel) -> bool:
+        value_range = TotalmobileWorldModel.get_available_regions()
+        if case.field_region in value_range:
+            return True
+
+        logging.info(
+            f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a value '{case.field_region}' outside of the range '{value_range}' set for the field 'field_region'"
+        )
+        return False
