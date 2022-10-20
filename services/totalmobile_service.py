@@ -15,6 +15,10 @@ class RecallJobError(Exception):
     pass
 
 
+class DeleteJobError(Exception):
+    pass
+
+
 class ITotalmobileService(Protocol):
     def get_world_model(self) -> TotalmobileWorldModel:
         pass
@@ -60,7 +64,7 @@ class TotalmobileService:
             response = self._messaging_client.force_recall_visit(
                 allocated_resource_reference, work_type, job_reference
             )
-        except BaseException as error:
+        except Exception as error:
             raise RecallJobError("The messaging client raise an error", error)
 
         if response.status_code != 201:
@@ -71,7 +75,10 @@ class TotalmobileService:
     def delete_job(
         self, world_id: str, job: str, reason: str = "0"
     ) -> requests.Response:
-        return self._optimise_client.delete_job(world_id, job, reason)
+        try:
+            return self._optimise_client.delete_job(world_id, job, reason)
+        except Exception as error:
+            raise DeleteJobError("The optimise client raise an error", error)
 
     def get_jobs(self, world_id: str) -> GetJobsResponse:
         return self._optimise_client.get_jobs(world_id)

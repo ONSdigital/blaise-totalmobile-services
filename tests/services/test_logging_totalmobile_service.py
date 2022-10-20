@@ -13,7 +13,7 @@ from models.totalmobile.totalmobile_get_jobs_response_model import (
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.logging_totalmobile_service import LoggingTotalmobileService
-from services.totalmobile_service import ITotalmobileService, RecallJobError
+from services.totalmobile_service import ITotalmobileService
 
 
 @pytest.fixture()
@@ -102,7 +102,7 @@ class TestRecallJob:
         assert (
             "root",
             logging.ERROR,
-            "Failed to recall job LMS2209-AA1.12345 from norbert.minion on Totalmobile",
+            "Failed to recall job LMS2209-AA1.12345 from norbert.minion on Totalmobile (previous: A bad thing happened)",
         ) not in caplog.record_tuples
 
     def test_logs_failure(self, inner_service, logging_service, args, caplog):
@@ -120,7 +120,7 @@ class TestRecallJob:
         assert (
             "root",
             logging.ERROR,
-            "Failed to recall job LMS2209-AA1.12345 from norbert.minion on Totalmobile",
+            "Failed to recall job LMS2209-AA1.12345 from norbert.minion on Totalmobile (previous: A bad thing happened)",
         ) in caplog.record_tuples
 
 
