@@ -7,8 +7,9 @@ from datetime import datetime
 
 from behave import given, then, when
 
+import cloud_functions.delete_totalmobile_jobs_completed_in_blaise
+import cloud_functions.delete_totalmobile_jobs_past_field_period
 from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
-from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from tests.helpers import incoming_request_helper
 from tests.helpers.date_helper import get_date_as_totalmobile_formatted_string
 
@@ -263,18 +264,18 @@ def step_impl(context, case_id, questionnaire):
 
 @when("delete_totalmobile_jobs_completed_in_blaise is run")
 def step_impl(context):
-    delete_totalmobile_service = DeleteTotalmobileJobsService(
-        context.totalmobile_service, context.blaise_service
+    cloud_functions.delete_totalmobile_jobs_completed_in_blaise.delete_totalmobile_jobs_completed_in_blaise(
+        blaise_service=context.blaise_service,
+        totalmobile_service=context.totalmobile_service,
     )
-    delete_totalmobile_service.delete_jobs_for_completed_cases()
 
 
 @when("delete_totalmobile_jobs_past_field_period is run")
 def step_impl(context):
-    delete_totalmobile_service = DeleteTotalmobileJobsService(
-        context.totalmobile_service, context.blaise_service
+    cloud_functions.delete_totalmobile_jobs_past_field_period.delete_totalmobile_jobs_past_field_period(
+        blaise_service=context.blaise_service,
+        totalmobile_service=context.totalmobile_service,
     )
-    delete_totalmobile_service.delete_jobs_past_field_period()
 
 
 @then('the Totalmobile job with reference "{reference}" is recalled from "{resource}"')

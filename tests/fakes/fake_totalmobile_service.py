@@ -1,11 +1,15 @@
 from collections import defaultdict
 from typing import Dict, Optional
 
-from client.optimise import GetJobResponse
+import requests
+
+from client.optimise import GetJobResponse, GetJobsResponse
+from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from models.totalmobile.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
+from services.totalmobile_service import DeleteJobError
 
 
 class FakeTotalmobileService:
@@ -79,12 +83,16 @@ class FakeTotalmobileService:
     ) -> None:
         self._recalled_jobs[f"{job_reference}::{allocated_resource_reference}"] = True
 
-    def delete_job(self, world_id: str, reference: str, reason: str = "0") -> None:
+    def delete_job(
+        self, world_id: str, reference: str, reason: str = "0"
+    ) -> requests.Response:
         if "delete_job" in self._errors_when_method_is_called:
-            raise Exception("get_jobs_model has errored")
+            raise DeleteJobError("get_jobs_model has errored")
 
         self._delete_jobs_reason[reference] = reason
         del self._jobs[world_id][reference]
+
+        return requests.Response()
 
     def deleted_with_reason(self, reference: str, reason: str = "0") -> bool:
         if reference not in self._delete_jobs_reason.keys():
@@ -114,3 +122,9 @@ class FakeTotalmobileService:
         return TotalmobileGetJobsResponseModel.from_get_jobs_response(
             list(self._jobs[world_id].values())
         )
+
+    def create_job(self, job: TotalmobileCreateJobModel) -> requests.Response:
+        raise NotImplementedError("Currently not implemented in this mock")
+
+    def get_jobs(self, world_id: str) -> GetJobsResponse:
+        raise NotImplementedError("Currently not implemented in this mock")

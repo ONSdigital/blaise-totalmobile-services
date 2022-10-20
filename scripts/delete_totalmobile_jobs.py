@@ -5,16 +5,18 @@ from typing import Dict, List
 from appconfig import Config
 from client import OptimiseClient
 from client.messaging import MessagingClient
-from services.totalmobile_service import TotalmobileService
+from services.totalmobile_service import RealTotalmobileService
 
 
-def __get_active_world_ids(totalmobile_service_local: TotalmobileService) -> List[str]:
+def __get_active_world_ids(
+    totalmobile_service_local: RealTotalmobileService,
+) -> List[str]:
     print("Retrieving world IDs")
     return totalmobile_service_local.get_world_model().get_available_ids()
 
 
 def __map_world_id_to_job_reference(
-    totalmobile_service_local: TotalmobileService, world_ids: List[str]
+    totalmobile_service_local: RealTotalmobileService, world_ids: List[str]
 ) -> List[Dict[str, str]]:
     list_of_jobs = []
     for world_id in world_ids:
@@ -35,7 +37,7 @@ def __map_world_id_to_job_reference(
 
 
 def __delete_job(
-    totalmobile_service_local: TotalmobileService, job: Dict[str, str]
+    totalmobile_service_local: RealTotalmobileService, job: Dict[str, str]
 ) -> None:
     try:
         totalmobile_service_local.delete_job(job["world_id"], job["job_reference"], "0")
@@ -61,7 +63,7 @@ if __name__ == "__main__":
         config.totalmobile_client_id,
         config.totalmobile_client_secret,
     )
-    totalmobile_service = TotalmobileService(optimise_client, messaging_client)
+    totalmobile_service = RealTotalmobileService(optimise_client, messaging_client)
 
     if "dev" in config.totalmobile_url.lower():
         active_world_ids = __get_active_world_ids(totalmobile_service)

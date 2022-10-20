@@ -6,7 +6,7 @@ import flask
 from client.errors import BadRequest
 from cloud_functions.logging import setup_logger
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
-from services.totalmobile_service import TotalmobileService
+from services.totalmobile_service import RealTotalmobileService
 
 setup_logger()
 
@@ -26,7 +26,7 @@ def get_duplicate_job_message(err: BadRequest) -> Optional[str]:
 
 
 def create_totalmobile_jobs_processor(
-    request: flask.Request, totalmobile_service: TotalmobileService
+    request: flask.Request, totalmobile_service: RealTotalmobileService
 ) -> str:
     request_json = request.get_json()
 

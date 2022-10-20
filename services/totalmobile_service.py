@@ -1,3 +1,5 @@
+from typing import Protocol
+
 import requests
 
 from client.messaging import MessagingClient
@@ -13,7 +15,35 @@ class RecallJobError(Exception):
     pass
 
 
-class TotalmobileService:
+class DeleteJobError(Exception):
+    pass
+
+
+class TotalmobileService(Protocol):
+    def get_world_model(self) -> TotalmobileWorldModel:
+        pass
+
+    def create_job(self, job: TotalmobileCreateJobModel) -> requests.Response:
+        pass
+
+    def recall_job(
+        self, allocated_resource_reference: str, work_type: str, job_reference: str
+    ) -> None:
+        pass
+
+    def delete_job(
+        self, world_id: str, job: str, reason: str = "0"
+    ) -> requests.Response:
+        pass
+
+    def get_jobs(self, world_id: str) -> GetJobsResponse:
+        pass
+
+    def get_jobs_model(self, world_id: str) -> TotalmobileGetJobsResponseModel:
+        pass
+
+
+class RealTotalmobileService:
     def __init__(
         self, optimise_client: OptimiseClient, messaging_client: MessagingClient
     ):
@@ -34,7 +64,7 @@ class TotalmobileService:
             response = self._messaging_client.force_recall_visit(
                 allocated_resource_reference, work_type, job_reference
             )
-        except BaseException as error:
+        except Exception as error:
             raise RecallJobError("The messaging client raise an error", error)
 
         if response.status_code != 201:
@@ -45,7 +75,10 @@ class TotalmobileService:
     def delete_job(
         self, world_id: str, job: str, reason: str = "0"
     ) -> requests.Response:
-        return self._optimise_client.delete_job(world_id, job, reason)
+        try:
+            return self._optimise_client.delete_job(world_id, job, reason)
+        except Exception as error:
+            raise DeleteJobError("The optimise client raise an error", error)
 
     def get_jobs(self, world_id: str) -> GetJobsResponse:
         return self._optimise_client.get_jobs(world_id)

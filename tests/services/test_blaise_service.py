@@ -8,7 +8,7 @@ from urllib3.exceptions import HTTPError
 from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
 from appconfig import Config
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
-from services.blaise_service import BlaiseService
+from services.blaise_service import RealBlaiseService
 from tests.helpers import config_helper
 
 
@@ -18,8 +18,8 @@ def config() -> Config:
 
 
 @pytest.fixture()
-def blaise_service(config) -> BlaiseService:
-    return BlaiseService(config=config)
+def blaise_service(config) -> RealBlaiseService:
+    return RealBlaiseService(config=config)
 
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
