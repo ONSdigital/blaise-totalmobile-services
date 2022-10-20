@@ -4,6 +4,7 @@ from typing import Dict, List
 
 from appconfig import Config
 from client import OptimiseClient
+from client.messaging import MessagingClient
 from services.totalmobile_service import TotalmobileService
 
 
@@ -54,7 +55,13 @@ if __name__ == "__main__":
         config.totalmobile_client_id,
         config.totalmobile_client_secret,
     )
-    totalmobile_service = TotalmobileService(optimise_client)
+    messaging_client = MessagingClient(
+        config.totalmobile_url,
+        config.totalmobile_instance,
+        config.totalmobile_client_id,
+        config.totalmobile_client_secret,
+    )
+    totalmobile_service = TotalmobileService(optimise_client, messaging_client)
 
     if "dev" in config.totalmobile_url.lower():
         active_world_ids = __get_active_world_ids(totalmobile_service)

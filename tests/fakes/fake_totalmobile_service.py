@@ -1,7 +1,7 @@
 from collections import defaultdict
-from datetime import datetime
-from typing import Optional
+from typing import Dict, Optional
 
+from client.optimise import GetJobResponse
 from models.totalmobile.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
 )
@@ -23,9 +23,10 @@ class FakeTotalmobileService:
     }
 
     def __init__(self):
-        self._jobs = defaultdict(dict)
+        self._jobs: Dict[str, Dict[str, GetJobResponse]] = defaultdict(dict)
         self._delete_jobs_reason = {}
         self._errors_when_method_is_called = []
+        self._recalled_jobs = {}
 
     def method_throws_exception(self, method_name: str):
         self._errors_when_method_is_called.append(method_name)
@@ -36,6 +37,7 @@ class FakeTotalmobileService:
         region: str,
         visit_complete: bool = False,
         due_date: Optional[str] = None,
+        allocated_resource_reference: Optional[str] = None,
     ) -> None:
         world_id = self.REGIONS[region]
         if self.job_exists(reference):
@@ -45,6 +47,12 @@ class FakeTotalmobileService:
             "visitComplete": visit_complete,
             "identity": {"reference": reference},
             "dueDate": {"end": due_date},
+            "allocatedResource": (
+                {"reference": allocated_resource_reference}
+                if allocated_resource_reference
+                else None
+            ),
+            "workType": "LMS",
         }
 
     def update_due_date(self, reference: str, region: str, due_date: str) -> None:
@@ -57,6 +65,19 @@ class FakeTotalmobileService:
             if job in jobs_in_world:
                 return True
         return False
+
+    def job_has_been_recalled(
+        self, allocated_resource_reference: str, job_reference: str
+    ) -> bool:
+        result = self._recalled_jobs.get(
+            f"{job_reference}::{allocated_resource_reference}", False
+        )
+        return result
+
+    def recall_job(
+        self, allocated_resource_reference: str, _work_type: str, job_reference: str
+    ) -> None:
+        self._recalled_jobs[f"{job_reference}::{allocated_resource_reference}"] = True
 
     def delete_job(self, world_id: str, reference: str, reason: str = "0") -> None:
         if "delete_job" in self._errors_when_method_is_called:
@@ -88,8 +109,8 @@ class FakeTotalmobileService:
             raise Exception("get_jobs_model has errored")
 
         if not self._jobs:
-            raise Exception
+            raise Exception("get_jobs_models was called when no jobs were present")
 
         return TotalmobileGetJobsResponseModel.from_get_jobs_response(
-            self._jobs[world_id].values()
+            list(self._jobs[world_id].values())
         )
