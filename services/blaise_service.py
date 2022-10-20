@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Protocol
 
 import blaise_restapi
 from urllib3.exceptions import HTTPError
@@ -6,6 +6,24 @@ from urllib3.exceptions import HTTPError
 from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
 from appconfig import Config
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+
+
+class IBlaiseService(Protocol):
+    def get_cases(self, questionnaire_name: str) -> List[BlaiseCaseInformationModel]:
+        pass
+
+    def get_case(
+        self, questionnaire_name: str, case_id: str
+    ) -> BlaiseCaseInformationModel:
+        pass
+
+    def questionnaire_exists(self, questionnaire_name: str) -> bool:
+        pass
+
+    def update_case(
+        self, questionnaire_name: str, case_id: str, data_fields: Dict[str, str]
+    ) -> None:
+        pass
 
 
 class BlaiseService:

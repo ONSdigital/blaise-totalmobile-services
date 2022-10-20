@@ -2,9 +2,8 @@ import logging
 from typing import Dict, List
 
 from models.totalmobile.totalmobile_get_jobs_response_model import Job
-from services.blaise_service import BlaiseService
+from services.blaise_service import IBlaiseService
 from services.delete_totalmobile_job_service import DeleteTotalmobileJobService
-from services.logging_totalmobile_service import LoggingTotalmobileService
 from services.totalmobile_service import ITotalmobileService
 
 
@@ -14,13 +13,12 @@ class DeleteTotalmobileJobsService:
     def __init__(
         self,
         totalmobile_service: ITotalmobileService,
-        blaise_service: BlaiseService,
+        blaise_service: IBlaiseService,
+        delete_totalmobile_job_service: DeleteTotalmobileJobService,
     ):
-        self._totalmobile_service = LoggingTotalmobileService(totalmobile_service)
+        self._totalmobile_service = totalmobile_service
         self._blaise_service = blaise_service
-        self._delete_job_service = DeleteTotalmobileJobService(
-            self._totalmobile_service
-        )
+        self._delete_job_service = delete_totalmobile_job_service
 
     def delete_jobs_for_completed_cases(self) -> None:
         world_ids = self._get_world_ids()

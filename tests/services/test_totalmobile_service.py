@@ -8,7 +8,11 @@ from client.messaging import MessagingClient
 from client.optimise import OptimiseClient
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
-from services.totalmobile_service import RecallJobError, TotalmobileService, DeleteJobError
+from services.totalmobile_service import (
+    DeleteJobError,
+    RecallJobError,
+    TotalmobileService,
+)
 from tests.helpers import optimise_client_helper
 
 
@@ -196,7 +200,9 @@ class TestDeleteJob:
         with pytest.raises(
             DeleteJobError, match="The optimise client raise an error"
         ) as error:
-            totalmobile_service.delete_job("3fa85f64-5717-4562-b3fc-2c963f66afa7", "1234", "110")
+            totalmobile_service.delete_job(
+                "3fa85f64-5717-4562-b3fc-2c963f66afa7", "1234", "110"
+            )
 
         assert error.value.args[1] == client_error
 

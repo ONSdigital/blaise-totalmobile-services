@@ -8,7 +8,9 @@ from models.totalmobile.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
+from services.delete_totalmobile_job_service import DeleteTotalmobileJobService
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
+from services.logging_totalmobile_service import LoggingTotalmobileService
 from services.totalmobile_service import RecallJobError, TotalmobileService
 from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
@@ -17,9 +19,11 @@ CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED = [123, 110, 543]
 
 @pytest.fixture()
 def delete_totalmobile_jobs_service(mock_totalmobile_service, mock_blaise_service):
+    totalmobile_service = LoggingTotalmobileService(mock_totalmobile_service)
     return DeleteTotalmobileJobsService(
-        totalmobile_service=mock_totalmobile_service,
+        totalmobile_service=totalmobile_service,
         blaise_service=mock_blaise_service,
+        delete_totalmobile_job_service=DeleteTotalmobileJobService(totalmobile_service),
     )
 
 

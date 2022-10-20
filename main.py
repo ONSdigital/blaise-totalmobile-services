@@ -77,14 +77,10 @@ def create_totalmobile_jobs_processor(request: flask.Request) -> str:
 
 def delete_totalmobile_jobs_completed_in_blaise(_event, _context) -> str:
     config = Config.from_env()
-    totalmobile_service = _create_totalmobile_service(config)
-    blaise_service = BlaiseService(config)
 
-    delete_jobs_service = DeleteTotalmobileJobsService(
-        LoggingTotalmobileService(totalmobile_service), blaise_service
-    )
     return cloud_functions.delete_totalmobile_jobs_completed_in_blaise.delete_totalmobile_jobs_completed_in_blaise(
-        delete_totalmobile_jobs_service=delete_jobs_service
+        BlaiseService(config),
+        _create_totalmobile_service(config),
     )
 
 
@@ -93,11 +89,8 @@ def delete_totalmobile_jobs_past_field_period(_event, _context) -> str:
     totalmobile_service = _create_totalmobile_service(config)
     blaise_service = BlaiseService(config)
 
-    delete_jobs_service = DeleteTotalmobileJobsService(
-        totalmobile_service, blaise_service
-    )
     return cloud_functions.delete_totalmobile_jobs_past_field_period.delete_totalmobile_jobs_past_field_period(
-        delete_totalmobile_jobs_service=delete_jobs_service
+        blaise_service, totalmobile_service
     )
 
 

@@ -1,5 +1,9 @@
 from models.totalmobile.totalmobile_get_jobs_response_model import Job
-from services.totalmobile_service import ITotalmobileService, RecallJobError, DeleteJobError
+from services.totalmobile_service import (
+    DeleteJobError,
+    ITotalmobileService,
+    RecallJobError,
+)
 
 
 class DeleteTotalmobileJobService:
