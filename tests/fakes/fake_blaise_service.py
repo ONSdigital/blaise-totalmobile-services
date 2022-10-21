@@ -40,6 +40,8 @@ class FakeBlaiseService:
         telephone_number_2: str = None,
         appointment_telephone_number: str = None,
         field_region: str = None,
+        rotational_knock_to_nudge_indicator: str = None,
+        rotational_outcome_code: int = None
     ) -> None:
         self._assert_questionnaire_exists(questionnaire)
         self._questionnaires[questionnaire][case_id] = BlaiseCaseInformationModel(
@@ -69,6 +71,8 @@ class FakeBlaiseService:
             field_region=field_region,
             field_team=None,
             wave_com_dte=None,
+            rotational_knock_to_nudge_indicator=rotational_knock_to_nudge_indicator,
+            rotational_outcome_code=0 if not rotational_outcome_code else rotational_outcome_code,
             has_call_history=False,
         )
 
@@ -124,6 +128,8 @@ class FakeBlaiseService:
                 telephone_number_2=case.contact_details.telephone_number_2,
                 appointment_telephone_number=case.contact_details.appointment_telephone_number,
                 field_region=case.field_region,
+                rotational_knock_to_nudge_indicator=case.rotational_knock_to_nudge_indicator,
+                rotational_outcome_code=case.rotational_outcome_code,
             )
             for case in cases.values()
         ]

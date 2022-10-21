@@ -111,7 +111,9 @@ def test_get_case_when_case_does_not_exist(service: FakeBlaiseService):
 def test_get_case_when_case_exists(service: FakeBlaiseService):
     service.add_questionnaire("LMS12345")
     service.add_case_to_questionnaire("LMS12345", "99999")
-    assert service.get_case("LMS12345", "99999") == BlaiseCaseInformationModel(
+
+    case = service.get_case("LMS12345", "99999")
+    assert case == BlaiseCaseInformationModel(
         questionnaire_name="LMS12345",
         case_id="99999",
         data_model_name=None,
@@ -138,6 +140,8 @@ def test_get_case_when_case_exists(service: FakeBlaiseService):
         field_region=None,
         field_team=None,
         wave_com_dte=None,
+        rotational_knock_to_nudge_indicator=None,
+        rotational_outcome_code=0,
         has_call_history=False,
     )
 

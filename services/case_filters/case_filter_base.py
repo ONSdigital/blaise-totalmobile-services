@@ -1,5 +1,6 @@
 from abc import abstractmethod
 import logging
+from typing import List
 
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
@@ -64,15 +65,32 @@ class CaseFilterBase:
         return False
 
     @staticmethod
-    def case_has_a_desired_outcome_code_of_0_or_310_or_320(
-        case: BlaiseCaseInformationModel,
-    ) -> bool:
-        value_range = [0, 310, 320]
+    def case_has_rotational_knock_to_nudge_indicator_of_empty_or_n(case: BlaiseCaseInformationModel) -> bool:
+        if case.rotational_knock_to_nudge_indicator == "" or case.rotational_knock_to_nudge_indicator == "N" or case.rotational_knock_to_nudge_indicator == "n":
+            return True
+
+        logging.info(
+            f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of '{case.rotational_knock_to_nudge_indicator}', not 'N'"
+        )
+        return False
+
+    @staticmethod
+    def case_has_a_desired_outcome_code_of(value_range: List[int], case: BlaiseCaseInformationModel) -> bool:
         if case.outcome_code in value_range:
             return True
 
         logging.info(
             f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a value '{case.outcome_code}' outside of the range '{value_range}' set for the field 'outcome_code'"
+        )
+        return False
+
+    @staticmethod
+    def case_has_a_desired_rotational_outcome_code_of(value_range: List[int], case: BlaiseCaseInformationModel) -> bool:
+        if case.rotational_outcome_code in value_range:
+            return True
+
+        logging.info(
+            f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a value '{case.rotational_outcome_code}' outside of the range '{value_range}' set for the field 'rotational_outcome_code'"
         )
         return False
 
