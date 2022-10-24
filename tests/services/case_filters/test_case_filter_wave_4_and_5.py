@@ -47,9 +47,9 @@ def test_valid_outcome_codes_has_not_changed_for_wave_5():
 
 class TestWave4And5Filters:
     def test_case_is_eligible_returns_true_where_criteria_for_wave_4_and_5_are_met(
-            self,
-            valid_case,
-            service: CaseFilterBase,
+        self,
+        valid_case,
+        service: CaseFilterBase,
     ):
         # arrange
         case = valid_case
@@ -62,9 +62,9 @@ class TestWave4And5Filters:
         assert result is True
 
     def test_case_is_eligible_returns_false_where_criteria_for_wave_4_and_5_are_not_met(
-            self,
-            valid_case,
-            service: CaseFilterBase,
+        self,
+        valid_case,
+        service: CaseFilterBase,
     ):
         # arrange
         case = valid_case
@@ -78,10 +78,10 @@ class TestWave4And5Filters:
         assert result is False
 
     def test_case_is_eligible_logs_a_message_if_outcome_code_is_not_0(
-            self,
-            valid_case,
-            service: CaseFilterBase,
-            caplog,
+        self,
+        valid_case,
+        service: CaseFilterBase,
+        caplog,
     ):
         # arrange
         case = valid_case
@@ -92,14 +92,14 @@ class TestWave4And5Filters:
         with caplog.at_level(logging.INFO):
             service.case_is_eligible(case)
         assert (
-                   "root",
-                   logging.INFO,
-                   f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a value '310' outside of the range '[0]' set for the field 'outcome_code'",
-               ) in caplog.record_tuples
+            "root",
+            logging.INFO,
+            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a value '310' outside of the range '[0]' set for the field 'outcome_code'",
+        ) in caplog.record_tuples
 
     @pytest.mark.parametrize("wave_number", [0, 1, 2, 3])
     def test_case_is_eligible_returns_false_if_the_case_is_not_wave_2_or_3(
-            self, valid_case, service: CaseFilterBase, wave_number
+        self, valid_case, service: CaseFilterBase, wave_number
     ):
         # arrange
         case = valid_case
@@ -113,10 +113,10 @@ class TestWave4And5Filters:
 
     @pytest.mark.parametrize("test_input", ["Region 0", "Region 9", "Default"])
     def test_case_is_eligible_returns_false_if_field_region_is_not_in_range(
-            self,
-            test_input,
-            valid_case,
-            service: CaseFilterBase,
+        self,
+        test_input,
+        valid_case,
+        service: CaseFilterBase,
     ):
         # arrange
         case = valid_case
@@ -131,11 +131,11 @@ class TestWave4And5Filters:
 
     @pytest.mark.parametrize("field_region", ["Region 0", "Region 9", "Default"])
     def test_case_is_eligible_logs_a_message_if_field_region_is_not_in_range(
-            self,
-            field_region,
-            valid_case,
-            service: CaseFilterBase,
-            caplog,
+        self,
+        field_region,
+        valid_case,
+        service: CaseFilterBase,
+        caplog,
     ):
         # arrange
         case = valid_case
@@ -148,7 +148,7 @@ class TestWave4And5Filters:
         with caplog.at_level(logging.INFO):
             service.case_is_eligible(case)
         assert (
-                   "root",
-                   logging.INFO,
-                   f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a value '{field_region}' outside of the range '{value_range}' set for the field 'field_region'",
-               ) in caplog.record_tuples
+            "root",
+            logging.INFO,
+            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a value '{field_region}' outside of the range '{value_range}' set for the field 'field_region'",
+        ) in caplog.record_tuples
