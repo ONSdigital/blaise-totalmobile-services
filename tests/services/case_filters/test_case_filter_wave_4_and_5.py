@@ -61,7 +61,7 @@ class TestWave4And5Filters:
         # assert
         assert result is True
 
-    def test_case_is_eligible_returns_true_where_criteria_for_wave_4_and_5_are_met(
+    def test_case_is_eligible_returns_false_where_criteria_for_wave_4_and_5_are_not_met(
             self,
             valid_case,
             service: CaseFilterBase,
