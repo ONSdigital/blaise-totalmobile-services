@@ -14,4 +14,5 @@ class CaseFilterWave4(CaseFilterBase):
         return (
                 self.case_is_part_of_wave(self.wave_number, case)
                 and self.case_has_a_desired_outcome_code_of(self.valid_outcome_codes, case)
+                and self.case_is_in_a_known_region(case)
         )
