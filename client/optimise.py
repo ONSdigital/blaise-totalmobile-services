@@ -53,6 +53,9 @@ class OptimiseClient(BaseClient):
     def get_jobs(self, world_id: str) -> GetJobsResponse:
         return self._get_list(f"worlds/{world_id}/jobs?pageSize=1000")
 
+    def get_jobs_filtered(self, world_id: str) -> GetJobsResponse:
+        return self._get_list(f"worlds/{world_id}/jobs?pageSize=1000")
+
     def get_job(self, world_id: str, job_reference: str) -> Dict[Any, Any]:
         return self._get(f"worlds/{world_id}/jobs/{job_reference}").json()
 

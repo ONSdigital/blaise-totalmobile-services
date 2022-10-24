@@ -86,3 +86,7 @@ class RealTotalmobileService:
     def get_jobs_model(self, world_id: str) -> TotalmobileGetJobsResponseModel:
         jobs_response = self.get_jobs(world_id)
         return TotalmobileGetJobsResponseModel.from_get_jobs_response(jobs_response)
+        return self.client.get_jobs(world_id)
+
+    def get_jobs_filtered(self, world_id: str) -> GetJobsResponse:
+        return self.client.get_jobs_filtered(world_id)
