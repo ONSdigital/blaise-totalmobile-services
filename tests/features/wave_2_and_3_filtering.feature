@@ -1,4 +1,4 @@
-Feature: Filter wave 2 cases
+Feature: Filter wave 2 and 3 cases
 
   Scenario Outline: Eligible wave 2 and 3 LMS cases without telephone numbers are sent to Totalmobile
     Given there is a <questionnaire_name> with a totalmobile release date of today
