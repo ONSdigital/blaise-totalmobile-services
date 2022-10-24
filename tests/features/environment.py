@@ -24,7 +24,9 @@ def before_scenario(context, scenario):
 
     context.questionnaire_service = QuestionnaireService(
         app.blaise_service,
-        EligibleCaseService(wave_filters=[CaseFilterWave1(),CaseFilterWave2(), CaseFilterWave3()]),
+        EligibleCaseService(
+            wave_filters=[CaseFilterWave1(), CaseFilterWave2(), CaseFilterWave3()]
+        ),
         context.datastore_service,
     )
 
