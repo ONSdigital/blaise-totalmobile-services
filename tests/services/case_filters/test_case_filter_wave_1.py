@@ -45,7 +45,7 @@ def test_case_is_eligible_returns_true_only_where_criteria_for_wave_1_is_met(
     case.outcome_code = outcome_code
 
     # act
-    result = service.case_is_eligible(valid_wave_1_case)
+    result = service.case_is_eligible(case)
 
     # assert
     assert result is True
