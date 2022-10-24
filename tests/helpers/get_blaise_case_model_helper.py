@@ -33,7 +33,7 @@ def get_populated_case_model(
     field_team: str = "B-Team",
     wave_com_dte: Optional[datetime] = datetime(2023, 1, 31),
     rotational_knock_to_nudge_indicator: str = "Y",
-    rotational_outcome_code: int = 310
+    rotational_outcome_code: int = 310,
 ):
     return BlaiseCaseInformationModel(
         questionnaire_name=questionnaire_name,

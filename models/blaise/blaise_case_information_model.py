@@ -101,7 +101,9 @@ class BlaiseCaseInformationModel(BaseModel):
             has_call_history=cls.string_to_bool(
                 case_data_dictionary.get("catiMana.CatiCall.RegsCalls[1].DialResult")
             ),
-            rotational_knock_to_nudge_indicator=case_data_dictionary.get("qRotate.RDMktnIND"),
+            rotational_knock_to_nudge_indicator=case_data_dictionary.get(
+                "qRotate.RDMktnIND"
+            ),
             rotational_outcome_code=cls.convert_string_to_integer(
                 case_data_dictionary.get("qRotate.RHOut", "0")
             ),
@@ -145,5 +147,5 @@ class BlaiseCaseInformationModel(BaseModel):
             "qDataBag.WaveComDTE",
             "catiMana.CatiCall.RegsCalls[1].DialResult",
             "qRotate.RDMktnIND",
-            "qRotate.RHOut"
+            "qRotate.RHOut",
         ]

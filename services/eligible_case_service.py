@@ -9,12 +9,10 @@ class EligibleCaseService:
     def __init__(self, wave_filters: List[CaseFilterBase]):
         self._wave_filters = wave_filters
 
-    def get_eligible_cases(self, cases: List[BlaiseCaseInformationModel]) -> List[BlaiseCaseInformationModel]:
-        filtered_cases = [
-            case
-            for case in cases
-            if self.case_is_eligible(case)
-        ]
+    def get_eligible_cases(
+        self, cases: List[BlaiseCaseInformationModel]
+    ) -> List[BlaiseCaseInformationModel]:
+        filtered_cases = [case for case in cases if self.case_is_eligible(case)]
 
         for filtered_case in filtered_cases:
             logging.info(
@@ -29,4 +27,3 @@ class EligibleCaseService:
                 return True
 
         return False
-

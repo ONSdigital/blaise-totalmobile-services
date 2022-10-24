@@ -29,7 +29,7 @@ def setup(
         questionnaire="LMS2209_AA1",
         case_id="10000",
         outcome_code=110,
-        wave="1",
+        wave=1,
     )
     totalmobile_service.add_job(
         "LMS2209-AA1.10000", "Region 1", allocated_resource_reference="darwin.minion"

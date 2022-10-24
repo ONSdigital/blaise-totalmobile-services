@@ -28,7 +28,7 @@ def valid_case_data_dictionary() -> Dict:
         "qDataBag.WaveComDTE": "31-01-2023",
         "catiMana.CatiCall.RegsCalls[1].DialResult": "1",
         "qRotate.RDMktnIND": "Y",
-        "qRotate.RHOut": "310"
+        "qRotate.RHOut": "310",
     }
 
 

@@ -15,6 +15,7 @@ from app.handlers.totalmobile_incoming_handler import (
     submit_form_result_request_handler,
     update_visit_status_request_handler,
 )
+from services.case_filters.case_filter_wave_1 import CaseFilterWave1
 from services.datastore_service import DatastoreService
 from services.eligible_case_service import EligibleCaseService
 from services.questionnaire_service import QuestionnaireService
@@ -41,7 +42,7 @@ def submit_form_result_request():
     try:
         questionnaire_service = QuestionnaireService(
             blaise_service=current_app.blaise_service,
-            eligible_case_service=EligibleCaseService(),
+            eligible_case_service=EligibleCaseService(wave_filters=[CaseFilterWave1()]),
             datastore_service=DatastoreService(),
         )
         update_case_service = UpdateCaseService(questionnaire_service)

@@ -13,12 +13,11 @@ from client import OptimiseClient
 from client.messaging import MessagingClient
 from cloud_functions.logging import setup_logger
 from services.blaise_service import RealBlaiseService
+from services.case_filters.case_filter_wave_1 import CaseFilterWave1
 from services.cloud_task_service import CloudTaskService
 from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 from services.datastore_service import DatastoreService
-from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from services.eligible_case_service import EligibleCaseService
-from services.logging_totalmobile_service import LoggingTotalmobileService
 from services.questionnaire_service import QuestionnaireService
 from services.totalmobile_service import RealTotalmobileService
 from services.uac_service import UacService
@@ -45,7 +44,7 @@ def create_totalmobile_jobs_trigger(_event, _context) -> str:
 
     questionnaire_service = QuestionnaireService(
         blaise_service=RealBlaiseService(config),
-        eligible_case_service=EligibleCaseService(),
+        eligible_case_service=EligibleCaseService(wave_filters=[CaseFilterWave1()]),
         datastore_service=DatastoreService(),
     )
 

@@ -1,5 +1,5 @@
-from abc import abstractmethod
 import logging
+from abc import abstractmethod
 from typing import List
 
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
@@ -7,7 +7,6 @@ from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 
 
 class CaseFilterBase:
-
     @property
     @abstractmethod
     def wave_number(self) -> int:
@@ -18,7 +17,9 @@ class CaseFilterBase:
         pass
 
     @staticmethod
-    def case_is_part_of_wave(wave_number: int, case: BlaiseCaseInformationModel) -> bool:
+    def case_is_part_of_wave(
+        wave_number: int, case: BlaiseCaseInformationModel
+    ) -> bool:
         if case.wave == wave_number:
             return True
 
@@ -65,8 +66,14 @@ class CaseFilterBase:
         return False
 
     @staticmethod
-    def case_has_rotational_knock_to_nudge_indicator_of_empty_or_n(case: BlaiseCaseInformationModel) -> bool:
-        if case.rotational_knock_to_nudge_indicator == "" or case.rotational_knock_to_nudge_indicator == "N" or case.rotational_knock_to_nudge_indicator == "n":
+    def case_has_rotational_knock_to_nudge_indicator_of_empty_or_n(
+        case: BlaiseCaseInformationModel,
+    ) -> bool:
+        if (
+            case.rotational_knock_to_nudge_indicator == ""
+            or case.rotational_knock_to_nudge_indicator == "N"
+            or case.rotational_knock_to_nudge_indicator == "n"
+        ):
             return True
 
         logging.info(
@@ -75,7 +82,9 @@ class CaseFilterBase:
         return False
 
     @staticmethod
-    def case_has_a_desired_outcome_code_of(value_range: List[int], case: BlaiseCaseInformationModel) -> bool:
+    def case_has_a_desired_outcome_code_of(
+        value_range: List[int], case: BlaiseCaseInformationModel
+    ) -> bool:
         if case.outcome_code in value_range:
             return True
 
@@ -85,7 +94,9 @@ class CaseFilterBase:
         return False
 
     @staticmethod
-    def case_has_a_desired_rotational_outcome_code_of(value_range: List[int], case: BlaiseCaseInformationModel) -> bool:
+    def case_has_a_desired_rotational_outcome_code_of(
+        value_range: List[int], case: BlaiseCaseInformationModel
+    ) -> bool:
         if case.rotational_outcome_code in value_range:
             return True
 
