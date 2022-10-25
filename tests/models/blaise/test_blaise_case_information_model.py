@@ -1,9 +1,12 @@
 from datetime import datetime
 from typing import Dict
 
+import pytest
+
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 
 
+@pytest.fixture()
 def valid_case_data_dictionary() -> Dict:
     return {
         "qiD.Serial_Number": "90000000",
@@ -32,15 +35,13 @@ def valid_case_data_dictionary() -> Dict:
     }
 
 
-def test_import_case_returns_a_populated_model():
+def test_import_case_returns_a_populated_model(valid_case_data_dictionary):
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
-    case_data_dictionary = valid_case_data_dictionary()
-
     # act
     result = BlaiseCaseInformationModel.import_case(
-        questionnaire_name, case_data_dictionary
+        questionnaire_name, valid_case_data_dictionary
     )
 
     # assert
@@ -70,11 +71,13 @@ def test_import_case_returns_a_populated_model():
     assert result.rotational_outcome_code == 310
 
 
-def test_import_case_returns_a_valid_object_with_the_field_set_to_none_when_a_blaise_field_is_incorrectly_typed():
+def test_import_case_returns_a_valid_object_with_the_field_set_to_none_when_a_blaise_field_is_incorrectly_typed(
+    valid_case_data_dictionary,
+):
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
-    case_data_dictionary = valid_case_data_dictionary()
+    case_data_dictionary = valid_case_data_dictionary
     case_data_dictionary.pop("qiD.Serial_Number")
     case_data_dictionary["qdatabag.Serial_Number"] = "90000000"
 
@@ -88,11 +91,13 @@ def test_import_case_returns_a_valid_object_with_the_field_set_to_none_when_a_bl
     assert result.case_id is None
 
 
-def test_import_case_returns_a_valid_object_with_the_field_set_to_none_when_an_optional_blaise_field_is_missing():
+def test_import_case_returns_a_valid_object_with_the_field_set_to_none_when_an_optional_blaise_field_is_missing(
+    valid_case_data_dictionary,
+):
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
-    case_data_dictionary = valid_case_data_dictionary()
+    case_data_dictionary = valid_case_data_dictionary
     case_data_dictionary.pop("qiD.Serial_Number")
 
     # act
@@ -105,10 +110,10 @@ def test_import_case_returns_a_valid_object_with_the_field_set_to_none_when_an_o
     assert result.case_id is None
 
 
-def test_import_case_sets_outcome_code_to_zero_if_empty():
+def test_import_case_sets_outcome_code_to_zero_if_empty(valid_case_data_dictionary):
     # arrange
     questionnaire_name = "LMS2101_AA1"
-    case_data_dictionary = valid_case_data_dictionary()
+    case_data_dictionary = valid_case_data_dictionary
     case_data_dictionary["hOut"] = ""
 
     # act
@@ -120,10 +125,12 @@ def test_import_case_sets_outcome_code_to_zero_if_empty():
     assert result.outcome_code == 0
 
 
-def test_import_case_sets_outcome_code_to_zero_if_not_supplied():
+def test_import_case_sets_outcome_code_to_zero_if_not_supplied(
+    valid_case_data_dictionary,
+):
     # arrange
     questionnaire_name = "LMS2101_AA1"
-    case_data_dictionary = valid_case_data_dictionary()
+    case_data_dictionary = valid_case_data_dictionary
     case_data_dictionary.pop("hOut")
 
     # act
@@ -188,9 +195,11 @@ def test_import_case_sets_has_call_history_to_false_when_blaise_case_is_missing_
     assert result.has_call_history is False
 
 
-def test_import_case_sets_date_to_none_if_date_is_an_empty_string():
+def test_import_case_sets_date_to_none_if_date_is_an_empty_string(
+    valid_case_data_dictionary,
+):
     # arrange
-    case_data_dictionary = valid_case_data_dictionary()
+    case_data_dictionary = valid_case_data_dictionary
     case_data_dictionary["qDataBag.WaveComDTE"] = ""
 
     # act
@@ -200,10 +209,12 @@ def test_import_case_sets_date_to_none_if_date_is_an_empty_string():
     assert result.wave_com_dte is None
 
 
-def test_import_case_sets_rotational_outcome_code_to_zero_if_empty():
+def test_import_case_sets_rotational_outcome_code_to_zero_if_empty(
+    valid_case_data_dictionary,
+):
     # arrange
     questionnaire_name = "LMS2101_AA1"
-    case_data_dictionary = valid_case_data_dictionary()
+    case_data_dictionary = valid_case_data_dictionary
     case_data_dictionary["qRotate.RHOut"] = ""
 
     # act
@@ -215,10 +226,12 @@ def test_import_case_sets_rotational_outcome_code_to_zero_if_empty():
     assert result.rotational_outcome_code == 0
 
 
-def test_import_case_sets_rotational_outcome_code_to_zero_if_not_supplied():
+def test_import_case_sets_rotational_outcome_code_to_zero_if_not_supplied(
+    valid_case_data_dictionary,
+):
     # arrange
     questionnaire_name = "LMS2101_AA1"
-    case_data_dictionary = valid_case_data_dictionary()
+    case_data_dictionary = valid_case_data_dictionary
     case_data_dictionary.pop("qRotate.RHOut")
 
     # act

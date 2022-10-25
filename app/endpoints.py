@@ -18,6 +18,8 @@ from app.handlers.totalmobile_incoming_handler import (
 from services.case_filters.case_filter_wave_1 import CaseFilterWave1
 from services.case_filters.case_filter_wave_2 import CaseFilterWave2
 from services.case_filters.case_filter_wave_3 import CaseFilterWave3
+from services.case_filters.case_filter_wave_4 import CaseFilterWave4
+from services.case_filters.case_filter_wave_5 import CaseFilterWave5
 from services.datastore_service import DatastoreService
 from services.eligible_case_service import EligibleCaseService
 from services.questionnaire_service import QuestionnaireService
@@ -45,7 +47,13 @@ def submit_form_result_request():
         questionnaire_service = QuestionnaireService(
             blaise_service=current_app.blaise_service,
             eligible_case_service=EligibleCaseService(
-                wave_filters=[CaseFilterWave1(), CaseFilterWave2(), CaseFilterWave3()]
+                wave_filters=[
+                    CaseFilterWave1(),
+                    CaseFilterWave2(),
+                    CaseFilterWave3(),
+                    CaseFilterWave4(),
+                    CaseFilterWave5(),
+                ]
             ),
             datastore_service=DatastoreService(),
         )

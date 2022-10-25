@@ -4,6 +4,8 @@ from app.app import setup_app
 from services.case_filters.case_filter_wave_1 import CaseFilterWave1
 from services.case_filters.case_filter_wave_2 import CaseFilterWave2
 from services.case_filters.case_filter_wave_3 import CaseFilterWave3
+from services.case_filters.case_filter_wave_4 import CaseFilterWave4
+from services.case_filters.case_filter_wave_5 import CaseFilterWave5
 from services.eligible_case_service import EligibleCaseService
 from services.questionnaire_service import QuestionnaireService
 from tests.fakes.fake_blaise_service import FakeBlaiseService
@@ -25,7 +27,13 @@ def before_scenario(context, scenario):
     context.questionnaire_service = QuestionnaireService(
         app.blaise_service,
         EligibleCaseService(
-            wave_filters=[CaseFilterWave1(), CaseFilterWave2(), CaseFilterWave3()]
+            wave_filters=[
+                CaseFilterWave1(),
+                CaseFilterWave2(),
+                CaseFilterWave3(),
+                CaseFilterWave4(),
+                CaseFilterWave5(),
+            ]
         ),
         context.datastore_service,
     )

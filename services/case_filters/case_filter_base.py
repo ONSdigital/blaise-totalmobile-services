@@ -12,18 +12,24 @@ class CaseFilterBase:
     def wave_number(self) -> int:
         pass
 
-    @abstractmethod
     def case_is_eligible(self, case: BlaiseCaseInformationModel) -> bool:
+        return (
+            self.case_is_part_of_wave(self.wave_number, case)
+            and self.case_is_in_a_known_region(case)
+            and self.case_is_eligible_additional_checks(case)
+        )
+
+    @abstractmethod
+    def case_is_eligible_additional_checks(
+        self, case: BlaiseCaseInformationModel
+    ) -> bool:
         pass
 
     @staticmethod
     def case_is_part_of_wave(
         wave_number: int, case: BlaiseCaseInformationModel
     ) -> bool:
-        if case.wave == wave_number:
-            return True
-
-        return False
+        return case.wave == wave_number
 
     @staticmethod
     def telephone_number_is_empty(case: BlaiseCaseInformationModel) -> bool:
