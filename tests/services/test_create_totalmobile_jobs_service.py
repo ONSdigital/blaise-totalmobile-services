@@ -184,7 +184,7 @@ def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
             telephone_number_1="",
             telephone_number_2="",
             appointment_telephone_number="",
-            wave="1",
+            wave=1,
             priority="1",
             outcome_code=310,
             field_region="Region 1",

@@ -1,6 +1,9 @@
 from werkzeug.security import generate_password_hash
 
 from app.app import setup_app
+from services.case_filters.case_filter_wave_1 import CaseFilterWave1
+from services.case_filters.case_filter_wave_2 import CaseFilterWave2
+from services.case_filters.case_filter_wave_3 import CaseFilterWave3
 from services.eligible_case_service import EligibleCaseService
 from services.questionnaire_service import QuestionnaireService
 from tests.fakes.fake_blaise_service import FakeBlaiseService
@@ -18,8 +21,13 @@ def before_scenario(context, scenario):
     context.blaise_service = app.blaise_service
     context.totalmobile_service = app.totalmobile_service
     context.datastore_service = FakeDatastoreService()
+
     context.questionnaire_service = QuestionnaireService(
-        app.blaise_service, EligibleCaseService(), context.datastore_service
+        app.blaise_service,
+        EligibleCaseService(
+            wave_filters=[CaseFilterWave1(), CaseFilterWave2(), CaseFilterWave3()]
+        ),
+        context.datastore_service,
     )
 
     context.uac_service = FakeUacService()
