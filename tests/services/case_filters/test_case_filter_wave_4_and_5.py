@@ -45,7 +45,7 @@ def test_valid_outcome_codes_has_not_changed_for_wave_5():
     assert outcome_codes == [0]
 
 
-class TestWave4And5Filters:
+class TestEligibleCases:
     def test_case_is_eligible_returns_true_where_criteria_for_wave_4_and_5_are_met(
         self,
         valid_case,
@@ -61,15 +61,19 @@ class TestWave4And5Filters:
         # assert
         assert result is True
 
+
+class TestIneligibleCases:
+    @pytest.mark.parametrize("outcome_code", [110, 210, 310])
     def test_case_is_eligible_returns_false_where_criteria_for_wave_4_and_5_are_not_met(
         self,
+        outcome_code,
         valid_case,
         service: CaseFilterBase,
     ):
         # arrange
         case = valid_case
         case.wave = service.wave_number
-        case.outcome_code = 310
+        case.outcome_code = outcome_code
 
         # act
         result = service.case_is_eligible(case)
