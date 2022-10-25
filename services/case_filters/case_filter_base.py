@@ -14,7 +14,7 @@ class CaseFilterBase:
 
     def case_is_eligible(self, case: BlaiseCaseInformationModel) -> bool:
         return (
-            self.case_is_part_of_wave(self.wave_number, case)
+            case.wave == self.wave_number
             and self.case_is_in_a_known_region(case)
             and self.case_is_eligible_additional_checks(case)
         )
@@ -24,12 +24,6 @@ class CaseFilterBase:
         self, case: BlaiseCaseInformationModel
     ) -> bool:
         pass
-
-    @staticmethod
-    def case_is_part_of_wave(
-        wave_number: int, case: BlaiseCaseInformationModel
-    ) -> bool:
-        return case.wave == wave_number
 
     @staticmethod
     def case_has_no_telephone_numbers(case: BlaiseCaseInformationModel) -> bool:
