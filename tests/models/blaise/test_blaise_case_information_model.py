@@ -30,7 +30,7 @@ def valid_case_data_dictionary() -> Dict:
         "qDataBag.FieldTeam": "B-Team",
         "qDataBag.WaveComDTE": "31-01-2023",
         "catiMana.CatiCall.RegsCalls[1].DialResult": "1",
-        "qRotate.RDMktnIND": "Y",
+        "qRotate.RDMktnIND": "0",
         "qRotate.RHOut": "310",
     }
 
@@ -224,6 +224,74 @@ def test_import_case_sets_rotational_outcome_code_to_zero_if_empty(
 
     # assert
     assert result.rotational_outcome_code == 0
+
+
+def test_import_case_sets_rotational_knock_to_nudge_indicator_to_empty_if_not_supplied(
+    valid_case_data_dictionary,
+):
+    # arrange
+    questionnaire_name = "LMS2101_AA1"
+    case_data_dictionary = valid_case_data_dictionary
+    case_data_dictionary.pop("qRotate.RDMktnIND")
+
+    # act
+    result = BlaiseCaseInformationModel.import_case(
+        questionnaire_name, case_data_dictionary
+    )
+
+    # assert
+    assert result.rotational_knock_to_nudge_indicator == ""
+
+
+def test_import_case_sets_rotational_knock_to_nudge_indicator_to_empty_if_not_it_doesnt_have_a_value(
+    valid_case_data_dictionary,
+):
+    # arrange
+    questionnaire_name = "LMS2101_AA1"
+    case_data_dictionary = valid_case_data_dictionary
+    case_data_dictionary["qRotate.RDMktnIND"] = ""
+
+    # act
+    result = BlaiseCaseInformationModel.import_case(
+        questionnaire_name, case_data_dictionary
+    )
+
+    # assert
+    assert result.rotational_knock_to_nudge_indicator == ""
+
+
+def test_import_case_sets_rotational_knock_to_nudge_indicator_to_y_if_its_value_is_0(
+    valid_case_data_dictionary,
+):
+    # arrange
+    questionnaire_name = "LMS2101_AA1"
+    case_data_dictionary = valid_case_data_dictionary
+    case_data_dictionary["qRotate.RDMktnIND"] = "0"
+
+    # act
+    result = BlaiseCaseInformationModel.import_case(
+        questionnaire_name, case_data_dictionary
+    )
+
+    # assert
+    assert result.rotational_knock_to_nudge_indicator == "Y"
+
+
+def test_import_case_sets_rotational_knock_to_nudge_indicator_to_n_if_its_value_is_1(
+    valid_case_data_dictionary,
+):
+    # arrange
+    questionnaire_name = "LMS2101_AA1"
+    case_data_dictionary = valid_case_data_dictionary
+    case_data_dictionary["qRotate.RDMktnIND"] = "1"
+
+    # act
+    result = BlaiseCaseInformationModel.import_case(
+        questionnaire_name, case_data_dictionary
+    )
+
+    # assert
+    assert result.rotational_knock_to_nudge_indicator == "N"
 
 
 def test_import_case_sets_rotational_outcome_code_to_zero_if_not_supplied(

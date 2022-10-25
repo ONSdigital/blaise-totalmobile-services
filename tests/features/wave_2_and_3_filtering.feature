@@ -143,3 +143,4 @@ Feature: Filter wave 2 and 3 cases
       | 12345   | LMS2210_AA1        | 110          | 3    | Y         |        |        | 070000    | Region 1 |           | 0     |
       | 12345   | LMS2210_AA1        | 0            | 3    | N         |        |        | 070000    | Region 1 |           | 0     |
       | 12345   | LMS2210_AA1        | 0            | 3    | Y         |        |        | 070000    | Region 1 |           | 110   |
+      | 12345   | LMS2210_AA1        | 310          | 2    | Y         |        |        |           | Region 1 | N         | 110   |
