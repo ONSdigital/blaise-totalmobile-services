@@ -20,10 +20,7 @@ class CaseFilterBase:
     def case_is_part_of_wave(
         wave_number: int, case: BlaiseCaseInformationModel
     ) -> bool:
-        if case.wave == wave_number:
-            return True
-
-        return False
+        return case.wave == wave_number
 
     @staticmethod
     def telephone_number_is_empty(case: BlaiseCaseInformationModel) -> bool:
