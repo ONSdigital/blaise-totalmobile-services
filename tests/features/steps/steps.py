@@ -336,16 +336,21 @@ def step_impl(context, case_id, questionnaire_name):
 
     data_fields: dict = {row["field_name"]: row["value"] for row in context.table}
     outcome_code = int(data_fields["outcome_code"])
+    rotational_outcome_code = (
+        0 if not data_fields.get("qRotate.RHOut") else int(data_fields["qRotate.RHOut"])
+    )
     context.blaise_service.add_case_to_questionnaire(
         questionnaire=questionnaire_name,
         case_id=case_id,
         outcome_code=outcome_code,
-        wave=data_fields["qDataBag.Wave"],
+        wave=int(data_fields["qDataBag.Wave"]),
         field_case=data_fields["qDataBag.FieldCase"],
         telephone_number_1=data_fields["qDataBag.TelNo"],
         telephone_number_2=data_fields["qDataBag.TelNo2"],
         appointment_telephone_number=data_fields["telNoAppt"],
         field_region=data_fields["qDataBag.FieldRegion"],
+        rotational_knock_to_nudge_indicator=data_fields.get("qRotate.RDMktnIND"),
+        rotational_outcome_code=rotational_outcome_code,
     )
     context.case_id = case_id
 

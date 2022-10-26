@@ -3,6 +3,11 @@ import sys
 
 from appconfig import Config
 from services.blaise_service import RealBlaiseService
+from services.case_filters.case_filter_wave_1 import CaseFilterWave1
+from services.case_filters.case_filter_wave_2 import CaseFilterWave2
+from services.case_filters.case_filter_wave_3 import CaseFilterWave3
+from services.case_filters.case_filter_wave_4 import CaseFilterWave4
+from services.case_filters.case_filter_wave_5 import CaseFilterWave5
 from services.datastore_service import DatastoreService
 from services.eligible_case_service import EligibleCaseService
 from services.questionnaire_service import QuestionnaireService
@@ -31,7 +36,15 @@ if __name__ == "__main__":
     questionnaire_name = sys.argv[1]
 
     config = Config.from_env()
-    eligible_case_service = EligibleCaseService()
+    eligible_case_service = EligibleCaseService(
+        wave_filters=[
+            CaseFilterWave1(),
+            CaseFilterWave2(),
+            CaseFilterWave3(),
+            CaseFilterWave4(),
+            CaseFilterWave5(),
+        ]
+    )
     questionnaire_service = QuestionnaireService(
         blaise_service=RealBlaiseService(config),
         eligible_case_service=eligible_case_service,
