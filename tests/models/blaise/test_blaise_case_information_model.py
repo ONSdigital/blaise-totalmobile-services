@@ -30,7 +30,7 @@ def valid_case_data_dictionary() -> Dict:
         "qDataBag.FieldTeam": "B-Team",
         "qDataBag.WaveComDTE": "31-01-2023",
         "catiMana.CatiCall.RegsCalls[1].DialResult": "1",
-        "qRotate.RDMktnIND": "0",
+        "qRotate.RDMktnIND": "2",
         "qRotate.RHOut": "310",
     }
 
@@ -67,7 +67,7 @@ def test_import_case_returns_a_populated_model(valid_case_data_dictionary):
     assert result.field_team == "B-Team"
     assert result.wave_com_dte == datetime(2023, 1, 31)
     assert result.has_call_history is True
-    assert result.rotational_knock_to_nudge_indicator == "Y"
+    assert result.rotational_knock_to_nudge_indicator == "N"
     assert result.rotational_outcome_code == 310
 
 
@@ -260,13 +260,13 @@ def test_import_case_sets_rotational_knock_to_nudge_indicator_to_empty_if_not_it
     assert result.rotational_knock_to_nudge_indicator == ""
 
 
-def test_import_case_sets_rotational_knock_to_nudge_indicator_to_y_if_its_value_is_0(
+def test_import_case_sets_rotational_knock_to_nudge_indicator_to_y_if_its_value_is_1(
     valid_case_data_dictionary,
 ):
     # arrange
     questionnaire_name = "LMS2101_AA1"
     case_data_dictionary = valid_case_data_dictionary
-    case_data_dictionary["qRotate.RDMktnIND"] = "0"
+    case_data_dictionary["qRotate.RDMktnIND"] = "1"
 
     # act
     result = BlaiseCaseInformationModel.import_case(
@@ -277,13 +277,13 @@ def test_import_case_sets_rotational_knock_to_nudge_indicator_to_y_if_its_value_
     assert result.rotational_knock_to_nudge_indicator == "Y"
 
 
-def test_import_case_sets_rotational_knock_to_nudge_indicator_to_n_if_its_value_is_1(
+def test_import_case_sets_rotational_knock_to_nudge_indicator_to_n_if_its_value_is_2(
     valid_case_data_dictionary,
 ):
     # arrange
     questionnaire_name = "LMS2101_AA1"
     case_data_dictionary = valid_case_data_dictionary
-    case_data_dictionary["qRotate.RDMktnIND"] = "1"
+    case_data_dictionary["qRotate.RDMktnIND"] = "2"
 
     # act
     result = BlaiseCaseInformationModel.import_case(

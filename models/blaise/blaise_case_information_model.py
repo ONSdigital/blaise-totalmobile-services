@@ -114,7 +114,7 @@ class BlaiseCaseInformationModel(BaseModel):
         if not value or value == "":
             return ""
 
-        return "Y" if value == "0" else "N"
+        return "Y" if value == "1" else "N"
 
     @staticmethod
     def convert_string_to_integer(value: str) -> int:
