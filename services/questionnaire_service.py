@@ -23,11 +23,21 @@ class QuestionnaireService:
         self, questionnaire_name: str
     ) -> List[BlaiseCaseInformationModel]:
         questionnaire_cases = self.get_cases(questionnaire_name)
+        eligible_cases = self._eligible_case_service.get_eligible_cases(
+            questionnaire_cases
+        )
+        logging.info(
+            f"Found {len(eligible_cases)} eligible cases from questionnaire {questionnaire_name}"
+        )
 
-        return self._eligible_case_service.get_eligible_cases(questionnaire_cases)
+        return eligible_cases
 
     def get_cases(self, questionnaire_name: str) -> List[BlaiseCaseInformationModel]:
-        return self._blaise_service.get_cases(questionnaire_name)
+        cases = self._blaise_service.get_cases(questionnaire_name)
+        logging.info(
+            f"Retrieved {len(cases)} cases from questionnaire {questionnaire_name}"
+        )
+        return cases
 
     def get_case(
         self, questionnaire_name: str, case_id: str

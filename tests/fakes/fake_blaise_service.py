@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
 from models.blaise.blaise_case_information_model import (
@@ -33,15 +33,18 @@ class FakeBlaiseService:
         self,
         questionnaire: str,
         case_id: str,
-        outcome_code: int = None,
-        wave: str = None,
+        outcome_code: int = 0,
+        wave: int = None,
         field_case: str = None,
         telephone_number_1: str = None,
         telephone_number_2: str = None,
         appointment_telephone_number: str = None,
         field_region: str = None,
+        rotational_knock_to_nudge_indicator: str = None,
+        rotational_outcome_code: int = 0,
     ) -> None:
         self._assert_questionnaire_exists(questionnaire)
+
         self._questionnaires[questionnaire][case_id] = BlaiseCaseInformationModel(
             questionnaire_name=questionnaire,
             case_id=case_id,
@@ -63,12 +66,14 @@ class FakeBlaiseService:
                 telephone_number_2=telephone_number_2,
                 appointment_telephone_number=appointment_telephone_number,
             ),
-            outcome_code=0 if not outcome_code else outcome_code,
+            outcome_code=outcome_code,
             priority=None,
             field_case=field_case,
             field_region=field_region,
             field_team=None,
             wave_com_dte=None,
+            rotational_knock_to_nudge_indicator=rotational_knock_to_nudge_indicator,
+            rotational_outcome_code=rotational_outcome_code,
             has_call_history=False,
         )
 
@@ -124,6 +129,8 @@ class FakeBlaiseService:
                 telephone_number_2=case.contact_details.telephone_number_2,
                 appointment_telephone_number=case.contact_details.appointment_telephone_number,
                 field_region=case.field_region,
+                rotational_knock_to_nudge_indicator=case.rotational_knock_to_nudge_indicator,
+                rotational_outcome_code=case.rotational_outcome_code,
             )
             for case in cases.values()
         ]

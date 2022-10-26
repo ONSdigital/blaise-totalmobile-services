@@ -41,7 +41,7 @@ class BlaiseCaseInformationModel(BaseModel):
     questionnaire_name: str
     case_id: Optional[str]
     data_model_name: Optional[str]
-    wave: Optional[str]
+    wave: Optional[int]
     address_details: AddressDetails
     contact_details: ContactDetails
     outcome_code: int
@@ -51,6 +51,8 @@ class BlaiseCaseInformationModel(BaseModel):
     field_team: Optional[str]
     wave_com_dte: Optional[datetime]
     has_call_history: bool
+    rotational_knock_to_nudge_indicator: Optional[str]
+    rotational_outcome_code: int
 
     @classmethod
     def import_case(
@@ -62,11 +64,13 @@ class BlaiseCaseInformationModel(BaseModel):
             if wave_com_dte_str != ""
             else None
         )
+        wave = case_data_dictionary.get("qDataBag.Wave")
+
         return cls(
             questionnaire_name=questionnaire_name,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
             data_model_name=case_data_dictionary.get("dataModelName"),
-            wave=case_data_dictionary.get("qDataBag.Wave"),
+            wave=int(wave) if wave else None,
             address_details=AddressDetails(
                 address=Address(
                     address_line_1=case_data_dictionary.get("qDataBag.Prem1"),
@@ -97,7 +101,20 @@ class BlaiseCaseInformationModel(BaseModel):
             has_call_history=cls.string_to_bool(
                 case_data_dictionary.get("catiMana.CatiCall.RegsCalls[1].DialResult")
             ),
+            rotational_knock_to_nudge_indicator=cls.convert_indicator_to_y_n_or_empty(
+                case_data_dictionary.get("qRotate.RDMktnIND")
+            ),
+            rotational_outcome_code=cls.convert_string_to_integer(
+                case_data_dictionary.get("qRotate.RHOut", "0")
+            ),
         )
+
+    @staticmethod
+    def convert_indicator_to_y_n_or_empty(value: Optional[str]):
+        if not value or value == "":
+            return ""
+
+        return "Y" if value == "1" else "N"
 
     @staticmethod
     def convert_string_to_integer(value: str) -> int:
@@ -136,4 +153,6 @@ class BlaiseCaseInformationModel(BaseModel):
             "qDataBag.FieldTeam",
             "qDataBag.WaveComDTE",
             "catiMana.CatiCall.RegsCalls[1].DialResult",
+            "qRotate.RDMktnIND",
+            "qRotate.RHOut",
         ]

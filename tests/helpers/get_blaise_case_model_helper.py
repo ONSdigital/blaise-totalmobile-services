@@ -8,14 +8,13 @@ from models.blaise.blaise_case_information_model import (
     BlaiseCaseInformationModel,
     ContactDetails,
 )
-from models.blaise.questionnaire_uac_model import UacChunks
 
 
 def get_populated_case_model(
     questionnaire_name: str = "LMS2101_AA1",
     case_id: str = "90000",
     data_model_name: str = "LM2007",
-    wave: str = "1",
+    wave: int = 1,
     address_line_1: str = "12 Blaise Street",
     address_line_2: str = "Blaise Hill",
     address_line_3: str = "Blaiseville",
@@ -33,6 +32,8 @@ def get_populated_case_model(
     field_region: str = "Region 1",
     field_team: str = "B-Team",
     wave_com_dte: Optional[datetime] = datetime(2023, 1, 31),
+    rotational_knock_to_nudge_indicator: str = "Y",
+    rotational_outcome_code: int = 310,
 ):
     return BlaiseCaseInformationModel(
         questionnaire_name=questionnaire_name,
@@ -64,5 +65,7 @@ def get_populated_case_model(
         field_region=field_region,
         field_team=field_team,
         wave_com_dte=wave_com_dte,
+        rotational_knock_to_nudge_indicator=rotational_knock_to_nudge_indicator,
+        rotational_outcome_code=rotational_outcome_code,
         has_call_history=False,
     )
