@@ -26,8 +26,4 @@ class EligibleCaseService:
             if wave_filter.case_is_eligible(case):
                 return True
 
-        logging.info(
-            f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' has an unsupported wave {case.wave}"
-        )
-
         return False
