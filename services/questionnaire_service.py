@@ -26,10 +26,6 @@ class QuestionnaireService:
         eligible_cases = self._eligible_case_service.get_eligible_cases(
             questionnaire_cases
         )
-        logging.info(
-            f"Found {len(eligible_cases)} eligible cases from questionnaire {questionnaire_name}"
-        )
-
         return eligible_cases
 
     def get_cases(self, questionnaire_name: str) -> List[BlaiseCaseInformationModel]:
