@@ -92,7 +92,7 @@ class DeleteTotalmobileJobsService:
             return {str(case.case_id): case.outcome_code for case in cases}
         except Exception as error:
             logging.error(
-                "Unable to retrieve cases from Blaise",
+                f"Unable to retrieve cases from Blaise for questionnaire {questionnaire_name}",
                 extra={"Exception_reason": str(error)},
             )
 
