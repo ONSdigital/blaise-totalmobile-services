@@ -95,7 +95,7 @@ def test_get_case_outcomes_for_questionnaire_logs_error_if_blaise_errors(
     assert (
         "root",
         logging.ERROR,
-        "Unable to retrieve cases from Blaise",
+        f"Unable to retrieve cases from Blaise for questionnaire {questionnaire_name}",
     ) in caplog.record_tuples
 
 

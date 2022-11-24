@@ -21,7 +21,7 @@ class BlaiseCaseOutcomeService:
                 ] = self._get_case_outcomes(cases)
             except Exception as error:
                 logging.error(
-                    "Unable to retrieve cases from Blaise",
+                    f"Unable to retrieve cases from Blaise for questionnaire {questionnaire_name}",
                     extra={"Exception_reason": str(error)},
                 )
                 return {}
