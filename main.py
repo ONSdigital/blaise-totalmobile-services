@@ -87,7 +87,7 @@ def create_totalmobile_jobs_processor(request: flask.Request) -> str:
     )
 
 
-def delete_totalmobile_jobs_completed_in_blaise(_event, _context) -> str:
+def delete_totalmobile_jobs_completed_in_blaise(_request: flask.Request) -> str:
     config = Config.from_env()
     totalmobile_service = _create_totalmobile_service(config=config)
     blaise_outcome_service = BlaiseCaseOutcomeService(
