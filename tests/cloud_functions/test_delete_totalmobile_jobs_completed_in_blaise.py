@@ -5,6 +5,7 @@ import pytest
 from cloud_functions.delete_totalmobile_jobs_completed_in_blaise import (
     delete_totalmobile_jobs_completed_in_blaise,
 )
+from services.blaise_case_outcome_service import BlaiseCaseOutcomeService
 from tests.fakes.fake_blaise_service import FakeBlaiseService
 from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
 
@@ -17,6 +18,11 @@ def totalmobile_service() -> FakeTotalmobileService:
 @pytest.fixture()
 def blaise_service() -> FakeBlaiseService:
     return FakeBlaiseService()
+
+
+@pytest.fixture()
+def blaise_outcome_service(blaise_service) -> BlaiseCaseOutcomeService:
+    return BlaiseCaseOutcomeService(blaise_service)
 
 
 @pytest.fixture(autouse=True)
@@ -38,18 +44,22 @@ def setup(
 
 def test_delete_totalmobile_jobs_completed_in_blaise_deletes_completed_jobs(
     totalmobile_service: FakeTotalmobileService,
-    blaise_service: FakeBlaiseService,
+    blaise_outcome_service: BlaiseCaseOutcomeService,
 ):
-    delete_totalmobile_jobs_completed_in_blaise(blaise_service, totalmobile_service)
+    delete_totalmobile_jobs_completed_in_blaise(
+        blaise_outcome_service, totalmobile_service
+    )
 
     assert not totalmobile_service.job_exists("LMS2209-AA1.10000")
 
 
 def test_delete_totalmobile_jobs_completed_in_blaise_recalls_completed_jobs(
     totalmobile_service: FakeTotalmobileService,
-    blaise_service: FakeBlaiseService,
+    blaise_outcome_service: BlaiseCaseOutcomeService,
 ):
-    delete_totalmobile_jobs_completed_in_blaise(blaise_service, totalmobile_service)
+    delete_totalmobile_jobs_completed_in_blaise(
+        blaise_outcome_service, totalmobile_service
+    )
 
     assert totalmobile_service.job_has_been_recalled(
         "darwin.minion", "LMS2209-AA1.10000"
@@ -58,11 +68,13 @@ def test_delete_totalmobile_jobs_completed_in_blaise_recalls_completed_jobs(
 
 def test_delete_totalmobile_jobs_completed_in_blaise_logs_activity(
     totalmobile_service: FakeTotalmobileService,
-    blaise_service: FakeBlaiseService,
+    blaise_outcome_service: BlaiseCaseOutcomeService,
     caplog,
 ):
     with caplog.at_level(logging.INFO):
-        delete_totalmobile_jobs_completed_in_blaise(blaise_service, totalmobile_service)
+        delete_totalmobile_jobs_completed_in_blaise(
+            blaise_outcome_service, totalmobile_service
+        )
 
     assert (
         "root",
@@ -78,11 +90,11 @@ def test_delete_totalmobile_jobs_completed_in_blaise_logs_activity(
 
 def test_delete_totalmobile_jobs_completed_in_blaise_returns_done(
     totalmobile_service: FakeTotalmobileService,
-    blaise_service: FakeBlaiseService,
+    blaise_outcome_service: BlaiseCaseOutcomeService,
     caplog,
 ):
     result = delete_totalmobile_jobs_completed_in_blaise(
-        blaise_service, totalmobile_service
+        blaise_outcome_service, totalmobile_service
     )
 
     assert result == "Done"

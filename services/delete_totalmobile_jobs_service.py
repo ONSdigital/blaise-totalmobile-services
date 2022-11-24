@@ -2,7 +2,7 @@ import logging
 from typing import Dict, List
 
 from models.totalmobile.totalmobile_get_jobs_response_model import Job
-from services.blaise_service import BlaiseService
+from services.blaise_case_outcome_service import BlaiseCaseOutcomeService
 from services.delete_totalmobile_job_service import DeleteTotalmobileJobService
 from services.totalmobile_service import TotalmobileService
 
@@ -13,11 +13,11 @@ class DeleteTotalmobileJobsService:
     def __init__(
         self,
         totalmobile_service: TotalmobileService,
-        blaise_service: BlaiseService,
+        blaise_outcome_service: BlaiseCaseOutcomeService,
         delete_totalmobile_job_service: DeleteTotalmobileJobService,
     ):
         self._totalmobile_service = totalmobile_service
-        self._blaise_service = blaise_service
+        self._blaise_outcome_service = blaise_outcome_service
         self._delete_job_service = delete_totalmobile_job_service
 
     def delete_jobs_for_completed_cases(self) -> None:
@@ -40,8 +40,10 @@ class DeleteTotalmobileJobsService:
     def _delete_jobs_for_completed_cases_by_questionnaire(
         self, questionnaire_name: str, jobs: List[Job], world_id: str
     ):
-        blaise_case_outcomes = self._get_blaise_case_outcomes_for_questionnaire(
-            questionnaire_name
+        blaise_case_outcomes = (
+            self._blaise_outcome_service.get_case_outcomes_for_questionnaire(
+                questionnaire_name
+            )
         )
 
         if not blaise_case_outcomes:
@@ -83,20 +85,6 @@ class DeleteTotalmobileJobsService:
             return
 
         self._delete_job_service.delete_job(world_id, job, "completed in blaise")
-
-    def _get_blaise_case_outcomes_for_questionnaire(
-        self, questionnaire_name: str
-    ) -> Dict[str, int]:
-        try:
-            cases = self._blaise_service.get_cases(questionnaire_name)
-            return {str(case.case_id): case.outcome_code for case in cases}
-        except Exception as error:
-            logging.error(
-                f"Unable to retrieve cases from Blaise for questionnaire {questionnaire_name}",
-                extra={"Exception_reason": str(error)},
-            )
-
-        return {}
 
     def _get_world_ids(self):
         world_model = self._totalmobile_service.get_world_model()

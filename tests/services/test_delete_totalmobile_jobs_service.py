@@ -17,11 +17,11 @@ CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED = [123, 110, 543]
 
 @pytest.fixture()
 def delete_totalmobile_jobs_service(
-    mock_totalmobile_service, mock_blaise_service, mock_delete_job_service
+    mock_totalmobile_service, mock_blaise_outcome_service, mock_delete_job_service
 ):
     return DeleteTotalmobileJobsService(
         totalmobile_service=mock_totalmobile_service,
-        blaise_service=mock_blaise_service,
+        blaise_outcome_service=mock_blaise_outcome_service,
         delete_totalmobile_job_service=mock_delete_job_service,
     )
 
@@ -41,7 +41,7 @@ def mock_delete_job_service():
 
 
 @pytest.fixture()
-def mock_blaise_service():
+def mock_blaise_outcome_service():
     return Mock()
 
 
@@ -53,7 +53,7 @@ def world_id():
 @pytest.mark.parametrize("outcome_code", CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED)
 def test_delete_jobs_for_completed_cases_deletes_job_when_case_is_completed_and_totalmobile_job_is_incomplete(
     mock_totalmobile_service,
-    mock_blaise_service,
+    mock_blaise_outcome_service,
     mock_delete_job_service,
     delete_totalmobile_jobs_service,
     world_id,
@@ -72,9 +72,9 @@ def test_delete_jobs_for_completed_cases_deletes_job_when_case_is_completed_and_
         TotalmobileGetJobsResponseModel(questionnaire_jobs={"LMS1111_AA1": [job]})
     )
 
-    mock_blaise_service.get_cases.return_value = [
-        get_populated_case_model(case_id="67890", outcome_code=outcome_code)
-    ]
+    mock_blaise_outcome_service.get_case_outcomes_for_questionnaire.return_value = {
+        "67890": outcome_code
+    }
 
     # act
     delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
@@ -91,7 +91,7 @@ def test_delete_jobs_for_completed_cases_deletes_job_when_case_is_completed_and_
 )
 def test_delete_jobs_for_completed_cases_does_not_delete_job_when_case_is_incomplete_and_totalmobile_job_is_incomplete(
     mock_totalmobile_service,
-    mock_blaise_service,
+    mock_blaise_outcome_service,
     delete_totalmobile_jobs_service,
     outcome_code,
 ):
@@ -113,9 +113,9 @@ def test_delete_jobs_for_completed_cases_does_not_delete_job_when_case_is_incomp
         )
     )
 
-    mock_blaise_service.get_cases.return_value = [
-        get_populated_case_model(case_id="67890", outcome_code=outcome_code)
-    ]
+    mock_blaise_outcome_service.get_case_outcomes_for_questionnaire.return_value = {
+        "67890": outcome_code
+    }
 
     # act
     delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
@@ -128,7 +128,7 @@ def test_delete_jobs_for_completed_cases_does_not_delete_job_when_case_is_incomp
 @pytest.mark.parametrize("outcome_code", CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED)
 def test_delete_jobs_for_completed_cases_does_not_delete_job_when_case_is_complete_and_totalmobile_job_is_complete(
     mock_totalmobile_service,
-    mock_blaise_service,
+    mock_blaise_outcome_service,
     delete_totalmobile_jobs_service,
     outcome_code,
 ):
@@ -150,9 +150,9 @@ def test_delete_jobs_for_completed_cases_does_not_delete_job_when_case_is_comple
         )
     )
 
-    mock_blaise_service.get_cases.return_value = [
-        get_populated_case_model(case_id="67890", outcome_code=outcome_code)
-    ]
+    mock_blaise_outcome_service.get_case_outcomes_for_questionnaire.return_value = {
+        "67890": outcome_code
+    }
 
     # act
     delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
@@ -164,7 +164,7 @@ def test_delete_jobs_for_completed_cases_does_not_delete_job_when_case_is_comple
 
 def test_delete_jobs_for_completed_cases_deletes_jobs_for_completed_cases_in_blaise_for_multiple_questionnaires(
     mock_totalmobile_service,
-    mock_blaise_service,
+    mock_blaise_outcome_service,
     mock_delete_job_service,
     delete_totalmobile_jobs_service,
     world_id,
@@ -195,9 +195,9 @@ def test_delete_jobs_for_completed_cases_deletes_jobs_for_completed_cases_in_bla
         )
     )
 
-    mock_blaise_service.get_cases.side_effect = [
-        [get_populated_case_model(case_id="67890", outcome_code=123)],
-        [get_populated_case_model(case_id="12345", outcome_code=456)],
+    mock_blaise_outcome_service.get_case_outcomes_for_questionnaire.side_effect = [
+        {"67890": 123},
+        {"12345": 456},
     ]
 
     # act
@@ -214,7 +214,7 @@ def test_delete_jobs_for_completed_cases_deletes_jobs_for_completed_cases_in_bla
 
 def test_delete_jobs_for_completed_cases_only_calls_get_cases_once_per_questionnaire(
     mock_totalmobile_service,
-    mock_blaise_service,
+    mock_blaise_outcome_service,
     delete_totalmobile_jobs_service,
 ):
     # arrange
@@ -253,26 +253,23 @@ def test_delete_jobs_for_completed_cases_only_calls_get_cases_once_per_questionn
         )
     )
 
-    mock_blaise_service.get_cases.side_effect = [
-        [
-            get_populated_case_model(case_id="67890", outcome_code=123),
-            get_populated_case_model(case_id="23423", outcome_code=110),
-        ],
-        [get_populated_case_model(case_id="12345", outcome_code=456)],
+    mock_blaise_outcome_service.get_case_outcomes_for_questionnaire.side_effect = [
+        [{"67890": 123}, {"23423": 110}],
+        [{"12345": 456}],
     ]
 
     # act
     delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
 
     # assert
-    mock_blaise_service.get_cases.assert_has_calls(
+    mock_blaise_outcome_service.get_case_outcomes_for_questionnaire.assert_has_calls(
         [call("LMS1111_AA1"), call("LMS1111_BB2")]
     )
 
 
 def test_delete_jobs_for_completed_cases_does_not_get_caseids_for_questionnaires_that_have_no_incomplete_jobs(
     mock_totalmobile_service,
-    mock_blaise_service,
+    mock_blaise_outcome_service,
     delete_totalmobile_jobs_service,
 ):
     # arrange
@@ -315,7 +312,7 @@ def test_delete_jobs_for_completed_cases_does_not_get_caseids_for_questionnaires
     delete_totalmobile_jobs_service.delete_jobs_for_completed_cases()
 
     # assert
-    mock_blaise_service.get_cases.assert_not_called()
+    mock_blaise_outcome_service.get_case_outcomes_for_questionnaire.assert_not_called()
 
 
 def test_delete_jobs_past_field_period_deletes_job_when_field_period_has_expired(
