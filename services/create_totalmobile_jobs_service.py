@@ -42,10 +42,6 @@ class CreateTotalmobileJobsService:
                 f"Questionnaire {questionnaire_name} has a release date of today"
             )
 
-            self.validate_questionnaire_is_in_wave_1(
-                questionnaire_name=questionnaire_name
-            )
-
             self.create_totalmobile_jobs_for_eligible_questionnaire_cases(
                 questionnaire_name=questionnaire_name
             )
@@ -135,15 +131,3 @@ class CreateTotalmobileJobsService:
         )
 
         return job_models
-
-    def validate_questionnaire_is_in_wave_1(self, questionnaire_name: str) -> None:
-        wave = self._questionnaire_service.get_wave_from_questionnaire_name(
-            questionnaire_name
-        )
-        if wave != "1":
-            logging.info(
-                f"Questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported"
-            )
-            raise Exception(
-                f"Questionnaire name {questionnaire_name} does not end with a valid wave, currently only wave 1 is supported"
-            )
