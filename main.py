@@ -12,6 +12,7 @@ from appconfig import Config
 from client import OptimiseClient
 from client.messaging import MessagingClient
 from cloud_functions.logging import setup_logger
+from services.blaise_case_outcome_service import BlaiseCaseOutcomeService
 from services.blaise_service import RealBlaiseService
 from services.case_filters.case_filter_wave_1 import CaseFilterWave1
 from services.case_filters.case_filter_wave_2 import CaseFilterWave2
@@ -88,20 +89,27 @@ def create_totalmobile_jobs_processor(request: flask.Request) -> str:
 
 def delete_totalmobile_jobs_completed_in_blaise(_event, _context) -> str:
     config = Config.from_env()
+    totalmobile_service = _create_totalmobile_service(config=config)
+    blaise_outcome_service = BlaiseCaseOutcomeService(
+        blaise_service=RealBlaiseService(config=config)
+    )
 
     return cloud_functions.delete_totalmobile_jobs_completed_in_blaise.delete_totalmobile_jobs_completed_in_blaise(
-        RealBlaiseService(config),
-        _create_totalmobile_service(config),
+        blaise_outcome_service=blaise_outcome_service,
+        totalmobile_service=totalmobile_service,
     )
 
 
 def delete_totalmobile_jobs_past_field_period(_event, _context) -> str:
     config = Config.from_env()
-    totalmobile_service = _create_totalmobile_service(config)
-    blaise_service = RealBlaiseService(config)
+    totalmobile_service = _create_totalmobile_service(config=config)
+    blaise_outcome_service = BlaiseCaseOutcomeService(
+        blaise_service=RealBlaiseService(config=config)
+    )
 
     return cloud_functions.delete_totalmobile_jobs_past_field_period.delete_totalmobile_jobs_past_field_period(
-        blaise_service, totalmobile_service
+        blaise_outcome_service=blaise_outcome_service,
+        totalmobile_service=totalmobile_service,
     )
 
 

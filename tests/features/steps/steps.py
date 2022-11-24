@@ -265,7 +265,7 @@ def step_impl(context, case_id, questionnaire):
 @when("delete_totalmobile_jobs_completed_in_blaise is run")
 def step_impl(context):
     cloud_functions.delete_totalmobile_jobs_completed_in_blaise.delete_totalmobile_jobs_completed_in_blaise(
-        blaise_service=context.blaise_service,
+        blaise_outcome_service=context.blaise_outcome_service,
         totalmobile_service=context.totalmobile_service,
     )
 
@@ -273,7 +273,7 @@ def step_impl(context):
 @when("delete_totalmobile_jobs_past_field_period is run")
 def step_impl(context):
     cloud_functions.delete_totalmobile_jobs_past_field_period.delete_totalmobile_jobs_past_field_period(
-        blaise_service=context.blaise_service,
+        blaise_outcome_service=context.blaise_outcome_service,
         totalmobile_service=context.totalmobile_service,
     )
 
