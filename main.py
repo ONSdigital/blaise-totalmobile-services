@@ -100,7 +100,7 @@ def delete_totalmobile_jobs_completed_in_blaise(_request: flask.Request) -> str:
     )
 
 
-def delete_totalmobile_jobs_past_field_period(_event, _context) -> str:
+def delete_totalmobile_jobs_past_field_period(_request: flask.Request) -> str:
     config = Config.from_env()
     totalmobile_service = _create_totalmobile_service(config=config)
     blaise_outcome_service = BlaiseCaseOutcomeService(
