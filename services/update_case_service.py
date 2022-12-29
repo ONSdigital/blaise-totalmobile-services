@@ -2,7 +2,7 @@ import logging
 
 from app.exceptions.custom_exceptions import (
     QuestionnaireCaseDoesNotExistError,
-    QuestionnaireDoesNotExistError,
+    QuestionnaireDoesNotExistError, QuestionnaireCaseError,
 )
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from models.blaise.blaise_case_update_model import BlaiseCaseUpdateModel
@@ -122,6 +122,11 @@ class UpdateCaseService:
         except QuestionnaireCaseDoesNotExistError as err:
             logging.error(
                 f"Could not find case {case_id} for questionnaire {questionnaire_name} in Blaise"
+            )
+            raise err
+        except QuestionnaireCaseError as err:
+            logging.error(
+                f"There was an error retrieving case {case_id} for questionnaire {questionnaire_name} in Blaise"
             )
             raise err
 

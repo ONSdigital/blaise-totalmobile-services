@@ -8,7 +8,7 @@ from app.exceptions.custom_exceptions import (
     InvalidTotalmobileUpdateRequestException,
     MissingReferenceError,
     QuestionnaireCaseDoesNotExistError,
-    QuestionnaireDoesNotExistError,
+    QuestionnaireDoesNotExistError, QuestionnaireCaseError,
 )
 from app.handlers.totalmobile_incoming_handler import (
     complete_visit_request_handler,
@@ -68,6 +68,8 @@ def submit_form_result_request():
         return "Questionnaire does not exist in Blaise", 404
     except QuestionnaireCaseDoesNotExistError:
         return "Case does not exist in Blaise", 404
+    except QuestionnaireCaseError:
+        return "Error trying to get case in Blaise", 500
 
 
 @incoming.route("/completevisitrequest", methods=["POST"])
