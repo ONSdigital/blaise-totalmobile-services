@@ -3,7 +3,10 @@ from typing import Dict, List, Protocol
 import blaise_restapi
 from urllib3.exceptions import HTTPError
 
-from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError, QuestionnaireCaseError
+from app.exceptions.custom_exceptions import (
+    QuestionnaireCaseDoesNotExistError,
+    QuestionnaireCaseError,
+)
 from appconfig import Config
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 
@@ -68,7 +71,7 @@ class RealBlaiseService:
             questionnaire_name, questionnaire_case_data["fieldData"]
         )
 
-    def case_exists(self, questionnaire_name: str, case_id: str)-> bool:
+    def case_exists(self, questionnaire_name: str, case_id: str) -> bool:
 
         return self.restapi_client.case_exists_for_questionnaire(
             self._config.blaise_server_park, questionnaire_name, case_id

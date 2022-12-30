@@ -8,7 +8,8 @@ from app.exceptions.custom_exceptions import (
     InvalidTotalmobileUpdateRequestException,
     MissingReferenceError,
     QuestionnaireCaseDoesNotExistError,
-    QuestionnaireDoesNotExistError, QuestionnaireCaseError,
+    QuestionnaireCaseError,
+    QuestionnaireDoesNotExistError,
 )
 from app.handlers.totalmobile_incoming_handler import (
     complete_visit_request_handler,

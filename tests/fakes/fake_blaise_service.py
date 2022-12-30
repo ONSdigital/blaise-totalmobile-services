@@ -1,7 +1,10 @@
 from collections import defaultdict
 from typing import Any, Dict, List, Optional
 
-from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError, QuestionnaireCaseError
+from app.exceptions.custom_exceptions import (
+    QuestionnaireCaseDoesNotExistError,
+    QuestionnaireCaseError,
+)
 from models.blaise.blaise_case_information_model import (
     Address,
     AddressCoordinates,

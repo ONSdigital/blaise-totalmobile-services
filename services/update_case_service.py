@@ -2,7 +2,8 @@ import logging
 
 from app.exceptions.custom_exceptions import (
     QuestionnaireCaseDoesNotExistError,
-    QuestionnaireDoesNotExistError, QuestionnaireCaseError,
+    QuestionnaireCaseError,
+    QuestionnaireDoesNotExistError,
 )
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from models.blaise.blaise_case_update_model import BlaiseCaseUpdateModel
