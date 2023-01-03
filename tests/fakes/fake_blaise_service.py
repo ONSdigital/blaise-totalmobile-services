@@ -1,7 +1,10 @@
 from collections import defaultdict
 from typing import Any, Dict, List, Optional
 
-from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
+from app.exceptions.custom_exceptions import (
+    QuestionnaireCaseDoesNotExistError,
+    QuestionnaireCaseError,
+)
 from models.blaise.blaise_case_information_model import (
     Address,
     AddressCoordinates,
@@ -142,7 +145,7 @@ class FakeBlaiseService:
         self, questionnaire_name: str, case_id: str
     ) -> BlaiseCaseInformationModel:
         if "get_case" in self._errors_when_method_is_called:
-            raise Exception("get_case has errored")
+            raise QuestionnaireCaseError("get_case has errored")
 
         self._assert_case_exists(questionnaire_name, case_id)
 
