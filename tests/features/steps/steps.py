@@ -200,7 +200,12 @@ def step_impl(context, message, error_level):
 
 @then('a "{response}" response is sent back to Totalmobile')
 def step_impl(context, response):
-    mappings = {"200 OK": 200, "400 Bad Request": 400, "404 Not Found": 404}
+    mappings = {
+        "200 OK": 200,
+        "400 Bad Request": 400,
+        "404 Not Found": 404,
+        "500 Internal Server Error": 500,
+    }
     assert (
         context.response.status_code == mappings[response]
     ), f"Context response is {context.response.status_code}, response is {mappings[response]}"
@@ -321,6 +326,11 @@ def step_impl(context):
 @given("the Blaise service errors when retrieving cases")
 def step_impl(context):
     context.blaise_service.method_throws_exception("get_cases")
+
+
+@given("the Blaise service errors when retrieving case")
+def step_impl(context):
+    context.blaise_service.method_throws_exception("get_case")
 
 
 @given("there is a {questionnaire_name} with a totalmobile release date of today")

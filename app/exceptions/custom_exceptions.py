@@ -2,6 +2,10 @@ class QuestionnaireDoesNotExistError(Exception):
     pass
 
 
+class QuestionnaireCaseError(Exception):
+    pass
+
+
 class QuestionnaireCaseDoesNotExistError(Exception):
     pass
 
