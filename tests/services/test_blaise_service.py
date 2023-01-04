@@ -5,7 +5,10 @@ import blaise_restapi
 import pytest
 from urllib3.exceptions import HTTPError
 
-from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
+from app.exceptions.custom_exceptions import (
+    QuestionnaireCaseDoesNotExistError,
+    QuestionnaireCaseError,
+)
 from appconfig import Config
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from services.blaise_service import RealBlaiseService
@@ -86,13 +89,18 @@ def test_get_cases_returns_a_list_of_case_models(
 
 
 @mock.patch.object(blaise_restapi.Client, "get_case")
-def test_get_case_calls_the_correct_services(_mock_rest_api_client, blaise_service):
+@mock.patch.object(blaise_restapi.Client, "case_exists_for_questionnaire")
+def test_get_case_calls_the_correct_services(
+    _mock_rest_api_client1, _mock_rest_api_client2, blaise_service
+):
     # arrange
     blaise_server_park = "gusty"
     questionnaire_name = "LMS2101_AA1"
     case_id = "10010"
 
-    _mock_rest_api_client.return_value = {
+    _mock_rest_api_client1.return_value = True
+
+    _mock_rest_api_client2.return_value = {
         "caseId": "10010",
         "fieldData": {
             "qiD.Serial_Number": "10010",
@@ -105,17 +113,23 @@ def test_get_case_calls_the_correct_services(_mock_rest_api_client, blaise_servi
     blaise_service.get_case(questionnaire_name, case_id)
 
     # assert
-    _mock_rest_api_client.assert_called_with(
+    _mock_rest_api_client1.assert_called_with(
         blaise_server_park, questionnaire_name, case_id
     )
 
 
 @mock.patch.object(blaise_restapi.Client, "get_case")
-def test_get_case_returns_an_expected_case_model(_mock_rest_api_client, blaise_service):
+@mock.patch.object(blaise_restapi.Client, "case_exists_for_questionnaire")
+def test_get_case_returns_an_expected_case_model(
+    _mock_rest_api_client1, _mock_rest_api_client2, blaise_service
+):
     # arrange
     questionnaire_name = "LMS2101_AA1"
     case_id = "10010"
-    _mock_rest_api_client.return_value = {
+
+    _mock_rest_api_client1.return_value = True
+
+    _mock_rest_api_client2.return_value = {
         "caseId": "2000000001",
         "fieldData": {
             "qiD.Serial_Number": "10010",
@@ -132,12 +146,12 @@ def test_get_case_returns_an_expected_case_model(_mock_rest_api_client, blaise_s
     assert result.outcome_code == 110
 
 
-@mock.patch.object(blaise_restapi.Client, "get_case")
+@mock.patch.object(blaise_restapi.Client, "case_exists_for_questionnaire")
 def test_get_case_throws_a_case_does_not_exist_error_if_the_case_does_not_exist(
     _mock_rest_api_client, blaise_service
 ):
     # arrange
-    _mock_rest_api_client.side_effect = HTTPError()
+    _mock_rest_api_client.return_value = False
 
     questionnaire_name = "LMS2101_AA1"
     case_id = "9001"
@@ -145,6 +159,61 @@ def test_get_case_throws_a_case_does_not_exist_error_if_the_case_does_not_exist(
     # assert
     with pytest.raises(QuestionnaireCaseDoesNotExistError):
         blaise_service.get_case(questionnaire_name, case_id)
+
+
+@mock.patch.object(blaise_restapi.Client, "get_case")
+@mock.patch.object(blaise_restapi.Client, "case_exists_for_questionnaire")
+def test_get_case_throws_a_case_error_if_a_httperror_is_thrown(
+    _mock_rest_api_client1, _mock_rest_api_client2, blaise_service
+):
+    # arrange
+    _mock_rest_api_client1.return_value = True
+
+    _mock_rest_api_client2.side_effect = HTTPError
+
+    questionnaire_name = "LMS2101_AA1"
+    case_id = "9001"
+
+    # assert
+    with pytest.raises(QuestionnaireCaseError):
+        blaise_service.get_case(questionnaire_name, case_id)
+
+
+@mock.patch.object(blaise_restapi.Client, "case_exists_for_questionnaire")
+def test_case_exists_calls_the_rest_api_client_with_the_correct_parameters(
+    _mock_rest_api_client, blaise_service
+):
+    # arrange
+    blaise_server_park = "gusty"
+    questionnaire_name = "LMS2101_AA1"
+    case_id = "10010"
+
+    # act
+    blaise_service.case_exists(questionnaire_name, case_id)
+
+    # assert
+    _mock_rest_api_client.assert_called_with(
+        blaise_server_park, questionnaire_name, case_id
+    )
+
+
+@pytest.mark.parametrize(
+    "api_response, expected_response", [(False, False), (True, True)]
+)
+@mock.patch.object(blaise_restapi.Client, "case_exists_for_questionnaire")
+def test_case_exists_returns_correct_response(
+    _mock_rest_api_client, api_response, expected_response, blaise_service
+):
+    # arrange
+    questionnaire_name = "LMS2101_AA1"
+    case_id = "10010"
+    _mock_rest_api_client.return_value = api_response
+
+    # act
+    result = blaise_service.case_exists(questionnaire_name, case_id)
+
+    # assert
+    assert result == expected_response
 
 
 @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")

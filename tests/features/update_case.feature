@@ -20,6 +20,13 @@ Feature: Update case
     Then "Could not find case 12345 for questionnaire LMS2206_AA1 in Blaise" is logged as an error message
     And a "404 Not Found" response is sent back to Totalmobile
 
+  Scenario: Error in retrieving case in Blaise
+    Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
+    But the Blaise service errors when retrieving case
+    When Totalmobile sends an update for reference "LMS2206-AA1.12345"
+    Then "There was an error retrieving case 12345 for questionnaire LMS2206_AA1 in Blaise" is logged as an error message
+    And a "500 Internal Server Error" response is sent back to Totalmobile
+
   Scenario: Reference is missing
     When Totalmobile sends an update with a missing reference
     Then "Unique reference is missing from the Totalmobile payload" is logged as an error message
