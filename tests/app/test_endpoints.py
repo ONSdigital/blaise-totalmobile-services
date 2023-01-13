@@ -22,7 +22,7 @@ def test_health_check(client):
 def test_update_visit_status_request(mock_handler, client, test_auth_header):
     response = client.post("/bts/updatevisitstatusrequest", headers=test_auth_header)
     assert response.status_code == 200
-    assert response.text == "ok"
+    assert response.status == "200 OK"
     mock_handler.assert_called()
     assert_security_headers_are_present(response)
 
@@ -31,7 +31,7 @@ def test_update_visit_status_request(mock_handler, client, test_auth_header):
 def test_submit_form_result_request(mock_handler, client, test_auth_header):
     response = client.post("/bts/submitformresultrequest", headers=test_auth_header)
     assert response.status_code == 200
-    assert response.text == "ok"
+    assert response.status == "200 OK"
     mock_handler.assert_called()
     assert_security_headers_are_present(response)
 
@@ -40,7 +40,7 @@ def test_submit_form_result_request(mock_handler, client, test_auth_header):
 def test_complete_visit_request(mock_handler, client, test_auth_header):
     response = client.post("/bts/completevisitrequest", headers=test_auth_header)
     assert response.status_code == 200
-    assert response.text == "ok"
+    assert response.status == "200 OK"
     mock_handler.assert_called()
     assert_security_headers_are_present(response)
 
