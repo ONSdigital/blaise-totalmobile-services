@@ -5,7 +5,7 @@ description = ""
 authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 requests = "^2.27.1"
 blaise-restapi = {git = "https://github.com/ONSdigital/blaise-api-python-client.git", rev = "456baa6d0345856ad42ed83f31ea45dee09f436f"}
 google-auth = "^2.6.0"
