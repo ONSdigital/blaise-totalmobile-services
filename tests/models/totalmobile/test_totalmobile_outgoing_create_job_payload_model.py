@@ -56,7 +56,8 @@ def test_import_case_returns_a_populated_model():
         "UAC: 3456 3453 4546\n"
         "Due Date: 31/01/2023\n"
         "Study: LMS2101_AA1\n"
-        "Case ID: 90001"
+        "Case ID: 90001\n"
+        "Wave: 1"
     )
     assert result.origin == "ONS"
     assert result.duration == 15
@@ -275,6 +276,7 @@ def test_create_description_returns_a_correctly_formatted_description():
         case_id="12345",
         data_model_name="LMS2201_AA1",
         wave_com_dte=datetime(2022, 1, 31),
+        wave="4",
     )
 
     uac_chunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")
@@ -289,7 +291,8 @@ def test_create_description_returns_a_correctly_formatted_description():
         "UAC: 3456 3453 4546\n"
         "Due Date: 31/01/2022\n"
         "Study: LMS2201_AA1\n"
-        "Case ID: 12345"
+        "Case ID: 12345\n"
+        "Wave: 4"
     )
 
 
@@ -297,7 +300,7 @@ def test_create_description_returns_a_correctly_formatted_description_when_all_v
     # Arrange
     questionnaire_name = "LMS2201_AA1"
     questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
-        case_id="1234", data_model_name="", wave_com_dte=None
+        case_id="1234", data_model_name="", wave_com_dte=None, wave=""
     )
 
     # Act
@@ -307,7 +310,7 @@ def test_create_description_returns_a_correctly_formatted_description_when_all_v
 
     # Assert
     assert case.description == (
-        "UAC: \n" "Due Date: \n" "Study: LMS2201_AA1\n" "Case ID: 1234"
+        "UAC: \n" "Due Date: \n" "Study: LMS2201_AA1\n" "Case ID: 1234\n" "Wave: "
     )
 
 
