@@ -64,20 +64,20 @@ poetry run python -c "from werkzeug.security import generate_password_hash; prin
 
 Create an .env file in the root of the project and add the following environment variables:
 
-| Variable | Description | Example |
-| --- | --- | --- |
-| GCLOUD_PROJECT | The GCP project the application will use. | ons-blaise-v2-dev-sandbox123 |
-| REGION | The GCP region the application will be deployed to. | europe-west2 |
-| BLAISE_API_URL | The RESTful API URL the application will use to get and update questionnaire data. | http://localhost:90 |
-| BLAISE_SERVER_PARK | The Blaise Server Park name we will be getting the Blaise data from. | gusty |
-| CREATE_TOTALMOBILE_JOBS_TASK_QUEUE_ID | The Cloud Tasks queue ID for creating jobs to Totalmobile. | projects/ons-blaise-v2-dev-sandbox123/locations/europe-west2/queues/totalmobile-jobs |
-| TOTALMOBILE_URL | The Totalmobile instance URL. | https://ons-dev.totalmobile-cloud.com |
-| TOTALMOBILE_INSTANCE | The Totalmobile instance type. | Test |
-| TOTALMOBILE_CLIENT_ID | The client ID to authenicate with Totalmobile. | blah |
-| TOTALMOBILE_CLIENT_SECRET | The client secret to authenicate with Totalmobile. | blah |
-| TOTALMOBILE_INCOMING_USER | The username for Totalmobile to authenicate with us. | blah |
+| Variable | Description | Example                                                                                                |
+| --- | --- |--------------------------------------------------------------------------------------------------------|
+| GCLOUD_PROJECT | The GCP project the application will use. | ons-blaise-v2-dev-sandbox123                                                                           |
+| REGION | The GCP region the application will be deployed to. | europe-west2                                                                                           |
+| BLAISE_API_URL | The RESTful API URL the application will use to get and update questionnaire data. | http://localhost:90                                                                                    |
+| BLAISE_SERVER_PARK | The Blaise Server Park name we will be getting the Blaise data from. | gusty                                                                                                  |
+| CREATE_TOTALMOBILE_JOBS_TASK_QUEUE_ID | The Cloud Tasks queue ID for creating jobs to Totalmobile. | projects/ons-blaise-v2-dev-sandbox123/locations/europe-west2/queues/totalmobile-jobs                   |
+| TOTALMOBILE_URL | The Totalmobile instance URL. | https://ons-dev.totalmobile-cloud.com                                                                  |
+| TOTALMOBILE_INSTANCE | The Totalmobile instance type. | test                                                                                                   |
+| TOTALMOBILE_CLIENT_ID | The client ID to authenicate with Totalmobile. | test                                                                                                   |
+| TOTALMOBILE_CLIENT_SECRET | The client secret to authenicate with Totalmobile. | test                                                                                                   |
+| TOTALMOBILE_INCOMING_USER | The username for Totalmobile to authenicate with us. | test                                                                                                   |
 | TOTALMOBILE_INCOMING_PASSWORD_HASH | The hashed password for Totalmobile to authenicate with us. | pbkdf2:sha256:260000$Y1Pew7gJMYbRhfNR$9b97ee1d4a735047051c83bff275532d4d1322f1fc186739189b00fa7cc9a51b |
-| CLOUD_FUNCTION_SA | The GCP service account the cloud functions will use. | totalmobile-sa@ons-blaise-v2-dev-sandbox123.iam.gserviceaccount.com |
+| CLOUD_FUNCTION_SA | The GCP service account the cloud functions will use. | totalmobile-sa@ons-blaise-v2-dev-sandbox123.iam.gserviceaccount.com                                    |
 
 ```
 GCLOUD_PROJECT=ons-blaise-v2-dev-sandbox123

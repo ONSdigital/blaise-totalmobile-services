@@ -106,7 +106,8 @@ class TotalMobileOutgoingCreateJobPayloadModel:
             f"UAC: {uac_string}\n"
             f"Due Date: {due_date_string}\n"
             f"Study: {questionnaire_name}\n"
-            f"Case ID: {questionnaire_case.case_id}"
+            f"Case ID: {questionnaire_case.case_id}\n"
+            f"Wave: {questionnaire_case.wave}"
         )
 
     @staticmethod
