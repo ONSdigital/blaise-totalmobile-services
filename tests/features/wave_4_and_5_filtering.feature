@@ -18,14 +18,12 @@ Feature: Filter wave 4 and 5 cases
     Examples:
       | case_id | questionnaire_name | tm_job_ref        | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rdmktnind | rhout |
       | 12345   | LMS2210_AA1        | LMS2210-AA1.12345 | 0            | 4    | Y         |        |        |           | Region 1 |           | 0     |
-      | 12345   | LMS2210_AA1        | LMS2210-AA1.12345 | 0            | 4    | N         |        |        |           | Region 1 |           | 0     |
       | 12345   | LMS2210_AA1        | LMS2210-AA1.12345 | 0            | 4    | Y         | 070000 |        |           | Region 1 |           | 0     |
       | 12345   | LMS2210_AA1        | LMS2210-AA1.12345 | 0            | 4    | Y         |        | 070000 |           | Region 1 |           | 0     |
       | 12345   | LMS2210_AA1        | LMS2210-AA1.12345 | 0            | 4    | Y         |        |        | 070000    | Region 1 |           | 0     |
       | 12345   | LMS2210_AA1        | LMS2210-AA1.12345 | 0            | 4    | Y         |        |        |           | Region 1 | Y         | 0     |
       | 12345   | LMS2210_AA1        | LMS2210-AA1.12345 | 0            | 4    | Y         |        |        |           | Region 1 |           | 110   |
       | 12345   | LMS2210_AA1        | LMS2210-AA1.12345 | 0            | 5    | Y         |        |        |           | Region 1 |           | 0     |
-      | 12345   | LMS2210_AA1        | LMS2210-AA1.12345 | 0            | 5    | N         |        |        |           | Region 1 |           | 0     |
       | 12345   | LMS2210_AA1        | LMS2210-AA1.12345 | 0            | 5    | Y         | 070000 |        |           | Region 1 |           | 0     |
       | 12345   | LMS2210_AA1        | LMS2210-AA1.12345 | 0            | 5    | Y         |        | 070000 |           | Region 1 |           | 0     |
       | 12345   | LMS2210_AA1        | LMS2210-AA1.12345 | 0            | 5    | Y         |        |        | 070000    | Region 1 |           | 0     |
@@ -48,13 +46,15 @@ Feature: Filter wave 4 and 5 cases
     When create_totalmobile_jobs is run
     Then no cloud tasks are created
     Examples:
-      | case_id | questionnaire_name | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rdmktnind | rhout |
-      | 12345   | LMS2210_AA1        | 110          | 4    | Y         |        |        |           | Region 1 |           | 0     |
-      | 12345   | LMS2210_AA1        | 210          | 4    | Y         |        |        |           | Region 1 |           | 0     |
-      | 12345   | LMS2210_AA1        | 300          | 4    | Y         |        |        |           | Region 1 |           | 0     |
-      | 12345   | LMS2210_AA1        | 360          | 4    | Y         |        |        |           | Region 1 |           | 0     |
-      | 12345   | LMS2210_AA1        | 110          | 5    | Y         |        |        |           | Region 1 |           | 0     |
-      | 12345   | LMS2210_AA1        | 210          | 5    | Y         |        |        |           | Region 1 |           | 0     |
-      | 12345   | LMS2210_AA1        | 300          | 5    | Y         |        |        |           | Region 1 |           | 0     |
-      | 12345   | LMS2210_AA1        | 360          | 5    | Y         |        |        |           | Region 1 |           | 0     |
-      | 12345   | LMS2210_AA1        | 999          | 5    | Y         |        |        |           | Region 1 |           | 0     |
+      | case_id | questionnaire_name | outcome_code      | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rdmktnind | rhout |
+      | 12345   | LMS2210_AA1        | 110               | 4    | Y         |        |        |           | Region 1 |           | 0     |
+      | 12345   | LMS2210_AA1        | 210               | 4    | Y         |        |        |           | Region 1 |           | 0     |
+      | 12345   | LMS2210_AA1        | 300               | 4    | Y         |        |        |           | Region 1 |           | 0     |
+      | 12345   | LMS2210_AA1        | 360               | 4    | Y         |        |        |           | Region 1 |           | 0     |
+      | 12345   | LMS2210_AA1        | 110               | 5    | Y         |        |        |           | Region 1 |           | 0     |
+      | 12345   | LMS2210_AA1        | 210               | 5    | Y         |        |        |           | Region 1 |           | 0     |
+      | 12345   | LMS2210_AA1        | 300               | 5    | Y         |        |        |           | Region 1 |           | 0     |
+      | 12345   | LMS2210_AA1        | 360               | 5    | Y         |        |        |           | Region 1 |           | 0     |
+      | 12345   | LMS2210_AA1        | 999               | 5    | Y         |        |        |           | Region 1 |           | 0     |
+      | 12345   | LMS2210_AA1        | 0                 | 4    | N         |        |        |           | Region 1 |           | 0     |
+      | 12345   | LMS2210_AA1        | 0                 | 5    | N         |        |        |           | Region 1 |           | 0     |
