@@ -39,8 +39,8 @@ def test_valid_outcome_codes_has_not_changed_for_wave_2():
     valid_rotational_outcome_codes = service.valid_rotational_outcome_codes
 
     # assert
-    assert outcome_codes == [0, 310]
-    assert valid_rotational_outcome_codes == [0, 310]
+    assert outcome_codes == [0, 310, 320]
+    assert valid_rotational_outcome_codes == [0, 310, 320]
 
 
 def test_valid_outcome_codes_has_not_changed_for_wave_3():
@@ -52,8 +52,8 @@ def test_valid_outcome_codes_has_not_changed_for_wave_3():
     valid_rotational_outcome_codes = service.valid_rotational_outcome_codes
 
     # assert
-    assert outcome_codes == [0, 310]
-    assert valid_rotational_outcome_codes == [0, 310]
+    assert outcome_codes == [0, 310, 320]
+    assert valid_rotational_outcome_codes == [0, 310, 320]
 
 
 class TestEligibleCasesWithoutTelephoneNumbers:
