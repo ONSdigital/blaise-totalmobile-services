@@ -100,6 +100,6 @@ class DeleteTotalmobileJobsService:
         except Exception as error:
             logging.error(
                 "Unable to retrieve jobs from Totalmobile",
-                extra={"Exception_reason": str(error)},
+                extra={"json_fields": {"Exception_reason": str(error)}},
             )
             return {}
