@@ -22,7 +22,7 @@ class BlaiseCaseOutcomeService:
             except Exception as error:
                 logging.error(
                     f"Unable to retrieve cases from Blaise for questionnaire {questionnaire_name}",
-                    extra={"Exception_reason": str(error)},
+                    extra={"json_fields": {"Exception_reason": str(error)}},
                 )
                 return {}
 
