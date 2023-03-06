@@ -4,8 +4,8 @@ from services.case_filters.case_filter_base import CaseFilterBase
 
 class CaseFilterWave2(CaseFilterBase):
     def __init__(self):
-        self.valid_outcome_codes = [0, 310, 320]
-        self.valid_rotational_outcome_codes = [0, 310, 320]
+        self.valid_outcome_codes = [0, 310]
+        self.valid_rotational_outcome_codes = [0, 310]
 
     @property
     def wave_number(self) -> int:
