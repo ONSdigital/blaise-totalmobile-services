@@ -26,7 +26,7 @@ class CaseFilterWave2(CaseFilterBase):
     def case_is_eligible_if_no_telephone_numbers_are_set(
         self, case: BlaiseCaseInformationModel
     ) -> bool:
-        if self.case_has_no_telephone_numbers(case):
-            return self.case_has_rotational_knock_to_nudge_indicator_of_empty_or_n(case)
+        # if self.case_has_no_telephone_numbers(case):
+            # return self.case_has_rotational_knock_to_nudge_indicator_of_empty_or_n(case)
 
         return True
