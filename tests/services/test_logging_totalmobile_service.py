@@ -102,7 +102,7 @@ class TestRecallJob:
         assert (
             "root",
             logging.ERROR,
-            "Failed to recall job LMS2209-AA1.12345 from norbert.minion on Totalmobile (previous: A bad thing happened)",
+            "Failed to recall job LMS2209-AA1.12345 from norbert.minion on Totalmobile",
         ) not in caplog.record_tuples
 
     def test_logs_failure(self, inner_service, logging_service, args, caplog):
@@ -120,7 +120,7 @@ class TestRecallJob:
         assert (
             "root",
             logging.ERROR,
-            "Failed to recall job LMS2209-AA1.12345 from norbert.minion on Totalmobile (previous: A bad thing happened)",
+            "Failed to recall job LMS2209-AA1.12345 from norbert.minion on Totalmobile",
         ) in caplog.record_tuples
 
 

@@ -33,8 +33,8 @@ class LoggingTotalmobileService:
             )
         except Exception as error:
             logging.error(
-                f"Failed to recall job {job_reference} from {allocated_resource_reference} on Totalmobile (previous: {error})",
-                extra={"previous_exception": str(error)},
+                f"Failed to recall job {job_reference} from {allocated_resource_reference} on Totalmobile",
+                extra={"json_fields": {"previous_exception": str(error)}},
             )
             raise error
 
