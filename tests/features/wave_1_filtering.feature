@@ -43,7 +43,7 @@ Feature: Filter wave 1 cases
     Then no cloud tasks are created
     Examples:
       | case_id | questionnaire_name | outcome_code | wave | fieldcase | telno1    | telno2    | telNoAppt | region   |
-      | 12345   | LMS2210_AA1        | 0            | 2    | Y         |           |           |           | Region 1 |
+      | 12345   | LMS2210_AA1        | 0            | 8    | Y         |           |           |           | Region 1 |
       | 12345   | LMS2210_AA1        | 110          | 1    | Y         |           |           |           | Region 1 |
       | 12345   | LMS2210_AA1        | 0            | 1    | N         |           |           |           | Region 1 |
       | 12345   | LMS2210_AA1        | 0            | 1    | Y         | 072345678 |           |           | Region 1 |
