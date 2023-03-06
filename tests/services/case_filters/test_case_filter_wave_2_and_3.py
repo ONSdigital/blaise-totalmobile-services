@@ -19,7 +19,6 @@ def valid_case_without_telephone_numbers() -> BlaiseCaseInformationModel:
         appointment_telephone_number="",
         field_case="Y",
         outcome_code=310,
-        # rotational_knock_to_nudge_indicator="N",
         rotational_outcome_code=310,
         field_region="Region 1",
     )
