@@ -26,11 +26,11 @@ class CaseFilterBase:
         pass
 
     @staticmethod
-    def case_has_telephone_numbers(case: BlaiseCaseInformationModel) -> bool:
+    def case_has_no_telephone_numbers(case: BlaiseCaseInformationModel) -> bool:
         if (
-            case.contact_details.telephone_number_1 != ""
-            and case.contact_details.telephone_number_2 != ""
-            and case.contact_details.appointment_telephone_number != ""
+            case.contact_details.telephone_number_1 == ""
+            and case.contact_details.telephone_number_2 == ""
+            and case.contact_details.appointment_telephone_number == ""
         ):
             return True
 
