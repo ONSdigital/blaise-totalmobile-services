@@ -21,6 +21,7 @@ class CaseFilterWave2(CaseFilterBase):
                 self.valid_rotational_outcome_codes, case
             )
             and self.case_is_eligible_if_no_telephone_numbers_are_set(case)
+            and self.case_has_rotational_knock_to_nudge_indicator_of_empty_or_n(case)
         )
 
     def case_is_eligible_if_no_telephone_numbers_are_set(

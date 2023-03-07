@@ -57,24 +57,6 @@ def test_valid_outcome_codes_has_not_changed_for_wave_3():
 
 
 class TestEligibleCasesWithoutTelephoneNumbers:
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", "n", "N"])
-    def test_case_is_eligible_returns_true_only_where_criteria_without_telephone_is_met(
-            self,
-            knock_to_nudge_indicator,
-            valid_case_without_telephone_numbers,
-            service: CaseFilterBase,
-    ):
-        # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
-
-        # act
-        result = service.case_is_eligible(case)
-
-        # assert
-        assert result is True
-
     @pytest.mark.parametrize(
         "outcome_code, rotational_outcome_code",
         [(0, 0), (310, 0), (0, 310), (310, 310)],
@@ -100,6 +82,63 @@ class TestEligibleCasesWithoutTelephoneNumbers:
 
 
 class TestEligibleCasesWithATelephoneNumber:
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", "n", "N"])
+    def test_case_is_eligible_returns_true_only_where_criteria_with_telephone_number_1_set(
+            self,
+            knock_to_nudge_indicator,
+            valid_case_without_telephone_numbers,
+            service: CaseFilterBase,
+    ):
+        # arrange
+        case = valid_case_without_telephone_numbers
+        case.wave = service.wave_number
+        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+        case.contact_details.telephone_number_1 = "07656775679"
+
+        # act
+        result = service.case_is_eligible(case)
+
+        # assert
+        assert result is True
+
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", "n", "N"])
+    def test_case_is_eligible_returns_true_only_where_criteria_with_telephone_number_2_set(
+            self,
+            knock_to_nudge_indicator,
+            valid_case_without_telephone_numbers,
+            service: CaseFilterBase,
+    ):
+        # arrange
+        case = valid_case_without_telephone_numbers
+        case.wave = service.wave_number
+        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+        case.contact_details.telephone_number_2 = "07656775679"
+
+        # act
+        result = service.case_is_eligible(case)
+
+        # assert
+        assert result is True
+
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", "n", "N"])
+    def test_case_is_eligible_returns_true_only_where_criteria_with_appointment_telephone_number_set(
+            self,
+            knock_to_nudge_indicator,
+            valid_case_without_telephone_numbers,
+            service: CaseFilterBase,
+    ):
+        # arrange
+        case = valid_case_without_telephone_numbers
+        case.wave = service.wave_number
+        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+        case.contact_details.appointment_telephone_number = "07656775679"
+
+        # act
+        result = service.case_is_eligible(case)
+
+        # assert
+        assert result is True
+
     @pytest.mark.parametrize(
         "outcome_code, rotational_outcome_code",
         [(0, 0), (310, 0), (0, 310), (310, 310)],
@@ -152,7 +191,7 @@ class TestEligibleCasesWithATelephoneNumber:
         "outcome_code, rotational_outcome_code",
         [(0, 0), (310, 0), (0, 310), (310, 310)],
     )
-    def test_case_is_eligible_returns_true_where_criteria_is_met_for_all_outcome_codes_with_tappointment_telephone_number_set(
+    def test_case_is_eligible_returns_true_where_criteria_is_met_for_all_outcome_codes_with_appointment_telephone_number_set(
             self,
             outcome_code,
             rotational_outcome_code,
