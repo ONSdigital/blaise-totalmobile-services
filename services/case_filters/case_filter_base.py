@@ -37,7 +37,7 @@ class CaseFilterBase:
         return False
 
     @staticmethod
-    def telephone_number_is_empty(case: BlaiseCaseInformationModel) -> bool:
+    def telephone_number_1_is_empty(case: BlaiseCaseInformationModel) -> bool:
         if case.contact_details.telephone_number_1 == "":
             return True
 
