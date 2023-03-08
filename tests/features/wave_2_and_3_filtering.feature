@@ -184,8 +184,8 @@ Feature: Filter wave 2 and 3 cases
       | 320          | 3    | Y         |         |         | 0700000   | Region 1 | N         | 320   |
 
   Scenario Outline: Ineligible wave 2 and 3 LMS cases without telephone numbers are sent to Totalmobile
-    Given there is a <questionnaire_name> with a totalmobile release date of today
-    And case <case_id> for <questionnaire_name> has the following data
+    Given there is a LMS2210_AA1 with a totalmobile release date of today
+    And case 12345 for LMS2210_AA1 has the following data
       | field_name           | value          |
       | outcome_code         | <outcome_code> |
       | qDataBag.Wave        | <wave>         |
@@ -197,34 +197,44 @@ Feature: Filter wave 2 and 3 cases
       | qRotate.RHOut        | <rhout>        |
     When create_totalmobile_jobs is run
     Then no cloud tasks are created
-    Examples:
-      | case_id | questionnaire_name | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rhout |
-      | 12345   | LMS2210_AA1        | 110          | 2    | Y         |        |        |           | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 0            | 2    | N         |        |        |           | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 0            | 2    | Y         |        |        |           | Region 1 | 110   |
-      | 12345   | LMS2210_AA1        | 110          | 2    | Y         | 070000 |        |           | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 0            | 2    | N         | 070000 |        |           | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 0            | 2    | Y         | 070000 |        |           | Region 1 | 110   |
-      | 12345   | LMS2210_AA1        | 110          | 2    | Y         |        | 070000 |           | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 0            | 2    | N         |        | 070000 |           | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 0            | 2    | Y         |        | 070000 |           | Region 1 | 110   |
-      | 12345   | LMS2210_AA1        | 110          | 2    | Y         |        |        | 070000    | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 0            | 2    | N         |        |        | 070000    | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 0            | 2    | Y         |        |        | 070000    | Region 1 | 110   |
-      | 12345   | LMS2210_AA1        | 110          | 3    | Y         |        |        |           | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 0            | 3    | N         |        |        |           | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 0            | 3    | Y         |        |        |           | Region 1 | 110   |
-      | 12345   | LMS2210_AA1        | 110          | 3    | Y         | 070000 |        |           | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 0            | 3    | N         | 070000 |        |           | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 0            | 3    | Y         | 070000 |        |           | Region 1 | 110   |
-      | 12345   | LMS2210_AA1        | 110          | 3    | Y         |        | 070000 |           | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 0            | 3    | N         |        | 070000 |           | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 0            | 3    | Y         |        | 070000 |           | Region 1 | 110   |
-      | 12345   | LMS2210_AA1        | 110          | 3    | Y         |        |        | 070000    | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 0            | 3    | N         |        |        | 070000    | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 0            | 3    | Y         |        |        | 070000    | Region 1 | 110   |
-      | 12345   | LMS2210_AA1        | 110          | 2    | Y         |        |        |           | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 110          | 3    | Y         |        |        |           | Region 1 | 0     |
-      | 12345   | LMS2210_AA1        | 310          | 2    | Y         |        |        |           | Region 1 | 110   |
+
+    Examples: Waves 2 and 3, outcome_code is 0, fieldcase is N
+      | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rhout |
+      | 0            | 2    | N         |        |        |           | Region 1 | 0     |
+      | 0            | 2    | N         | 070000 |        |           | Region 1 | 0     |
+      | 0            | 2    | N         |        | 070000 |           | Region 1 | 0     |
+      | 0            | 2    | N         |        |        | 070000    | Region 1 | 0     |
+      | 0            | 3    | N         |        |        |           | Region 1 | 0     |
+      | 0            | 3    | N         | 070000 |        |           | Region 1 | 0     |
+      | 0            | 3    | N         |        | 070000 |           | Region 1 | 0     |
+      | 0            | 3    | N         |        |        | 070000    | Region 1 | 0     |
+
+    Examples: Waves 2 and 3, outcome_code is 0, fieldcase is Y
+      | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rhout |
+      | 0            | 2    | Y         |        |        |           | Region 1 | 110   |
+      | 0            | 2    | Y         | 070000 |        |           | Region 1 | 110   |
+      | 0            | 2    | Y         |        | 070000 |           | Region 1 | 110   |
+      | 0            | 2    | Y         |        |        | 070000    | Region 1 | 110   |
+      | 0            | 3    | Y         |        |        |           | Region 1 | 110   |
+      | 0            | 3    | Y         | 070000 |        |           | Region 1 | 110   |
+      | 0            | 3    | Y         |        | 070000 |           | Region 1 | 110   |
+      | 0            | 3    | Y         |        |        | 070000    | Region 1 | 110   |
+
+    Examples: Waves 2 and 3, outcome_code is 110, fieldcase is Y
+      | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rhout |
+      | 110          | 2    | Y         |        |        |           | Region 1 | 0     |
+      | 110          | 2    | Y         | 070000 |        |           | Region 1 | 0     |
+      | 110          | 2    | Y         |        | 070000 |           | Region 1 | 0     |
+      | 110          | 2    | Y         |        |        | 070000    | Region 1 | 0     |
+      | 110          | 3    | Y         |        |        |           | Region 1 | 0     |
+      | 110          | 3    | Y         | 070000 |        |           | Region 1 | 0     |
+      | 110          | 3    | Y         |        | 070000 |           | Region 1 | 0     |
+      | 110          | 3    | Y         |        |        | 070000    | Region 1 | 0     |
+
+    Examples: Waves 2 and 3, rhout is 110, fieldcase is Y
+      | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rhout |
+      | 0            | 2    | Y         |        |        |           | Region 1 | 110   |
+      | 310          | 2    | Y         |        |        |           | Region 1 | 110   |
+      | 320          | 2    | Y         |        |        |           | Region 1 | 110   |
 
 
