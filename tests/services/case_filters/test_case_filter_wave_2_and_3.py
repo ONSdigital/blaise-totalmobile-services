@@ -443,8 +443,6 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
             f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of '{knock_to_nudge_indicator}', not 'N'",
         ) in caplog.record_tuples
 
-    #################################
-
     @pytest.mark.parametrize(
         "outcome_code, rotational_outcome_code",
         [(110, 0), (210, 0), (0, 110), (310, 210)],
