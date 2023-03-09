@@ -18,15 +18,6 @@ class CaseFilterWave2(CaseFilterBase):
             self.case_has_field_case_of_y(case)
             and self.case_has_a_desired_outcome_code_of(self.valid_outcome_codes, case)
             and self.case_has_a_desired_rotational_outcome_code_of(
-                self.valid_rotational_outcome_codes, case
-            )
-            and self.case_is_eligible_if_telephone_numbers_are_set(case)
+                self.valid_rotational_outcome_codes, case)
+            and self.case_has_rotational_knock_to_nudge_indicator_of_empty_or_n(case)
         )
-
-    def case_is_eligible_if_telephone_numbers_are_set(
-        self, case: BlaiseCaseInformationModel
-    ) -> bool:
-        if self.case_has_telephone_numbers(case):
-            return self.case_has_rotational_knock_to_nudge_indicator_of_empty_or_n(case)
-
-        return True
