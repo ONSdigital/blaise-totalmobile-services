@@ -14,7 +14,7 @@ class CaseFilterWave1(CaseFilterBase):
         self, case: BlaiseCaseInformationModel
     ) -> bool:
         return (
-            self.telephone_number_is_empty(case)
+            self.telephone_number_1_is_empty(case)
             and self.telephone_number_2_is_empty(case)
             and self.appointment_telephone_number_is_empty(case)
             and self.case_has_field_case_of_y(case)
