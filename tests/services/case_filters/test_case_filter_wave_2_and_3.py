@@ -57,6 +57,60 @@ def test_valid_outcome_codes_has_not_changed_for_wave_3():
 
 
 class TestEligibleCasesWithoutTelephoneNumbers:
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", "n", "N"])
+    def test_case_is_eligible_returns_true_where_criteria_is_met_for_knock_to_nudge_indicator_without_telephone_number_1_set(
+        self,
+        knock_to_nudge_indicator,
+        valid_case_without_telephone_numbers,
+        service: CaseFilterBase,
+    ):
+        # arrange
+        case = valid_case_without_telephone_numbers
+        case.wave = service.wave_number
+        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+
+        # act
+        result = service.case_is_eligible(case)
+
+        # assert
+        assert result is True
+
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", "n", "N"])
+    def test_case_is_eligible_returns_true_where_criteria_is_met_for_knock_to_nudge_indicator_without_telephone_number_2_set(
+        self,
+        knock_to_nudge_indicator,
+        valid_case_without_telephone_numbers,
+        service: CaseFilterBase,
+    ):
+        # arrange
+        case = valid_case_without_telephone_numbers
+        case.wave = service.wave_number
+        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+
+        # act
+        result = service.case_is_eligible(case)
+
+        # assert
+        assert result is True
+
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", "n", "N"])
+    def test_case_is_eligible_returns_true_where_criteria_is_met_for_knock_to_nudge_indicator_without_appointment_telephone_number_set(
+        self,
+        knock_to_nudge_indicator,
+        valid_case_without_telephone_numbers,
+        service: CaseFilterBase,
+    ):
+        # arrange
+        case = valid_case_without_telephone_numbers
+        case.wave = service.wave_number
+        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+
+        # act
+        result = service.case_is_eligible(case)
+
+        # assert
+        assert result is True
+
     @pytest.mark.parametrize(
         "outcome_code, rotational_outcome_code",
         [
@@ -269,6 +323,126 @@ class TestCaseIsInCorrectWave:
 
 
 class TestIneligibleCasesWithoutTelephoneNumbers:
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    def test_case_is_eligible_returns_false_for_invalid_knock_to_nudge_indicator_without_telephone_number_1_set(
+        self,
+        knock_to_nudge_indicator,
+        valid_case_without_telephone_numbers,
+        service: CaseFilterBase,
+    ):
+        # arrange
+        case = valid_case_without_telephone_numbers
+        case.wave = service.wave_number
+        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+
+        # act
+        result = service.case_is_eligible(case)
+
+        # assert
+        assert result is False
+
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    def test_case_is_eligible_logs_a_message_if_knock_to_nudge_indicator_is_set_to_y_when_telephone_number_1_is_not_set(
+        self,
+        knock_to_nudge_indicator,
+        valid_case_without_telephone_numbers,
+        service: CaseFilterBase,
+        caplog,
+    ):
+        # arrange
+        case = valid_case_without_telephone_numbers
+        case.wave = service.wave_number
+        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+
+        # act && assert
+        with caplog.at_level(logging.INFO):
+            service.case_is_eligible(case)
+        assert (
+            "root",
+            logging.INFO,
+            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of '{knock_to_nudge_indicator}', not 'N'",
+        ) in caplog.record_tuples
+
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    def test_case_is_eligible_returns_false_for_invalid_knock_to_nudge_indicator_without_telephone_number_2_set(
+        self,
+        knock_to_nudge_indicator,
+        valid_case_without_telephone_numbers,
+        service: CaseFilterBase,
+    ):
+        # arrange
+        case = valid_case_without_telephone_numbers
+        case.wave = service.wave_number
+        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+
+        # act
+        result = service.case_is_eligible(case)
+
+        # assert
+        assert result is False
+
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    def test_case_is_eligible_logs_a_message_if_knock_to_nudge_indicator_is_set_to_y_when_telephone_number_2_is_not_set(
+        self,
+        knock_to_nudge_indicator,
+        valid_case_without_telephone_numbers,
+        service: CaseFilterBase,
+        caplog,
+    ):
+        # arrange
+        case = valid_case_without_telephone_numbers
+        case.wave = service.wave_number
+        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+
+        # act && assert
+        with caplog.at_level(logging.INFO):
+            service.case_is_eligible(case)
+        assert (
+            "root",
+            logging.INFO,
+            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of '{knock_to_nudge_indicator}', not 'N'",
+        ) in caplog.record_tuples
+
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    def test_case_is_eligible_returns_false_for_invalid_knock_to_nudge_indicator_without_appointment_telephone_number_set(
+        self,
+        knock_to_nudge_indicator,
+        valid_case_without_telephone_numbers,
+        service: CaseFilterBase,
+    ):
+        # arrange
+        case = valid_case_without_telephone_numbers
+        case.wave = service.wave_number
+        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+
+        # act
+        result = service.case_is_eligible(case)
+
+        # assert
+        assert result is False
+
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    def test_case_is_eligible_logs_a_message_if_knock_to_nudge_indicator_is_set_to_y_when_appointment_telephone_number_is_not_set(
+        self,
+        knock_to_nudge_indicator,
+        valid_case_without_telephone_numbers,
+        service: CaseFilterBase,
+        caplog,
+    ):
+        # arrange
+        case = valid_case_without_telephone_numbers
+        case.wave = service.wave_number
+        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+
+        # act && assert
+        with caplog.at_level(logging.INFO):
+            service.case_is_eligible(case)
+        assert (
+            "root",
+            logging.INFO,
+            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of '{knock_to_nudge_indicator}', not 'N'",
+        ) in caplog.record_tuples
+
     @pytest.mark.parametrize(
         "outcome_code, rotational_outcome_code",
         [(110, 0), (210, 0), (0, 110), (310, 210)],
