@@ -26,18 +26,7 @@ class CaseFilterBase:
         pass
 
     @staticmethod
-    def case_has_no_telephone_numbers(case: BlaiseCaseInformationModel) -> bool:
-        if (
-            case.contact_details.telephone_number_1 == ""
-            and case.contact_details.telephone_number_2 == ""
-            and case.contact_details.appointment_telephone_number == ""
-        ):
-            return True
-
-        return False
-
-    @staticmethod
-    def telephone_number_is_empty(case: BlaiseCaseInformationModel) -> bool:
+    def telephone_number_1_is_empty(case: BlaiseCaseInformationModel) -> bool:
         if case.contact_details.telephone_number_1 == "":
             return True
 
