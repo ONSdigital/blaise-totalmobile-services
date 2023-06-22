@@ -64,11 +64,10 @@ def test_import_case_returns_a_populated_model():
     assert result.workType == "LMS"
     assert result.skills[0].identity.reference == "LMS"
     assert result.dueDate.end == datetime(2023, 1, 31)
-    assert result.location.addressDetail.addressLine1 == "12 Blaise Street"
-    assert result.location.addressDetail.addressLine2 == "Blaise Hill"
-    assert result.location.addressDetail.addressLine3 == "Blaiseville"
-    assert result.location.addressDetail.addressLine4 == "Gwent"
-    assert result.location.addressDetail.addressLine5 == "Newport"
+    assert result.location.addressDetail.addressLine1 == "12 Blaise Street, Blaise Hill"
+    assert result.location.addressDetail.addressLine2 == "Blaiseville"
+    assert result.location.addressDetail.addressLine3 == "Gwent"
+    assert result.location.addressDetail.addressLine4 == "Newport"
     assert result.location.addressDetail.postCode == "FML134D"
     assert result.location.addressDetail.coordinates.latitude == "10020202"
     assert result.location.addressDetail.coordinates.longitude == "34949494"
@@ -167,11 +166,10 @@ def test_to_payload_returns_a_correctly_formatted_payload():
         location=AddressDetails(
             address="12 Blaise Street, Blaise Hill, Blaiseville, Newport, FML134D",
             addressDetail=Address(
-                addressLine1="12 Blaise Street",
-                addressLine2="Blaise Hill",
-                addressLine3="Blaiseville",
-                addressLine4="Gwent",
-                addressLine5="Newport",
+                addressLine1="12 Blaise Street, Blaise Hill",
+                addressLine2="Blaiseville",
+                addressLine3="Gwent",
+                addressLine4="Newport",
                 postCode="FML134D",
                 coordinates=AddressCoordinates(
                     latitude="10020202", longitude="34949494"
@@ -221,11 +219,10 @@ def test_to_payload_returns_a_correctly_formatted_payload():
         "location": {
             "address": "12 Blaise Street, Blaise Hill, Blaiseville, Newport, FML134D",
             "addressDetail": {
-                "addressLine1": "12 Blaise Street",
-                "addressLine2": "Blaise Hill",
-                "addressLine3": "Blaiseville",
-                "addressLine4": "Gwent",
-                "addressLine5": "Newport",
+                "addressLine1": "12 Blaise Street, Blaise Hill",
+                "addressLine2": "Blaiseville",
+                "addressLine3": "Gwent",
+                "addressLine4": "Newport",
                 "postCode": "FML134D",
                 "coordinates": {
                     "latitude": "10020202",
@@ -357,3 +354,26 @@ def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_not
 
     # Assert
     assert case.location.address == "123 Blaise Street, Blaisingdom, BS1 1BS"
+
+def test_concatenate_address_line1_returns_a_concatenated_address_of_50_characters_when_a_longer_address_is_provided():
+    # Arrange
+    questionnaire_name = "LMS2201_AA1"
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+        case_id="1234",
+        address_line_1="123 Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch",
+        address_line_2="Ynys Môn",
+        address_line_3="Anglesey",
+        town="Blaisingdom",
+        postcode="BS1 1BS",
+    )
+
+    # Act
+    case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
+        questionnaire_name, questionnaire_case, None
+    )
+
+    # Assert
+    assert (
+        case.location.addressDetail.addressLine1
+        == "123 Llanfairpwllgwyngyllgogerychwyrndrobwllllantys"
+    )
