@@ -363,9 +363,6 @@ def test_concatenate_address_line1_returns_a_concatenated_address_of_50_characte
         case_id="1234",
         address_line_1="123 Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch",
         address_line_2="Ynys Môn",
-        address_line_3="Anglesey",
-        town="Blaisingdom",
-        postcode="BS1 1BS",
     )
 
     # Act
