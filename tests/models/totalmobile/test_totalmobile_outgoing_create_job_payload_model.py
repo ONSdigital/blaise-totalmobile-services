@@ -375,3 +375,43 @@ def test_concatenate_address_line1_returns_a_concatenated_address_of_50_characte
         case.location.addressDetail.addressLine1
         == "123 Llanfairpwllgwyngyllgogerychwyrndrobwllllantys"
     )
+
+def test_concatenate_address_line1_returns_a_concatenated_address_without_a_comma_and_space_when_address_line_2_is_none():
+    # Arrange
+    questionnaire_name = "LMS2201_AA1"
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+        case_id="1234",
+        address_line_1="123 Blaise Street",
+        address_line_2=None,
+    )
+
+    # Act
+    case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
+        questionnaire_name, questionnaire_case, None
+    )
+
+    # Assert
+    assert (
+        case.location.addressDetail.addressLine1
+        == "123 Blaise Street"
+    )
+
+def test_concatenate_address_line1_returns_a_concatenated_address_without_a_comma_and_space_when_address_line_2_is_an_empty_string():
+    # Arrange
+    questionnaire_name = "LMS2201_AA1"
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+        case_id="1234",
+        address_line_1="123 Blaise Street",
+        address_line_2="",
+    )
+
+    # Act
+    case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
+        questionnaire_name, questionnaire_case, None
+    )
+
+    # Assert
+    assert (
+            case.location.addressDetail.addressLine1
+            == "123 Blaise Street"
+    )
