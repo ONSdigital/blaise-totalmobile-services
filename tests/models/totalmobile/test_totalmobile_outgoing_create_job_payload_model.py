@@ -355,6 +355,7 @@ def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_not
     # Assert
     assert case.location.address == "123 Blaise Street, Blaisingdom, BS1 1BS"
 
+
 def test_concatenate_address_line1_returns_a_concatenated_address_of_50_characters_when_a_longer_address_is_provided():
     # Arrange
     questionnaire_name = "LMS2201_AA1"

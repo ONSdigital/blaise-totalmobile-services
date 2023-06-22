@@ -124,7 +124,9 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         return concatenated_address
 
     @staticmethod
-    def concatenate_address_line1(questionnaire_case: BlaiseCaseInformationModel) -> str:
+    def concatenate_address_line1(
+        questionnaire_case: BlaiseCaseInformationModel,
+    ) -> str:
         fields = [
             questionnaire_case.address_details.address.address_line_1,
             questionnaire_case.address_details.address.address_line_2,
@@ -133,7 +135,11 @@ class TotalMobileOutgoingCreateJobPayloadModel:
             [str(i) for i in fields if i != "" and i is not None]
         )
 
-        return concatenated_address_line1[:50] if len(concatenated_address_line1) else concatenated_address_line1
+        return (
+            concatenated_address_line1[:50]
+            if len(concatenated_address_line1)
+            else concatenated_address_line1
+        )
 
     @staticmethod
     def set_address_coordinates(
