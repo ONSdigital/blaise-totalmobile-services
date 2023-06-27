@@ -414,6 +414,7 @@ def test_concatenate_address_line1_returns_a_concatenated_address_without_a_comm
     # Assert
     assert case.location.addressDetail.addressLine1 == "123 Blaise Street"
 
+
 def test_location_reference_is_set_to_an_empty_string_if_location_reference_is_none():
     # arrange
     questionnaire_name = "LMS2101_AA1"

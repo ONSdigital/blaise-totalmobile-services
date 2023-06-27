@@ -111,7 +111,7 @@ Feature: Delete jobs
     |Region 7|
     |Region 8|
 
- Scenario Outline: Do not delete jobs from Totalmobile devices for cases in Blaise that require a K2N for other regions
+  Scenario Outline: Do not delete jobs from Totalmobile devices for cases in Blaise that require a K2N for other regions
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
     And the case has an outcome code of 110
     And there is an incomplete job in Totalmobile in region <region> with reference "LMS2206-AA1.12345"
