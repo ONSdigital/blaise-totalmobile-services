@@ -127,7 +127,8 @@ def test_get_case_when_case_exists(service: FakeBlaiseService):
                 town=None,
                 postcode=None,
                 coordinates=AddressCoordinates(latitude=None, longitude=None),
-            )
+            ),
+            reference=None,
         ),
         contact_details=ContactDetails(
             telephone_number_1=None,

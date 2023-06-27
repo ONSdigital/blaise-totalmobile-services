@@ -62,7 +62,8 @@ class FakeBlaiseService:
                     town=None,
                     postcode=None,
                     coordinates=AddressCoordinates(latitude=None, longitude=None),
-                )
+                ),
+                reference=None,
             ),
             contact_details=ContactDetails(
                 telephone_number_1=telephone_number_1,

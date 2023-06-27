@@ -27,6 +27,7 @@ def get_populated_case_model(
     outcome_code: int = 301,
     latitude: str = "10020202",
     longitude: str = "34949494",
+    reference: str = "100012675377",
     priority: str = "1",
     field_case: str = "Y",
     field_region: str = "Region 1",
@@ -41,6 +42,7 @@ def get_populated_case_model(
         data_model_name=data_model_name,
         wave=wave,
         address_details=AddressDetails(
+            reference=reference,
             address=Address(
                 address_line_1=address_line_1,
                 address_line_2=address_line_2,
@@ -52,7 +54,7 @@ def get_populated_case_model(
                     latitude=latitude,
                     longitude=longitude,
                 ),
-            )
+            ),
         ),
         contact_details=ContactDetails(
             telephone_number_1=telephone_number_1,
