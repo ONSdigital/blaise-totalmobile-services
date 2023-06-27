@@ -36,7 +36,6 @@ class Address:
     addressLine2: Optional[str]
     addressLine3: Optional[str]
     addressLine4: Optional[str]
-    addressLine5: Optional[str]
     postCode: Optional[str]
     coordinates: AddressCoordinates
 
@@ -111,7 +110,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         )
 
     @staticmethod
-    def concatenate_address_line(questionnaire_case: BlaiseCaseInformationModel) -> str:
+    def concatenate_address(questionnaire_case: BlaiseCaseInformationModel) -> str:
         fields = [
             questionnaire_case.address_details.address.address_line_1,
             questionnaire_case.address_details.address.address_line_2,
@@ -123,6 +122,24 @@ class TotalMobileOutgoingCreateJobPayloadModel:
             [str(i) for i in fields if i != "" and i is not None]
         )
         return concatenated_address
+
+    @staticmethod
+    def concatenate_address_line1(
+        questionnaire_case: BlaiseCaseInformationModel,
+    ) -> str:
+        fields = [
+            questionnaire_case.address_details.address.address_line_1,
+            questionnaire_case.address_details.address.address_line_2,
+        ]
+        concatenated_address_line1 = ", ".join(
+            [str(i) for i in fields if i != "" and i is not None]
+        )
+
+        return (
+            concatenated_address_line1[:50]
+            if len(concatenated_address_line1)
+            else concatenated_address_line1
+        )
 
     @staticmethod
     def set_address_coordinates(
@@ -159,13 +176,12 @@ class TotalMobileOutgoingCreateJobPayloadModel:
             skills=[Skill(identity=Reference(reference="LMS"))],
             dueDate=DueDate(end=questionnaire_case.wave_com_dte),
             location=AddressDetails(
-                address=cls.concatenate_address_line(questionnaire_case),
+                address=cls.concatenate_address(questionnaire_case),
                 addressDetail=Address(
-                    addressLine1=questionnaire_case.address_details.address.address_line_1,
-                    addressLine2=questionnaire_case.address_details.address.address_line_2,
-                    addressLine3=questionnaire_case.address_details.address.address_line_3,
-                    addressLine4=questionnaire_case.address_details.address.county,
-                    addressLine5=questionnaire_case.address_details.address.town,
+                    addressLine1=cls.concatenate_address_line1(questionnaire_case),
+                    addressLine2=questionnaire_case.address_details.address.address_line_3,
+                    addressLine3=questionnaire_case.address_details.address.county,
+                    addressLine4=questionnaire_case.address_details.address.town,
                     postCode=questionnaire_case.address_details.address.postcode,
                     coordinates=cls.set_address_coordinates(
                         latitude=questionnaire_case.address_details.address.coordinates.latitude,
