@@ -313,30 +313,13 @@ def test_import_case_sets_rotational_outcome_code_to_zero_if_not_supplied(
     assert result.rotational_outcome_code == 0
 
 
-def test_import_case_sets_address_reference_to_an_empty_string_when_none_is_supplied(
+def test_import_case_sets_address_reference_to_an_empty_string_when_the_uprn_field_does_not_exist(
     valid_case_data_dictionary,
 ):
     # arrange
     questionnaire_name = "LMS2101_AA1"
     case_data_dictionary = valid_case_data_dictionary
-    case_data_dictionary["qDataBag.UPRN"] = None
-
-    # act
-    result = BlaiseCaseInformationModel.import_case(
-        questionnaire_name, case_data_dictionary
-    )
-
-    # assert
-    assert result.address_details.reference == ""
-
-
-def test_import_case_sets_address_reference_to_an_empty_string_if_an_empty_string_is_supplied(
-    valid_case_data_dictionary,
-):
-    # arrange
-    questionnaire_name = "LMS2101_AA1"
-    case_data_dictionary = valid_case_data_dictionary
-    case_data_dictionary["qDataBag.UPRN"] = ""
+    case_data_dictionary.pop("qDataBag.UPRN")
 
     # act
     result = BlaiseCaseInformationModel.import_case(
