@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Any, Dict, List, Optional
+from typing import Dict, List
 
 from app.exceptions.custom_exceptions import (
     QuestionnaireCaseDoesNotExistError,
@@ -54,7 +54,8 @@ class FakeBlaiseService:
             data_model_name=None,
             wave=wave,
             address_details=AddressDetails(
-                Address(
+                reference="",
+                address=Address(
                     address_line_1=None,
                     address_line_2=None,
                     address_line_3=None,
@@ -63,7 +64,6 @@ class FakeBlaiseService:
                     postcode=None,
                     coordinates=AddressCoordinates(latitude=None, longitude=None),
                 ),
-                reference=None,
             ),
             contact_details=ContactDetails(
                 telephone_number_1=telephone_number_1,
