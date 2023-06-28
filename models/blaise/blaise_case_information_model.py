@@ -73,9 +73,11 @@ class BlaiseCaseInformationModel(BaseModel):
             data_model_name=case_data_dictionary.get("dataModelName"),
             wave=int(wave) if wave else None,
             address_details=AddressDetails(
-                reference=case_data_dictionary.get("qDataBag.UPRN")
-                if case_data_dictionary.get("qDataBag.UPRN") != None
-                else "",
+                reference=(
+                    case_data_dictionary.get("qDataBag.UPRN")
+                    if case_data_dictionary.get("qDataBag.UPRN") != None
+                    else ""
+                ),
                 address=Address(
                     address_line_1=case_data_dictionary.get("qDataBag.Prem1"),
                     address_line_2=case_data_dictionary.get("qDataBag.Prem2"),
