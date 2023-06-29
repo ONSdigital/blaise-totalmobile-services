@@ -10,7 +10,7 @@ This project contains several services for sending data to and receiving data fr
 
 - Cloud Function (create_totalmobile_jobs_processor) to receive case details and create these as "jobs" in Totalmobile.
 
-- Cloud Function (delete_totalmobile_jobs_completed_in_blaise) to delete jobs from Totalmobile if the corresponding case has been completed in Bliase.
+- Cloud Function (delete_totalmobile_jobs_completed_in_blaise) to delete jobs from Totalmobile if the corresponding case has been completed in Blaise.
 
 - Flask application with several endpoints for receiving data updates from Totalmobile. More details can be found in the [app readme](app/README.md).
 

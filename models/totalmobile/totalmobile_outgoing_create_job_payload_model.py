@@ -42,6 +42,7 @@ class Address:
 
 @dataclass
 class AddressDetails:
+    reference: str
     address: str
     addressDetail: Address
 
@@ -154,6 +155,14 @@ class TotalMobileOutgoingCreateJobPayloadModel:
             longitude=longitude,
         )
 
+    @staticmethod
+    def set_location_reference(questionnaire_case):
+        return (
+            ""
+            if questionnaire_case.address_details.reference is None
+            else questionnaire_case.address_details.reference
+        )
+
     @classmethod
     def import_case(
         cls: Type[T],
@@ -176,6 +185,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
             skills=[Skill(identity=Reference(reference="LMS"))],
             dueDate=DueDate(end=questionnaire_case.wave_com_dte),
             location=AddressDetails(
+                reference=cls.set_location_reference(questionnaire_case),
                 address=cls.concatenate_address(questionnaire_case),
                 addressDetail=Address(
                     addressLine1=cls.concatenate_address_line1(questionnaire_case),

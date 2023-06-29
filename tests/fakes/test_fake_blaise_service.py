@@ -119,7 +119,8 @@ def test_get_case_when_case_exists(service: FakeBlaiseService):
         data_model_name=None,
         wave=None,
         address_details=AddressDetails(
-            Address(
+            reference="",
+            address=Address(
                 address_line_1=None,
                 address_line_2=None,
                 address_line_3=None,
@@ -127,7 +128,7 @@ def test_get_case_when_case_exists(service: FakeBlaiseService):
                 town=None,
                 postcode=None,
                 coordinates=AddressCoordinates(latitude=None, longitude=None),
-            )
+            ),
         ),
         contact_details=ContactDetails(
             telephone_number_1=None,
