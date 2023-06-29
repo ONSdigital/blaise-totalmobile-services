@@ -26,6 +26,7 @@ class Address:
 
 @dataclass
 class AddressDetails:
+    reference: Optional[str]
     address: Address
 
 
@@ -72,6 +73,7 @@ class BlaiseCaseInformationModel(BaseModel):
             data_model_name=case_data_dictionary.get("dataModelName"),
             wave=int(wave) if wave else None,
             address_details=AddressDetails(
+                reference=case_data_dictionary.get("qDataBag.UPRN", ""),
                 address=Address(
                     address_line_1=case_data_dictionary.get("qDataBag.Prem1"),
                     address_line_2=case_data_dictionary.get("qDataBag.Prem2"),
@@ -83,7 +85,7 @@ class BlaiseCaseInformationModel(BaseModel):
                         latitude=case_data_dictionary.get("qDataBag.UPRN_Latitude"),
                         longitude=case_data_dictionary.get("qDataBag.UPRN_Longitude"),
                     ),
-                )
+                ),
             ),
             contact_details=ContactDetails(
                 telephone_number_1=case_data_dictionary.get("qDataBag.TelNo"),
@@ -145,6 +147,7 @@ class BlaiseCaseInformationModel(BaseModel):
             "qDataBag.TelNo2",
             "telNoAppt",
             "hOut",
+            "qDataBag.UPRN",
             "qDataBag.UPRN_Latitude",
             "qDataBag.UPRN_Longitude",
             "qDataBag.Priority",
