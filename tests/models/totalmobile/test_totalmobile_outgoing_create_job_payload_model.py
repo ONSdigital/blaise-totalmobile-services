@@ -164,6 +164,7 @@ def test_to_payload_returns_a_correctly_formatted_payload():
         skills=[Skill(identity=Reference("LMS"))],
         dueDate=DueDate(end=datetime(2023, 1, 31)),
         location=AddressDetails(
+            reference="100012675377",
             address="12 Blaise Street, Blaise Hill, Blaiseville, Newport, FML134D",
             addressDetail=Address(
                 addressLine1="12 Blaise Street, Blaise Hill",
@@ -217,6 +218,7 @@ def test_to_payload_returns_a_correctly_formatted_payload():
             "end": "2023-01-31",
         },
         "location": {
+            "reference": "100012675377",
             "address": "12 Blaise Street, Blaise Hill, Blaiseville, Newport, FML134D",
             "addressDetail": {
                 "addressLine1": "12 Blaise Street, Blaise Hill",
@@ -411,3 +413,20 @@ def test_concatenate_address_line1_returns_a_concatenated_address_without_a_comm
 
     # Assert
     assert case.location.addressDetail.addressLine1 == "123 Blaise Street"
+
+
+def test_location_reference_is_set_to_an_empty_string_if_location_reference_is_none():
+    # arrange
+    questionnaire_name = "LMS2101_AA1"
+
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+        reference=None
+    )
+
+    # act
+    result = TotalMobileOutgoingCreateJobPayloadModel.import_case(
+        questionnaire_name, questionnaire_case, None
+    )
+
+    # assert
+    assert result.location.reference is ""

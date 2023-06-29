@@ -22,6 +22,7 @@ def valid_case_data_dictionary() -> Dict:
         "qDataBag.TelNo2": "07900990902",
         "telNoAppt": "07900990903",
         "hOut": "301",
+        "qDataBag.UPRN": "100012675377",
         "qDataBag.UPRN_Latitude": "10020202",
         "qDataBag.UPRN_Longitude": "34949494",
         "qDataBag.Priority": "1",
@@ -59,6 +60,7 @@ def test_import_case_returns_a_populated_model(valid_case_data_dictionary):
     assert result.contact_details.telephone_number_2 == "07900990902"
     assert result.contact_details.appointment_telephone_number == "07900990903"
     assert result.outcome_code == 301
+    assert result.address_details.reference == "100012675377"
     assert result.address_details.address.coordinates.latitude == "10020202"
     assert result.address_details.address.coordinates.longitude == "34949494"
     assert result.priority == "1"
@@ -309,3 +311,20 @@ def test_import_case_sets_rotational_outcome_code_to_zero_if_not_supplied(
 
     # assert
     assert result.rotational_outcome_code == 0
+
+
+def test_import_case_sets_address_reference_to_an_empty_string_when_the_uprn_field_does_not_exist(
+    valid_case_data_dictionary,
+):
+    # arrange
+    questionnaire_name = "LMS2101_AA1"
+    case_data_dictionary = valid_case_data_dictionary
+    case_data_dictionary.pop("qDataBag.UPRN")
+
+    # act
+    result = BlaiseCaseInformationModel.import_case(
+        questionnaire_name, case_data_dictionary
+    )
+
+    # assert
+    assert result.address_details.reference == ""
