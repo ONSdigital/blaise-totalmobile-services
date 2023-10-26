@@ -11,6 +11,7 @@ class UacChunks:
     uac1: str
     uac2: str
     uac3: str
+    uac4: str=None
 
 
 @dataclass
@@ -32,6 +33,7 @@ class QuestionnaireUacModel:
                 uac1=uac_data_dictionary[item]["uac_chunks"]["uac1"],
                 uac2=uac_data_dictionary[item]["uac_chunks"]["uac2"],
                 uac3=uac_data_dictionary[item]["uac_chunks"]["uac3"],
+                uac4=uac_data_dictionary[item]["uac_chunks"].get("uac4")
             )
 
         return cls(_questionnaire_case_uacs)
