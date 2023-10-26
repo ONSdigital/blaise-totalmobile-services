@@ -16,7 +16,7 @@ def test_import_case_data_returns_a_populated_model():
         "10020": {
             "instrument_name": "OPN2101A",
             "case_id": "10020",
-            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990"},
+            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990", "uac4": "1234"},
             "full_uac": "417657266991",
         },
     }
@@ -34,6 +34,7 @@ def test_import_case_data_returns_a_populated_model():
     assert result.questionnaire_case_uacs["10020"].uac1 == "4175"
     assert result.questionnaire_case_uacs["10020"].uac2 == "5725"
     assert result.questionnaire_case_uacs["10020"].uac3 == "6990"
+    assert result.questionnaire_case_uacs["10020"].uac4 == "1234"
 
 
 def test_get_uac_chunks_returns_the_corect_uac():
@@ -48,7 +49,7 @@ def test_get_uac_chunks_returns_the_corect_uac():
         "10020": {
             "instrument_name": "OPN2101A",
             "case_id": "10020",
-            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990"},
+            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990", "uac4": "1234"},
             "full_uac": "417657266991",
         },
     }
@@ -56,12 +57,18 @@ def test_get_uac_chunks_returns_the_corect_uac():
     questionnaire_model = QuestionnaireUacModel.import_uac_data(uac_data_dictionary)
 
     # act
-    result = questionnaire_model.get_uac_chunks("10010")
+    result1 = questionnaire_model.get_uac_chunks("10010")
+    result2 = questionnaire_model.get_uac_chunks("10020")
 
     # assert
-    assert result.uac1 == "8175"
-    assert result.uac2 == "4725"
-    assert result.uac3 == "3990"
+    assert result1.uac1 == "8175"
+    assert result1.uac2 == "4725"
+    assert result1.uac3 == "3990"
+
+    assert result2.uac1 == "8175"
+    assert result2.uac2 == "4725"
+    assert result2.uac3 == "3990"
+    assert result2.uac4 == "1234"
 
 
 def test_get_uac_chunks_returns_none_if_case_not_in_dictionary():
@@ -76,7 +83,7 @@ def test_get_uac_chunks_returns_none_if_case_not_in_dictionary():
         "10020": {
             "instrument_name": "OPN2101A",
             "case_id": "10020",
-            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990"},
+            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990", "uac4": "1234"},
             "full_uac": "417657266991",
         },
     }
@@ -102,7 +109,7 @@ def test_get_uac_chunks_returns_none_if_case_id_not_supplied():
         "10020": {
             "instrument_name": "OPN2101A",
             "case_id": "10020",
-            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990"},
+            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990", "uac4": "1234"},
             "full_uac": "417657266991",
         },
     }
