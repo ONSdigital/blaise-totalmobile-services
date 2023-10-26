@@ -65,9 +65,9 @@ def test_get_uac_chunks_returns_the_corect_uac():
     assert result1.uac2 == "4725"
     assert result1.uac3 == "3990"
 
-    assert result2.uac1 == "8175"
-    assert result2.uac2 == "4725"
-    assert result2.uac3 == "3990"
+    assert result2.uac1 == "4175"
+    assert result2.uac2 == "5725"
+    assert result2.uac3 == "6990"
     assert result2.uac4 == "1234"
 
 
