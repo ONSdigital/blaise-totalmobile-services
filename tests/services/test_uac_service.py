@@ -66,11 +66,11 @@ def test_get_questionnaire_uac_model_returns_an_expected_model(
 
     # assert
     assert result.questionnaire_case_uacs["10010"] == UacChunks(
-        uac1="8176", uac2="4726", uac3="3991"
+        uac1="8176", uac2="4726", uac3="3991", uac4=None
     )
     assert result.questionnaire_case_uacs["10020"] == UacChunks(
-        uac1="8177", uac2="4727", uac3="3992"
+        uac1="8177", uac2="4727", uac3="3992", uac4=None
     )
     assert result.questionnaire_case_uacs["10030"] == UacChunks(
-        uac1="8178", uac2="4728", uac3="3993"
+        uac1="8178", uac2="4728", uac3="3993", uac4=None
     )

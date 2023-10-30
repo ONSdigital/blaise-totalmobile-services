@@ -97,13 +97,23 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models(
         "10010": {
             "instrument_name": "OPN2101A",
             "case_id": "10010",
-            "uac_chunks": {"uac1": "8175", "uac2": "4725", "uac3": "3990"},
+            "uac_chunks": {
+                "uac1": "8175",
+                "uac2": "4725",
+                "uac3": "3990",
+                "uac4": "None",
+            },
             "full_uac": "817647263991",
         },
         "10020": {
             "instrument_name": "OPN2101A",
             "case_id": "10020",
-            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990"},
+            "uac_chunks": {
+                "uac1": "4175",
+                "uac2": "5725",
+                "uac3": "6990",
+                "uac4": "None",
+            },
             "full_uac": "417657266991",
         },
     }
@@ -206,13 +216,23 @@ def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
         "10010": {
             "instrument_name": "OPN2101A",
             "case_id": "10010",
-            "uac_chunks": {"uac1": "8175", "uac2": "4725", "uac3": "3990"},
+            "uac_chunks": {
+                "uac1": "8175",
+                "uac2": "4725",
+                "uac3": "3990",
+                "uac4": "None",
+            },
             "full_uac": "817647263991",
         },
         "10020": {
             "instrument_name": "OPN2101A",
             "case_id": "10020",
-            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990"},
+            "uac_chunks": {
+                "uac1": "4175",
+                "uac2": "5725",
+                "uac3": "6990",
+                "uac4": "None",
+            },
             "full_uac": "417657266991",
         },
     }
@@ -243,7 +263,7 @@ def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
         "payload": TotalMobileOutgoingCreateJobPayloadModel.import_case(
             "LMS2101_AA1",
             questionnaire_cases[0],
-            UacChunks(uac1="8175", uac2="4725", uac3="3990"),
+            UacChunks(uac1="8175", uac2="4725", uac3="3990", uac4=None),
         ).to_payload(),
     }
     assert result == "Done"

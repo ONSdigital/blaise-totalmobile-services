@@ -11,7 +11,7 @@ class FakeUacService:
         self, questionnaire_name: str
     ) -> QuestionnaireUacModel:
         self._questionnaire_case_uacs[questionnaire_name] = UacChunks(
-            uac1="1234", uac2="4567", uac3="6789"
+            uac1="1234", uac2="4567", uac3="6789", uac4=None
         )
 
         return QuestionnaireUacModel(
