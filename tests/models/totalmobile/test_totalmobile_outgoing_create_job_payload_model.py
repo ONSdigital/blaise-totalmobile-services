@@ -17,7 +17,7 @@ from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
 from tests.helpers import get_blaise_case_model_helper
 
 
-def test_import_case_returns_a_populated_model():
+def test_import_case_with_three_uac_chunks_returns_a_populated_model():
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
@@ -53,7 +53,7 @@ def test_import_case_returns_a_populated_model():
     # assert
     assert result.identity.reference == "LMS2101-AA1.90001"
     assert result.description == (
-        "UAC: 3456 3453 4546  \n"
+        "UAC: 3456 3453 4546\n"
         "Due Date: 31/01/2023\n"
         "Study: LMS2101_AA1\n"
         "Case ID: 90001\n"
@@ -78,8 +78,6 @@ def test_import_case_returns_a_populated_model():
 
     assert result.attributes[1].name == "Team"
     assert result.attributes[1].value == "B-Team"
-
-    print(result)
 
     assert result.additionalProperties[0].name == "surveyName"
     assert result.additionalProperties[0].value == "LM2007"
