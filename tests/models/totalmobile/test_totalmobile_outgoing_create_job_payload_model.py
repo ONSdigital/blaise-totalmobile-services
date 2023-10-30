@@ -107,7 +107,7 @@ def test_import_case_returns_a_populated_model():
     assert result.additionalProperties[8].value == "4546"
 
     assert result.additionalProperties[9].name == "uac4"
-    assert result.additionalProperties[9].value == None
+    assert result.additionalProperties[9].value is None
 
 
 def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uacs_are_set():
