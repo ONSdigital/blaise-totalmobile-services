@@ -43,7 +43,7 @@ def test_import_case_returns_a_populated_model():
         wave_com_dte=datetime(2023, 1, 31),
     )
 
-    uac_chunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")
+    uac_chunks = UacChunks(uac1="3456", uac2="3453", uac3="4546", uac4=None)
 
     # act
     result = TotalMobileOutgoingCreateJobPayloadModel.import_case(
@@ -53,7 +53,7 @@ def test_import_case_returns_a_populated_model():
     # assert
     assert result.identity.reference == "LMS2101-AA1.90001"
     assert result.description == (
-        "UAC: 3456 3453 4546\n"
+        "UAC: 3456 3453 4546  \n"
         "Due Date: 31/01/2023\n"
         "Study: LMS2101_AA1\n"
         "Case ID: 90001\n"
@@ -78,6 +78,8 @@ def test_import_case_returns_a_populated_model():
 
     assert result.attributes[1].name == "Team"
     assert result.attributes[1].value == "B-Team"
+
+    print(result)
 
     assert result.additionalProperties[0].name == "surveyName"
     assert result.additionalProperties[0].value == "LM2007"
@@ -105,6 +107,9 @@ def test_import_case_returns_a_populated_model():
 
     assert result.additionalProperties[8].name == "uac3"
     assert result.additionalProperties[8].value == "4546"
+
+    assert result.additionalProperties[9].name == "uac4"
+    assert result.additionalProperties[9].value == None
 
 
 def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uacs_are_set():
@@ -192,6 +197,7 @@ def test_to_payload_returns_a_correctly_formatted_payload():
             AdditionalProperty(name="uac1", value="3456"),
             AdditionalProperty(name="uac2", value="3453"),
             AdditionalProperty(name="uac3", value="4546"),
+            AdditionalProperty(name="uac4", value=None),
         ],
     )
 

@@ -95,7 +95,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         uac_string = (
             ""
             if uac_chunks is None
-            else f"{uac_chunks.uac1} {uac_chunks.uac2} {uac_chunks.uac3}"
+            else f"{uac_chunks.uac1} {uac_chunks.uac2} {uac_chunks.uac3} {uac_chunks.uac4}"
         )
         due_date_string = (
             ""
@@ -230,6 +230,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
                     AdditionalProperty(name="uac1", value=uac_chunks.uac1),
                     AdditionalProperty(name="uac2", value=uac_chunks.uac2),
                     AdditionalProperty(name="uac3", value=uac_chunks.uac3),
+                    AdditionalProperty(name="uac4", value=uac_chunks.uac4),
                 ]
             )
 
