@@ -17,7 +17,7 @@ from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
 from tests.helpers import get_blaise_case_model_helper
 
 
-def test_import_case_with_three_uac_chunks_returns_a_populated_model():
+def test_import_case_returns_a_populated_model():
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
@@ -253,6 +253,7 @@ def test_to_payload_returns_a_correctly_formatted_payload():
             {"name": "uac1", "value": "3456"},
             {"name": "uac2", "value": "3453"},
             {"name": "uac3", "value": "4546"},
+            {"name": "uac4", "value": None},        
         ],
     }
 
@@ -272,7 +273,7 @@ def test_to_payload_sends_an_empty_string_to_totalmobile_if_the_due_date_is_miss
     assert result["dueDate"]["end"] == ""
 
 
-def test_create_description_returns_a_correctly_formatted_description():
+def test_create_description_with_three_uac_chunks_returns_a_correctly_formatted_description():
     # Arrange
     questionnaire_name = "LMS2201_AA1"
     questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
@@ -282,7 +283,7 @@ def test_create_description_returns_a_correctly_formatted_description():
         wave="4",
     )
 
-    uac_chunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")
+    uac_chunks = UacChunks(uac1="3456", uac2="3453", uac3="4546", uac4=None)
 
     # Act
     case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
@@ -292,6 +293,32 @@ def test_create_description_returns_a_correctly_formatted_description():
     # Assert
     assert case.description == (
         "UAC: 3456 3453 4546\n"
+        "Due Date: 31/01/2022\n"
+        "Study: LMS2201_AA1\n"
+        "Case ID: 12345\n"
+        "Wave: 4"
+    )
+
+def test_create_description_with_four_uac_chunks_returns_a_correctly_formatted_description():
+    # Arrange
+    questionnaire_name = "LMS2201_AA1"
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+        case_id="12345",
+        data_model_name="LMS2201_AA1",
+        wave_com_dte=datetime(2022, 1, 31),
+        wave="4",
+    )
+
+    uac_chunks = UacChunks(uac1="3456", uac2="3453", uac3="4546", uac4="1234")
+
+    # Act
+    case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
+        questionnaire_name, questionnaire_case, uac_chunks
+    )
+
+    # Assert
+    assert case.description == (
+        "UAC: 3456 3453 4546 1234\n"
         "Due Date: 31/01/2022\n"
         "Study: LMS2201_AA1\n"
         "Case ID: 12345\n"
