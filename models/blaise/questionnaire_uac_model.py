@@ -11,7 +11,7 @@ class UacChunks:
     uac1: str
     uac2: str
     uac3: str
-    uac4: str = None
+    uac4: Optional[str]
 
 
 @dataclass
