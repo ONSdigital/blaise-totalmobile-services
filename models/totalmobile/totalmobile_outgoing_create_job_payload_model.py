@@ -95,7 +95,8 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         uac_string = (
             ""
             if uac_chunks is None
-            else f"{uac_chunks.uac1} {uac_chunks.uac2} {uac_chunks.uac3}" + (f" {uac_chunks.uac4}" if uac_chunks.uac4 is not None else "")
+            else f"{uac_chunks.uac1} {uac_chunks.uac2} {uac_chunks.uac3}"
+            + (f" {uac_chunks.uac4}" if uac_chunks.uac4 is not None else "")
         )
         due_date_string = (
             ""

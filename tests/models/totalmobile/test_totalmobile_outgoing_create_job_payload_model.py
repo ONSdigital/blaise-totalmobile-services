@@ -253,7 +253,7 @@ def test_to_payload_returns_a_correctly_formatted_payload():
             {"name": "uac1", "value": "3456"},
             {"name": "uac2", "value": "3453"},
             {"name": "uac3", "value": "4546"},
-            {"name": "uac4", "value": None},        
+            {"name": "uac4", "value": None},
         ],
     }
 
@@ -298,6 +298,7 @@ def test_create_description_with_three_uac_chunks_returns_a_correctly_formatted_
         "Case ID: 12345\n"
         "Wave: 4"
     )
+
 
 def test_create_description_with_four_uac_chunks_returns_a_correctly_formatted_description():
     # Arrange
