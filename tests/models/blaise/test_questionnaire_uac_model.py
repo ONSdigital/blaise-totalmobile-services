@@ -16,7 +16,12 @@ def test_import_case_data_returns_a_populated_model():
         "10020": {
             "instrument_name": "OPN2101A",
             "case_id": "10020",
-            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990", "uac4": "1234"},
+            "uac_chunks": {
+                "uac1": "4175",
+                "uac2": "5725",
+                "uac3": "6990",
+                "uac4": "1234",
+            },
             "full_uac": "417657266991",
         },
     }
@@ -49,7 +54,12 @@ def test_get_uac_chunks_returns_the_corect_uac():
         "10020": {
             "instrument_name": "OPN2101A",
             "case_id": "10020",
-            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990", "uac4": "1234"},
+            "uac_chunks": {
+                "uac1": "4175",
+                "uac2": "5725",
+                "uac3": "6990",
+                "uac4": "1234",
+            },
             "full_uac": "417657266991",
         },
     }
@@ -83,7 +93,12 @@ def test_get_uac_chunks_returns_none_if_case_not_in_dictionary():
         "10020": {
             "instrument_name": "OPN2101A",
             "case_id": "10020",
-            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990", "uac4": "1234"},
+            "uac_chunks": {
+                "uac1": "4175",
+                "uac2": "5725",
+                "uac3": "6990",
+                "uac4": "1234",
+            },
             "full_uac": "417657266991",
         },
     }
@@ -109,7 +124,12 @@ def test_get_uac_chunks_returns_none_if_case_id_not_supplied():
         "10020": {
             "instrument_name": "OPN2101A",
             "case_id": "10020",
-            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990", "uac4": "1234"},
+            "uac_chunks": {
+                "uac1": "4175",
+                "uac2": "5725",
+                "uac3": "6990",
+                "uac4": "1234",
+            },
             "full_uac": "417657266991",
         },
     }
