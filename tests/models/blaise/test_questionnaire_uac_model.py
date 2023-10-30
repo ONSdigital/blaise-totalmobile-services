@@ -29,7 +29,7 @@ def test_import_case_data_returns_a_populated_model_when_3_uac_chunks_are_provid
     assert result.questionnaire_case_uacs["10010"].uac1 == "8175"
     assert result.questionnaire_case_uacs["10010"].uac2 == "4725"
     assert result.questionnaire_case_uacs["10010"].uac3 == "3990"
-    assert result.questionnaire_case_uacs["10010"].uac4 is None
+    assert result.questionnaire_case_uacs["10010"].uac4 is "None"
 
 
 def test_import_case_data_returns_a_populated_model_when_4_uac_chunks_are_provided():

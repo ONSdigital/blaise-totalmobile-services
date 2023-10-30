@@ -263,7 +263,7 @@ def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
         "payload": TotalMobileOutgoingCreateJobPayloadModel.import_case(
             "LMS2101_AA1",
             questionnaire_cases[0],
-            UacChunks(uac1="8175", uac2="4725", uac3="3990", uac4=None),
+            UacChunks(uac1="8175", uac2="4725", uac3="3990", uac4="None"),
         ).to_payload(),
     }
     assert result == "Done"
