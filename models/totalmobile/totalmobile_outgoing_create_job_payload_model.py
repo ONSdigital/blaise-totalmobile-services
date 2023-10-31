@@ -86,20 +86,16 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         )
         return reference_model.create_reference()
 
+
     @staticmethod
     def create_description(
-        questionnaire_name: str,
-        questionnaire_case: BlaiseCaseInformationModel,
-        uac_chunks: Optional[UacChunks],
+            questionnaire_name: str,
+            questionnaire_case: BlaiseCaseInformationModel,
+            uac_chunks: Optional[UacChunks],
     ) -> str:
-        uac_string = (
-            ""
-            if uac_chunks is None
-            else f"{uac_chunks.uac1} {uac_chunks.uac2} {uac_chunks.uac3}"
-        )
+        uac_string = "" if uac_chunks is None else uac_chunks.formatted()
         due_date_string = (
-            ""
-            if questionnaire_case.wave_com_dte is None
+            "" if questionnaire_case.wave_com_dte is None
             else questionnaire_case.wave_com_dte.strftime("%d/%m/%Y")
         )
         return (
