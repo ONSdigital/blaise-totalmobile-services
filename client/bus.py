@@ -1,4 +1,4 @@
-from typing import Any, Dict, TypedDict, Optional
+from typing import Any, Dict, Optional, TypedDict
 
 import requests
 from google.auth.transport.requests import Request
@@ -10,6 +10,7 @@ class UacChunks(TypedDict):
     uac2: str
     uac3: str
     uac4: Optional[str]
+
 
 class Uac(TypedDict):  # type: ignore
     instrument_name: str

@@ -10,13 +10,23 @@ def test_import_case_data_returns_a_populated_model():
         "10010": {
             "instrument_name": "OPN2101A",
             "case_id": "10010",
-            "uac_chunks": {"uac1": "8175", "uac2": "4725", "uac3": "3990"},
+            "uac_chunks": {
+                "uac1": "8175",
+                "uac2": "4725",
+                "uac3": "3990",
+                "uac4": "None",
+            },
             "full_uac": "817647263991",
         },
         "10020": {
             "instrument_name": "OPN2101A",
             "case_id": "10020",
-            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990"},
+            "uac_chunks": {
+                "uac1": "4175",
+                "uac2": "5725",
+                "uac3": "6990",
+                "uac4": "None",
+            },
             "full_uac": "417657266991",
         },
     }
@@ -42,13 +52,23 @@ def test_get_uac_chunks_returns_the_corect_uac():
         "10010": {
             "instrument_name": "OPN2101A",
             "case_id": "10010",
-            "uac_chunks": {"uac1": "8175", "uac2": "4725", "uac3": "3990"},
+            "uac_chunks": {
+                "uac1": "8175",
+                "uac2": "4725",
+                "uac3": "3990",
+                "uac4": "None",
+            },
             "full_uac": "817647263991",
         },
         "10020": {
             "instrument_name": "OPN2101A",
             "case_id": "10020",
-            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990"},
+            "uac_chunks": {
+                "uac1": "4175",
+                "uac2": "5725",
+                "uac3": "6990",
+                "uac4": "None",
+            },
             "full_uac": "417657266991",
         },
     }
@@ -70,13 +90,23 @@ def test_get_uac_chunks_returns_none_if_case_not_in_dictionary():
         "10010": {
             "instrument_name": "OPN2101A",
             "case_id": "10010",
-            "uac_chunks": {"uac1": "8175", "uac2": "4725", "uac3": "3990"},
+            "uac_chunks": {
+                "uac1": "8175",
+                "uac2": "4725",
+                "uac3": "3990",
+                "uac4": "None",
+            },
             "full_uac": "817647263991",
         },
         "10020": {
             "instrument_name": "OPN2101A",
             "case_id": "10020",
-            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990"},
+            "uac_chunks": {
+                "uac1": "4175",
+                "uac2": "5725",
+                "uac3": "6990",
+                "uac4": "None",
+            },
             "full_uac": "417657266991",
         },
     }
@@ -96,13 +126,23 @@ def test_get_uac_chunks_returns_none_if_case_id_not_supplied():
         "10010": {
             "instrument_name": "OPN2101A",
             "case_id": "10010",
-            "uac_chunks": {"uac1": "8175", "uac2": "4725", "uac3": "3990"},
+            "uac_chunks": {
+                "uac1": "8175",
+                "uac2": "4725",
+                "uac3": "3990",
+                "uac4": "None",
+            },
             "full_uac": "817647263991",
         },
         "10020": {
             "instrument_name": "OPN2101A",
             "case_id": "10020",
-            "uac_chunks": {"uac1": "4175", "uac2": "5725", "uac3": "6990"},
+            "uac_chunks": {
+                "uac1": "4175",
+                "uac2": "5725",
+                "uac3": "6990",
+                "uac4": "None",
+            },
             "full_uac": "417657266991",
         },
     }
@@ -115,6 +155,7 @@ def test_get_uac_chunks_returns_none_if_case_id_not_supplied():
     # assert
     assert result is None
 
+
 def test_import_case_data_returns_a_correctly_populated_model_when_three_uac_chunks_are_provided():
     # arrange
     uac_data_dictionary: Dict[str, Uac] = {
@@ -125,6 +166,7 @@ def test_import_case_data_returns_a_correctly_populated_model_when_three_uac_chu
                 "uac1": "1234",
                 "uac2": "4567",
                 "uac3": "7890",
+                "uac4": "None",
             },
             "full_uac": "123445677890",
         }

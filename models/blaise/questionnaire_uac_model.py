@@ -19,6 +19,7 @@ class UacChunks:
             uacs.append(self.uac4)
         return " ".join(uacs)
 
+
 @dataclass
 class QuestionnaireUacModel:
     questionnaire_case_uacs: Dict[str, UacChunks]
@@ -28,7 +29,6 @@ class QuestionnaireUacModel:
             return None
 
         return self.questionnaire_case_uacs[case_id]
-
 
     @classmethod
     def import_uac_data(cls: Type[T], uac_data_dictionary: Dict[str, Uac]) -> T:

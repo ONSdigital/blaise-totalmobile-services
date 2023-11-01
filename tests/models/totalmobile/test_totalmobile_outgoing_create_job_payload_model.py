@@ -421,6 +421,8 @@ def test_create_description_returns_a_correctly_formatted_description_when_four_
         "Case ID: 12345\n"
         "Wave: 4"
     )
+
+
 def test_create_description_returns_a_correctly_formatted_description_when_all_values_are_empty():
     # Arrange
     questionnaire_name = "LMS2201_AA1"
