@@ -253,6 +253,107 @@ def test_to_payload_returns_a_correctly_formatted_payload():
     }
 
 
+def test_to_payload_returns_a_correctly_formatted_payload_when_four_uac_chunks_provided():
+    totalmobile_case = TotalMobileOutgoingCreateJobPayloadModel(
+        identity=Reference("LMS2101-AA1.90001"),
+        description="Study: LMS2101_AA1\nCase ID: 90001",
+        origin="ONS",
+        duration=15,
+        workType="LMS",
+        skills=[Skill(identity=Reference("LMS"))],
+        dueDate=DueDate(end=datetime(2023, 1, 31)),
+        location=AddressDetails(
+            reference="100012675377",
+            address="12 Blaise Street, Blaise Hill, Blaiseville, Newport, FML134D",
+            addressDetail=Address(
+                addressLine1="12 Blaise Street, Blaise Hill",
+                addressLine2="Blaiseville",
+                addressLine3="Gwent",
+                addressLine4="Newport",
+                postCode="FML134D",
+                coordinates=AddressCoordinates(
+                    latitude="10020202", longitude="34949494"
+                ),
+            ),
+        ),
+        contact=ContactDetails(name="FML134D"),
+        attributes=[
+            AdditionalProperty(name="Region", value="Gwent"),
+            AdditionalProperty(name="Team", value="B-Team"),
+        ],
+        additionalProperties=[
+            AdditionalProperty(name="surveyName", value="LM2007"),
+            AdditionalProperty(name="tla", value="LMS"),
+            AdditionalProperty(name="wave", value="1"),
+            AdditionalProperty(name="priority", value="1"),
+            AdditionalProperty(name="fieldRegion", value="Gwent"),
+            AdditionalProperty(name="fieldTeam", value="B-Team"),
+            AdditionalProperty(name="uac1", value="1234"),
+            AdditionalProperty(name="uac2", value="4567"),
+            AdditionalProperty(name="uac3", value="7890"),
+            AdditionalProperty(name="uac4", value="0987"),
+        ],
+    )
+
+    # act
+    result = totalmobile_case.to_payload()
+
+    # assert
+    assert result == {
+        "identity": {
+            "reference": "LMS2101-AA1.90001",
+        },
+        "description": "Study: LMS2101_AA1\nCase ID: 90001",
+        "origin": "ONS",
+        "duration": 15,
+        "workType": "LMS",
+        "skills": [
+            {
+                "identity": {
+                    "reference": "LMS",
+                },
+            },
+        ],
+        "dueDate": {
+            "end": "2023-01-31",
+        },
+        "location": {
+            "reference": "100012675377",
+            "address": "12 Blaise Street, Blaise Hill, Blaiseville, Newport, FML134D",
+            "addressDetail": {
+                "addressLine1": "12 Blaise Street, Blaise Hill",
+                "addressLine2": "Blaiseville",
+                "addressLine3": "Gwent",
+                "addressLine4": "Newport",
+                "postCode": "FML134D",
+                "coordinates": {
+                    "latitude": "10020202",
+                    "longitude": "34949494",
+                },
+            },
+        },
+        "contact": {
+            "name": "FML134D",
+        },
+        "attributes": [
+            {"name": "Region", "value": "Gwent"},
+            {"name": "Team", "value": "B-Team"},
+        ],
+        "additionalProperties": [
+            {"name": "surveyName", "value": "LM2007"},
+            {"name": "tla", "value": "LMS"},
+            {"name": "wave", "value": "1"},
+            {"name": "priority", "value": "1"},
+            {"name": "fieldRegion", "value": "Gwent"},
+            {"name": "fieldTeam", "value": "B-Team"},
+            {"name": "uac1", "value": "1234"},
+            {"name": "uac2", "value": "4567"},
+            {"name": "uac3", "value": "7890"},
+            {"name": "uac4", "value": "0987"},
+        ],
+    }
+
+
 def test_to_payload_sends_an_empty_string_to_totalmobile_if_the_due_date_is_missing():
     questionnaire_name = "LMS2101_AA1"
 
@@ -288,6 +389,33 @@ def test_create_description_returns_a_correctly_formatted_description():
     # Assert
     assert case.description == (
         "UAC: 3456 3453 4546\n"
+        "Due Date: 31/01/2022\n"
+        "Study: LMS2201_AA1\n"
+        "Case ID: 12345\n"
+        "Wave: 4"
+    )
+
+
+def test_create_description_returns_a_correctly_formatted_description_when_four_uac_chunks_are_provided():
+    # Arrange
+    questionnaire_name = "LMS2201_AA1"
+    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+        case_id="12345",
+        data_model_name="LMS2201_AA1",
+        wave_com_dte=datetime(2022, 1, 31),
+        wave="4",
+    )
+
+    uac_chunks = UacChunks(uac1="1234", uac2="4567", uac3="7890", uac4="0987")
+
+    # Act
+    case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
+        questionnaire_name, questionnaire_case, uac_chunks
+    )
+
+    # Assert
+    assert case.description == (
+        "UAC: 1234 4567 7890 0987\n"
         "Due Date: 31/01/2022\n"
         "Study: LMS2201_AA1\n"
         "Case ID: 12345\n"

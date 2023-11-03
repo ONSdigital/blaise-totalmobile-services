@@ -11,6 +11,13 @@ class UacChunks:
     uac1: str
     uac2: str
     uac3: str
+    uac4: Optional[str] = None
+
+    def formatted_chunks(self) -> str:
+        uacs = [self.uac1, self.uac2, self.uac3]
+        if self.uac4:
+            uacs.append(self.uac4)
+        return " ".join(uacs)
 
 
 @dataclass
@@ -25,13 +32,14 @@ class QuestionnaireUacModel:
 
     @classmethod
     def import_uac_data(cls: Type[T], uac_data_dictionary: Dict[str, Uac]) -> T:
-
-        _questionnaire_case_uacs: Dict[str, UacChunks] = {}
-        for item in uac_data_dictionary:
-            _questionnaire_case_uacs[item] = UacChunks(
-                uac1=uac_data_dictionary[item]["uac_chunks"]["uac1"],
-                uac2=uac_data_dictionary[item]["uac_chunks"]["uac2"],
-                uac3=uac_data_dictionary[item]["uac_chunks"]["uac3"],
+        _questionnaire_case_uacs: Dict[str, UacChunks] = {
+            item: UacChunks(
+                uac1=data["uac_chunks"]["uac1"],
+                uac2=data["uac_chunks"]["uac2"],
+                uac3=data["uac_chunks"]["uac3"],
+                uac4=data["uac_chunks"].get("uac4"),
             )
+            for item, data in uac_data_dictionary.items()
+        }
 
         return cls(_questionnaire_case_uacs)

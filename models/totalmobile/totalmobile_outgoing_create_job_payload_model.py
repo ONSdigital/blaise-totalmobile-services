@@ -92,11 +92,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         questionnaire_case: BlaiseCaseInformationModel,
         uac_chunks: Optional[UacChunks],
     ) -> str:
-        uac_string = (
-            ""
-            if uac_chunks is None
-            else f"{uac_chunks.uac1} {uac_chunks.uac2} {uac_chunks.uac3}"
-        )
+        uac_string = "" if uac_chunks is None else uac_chunks.formatted_chunks()
         due_date_string = (
             ""
             if questionnaire_case.wave_com_dte is None
