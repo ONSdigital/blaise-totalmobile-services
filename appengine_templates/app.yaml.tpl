@@ -10,9 +10,10 @@ env_variables:
   TOTALMOBILE_INCOMING_USER: _TOTALMOBILE_INCOMING_USER
   TOTALMOBILE_INCOMING_PASSWORD_HASH: _TOTALMOBILE_INCOMING_PASSWORD_HASH
 
-basic_scaling:
-  idle_timeout: 10m
-  max_instances: 10
+automatic_scaling:
+  min_instances: _MIN_INSTANCES
+  max_instances: _MAX_INSTANCES
+  target_cpu_utilization: _TARGET_CPU_UTILIZATION
 
 handlers:
 - url: /.*
