@@ -1,4 +1,5 @@
 import logging
+from enum import Enum
 
 from app.exceptions.custom_exceptions import (
     QuestionnaireCaseDoesNotExistError,
@@ -12,22 +13,21 @@ from models.totalmobile.totalmobile_incoming_update_request_model import (
 )
 from services.questionnaire_service import QuestionnaireService
 
-from enum import Enum
-class TMReturnCodes(Enum):
-    NOT_STARTED = 0
-    WEB_NUDGED = 120
-    APPOINTMENT = 300
-    NON_CONTACT = 310
-    PHONE_NO_REMOVED_BY_TO = 320
-    REFUSAL_HARD = 460
-    REFUSAL_SOFT = 461
-    INELIGIBLE_NO_TRACE_OF_ADDRESS = 510
-    INELIGIBLE_VACANT = 540
-    INELIGIBLE_NON_RESIDENTIAL = 551
-    INELIGIBLE_INSTITUTION = 560
-    INELIGIBLE_SECOND_OR_HOLIDAY_HOME = 580
-    WRONG_ADDRESS = 640
 
+class QuestionnaireOutcomeCodes(Enum):
+    NOT_STARTED_0 = 0
+    WEB_NUDGED_120 = 120
+    APPOINTMENT_300 = 300
+    NON_CONTACT_310 = 310
+    PHONE_NO_REMOVED_BY_TO_320 = 320
+    REFUSAL_HARD_460 = 460
+    REFUSAL_SOFT_461 = 461
+    INELIGIBLE_NO_TRACE_OF_ADDRESS_510 = 510
+    INELIGIBLE_VACANT_540 = 540
+    INELIGIBLE_NON_RESIDENTIAL_551 = 551
+    INELIGIBLE_INSTITUTION_560 = 560
+    INELIGIBLE_SECOND_OR_HOLIDAY_HOME_580 = 580
+    WRONG_ADDRESS_640 = 640
 
 
 class UpdateCaseService:
@@ -47,23 +47,29 @@ class UpdateCaseService:
             totalmobile_request
         )
 
-        if totalmobile_request.outcome_code == TMReturnCodes.APPOINTMENT.value and blaise_case.outcome_code in (
-            TMReturnCodes.NOT_STARTED.value,
-            TMReturnCodes.NON_CONTACT.value,
-            TMReturnCodes.PHONE_NO_REMOVED_BY_TO.value
+        if (
+            totalmobile_request.outcome_code
+            == QuestionnaireOutcomeCodes.APPOINTMENT_300.value
+            and blaise_case.outcome_code
+            in (
+                QuestionnaireOutcomeCodes.NOT_STARTED_0.value,
+                QuestionnaireOutcomeCodes.NON_CONTACT_310.value,
+                QuestionnaireOutcomeCodes.PHONE_NO_REMOVED_BY_TO_320.value,
+            )
         ):
             self._update_case_contact_information(blaise_case, update_blaise_case_model)
             return
 
         if totalmobile_request.outcome_code in (
-            TMReturnCodes.REFUSAL_HARD.value, 
-            TMReturnCodes.REFUSAL_SOFT.value, 
-            TMReturnCodes.INELIGIBLE_NO_TRACE_OF_ADDRESS.value, 
-            TMReturnCodes.INELIGIBLE_VACANT.value, 
-            TMReturnCodes.INELIGIBLE_NON_RESIDENTIAL.value,
-            TMReturnCodes.INELIGIBLE_INSTITUTION.value, 
-            TMReturnCodes.INELIGIBLE_SECOND_OR_HOLIDAY_HOME.value,
-            TMReturnCodes.WRONG_ADDRESS.value):
+            QuestionnaireOutcomeCodes.REFUSAL_HARD_460.value,
+            QuestionnaireOutcomeCodes.REFUSAL_SOFT_461.value,
+            QuestionnaireOutcomeCodes.INELIGIBLE_NO_TRACE_OF_ADDRESS_510.value,
+            QuestionnaireOutcomeCodes.INELIGIBLE_VACANT_540.value,
+            QuestionnaireOutcomeCodes.INELIGIBLE_NON_RESIDENTIAL_551.value,
+            QuestionnaireOutcomeCodes.INELIGIBLE_INSTITUTION_560.value,
+            QuestionnaireOutcomeCodes.INELIGIBLE_SECOND_OR_HOLIDAY_HOME_580.value,
+            QuestionnaireOutcomeCodes.WRONG_ADDRESS_640.value,
+        ):
             self._update_case_outcome_code(blaise_case, update_blaise_case_model)
             return
 
