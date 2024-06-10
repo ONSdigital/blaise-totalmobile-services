@@ -12,6 +12,23 @@ from models.totalmobile.totalmobile_incoming_update_request_model import (
 )
 from services.questionnaire_service import QuestionnaireService
 
+from enum import Enum
+class TMReturnCodes(Enum):
+    NOT_STARTED = 0
+    WEB_NUDGED = 120
+    APPOINTMENT = 300
+    NON_CONTACT = 310
+    PHONE_NO_REMOVED_BY_TO = 320
+    REFUSAL_HARD = 460
+    REFUSAL_SOFT = 461
+    INELIGIBLE_NO_TRACE_OF_ADDRESS = 510
+    INELIGIBLE_VACANT = 540
+    INELIGIBLE_NON_RESIDENTIAL = 551
+    INELIGIBLE_INSTITUTION = 560
+    INELIGIBLE_SECOND_OR_HOLIDAY_HOME = 580
+    WRONG_ADDRESS = 640
+
+
 
 class UpdateCaseService:
     def __init__(self, questionnaire_service: QuestionnaireService):
@@ -30,15 +47,23 @@ class UpdateCaseService:
             totalmobile_request
         )
 
-        if totalmobile_request.outcome_code == 300 and blaise_case.outcome_code in (
-            0,
-            310,
-            320,
+        if totalmobile_request.outcome_code == TMReturnCodes.APPOINTMENT.value and blaise_case.outcome_code in (
+            TMReturnCodes.NOT_STARTED.value,
+            TMReturnCodes.NON_CONTACT.value,
+            TMReturnCodes.PHONE_NO_REMOVED_BY_TO.value
         ):
             self._update_case_contact_information(blaise_case, update_blaise_case_model)
             return
 
-        if totalmobile_request.outcome_code in (460, 461, 510, 540, 551, 560, 580, 640):
+        if totalmobile_request.outcome_code in (
+            TMReturnCodes.REFUSAL_HARD.value, 
+            TMReturnCodes.REFUSAL_SOFT.value, 
+            TMReturnCodes.INELIGIBLE_NO_TRACE_OF_ADDRESS.value, 
+            TMReturnCodes.INELIGIBLE_VACANT.value, 
+            TMReturnCodes.INELIGIBLE_NON_RESIDENTIAL.value,
+            TMReturnCodes.INELIGIBLE_INSTITUTION.value, 
+            TMReturnCodes.INELIGIBLE_SECOND_OR_HOLIDAY_HOME.value,
+            TMReturnCodes.WRONG_ADDRESS.value):
             self._update_case_outcome_code(blaise_case, update_blaise_case_model)
             return
 
