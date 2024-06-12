@@ -1,4 +1,5 @@
 import logging
+from enum import Enum
 
 from app.exceptions.custom_exceptions import (
     QuestionnaireCaseDoesNotExistError,
@@ -11,6 +12,22 @@ from models.totalmobile.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 from services.questionnaire_service import QuestionnaireService
+
+
+class QuestionnaireOutcomeCodes(Enum):
+    NOT_STARTED_0 = 0
+    WEB_NUDGED_120 = 120
+    APPOINTMENT_300 = 300
+    NON_CONTACT_310 = 310
+    PHONE_NO_REMOVED_BY_TO_320 = 320
+    REFUSAL_HARD_460 = 460
+    REFUSAL_SOFT_461 = 461
+    INELIGIBLE_NO_TRACE_OF_ADDRESS_510 = 510
+    INELIGIBLE_VACANT_540 = 540
+    INELIGIBLE_NON_RESIDENTIAL_551 = 551
+    INELIGIBLE_INSTITUTION_560 = 560
+    INELIGIBLE_SECOND_OR_HOLIDAY_HOME_580 = 580
+    WRONG_ADDRESS_640 = 640
 
 
 class UpdateCaseService:
@@ -30,15 +47,29 @@ class UpdateCaseService:
             totalmobile_request
         )
 
-        if totalmobile_request.outcome_code == 300 and blaise_case.outcome_code in (
-            0,
-            310,
-            320,
+        if (
+            totalmobile_request.outcome_code
+            == QuestionnaireOutcomeCodes.APPOINTMENT_300.value
+            and blaise_case.outcome_code
+            in (
+                QuestionnaireOutcomeCodes.NOT_STARTED_0.value,
+                QuestionnaireOutcomeCodes.NON_CONTACT_310.value,
+                QuestionnaireOutcomeCodes.PHONE_NO_REMOVED_BY_TO_320.value,
+            )
         ):
             self._update_case_contact_information(blaise_case, update_blaise_case_model)
             return
 
-        if totalmobile_request.outcome_code in (460, 461, 510, 540, 551, 560, 580, 640):
+        if totalmobile_request.outcome_code in (
+            QuestionnaireOutcomeCodes.REFUSAL_HARD_460.value,
+            QuestionnaireOutcomeCodes.REFUSAL_SOFT_461.value,
+            QuestionnaireOutcomeCodes.INELIGIBLE_NO_TRACE_OF_ADDRESS_510.value,
+            QuestionnaireOutcomeCodes.INELIGIBLE_VACANT_540.value,
+            QuestionnaireOutcomeCodes.INELIGIBLE_NON_RESIDENTIAL_551.value,
+            QuestionnaireOutcomeCodes.INELIGIBLE_INSTITUTION_560.value,
+            QuestionnaireOutcomeCodes.INELIGIBLE_SECOND_OR_HOLIDAY_HOME_580.value,
+            QuestionnaireOutcomeCodes.WRONG_ADDRESS_640.value,
+        ):
             self._update_case_outcome_code(blaise_case, update_blaise_case_model)
             return
 
