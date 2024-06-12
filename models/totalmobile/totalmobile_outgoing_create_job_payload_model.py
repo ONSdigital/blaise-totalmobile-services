@@ -166,6 +166,8 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         questionnaire_case: BlaiseCaseInformationModel,
         uac_chunks: Optional[UacChunks],
     ) -> T:
+        tla = questionnaire_name[0:3] if len(questionnaire_name) >= 3 else questionnaire_name
+        
         total_mobile_case = cls(
             identity=Reference(
                 reference=cls.create_job_reference(
@@ -177,8 +179,8 @@ class TotalMobileOutgoingCreateJobPayloadModel:
             ),
             origin="ONS",
             duration=15,
-            workType="LMS",
-            skills=[Skill(identity=Reference(reference="LMS"))],
+            workType=tla,
+            skills=[Skill(identity=Reference(reference=tla))],
             dueDate=DueDate(end=questionnaire_case.wave_com_dte),
             location=AddressDetails(
                 reference=cls.set_location_reference(questionnaire_case),
@@ -208,7 +210,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
                 AdditionalProperty(
                     name="surveyName", value=questionnaire_case.data_model_name
                 ),
-                AdditionalProperty(name="tla", value="LMS"),
+                AdditionalProperty(name="tla", value=tla),
                 AdditionalProperty(name="wave", value=str(questionnaire_case.wave)),
                 AdditionalProperty(name="priority", value=questionnaire_case.priority),
                 AdditionalProperty(
