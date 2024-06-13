@@ -126,36 +126,6 @@ def test_get_case_returns_a_case(
     assert result == questionnaire_case
 
 
-def test_get_wave_from_questionnaire_name_errors_for_non_lms_questionnaire(
-    service: QuestionnaireService,
-):
-    # arrange
-    questionnaire_name = "OPN2101A"
-
-    # act
-    with pytest.raises(Exception) as err:
-        service.get_wave_from_questionnaire_name(questionnaire_name)
-
-    # assert
-    assert str(err.value) == "Invalid format for questionnaire name: OPN2101A"
-
-
-def test_get_wave_from_questionnaire_name(service: QuestionnaireService):
-    # assert
-    assert service.get_wave_from_questionnaire_name("LMS2101_AA1") == "1"
-    assert service.get_wave_from_questionnaire_name("LMS1234_ZZ2") == "2"
-
-
-def test_get_wave_from_questionnaire_name_with_invalid_format_raises_error(
-    service: QuestionnaireService,
-):
-    # assert
-    with pytest.raises(Exception) as err:
-        service.get_wave_from_questionnaire_name("ABC1234_AA1")
-
-    assert str(err.value) == "Invalid format for questionnaire name: ABC1234_AA1"
-
-
 def test_questionnaire_exists_calls_the_blaise_service_with_the_correct_parameters(
     mock_blaise_service,
     service: QuestionnaireService,

@@ -166,8 +166,12 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         questionnaire_case: BlaiseCaseInformationModel,
         uac_chunks: Optional[UacChunks],
     ) -> T:
-        tla = questionnaire_name[0:3] if len(questionnaire_name) >= 3 else questionnaire_name
-        
+        tla = (
+            questionnaire_name[0:3]
+            if len(questionnaire_name) >= 3
+            else questionnaire_name
+        )
+
         total_mobile_case = cls(
             identity=Reference(
                 reference=cls.create_job_reference(
