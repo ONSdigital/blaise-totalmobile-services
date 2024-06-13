@@ -40,9 +40,11 @@ class ContactDetails:
 @dataclass
 class BlaiseCaseInformationModel(BaseModel):
     questionnaire_name: str
+    tla: str
     case_id: Optional[str]
     data_model_name: Optional[str]
     wave: Optional[int]
+    wave_com_dte: Optional[datetime]
     address_details: AddressDetails
     contact_details: ContactDetails
     outcome_code: int
@@ -50,7 +52,6 @@ class BlaiseCaseInformationModel(BaseModel):
     field_case: Optional[str]
     field_region: Optional[str]
     field_team: Optional[str]
-    wave_com_dte: Optional[datetime]
     has_call_history: bool
     rotational_knock_to_nudge_indicator: Optional[str]
     rotational_outcome_code: int
@@ -66,9 +67,11 @@ class BlaiseCaseInformationModel(BaseModel):
             else None
         )
         wave = case_data_dictionary.get("qDataBag.Wave")
+        tla = str(case_data_dictionary.get("qDataBag.TLA"))
 
         return cls(
             questionnaire_name=questionnaire_name,
+            tla=tla,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
             data_model_name=case_data_dictionary.get("dataModelName"),
             wave=int(wave) if wave else None,
