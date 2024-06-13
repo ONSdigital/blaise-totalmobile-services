@@ -40,13 +40,6 @@ class QuestionnaireService:
     ) -> BlaiseCaseInformationModel:
         return self._blaise_service.get_case(questionnaire_name, case_id)
 
-    def get_wave_from_questionnaire_name(self, questionnaire_name: str) -> str:
-        if questionnaire_name[0:3] != "LMS":
-            raise Exception(
-                f"Invalid format for questionnaire name: {questionnaire_name}"
-            )
-        return questionnaire_name[-1]
-
     def questionnaire_exists(self, questionnaire_name: str) -> bool:
         return self._blaise_service.questionnaire_exists(questionnaire_name)
 

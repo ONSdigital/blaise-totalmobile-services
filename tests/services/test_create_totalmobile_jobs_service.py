@@ -59,7 +59,6 @@ def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_
     mock_questionnaire_service.get_questionnaires_with_totalmobile_release_date_of_today.return_value = (
         []
     )
-    mock_questionnaire_service.get_wave_from_questionnaire_name.return_value = "1"
     mock_questionnaire_service.get_cases.return_value = []
     # act
     result = service.create_totalmobile_jobs()
@@ -203,7 +202,6 @@ def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
 
     mock_questionnaire_service.get_eligible_cases.return_value = questionnaire_cases
 
-    mock_questionnaire_service.get_wave_from_questionnaire_name.return_value = "1"
     mock_questionnaire_service.get_cases.return_value = []
 
     world_model = TotalmobileWorldModel(
@@ -277,7 +275,6 @@ def test_create_cloud_tasks_when_no_eligible_cases(
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
-    mock_questionnaire_service.get_wave_from_questionnaire_name.return_value = "1"
     mock_questionnaire_service.get_eligible_cases.return_value = []
 
     # act

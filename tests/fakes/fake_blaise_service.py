@@ -50,6 +50,7 @@ class FakeBlaiseService:
 
         self._questionnaires[questionnaire][case_id] = BlaiseCaseInformationModel(
             questionnaire_name=questionnaire,
+            tla=questionnaire[0:3],
             case_id=case_id,
             data_model_name=None,
             wave=wave,
