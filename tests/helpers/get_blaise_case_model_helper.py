@@ -12,6 +12,7 @@ from models.blaise.blaise_case_information_model import (
 
 def get_populated_case_model(
     questionnaire_name: str = "LMS2101_AA1",
+    tla: str = "LMS",
     case_id: str = "90000",
     data_model_name: str = "LM2007",
     wave: int = 1,
@@ -38,6 +39,7 @@ def get_populated_case_model(
 ):
     return BlaiseCaseInformationModel(
         questionnaire_name=questionnaire_name,
+        tla=tla,
         case_id=case_id,
         data_model_name=data_model_name,
         wave=wave,

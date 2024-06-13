@@ -115,6 +115,7 @@ def test_get_case_when_case_exists(service: FakeBlaiseService):
     case = service.get_case("LMS12345", "99999")
     assert case == BlaiseCaseInformationModel(
         questionnaire_name="LMS12345",
+        tla="LMS",
         case_id="99999",
         data_model_name=None,
         wave=None,
