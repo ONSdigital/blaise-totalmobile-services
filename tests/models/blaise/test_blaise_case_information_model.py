@@ -33,6 +33,7 @@ def valid_case_data_dictionary() -> Dict:
         "catiMana.CatiCall.RegsCalls[1].DialResult": "1",
         "qRotate.RDMktnIND": "2",
         "qRotate.RHOut": "310",
+        "qDataBag.TLA": "LMB",
     }
 
 
@@ -71,6 +72,7 @@ def test_import_case_returns_a_populated_model(valid_case_data_dictionary):
     assert result.has_call_history is True
     assert result.rotational_knock_to_nudge_indicator == "N"
     assert result.rotational_outcome_code == 310
+    assert result.tla == "LMS"
 
 
 def test_import_case_returns_a_valid_object_with_the_field_set_to_none_when_a_blaise_field_is_incorrectly_typed(
