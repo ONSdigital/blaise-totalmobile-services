@@ -67,7 +67,7 @@ class BlaiseCaseInformationModel(BaseModel):
             else None
         )
         wave = case_data_dictionary.get("qDataBag.Wave")
-        tla = str(case_data_dictionary.get("qDataBag.TLA"))
+        tla = questionnaire_name[0:3]
 
         return cls(
             questionnaire_name=questionnaire_name,
