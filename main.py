@@ -1,3 +1,4 @@
+import logging
 import os
 
 import flask
@@ -23,6 +24,8 @@ from services.cloud_task_service import CloudTaskService
 from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 from services.datastore_service import DatastoreService
 from services.eligible_case_service import EligibleCaseService
+from services.eligible_frs_case_service import EligibleFRSCaseService
+from services.frs_questionnaire_service import FRSQuestionnaireService
 from services.questionnaire_service import QuestionnaireService
 from services.totalmobile_service import RealTotalmobileService
 from services.uac_service import UacService
@@ -47,7 +50,7 @@ def _create_totalmobile_service(config: Config) -> RealTotalmobileService:
 def create_totalmobile_jobs_trigger(_event, _context) -> str:
     config = Config.from_env()
 
-    questionnaire_service = QuestionnaireService(
+    lms_questionnaire_service = QuestionnaireService(
         blaise_service=RealBlaiseService(config),
         eligible_case_service=EligibleCaseService(
             wave_filters=[
@@ -61,23 +64,37 @@ def create_totalmobile_jobs_trigger(_event, _context) -> str:
         datastore_service=DatastoreService(),
     )
 
+    frs_questionnaire_service = FRSQuestionnaireService(
+        blaise_service=RealBlaiseService(config),
+        eligible_case_service=EligibleFRSCaseService(),
+        datastore_service=DatastoreService(),
+    )
+
     totalmobile_service = _create_totalmobile_service(config)
     uac_service = UacService(config=config)
     cloud_task_service = CloudTaskService(
         config=config, task_queue_id=config.create_totalmobile_jobs_task_queue_id
     )
 
-    return (
-        cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
-            create_totalmobile_jobs_service=CreateTotalmobileJobsService(
-                totalmobile_service=totalmobile_service,
-                questionnaire_service=questionnaire_service,
-                uac_service=uac_service,
-                cloud_task_service=cloud_task_service,
-            )
-        )
-    )
 
+
+        # get a list of all questionnaires that have a release date of today
+        # get eligible cases for each questionnaire
+        # map eligible cases to totalmobile job model
+        # create cloud task for each totalmobile job model
+
+
+    cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
+                create_totalmobile_jobs_service=CreateTotalmobileJobsService(
+                    totalmobile_service=totalmobile_service,
+                    questionnaire_service=lms_questionnaire_service,
+                    uac_service=uac_service,
+                    cloud_task_service=cloud_task_service,
+                )
+            )    
+
+    return "done"
+    
 
 def create_totalmobile_jobs_processor(request: flask.Request) -> str:
     config = Config.from_env()

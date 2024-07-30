@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import Dict, List
 
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from models.cloud_tasks.task_request_model import TaskRequestModel
@@ -8,16 +8,22 @@ from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     TotalMobileOutgoingCreateJobPayloadModel,
 )
 from services.cloud_task_service import CloudTaskService
-from services.questionnaire_service import QuestionnaireService
+from services.questionnaire_service_base import QuestionnaireServiceBase
 from services.totalmobile_service import TotalmobileService
 from services.uac_service import UacService
 
+
+thisdict = {
+  "brand": "Ford",
+  "model": "Mustang",
+  "year": 1964
+}
 
 class CreateTotalmobileJobsService:
     def __init__(
         self,
         totalmobile_service: TotalmobileService,
-        questionnaire_service: QuestionnaireService,
+        questionnaire_service: QuestionnaireServiceBase,
         uac_service: UacService,
         cloud_task_service: CloudTaskService,
     ):

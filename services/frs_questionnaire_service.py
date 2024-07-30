@@ -6,9 +6,10 @@ from models.blaise.blaise_frs_case_information_model import BlaiseFRSCaseInforma
 from services.blaise_service import RealBlaiseService
 from services.datastore_service import DatastoreService
 from services.eligible_frs_case_service import EligibleFRSCaseService
+from services.questionnaire_service_base import QuestionnaireServiceBase
 
 
-class FRSQuestionnaireService:
+class FRSQuestionnaireService(QuestionnaireServiceBase):
     def __init__(
         self,
         blaise_service: RealBlaiseService,
@@ -53,12 +54,3 @@ class FRSQuestionnaireService:
         return self._blaise_service.update_case(
             questionnaire_name, case_id, data_fields
         )
-
-    def get_questionnaires_with_totalmobile_release_date_of_today(self) -> list:    # TODO: Can be made generic in a base class
-        records = self._datastore_service.get_totalmobile_release_date_records()
-        today = datetime.today().strftime("%d/%m/%Y")
-        return [
-            record["questionnaire"]
-            for record in records
-            if record["tmreleasedate"].strftime("%d/%m/%Y") == today
-        ]
