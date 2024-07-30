@@ -151,4 +151,4 @@ This worked for me:
 * Add it, commit it, push it, raise a PR and get it deployed
 * In this repository create a new branch and execute ```poetry update blaise-restapi``` to update the dependencies (if there are issues, follow the above instructions)
 * Add it, commit it, push it, raise a PR (you will see the version for blaise-restapi has been bumped in poetry.lock) and get it deployed
-test
+
