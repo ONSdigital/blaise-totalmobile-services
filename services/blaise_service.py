@@ -9,6 +9,7 @@ from app.exceptions.custom_exceptions import (
 )
 from appconfig import Config
 from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+from models.blaise.blaise_frs_case_information_model import BlaiseFRSCaseInformationModel
 
 
 class BlaiseService(Protocol):
@@ -68,6 +69,24 @@ class RealBlaiseService:
             raise QuestionnaireCaseError()
 
         return BlaiseCaseInformationModel.import_case(
+            questionnaire_name, questionnaire_case_data["fieldData"]
+        )
+
+    def get_frs_case(
+        self, questionnaire_name: str, case_id: str
+    ) -> BlaiseFRSCaseInformationModel:
+
+        if not self.case_exists(questionnaire_name, case_id):
+            raise QuestionnaireCaseDoesNotExistError()
+
+        try:
+            questionnaire_case_data = self.restapi_client.get_case(
+                self._config.blaise_server_park, questionnaire_name, case_id
+            )
+        except HTTPError:
+            raise QuestionnaireCaseError()
+
+        return BlaiseFRSCaseInformationModel.import_frs_case(
             questionnaire_name, questionnaire_case_data["fieldData"]
         )
 

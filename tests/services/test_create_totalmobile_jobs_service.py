@@ -12,7 +12,8 @@ from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
-from tests.helpers.get_blaise_case_model_helper import get_populated_case_model, get_frs_populated_case_model
+from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
+from tests.helpers.get_blaise_frs_case_model_helper import get_frs_populated_case_model
 
 
 @pytest.fixture()

@@ -1,7 +1,7 @@
 import logging
 from typing import List
 
-from models.blaise.blaise_case_information_model import BlaiseFRSCaseInformationModel
+from models.blaise.blaise_frs_case_information_model import BlaiseFRSCaseInformationModel
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 
 
