@@ -13,6 +13,7 @@ from appconfig import Config
 from client import OptimiseClient
 from client.messaging import MessagingClient
 from cloud_functions.logging import setup_logger
+from models.factories.service_instance_factory import ServiceInstanceFactory
 from services.blaise_case_outcome_service import BlaiseCaseOutcomeService
 from services.blaise_service import RealBlaiseService
 from services.case_filters.case_filter_wave_1 import CaseFilterWave1
@@ -48,52 +49,18 @@ def _create_totalmobile_service(config: Config) -> RealTotalmobileService:
 
 
 def create_totalmobile_jobs_trigger(_event, _context) -> str:
-    config = Config.from_env()
+    service_instance_factory = ServiceInstanceFactory()
 
-    lms_questionnaire_service = QuestionnaireService(
-        blaise_service=RealBlaiseService(config),
-        eligible_case_service=EligibleCaseService(
-            wave_filters=[
-                CaseFilterWave1(),
-                CaseFilterWave2(),
-                CaseFilterWave3(),
-                CaseFilterWave4(),
-                CaseFilterWave5(),
-            ]
-        ),
-        datastore_service=DatastoreService(),
-    )
-
-    frs_questionnaire_service = FRSQuestionnaireService(
-        blaise_service=RealBlaiseService(config),
-        eligible_case_service=EligibleFRSCaseService(),
-        datastore_service=DatastoreService(),
-    )
-
-    totalmobile_service = _create_totalmobile_service(config)
-    uac_service = UacService(config=config)
-    cloud_task_service = CloudTaskService(
-        config=config, task_queue_id=config.create_totalmobile_jobs_task_queue_id
-    )
-
-
-
-        # get a list of all questionnaires that have a release date of today
-        # get eligible cases for each questionnaire
-        # map eligible cases to totalmobile job model
-        # create cloud task for each totalmobile job model
-
-
-    cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
+    return (
+        cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
                 create_totalmobile_jobs_service=CreateTotalmobileJobsService(
-                    totalmobile_service=totalmobile_service,
-                    questionnaire_service=lms_questionnaire_service,
-                    uac_service=uac_service,
-                    cloud_task_service=cloud_task_service,
+                    totalmobile_service=service_instance_factory._create_totalmobile_service(),
+                    questionnaire_service=service_instance_factory._create_questionnaire_service(),
+                    uac_service=service_instance_factory._create_uac_service(),
+                    cloud_task_service=service_instance_factory._create_cloud_task_service(),
                 )
             )    
-
-    return "done"
+    )
     
 
 def create_totalmobile_jobs_processor(request: flask.Request) -> str:
