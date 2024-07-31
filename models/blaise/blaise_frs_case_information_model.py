@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Type, TypeVar
 
 from models.base_model import BaseModel
+from models.blaise.case_information_base_model import CaseInformationBaseModel
 
 V = TypeVar("V", bound="BlaiseFRSCaseInformationModel")
 
@@ -37,30 +38,12 @@ class ContactDetails:
 
 
 @dataclass
-class BlaiseFRSCaseInformationModel(BaseModel):
-    # TODO: Confirm below comments
-    questionnaire_name: str
-    tla: str
-    case_id: Optional[str]
-    data_model_name: Optional[str]
-    wave: Optional[int]   # TODO (required field for current route - optional value)
-    wave_com_dte: Optional[datetime]  # TODO (required field for current route - optional value)
-    address_details: AddressDetails
-    # contact_details: ContactDetails
-    # outcome_code: int
-    priority: Optional[str]
-    field_case: Optional[str]
-    field_region: Optional[str]
-    field_team: Optional[str]
-    # has_call_history: bool
-    # rotational_knock_to_nudge_indicator: Optional[str]
-    # rotational_outcome_code: int
+class BlaiseFRSCaseInformationModel(CaseInformationBaseModel):
 
     @classmethod
     def import_frs_case(
         cls: Type[V], questionnaire_name: str, case_data_dictionary: Dict[str, str]
     ) -> V:
-        # TODO: Confirm below commented logic
         wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE", "")
         wave_com_dte = (
             datetime.strptime(wave_com_dte_str, "%d-%m-%Y")
@@ -71,7 +54,6 @@ class BlaiseFRSCaseInformationModel(BaseModel):
         tla = questionnaire_name[0:3]
 
         return cls(
-            # TODO: Confirm below comments
             questionnaire_name=questionnaire_name,
             tla=tla,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
@@ -92,48 +74,12 @@ class BlaiseFRSCaseInformationModel(BaseModel):
                     ),
                 ),
             ),
-            # contact_details=ContactDetails(
-            #     telephone_number_1=case_data_dictionary.get("qDataBag.TelNo"),
-            #     telephone_number_2=case_data_dictionary.get("qDataBag.TelNo2"),
-            #     appointment_telephone_number=case_data_dictionary.get("telNoAppt"),
-            # ),
-            # outcome_code=cls.convert_string_to_integer(
-            #     case_data_dictionary.get("hOut", "0")
-            # ),
             priority=case_data_dictionary.get("qDataBag.Priority"),
             field_case=case_data_dictionary.get("qDataBag.FieldCase"),
             field_region=case_data_dictionary.get("qDataBag.FieldRegion"),
             field_team=case_data_dictionary.get("qDataBag.FieldTeam"),
-            wave_com_dte=wave_com_dte,
-            # has_call_history=cls.string_to_bool(
-            #     case_data_dictionary.get("catiMana.CatiCall.RegsCalls[1].DialResult")
-            # ),
-            # rotational_knock_to_nudge_indicator=cls.convert_indicator_to_y_n_or_empty(
-            #     case_data_dictionary.get("qRotate.RDMktnIND")
-            # ),
-            # rotational_outcome_code=cls.convert_string_to_integer(
-            #     case_data_dictionary.get("qRotate.RHOut", "0")
-            # ),
+            wave_com_dte=wave_com_dte
         )
-
-    @staticmethod
-    def convert_indicator_to_y_n_or_empty(value: Optional[str]):
-        if not value or value == "":
-            return ""
-
-        return "Y" if value == "1" else "N"
-
-    @staticmethod
-    def convert_string_to_integer(value: str) -> int:
-        if value == "":
-            return 0
-        return int(value)
-
-    @staticmethod
-    def string_to_bool(value: Optional[str]) -> bool:
-        if value == "" or value is None:
-            return False
-        return True
 
     @staticmethod
     def required_fields_from_blaise() -> List:
@@ -141,17 +87,13 @@ class BlaiseFRSCaseInformationModel(BaseModel):
             "qiD.Serial_Number",
             "dataModelName",
             "qDataBag.TLA",
-            # "qDataBag.Wave",      # TODO
+            "qDataBag.Wave",
             "qDataBag.Prem1",
             "qDataBag.Prem2",
             "qDataBag.Prem3",
             "qDataBag.District",
             "qDataBag.PostTown",
             "qDataBag.PostCode",
-            # "qDataBag.TelNo",     # TODO
-            # "qDataBag.TelNo2",    # TODO
-            # "telNoAppt",          # TODO
-            # "hOut",               # TODO
             "qDataBag.UPRN",
             "qDataBag.UPRN_Latitude",
             "qDataBag.UPRN_Longitude",
@@ -159,8 +101,4 @@ class BlaiseFRSCaseInformationModel(BaseModel):
             "qDataBag.FieldCase",
             "qDataBag.FieldRegion",
             "qDataBag.FieldTeam",
-            # "qDataBag.WaveComDTE",    # TODO
-            # "catiMana.CatiCall.RegsCalls[1].DialResult",  # TODO
-            # "qRotate.RDMktnIND",      # TODO
-            # "qRotate.RHOut",          # TODO
         ]

@@ -2,7 +2,7 @@ from dataclasses import asdict, dataclass
 from datetime import datetime
 from typing import List, Optional, Type, TypeVar
 
-from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+from models.blaise.case_information_base_model import CaseInformationBaseModel
 from models.blaise.questionnaire_uac_model import UacChunks
 from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
 
@@ -86,15 +86,11 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         )
         return reference_model.create_reference()
 
-    # TODO: This is different for FRS
-    # if QDatabag.DivAddInd == 1:
-    #   return "Warning Divided Address"
-    # return "TODO: ask Martyn"
     @staticmethod
-    def create_description(
-        questionnaire_name: str,
-        questionnaire_case: BlaiseCaseInformationModel,
-        uac_chunks: Optional[UacChunks],
+    def create_lms_description(
+            questionnaire_name: str,
+            questionnaire_case: CaseInformationBaseModel,
+            uac_chunks: Optional[UacChunks],
     ) -> str:
         uac_string = "" if uac_chunks is None else uac_chunks.formatted_chunks()
         due_date_string = (
@@ -111,7 +107,23 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         )
 
     @staticmethod
-    def concatenate_address(questionnaire_case: BlaiseCaseInformationModel) -> str:
+    def create_frs_description() -> str:
+        return ""
+
+    @staticmethod
+    def create_description(
+        cls: Type[T],
+        questionnaire_name: str,
+        questionnaire_case: CaseInformationBaseModel,
+        uac_chunks: Optional[UacChunks],
+    ) -> str:
+        if questionnaire_case.tla == "FRS":
+            return cls.create_frs_description()
+
+        return cls.create_lms_description(questionnaire_name, questionnaire_case, uac_chunks)
+
+    @staticmethod
+    def concatenate_address(questionnaire_case: CaseInformationBaseModel) -> str:
         fields = [
             questionnaire_case.address_details.address.address_line_1,
             questionnaire_case.address_details.address.address_line_2,
@@ -126,7 +138,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
 
     @staticmethod
     def concatenate_address_line1(
-        questionnaire_case: BlaiseCaseInformationModel,
+        questionnaire_case: CaseInformationBaseModel,
     ) -> str:
         fields = [
             questionnaire_case.address_details.address.address_line_1,
@@ -167,7 +179,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
     def import_case(
         cls: Type[T],
         questionnaire_name: str,
-        questionnaire_case: BlaiseCaseInformationModel,
+        questionnaire_case: CaseInformationBaseModel,
         uac_chunks: Optional[UacChunks],
     ) -> T:
         total_mobile_case = cls(

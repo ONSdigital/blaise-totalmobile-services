@@ -2,32 +2,10 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List, Optional, Type, TypeVar
 
-from models.blaise.case_information_base_model import CaseInformationBaseModel
+from models.blaise.case_information_base_model import CaseInformationBaseModel, AddressDetails, AddressCoordinates, \
+    Address
 
 T = TypeVar("T", bound="BlaiseCaseInformationModel")
-
-@dataclass
-class AddressCoordinates:
-    latitude: Optional[str]
-    longitude: Optional[str]
-
-
-@dataclass
-class Address:
-    address_line_1: Optional[str]
-    address_line_2: Optional[str]
-    address_line_3: Optional[str]
-    county: Optional[str]
-    town: Optional[str]
-    postcode: Optional[str]
-    coordinates: AddressCoordinates
-
-
-@dataclass
-class AddressDetails:
-    reference: Optional[str]
-    address: Address
-
 
 @dataclass
 class ContactDetails:
@@ -38,19 +16,8 @@ class ContactDetails:
 
 @dataclass
 class BlaiseCaseInformationModel(CaseInformationBaseModel):
-    questionnaire_name: str
-    tla: str
-    case_id: Optional[str]
-    data_model_name: Optional[str]
-    wave: Optional[int]
-    wave_com_dte: Optional[datetime]
-    address_details: AddressDetails
     contact_details: ContactDetails
     outcome_code: int
-    priority: Optional[str]
-    field_case: Optional[str]
-    field_region: Optional[str]
-    field_team: Optional[str]
     has_call_history: bool
     rotational_knock_to_nudge_indicator: Optional[str]
     rotational_outcome_code: int
@@ -116,25 +83,6 @@ class BlaiseCaseInformationModel(CaseInformationBaseModel):
                 case_data_dictionary.get("qRotate.RHOut", "0")
             ),
         )
-
-    @staticmethod
-    def convert_indicator_to_y_n_or_empty(value: Optional[str]):
-        if not value or value == "":
-            return ""
-
-        return "Y" if value == "1" else "N"
-
-    @staticmethod
-    def convert_string_to_integer(value: str) -> int:
-        if value == "":
-            return 0
-        return int(value)
-
-    @staticmethod
-    def string_to_bool(value: Optional[str]) -> bool:
-        if value == "" or value is None:
-            return False
-        return True
 
     @staticmethod
     def required_fields_from_blaise() -> List:
