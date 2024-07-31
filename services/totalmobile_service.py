@@ -1,14 +1,16 @@
-from typing import Protocol
+from typing import List, Protocol
 
 import requests
 
 from client.messaging import MessagingClient
 from client.optimise import GetJobsResponse, OptimiseClient
+from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from models.totalmobile.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
+from services.mappers.totalmobile_mapper_service import TotalmobileMapperService
 
 
 class RecallJobError(Exception):
@@ -42,13 +44,24 @@ class TotalmobileService(Protocol):
     def get_jobs_model(self, world_id: str) -> TotalmobileGetJobsResponseModel:
         pass
 
+    def map_totalmobile_Create_job_models(
+        self,
+        questionnaire_name: str,
+        cases: List[BlaiseCaseInformationModel]
+    ) -> List[TotalmobileCreateJobModel]:    
+        pass
+
 
 class RealTotalmobileService:
     def __init__(
-        self, optimise_client: OptimiseClient, messaging_client: MessagingClient
+        self, 
+        optimise_client: OptimiseClient,
+        messaging_client: MessagingClient,
+        mapper_service: TotalmobileMapperService
     ):
         self._optimise_client = optimise_client
         self._messaging_client = messaging_client
+        self._mapper = mapper_service
 
     def get_world_model(self) -> TotalmobileWorldModel:
         worlds = self._optimise_client.get_worlds()
@@ -86,3 +99,14 @@ class RealTotalmobileService:
     def get_jobs_model(self, world_id: str) -> TotalmobileGetJobsResponseModel:
         jobs_response = self.get_jobs(world_id)
         return TotalmobileGetJobsResponseModel.from_get_jobs_response(jobs_response)
+    
+    def map_totalmobile_Create_job_models(
+        self,
+        questionnaire_name: str,
+        cases: List[BlaiseCaseInformationModel]
+    ) -> List[TotalmobileCreateJobModel]:
+        world_model = self.get_world_model()
+        return self._mapper.map_totalmobile_Create_job_models(
+            questionnaire_name=questionnaire_name, 
+            cases=cases,
+            world_model=world_model)

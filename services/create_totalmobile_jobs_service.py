@@ -1,35 +1,20 @@
 import logging
-from typing import Dict, List
-
-from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+from typing import List
 from models.cloud_tasks.task_request_model import TaskRequestModel
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
-from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
-    TotalMobileOutgoingCreateJobPayloadModel,
-)
 from services.cloud_task_service import CloudTaskService
 from services.questionnaire_service_base import QuestionnaireServiceBase
 from services.totalmobile_service import TotalmobileService
-from services.uac_service import UacService
-
-
-thisdict = {
-  "brand": "Ford",
-  "model": "Mustang",
-  "year": 1964
-}
 
 class CreateTotalmobileJobsService:
     def __init__(
         self,
         totalmobile_service: TotalmobileService,
         questionnaire_service: QuestionnaireServiceBase,
-        uac_service: UacService,
         cloud_task_service: CloudTaskService,
     ):
         self._totalmobile_service = totalmobile_service
         self._questionnaire_service = questionnaire_service
-        self._uac_service = uac_service
         self._cloud_task_service = cloud_task_service
 
     def create_totalmobile_jobs(self) -> str:
@@ -72,9 +57,9 @@ class CreateTotalmobileJobsService:
             f"Found {len(eligible_cases)} eligible cases for questionnaire {questionnaire_name}"
         )
 
-        totalmobile_job_models = self.map_totalmobile_job_models(
+        totalmobile_job_models = self._totalmobile_service.map_totalmobile_Create_job_models(
             cases=eligible_cases,
-            questionnaire_name=questionnaire_name,
+            questionnaire_name=questionnaire_name
         )
 
         return self.create_cloud_tasks_for_jobs(
@@ -107,33 +92,3 @@ class CreateTotalmobileJobsService:
         )
 
         return "Done"
-
-    def map_totalmobile_job_models(
-        self,
-        questionnaire_name: str,
-        cases: List[BlaiseCaseInformationModel],
-    ) -> List[TotalmobileCreateJobModel]:
-        world_model = self._totalmobile_service.get_world_model()
-        questionnaire_uac_model = self._uac_service.get_questionnaire_uac_model(
-            questionnaire_name
-        )
-
-        job_models = [
-            TotalmobileCreateJobModel(
-                questionnaire_name,
-                world_model.get_world_id(case.field_region),
-                case.case_id,
-                TotalMobileOutgoingCreateJobPayloadModel.import_case(
-                    questionnaire_name,
-                    case,
-                    questionnaire_uac_model.get_uac_chunks(case.case_id),
-                ).to_payload(),
-            )
-            for case in cases
-        ]
-
-        logging.info(
-            f"Finished mapping Totalmobile jobs for questionnaire {questionnaire_name}"
-        )
-
-        return job_models
