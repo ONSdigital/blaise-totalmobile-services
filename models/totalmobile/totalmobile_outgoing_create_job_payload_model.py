@@ -86,6 +86,10 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         )
         return reference_model.create_reference()
 
+    # TODO: This is different for FRS
+    # if QDatabag.DivAddInd == 1:
+    #   return "Warning Divided Address"
+    # return "TODO: ask Martyn"
     @staticmethod
     def create_description(
         questionnaire_name: str,
