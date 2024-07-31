@@ -14,7 +14,7 @@ class TotalmobileMapperService:
     ):
         self._uac_service = uac_service
     
-    def map_totalmobile_Create_job_models(
+    def map_totalmobile_create_job_models(
         self,
         questionnaire_name: str,
         cases: List[BlaiseCaseInformationModel],

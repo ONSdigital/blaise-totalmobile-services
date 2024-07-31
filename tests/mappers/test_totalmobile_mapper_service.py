@@ -78,7 +78,7 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models(
         )
 
         # act
-        result = service.map_totalmobile_Create_job_models(
+        result = service.map_totalmobile_create_job_models(
             questionnaire_name=questionnaire_name, cases=case_data, world_model=world_model
         )
 

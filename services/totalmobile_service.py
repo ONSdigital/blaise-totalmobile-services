@@ -44,7 +44,7 @@ class TotalmobileService(Protocol):
     def get_jobs_model(self, world_id: str) -> TotalmobileGetJobsResponseModel:
         pass
 
-    def map_totalmobile_Create_job_models(
+    def map_totalmobile_create_job_models(
         self,
         questionnaire_name: str,
         cases: List[BlaiseCaseInformationModel]
@@ -100,13 +100,13 @@ class RealTotalmobileService:
         jobs_response = self.get_jobs(world_id)
         return TotalmobileGetJobsResponseModel.from_get_jobs_response(jobs_response)
     
-    def map_totalmobile_Create_job_models(
+    def map_totalmobile_create_job_models(
         self,
         questionnaire_name: str,
         cases: List[BlaiseCaseInformationModel]
     ) -> List[TotalmobileCreateJobModel]:
         world_model = self.get_world_model()
-        return self._mapper.map_totalmobile_Create_job_models(
+        return self._mapper.map_totalmobile_create_job_models(
             questionnaire_name=questionnaire_name, 
             cases=cases,
             world_model=world_model)

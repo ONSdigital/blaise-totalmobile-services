@@ -105,7 +105,7 @@ class TestLMSCreateTotalmobileJobsService:
             payload="test"
         )
 
-        mock_totalmobile_service.map_totalmobile_Create_job_models.return_value = [totalmobile_create_job_model]
+        mock_totalmobile_service.map_totalmobile_create_job_models.return_value = [totalmobile_create_job_model]
        
         # act
         result = service.create_totalmobile_jobs_for_eligible_questionnaire_cases(
