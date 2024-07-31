@@ -1,4 +1,3 @@
-
 from typing import Dict
 from unittest.mock import Mock
 import pytest
@@ -14,6 +13,7 @@ from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 def mock_uac_service():
     return Mock()
 
+
 @pytest.fixture()
 def service(
         mock_uac_service,
@@ -22,9 +22,10 @@ def service(
         uac_service=mock_uac_service,
     )
 
-#lms
-def test_map_totalmobile_job_models_maps_the_correct_list_of_models(
-            mock_uac_service, service: TotalmobileMapperService
+
+class TestMapTotalmobileJobModelsForLMS:
+    def test_map_totalmobile_job_models_maps_the_correct_list_of_models(
+            self, mock_uac_service, service: TotalmobileMapperService
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
@@ -112,6 +113,88 @@ def test_map_totalmobile_job_models_maps_the_correct_list_of_models(
         assert result[1].payload["description"].startswith("UAC: 4175 5725 6990")
 
         assert result[2].questionnaire == "LMS2101_AA1"
+        assert result[2].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
+        assert result[2].case_id == "10030"
+        assert (
+                result[2].payload
+                == TotalMobileOutgoingCreateJobPayloadModel.import_case(
+            questionnaire_name,
+            case_data[2],
+            questionnaire_uac_model.get_uac_chunks("10030"),
+        ).to_payload()
+        )
+        assert result[2].payload["description"].startswith("UAC: \nDue Date")
+
+
+class TestMapTotalmobileJobModelsForFRS:
+    def test_map_totalmobile_job_models_maps_the_correct_list_of_models(
+            self, mock_uac_service, service: TotalmobileMapperService
+    ):
+        # arrange
+        questionnaire_name = "FRS2101"
+
+        # TODO: get_populated_frs_case_model? Or does not matter because UAC is optional?
+        case_data = [
+            get_populated_case_model(
+                case_id="10010", field_region="region1"
+            ),
+            get_populated_case_model(
+                case_id="10020", field_region="region2"
+            ),
+            get_populated_case_model(
+                case_id="10030", field_region="region3"
+            ),
+        ]
+
+        uac_data_dictionary: Dict[str, Uac] = {}
+        questionnaire_uac_model = QuestionnaireUacModel.import_uac_data(uac_data_dictionary)
+        mock_uac_service.get_questionnaire_uac_model.return_value = questionnaire_uac_model
+
+        world_model = TotalmobileWorldModel(
+            worlds=[
+                World(region="region1", id="3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+                World(region="region2", id="3fa85f64-5717-4562-b3fc-2c963f66afa7"),
+                World(region="region3", id="3fa85f64-5717-4562-b3fc-2c963f66afa9"),
+            ]
+        )
+
+        # act
+        result = service.map_totalmobile_create_job_models(
+            questionnaire_name=questionnaire_name, cases=case_data, world_model=world_model
+        )
+
+        # assert
+        assert len(result) == 3
+
+        assert result[0].questionnaire == "FRS2101"
+        assert result[0].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        assert result[0].case_id == "10010"
+        assert (
+                result[0].payload
+                == TotalMobileOutgoingCreateJobPayloadModel.import_case(
+            questionnaire_name,
+            case_data[0],
+            questionnaire_uac_model.get_uac_chunks("10010"),
+        ).to_payload()
+        )
+        # TODO: Confirm w/Martyn requirements for 'Description'
+        assert result[0].payload["description"].startswith("UAC: \nDue Date")
+
+        assert result[1].questionnaire == "FRS2101"
+        assert result[1].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa7"
+        assert result[1].case_id == "10020"
+        assert (
+                result[1].payload
+                == TotalMobileOutgoingCreateJobPayloadModel.import_case(
+            questionnaire_name,
+            case_data[1],
+            questionnaire_uac_model.get_uac_chunks("10020"),
+        ).to_payload()
+        )
+        # TODO: Confirm w/Martyn requirements for 'Description'
+        assert result[1].payload["description"].startswith("UAC: \nDue Date")
+
+        assert result[2].questionnaire == "FRS2101"
         assert result[2].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
         assert result[2].case_id == "10030"
         assert (
