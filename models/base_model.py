@@ -3,6 +3,7 @@ from typing import Any
 
 
 class BaseModel:
+
     @staticmethod
     def validate_dataclass_model_fields_are_populated(model) -> bool:
         for field in fields(model):

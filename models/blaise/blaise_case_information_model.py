@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List, Optional, Type, TypeVar
 
-from models.base_model import BaseModel
+from models.blaise.case_information_base_model import CaseInformationBaseModel
 
 T = TypeVar("T", bound="BlaiseCaseInformationModel")
 
@@ -37,7 +37,7 @@ class ContactDetails:
 
 
 @dataclass
-class BlaiseCaseInformationModel(BaseModel):
+class BlaiseCaseInformationModel(CaseInformationBaseModel):
     questionnaire_name: str
     tla: str
     case_id: Optional[str]
@@ -54,6 +54,10 @@ class BlaiseCaseInformationModel(BaseModel):
     has_call_history: bool
     rotational_knock_to_nudge_indicator: Optional[str]
     rotational_outcome_code: int
+
+    @property
+    def has_uac(self) -> bool:
+        return True
 
     @classmethod
     def import_case(
