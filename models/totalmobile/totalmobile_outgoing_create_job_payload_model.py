@@ -189,7 +189,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
                 )
             ),
             description=cls.create_description(
-                questionnaire_name, questionnaire_case, uac_chunks
+                cls, questionnaire_name, questionnaire_case, uac_chunks
             ),
             origin="ONS",
             duration=15,
