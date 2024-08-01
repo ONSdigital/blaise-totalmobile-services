@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List, Optional, Type, TypeVar
 
-from models.base_model import BaseModel
 from models.blaise.case_information_base_model import CaseInformationBaseModel
 
 V = TypeVar("V", bound="BlaiseFRSCaseInformationModel")

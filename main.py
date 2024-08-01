@@ -9,7 +9,7 @@ import cloud_functions.delete_totalmobile_jobs_completed_in_blaise
 import cloud_functions.delete_totalmobile_jobs_past_field_period
 from app.app import load_config, setup_app
 from cloud_functions.logging import setup_logger
-from models.factories.service_instance_factory import ServiceInstanceFactory
+from factories.service_instance_factory import ServiceInstanceFactory
 
 def create_totalmobile_jobs_trigger(_event, _context) -> str:
     service_instance_factory = ServiceInstanceFactory()

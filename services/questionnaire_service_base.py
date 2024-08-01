@@ -2,13 +2,13 @@ from abc import abstractmethod
 from datetime import datetime
 from typing import List
 
-from models.base_model import BaseModel
+from models.blaise.case_information_base_model import CaseInformationBaseModel
 
 
 class QuestionnaireServiceBase:
 
     @abstractmethod
-    def get_eligible_cases(self, questionnaire_name: str)  -> List[BaseModel]:
+    def get_eligible_cases(self, questionnaire_name: str)  -> List[CaseInformationBaseModel]:
         pass
     
     def get_questionnaires_with_totalmobile_release_date_of_today(self) -> list:
