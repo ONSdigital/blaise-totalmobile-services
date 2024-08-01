@@ -1,11 +1,14 @@
 from datetime import datetime
 from typing import Optional
 
-from models.blaise.blaise_case_information_model import (
+from models.blaise.blaise_case_information_base_model import (
     Address,
     AddressCoordinates,
     AddressDetails,
-    BlaiseCaseInformationModel,
+)
+
+from models.blaise.blaise_lms_case_information_model import (
+    BlaiseLMSCaseInformationModel,
     ContactDetails
 )
 
@@ -37,7 +40,7 @@ def get_populated_case_model(
     rotational_knock_to_nudge_indicator: str = "Y",
     rotational_outcome_code: int = 310,
 ):
-    return BlaiseCaseInformationModel(
+    return BlaiseLMSCaseInformationModel(
         questionnaire_name=questionnaire_name,
         tla=tla,
         case_id=case_id,

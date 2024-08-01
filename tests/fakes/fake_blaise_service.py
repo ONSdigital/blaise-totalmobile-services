@@ -5,13 +5,18 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireCaseDoesNotExistError,
     QuestionnaireCaseError,
 )
-from models.blaise.blaise_case_information_model import (
+from models.blaise.blaise_lms_case_information_model import (
+    BlaiseLMSCaseInformationModel,
+    ContactDetails,
+)
+
+from models.blaise.blaise_case_information_base_model import (
     Address,
     AddressCoordinates,
     AddressDetails,
-    BlaiseCaseInformationModel,
-    ContactDetails,
 )
+
+
 from tests.helpers import get_blaise_case_model_helper
 
 
@@ -48,7 +53,7 @@ class FakeBlaiseService:
     ) -> None:
         self._assert_questionnaire_exists(questionnaire)
 
-        self._questionnaires[questionnaire][case_id] = BlaiseCaseInformationModel(
+        self._questionnaires[questionnaire][case_id] = BlaiseLMSCaseInformationModel(
             questionnaire_name=questionnaire,
             tla=questionnaire[0:3],
             case_id=case_id,
@@ -116,7 +121,7 @@ class FakeBlaiseService:
     def required_fields_from_blaise(self) -> List[str]:
         raise NotImplementedError()
 
-    def get_cases(self, questionnaire_name: str) -> List[BlaiseCaseInformationModel]:
+    def get_cases(self, questionnaire_name: str) -> List[BlaiseLMSCaseInformationModel]:
         if "get_cases" in self._errors_when_method_is_called:
             raise Exception("get_case has errored")
 
@@ -145,7 +150,7 @@ class FakeBlaiseService:
 
     def get_case(
         self, questionnaire_name: str, case_id: str
-    ) -> BlaiseCaseInformationModel:
+    ) -> BlaiseLMSCaseInformationModel:
         if "get_case" in self._errors_when_method_is_called:
             raise QuestionnaireCaseError("get_case has errored")
 

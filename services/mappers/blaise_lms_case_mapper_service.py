@@ -1,35 +1,25 @@
-from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Optional, Type, TypeVar
+from typing import Dict, Optional, List
 
-from models.blaise.case_information_base_model import CaseInformationBaseModel, AddressDetails, AddressCoordinates, \
-    Address
-
-T = TypeVar("T", bound="BlaiseCaseInformationModel")
-
-@dataclass
-class ContactDetails:
-    telephone_number_1: Optional[str]
-    telephone_number_2: Optional[str]
-    appointment_telephone_number: Optional[str]
+from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel, ContactDetails
+from models.blaise.blaise_case_information_base_model import AddressDetails
+from models.blaise.blaise_case_information_base_model import AddressCoordinates, Address
 
 
-@dataclass
-class BlaiseCaseInformationModel(CaseInformationBaseModel):
-    contact_details: ContactDetails
-    outcome_code: int
-    has_call_history: bool
-    rotational_knock_to_nudge_indicator: Optional[str]
-    rotational_outcome_code: int
+class BlaiseLMSCaseMapperService:
 
-    @property
-    def has_uac(self) -> bool:
-        return True
+    def map_lms_case_information_models(self,  questionnaire_name: str, questionnaire_case_data: List[Dict[str, str]]):
+        cases = []
+        for case_data_item in questionnaire_case_data:
+            case = self.map_lms_case_information_model(
+                questionnaire_name,
+                case_data_item
+            )
+            cases.append(case)
 
-    @classmethod
-    def import_case(
-        cls: Type[T], questionnaire_name: str, case_data_dictionary: Dict[str, str]
-    ) -> T:
+        return cases
+
+    def map_lms_case_information_model(self, questionnaire_name: str, case_data_dictionary: Dict[str, str]) -> BlaiseLMSCaseInformationModel:
         wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE", "")
         wave_com_dte = (
             datetime.strptime(wave_com_dte_str, "%d-%m-%Y")
@@ -39,7 +29,7 @@ class BlaiseCaseInformationModel(CaseInformationBaseModel):
         wave = case_data_dictionary.get("qDataBag.Wave")
         tla = questionnaire_name[0:3]
 
-        return cls(
+        return BlaiseLMSCaseInformationModel(
             questionnaire_name=questionnaire_name,
             tla=tla,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
@@ -65,7 +55,7 @@ class BlaiseCaseInformationModel(CaseInformationBaseModel):
                 telephone_number_2=case_data_dictionary.get("qDataBag.TelNo2"),
                 appointment_telephone_number=case_data_dictionary.get("telNoAppt"),
             ),
-            outcome_code=cls.convert_string_to_integer(
+            outcome_code=self.convert_string_to_integer(
                 case_data_dictionary.get("hOut", "0")
             ),
             priority=case_data_dictionary.get("qDataBag.Priority"),
@@ -73,43 +63,32 @@ class BlaiseCaseInformationModel(CaseInformationBaseModel):
             field_region=case_data_dictionary.get("qDataBag.FieldRegion"),
             field_team=case_data_dictionary.get("qDataBag.FieldTeam"),
             wave_com_dte=wave_com_dte,
-            has_call_history=cls.string_to_bool(
+            has_call_history=self.string_to_bool(
                 case_data_dictionary.get("catiMana.CatiCall.RegsCalls[1].DialResult")
             ),
-            rotational_knock_to_nudge_indicator=cls.convert_indicator_to_y_n_or_empty(
+            rotational_knock_to_nudge_indicator=self.convert_indicator_to_y_n_or_empty(
                 case_data_dictionary.get("qRotate.RDMktnIND")
             ),
-            rotational_outcome_code=cls.convert_string_to_integer(
+            rotational_outcome_code=self.convert_string_to_integer(
                 case_data_dictionary.get("qRotate.RHOut", "0")
             ),
         )
 
     @staticmethod
-    def required_fields_from_blaise() -> List:
-        return [
-            "qiD.Serial_Number",
-            "dataModelName",
-            "qDataBag.TLA",
-            "qDataBag.Wave",
-            "qDataBag.Prem1",
-            "qDataBag.Prem2",
-            "qDataBag.Prem3",
-            "qDataBag.District",
-            "qDataBag.PostTown",
-            "qDataBag.PostCode",
-            "qDataBag.TelNo",
-            "qDataBag.TelNo2",
-            "telNoAppt",
-            "hOut",
-            "qDataBag.UPRN",
-            "qDataBag.UPRN_Latitude",
-            "qDataBag.UPRN_Longitude",
-            "qDataBag.Priority",
-            "qDataBag.FieldCase",
-            "qDataBag.FieldRegion",
-            "qDataBag.FieldTeam",
-            "qDataBag.WaveComDTE",
-            "catiMana.CatiCall.RegsCalls[1].DialResult",
-            "qRotate.RDMktnIND",
-            "qRotate.RHOut",
-        ]
+    def convert_indicator_to_y_n_or_empty(value: Optional[str]):
+        if not value or value == "":
+            return ""
+
+        return "Y" if value == "1" else "N"
+
+    @staticmethod
+    def convert_string_to_integer(value: str) -> int:
+        if value == "":
+            return 0
+        return int(value)
+
+    @staticmethod
+    def string_to_bool(value: Optional[str]) -> bool:
+        if value == "" or value is None:
+            return False
+        return True

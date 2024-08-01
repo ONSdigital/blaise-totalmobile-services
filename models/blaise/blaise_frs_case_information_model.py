@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List, Optional, Type, TypeVar
 
-from models.blaise.case_information_base_model import CaseInformationBaseModel
+from models.blaise.blaise_case_information_base_model import BlaiseCaseInformationBaseModel
 
 V = TypeVar("V", bound="BlaiseFRSCaseInformationModel")
 
@@ -37,7 +37,7 @@ class ContactDetails:
 
 
 @dataclass
-class BlaiseFRSCaseInformationModel(CaseInformationBaseModel):
+class BlaiseFRSCaseInformationModel(BlaiseCaseInformationBaseModel):
 
     @classmethod
     def import_frs_case(

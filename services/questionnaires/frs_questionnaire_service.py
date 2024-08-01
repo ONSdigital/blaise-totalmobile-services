@@ -1,24 +1,27 @@
 import logging
-from datetime import datetime
-from typing import Dict, List
+from typing import List
 
 from models.blaise.blaise_frs_case_information_model import BlaiseFRSCaseInformationModel
 from services.blaise_service import RealBlaiseService
 from services.datastore_service import DatastoreService
-from services.eligible_frs_case_service import EligibleFRSCaseService
-from services.questionnaire_service_base import QuestionnaireServiceBase
+from services.frs_eligible_case_service import FRSEligibleCaseService
+from services.questionnaires.questionnaire_service_base import QuestionnaireServiceBase
 
 
 class FRSQuestionnaireService(QuestionnaireServiceBase):
     def __init__(
         self,
         blaise_service: RealBlaiseService,
-        eligible_case_service: EligibleFRSCaseService,
+        eligible_case_service: FRSEligibleCaseService,
         datastore_service: DatastoreService,
     ):
+        super().__init__(blaise_service, datastore_service)
         self._blaise_service = blaise_service
         self._eligible_case_service = eligible_case_service
-        self._datastore_service = datastore_service
+
+    @property
+    def questionnaire_tla(self) -> str:
+        return "FRS"
 
     def get_eligible_cases(
         self, questionnaire_name: str
@@ -41,16 +44,3 @@ class FRSQuestionnaireService(QuestionnaireServiceBase):
     ) -> BlaiseFRSCaseInformationModel:
         # TODO: Fix dis
         return self._blaise_service.get_case(questionnaire_name, case_id)
-
-    def questionnaire_exists(self, questionnaire_name: str) -> bool:
-        return self._blaise_service.questionnaire_exists(questionnaire_name)
-
-    def update_case(
-        self, questionnaire_name: str, case_id: str, data_fields: Dict[str, str]
-    ) -> None:
-        logging.info(
-            f"Attempting to update case {case_id} in questionnaire {questionnaire_name} in Blaise"
-        )
-        return self._blaise_service.update_case(
-            questionnaire_name, case_id, data_fields
-        )

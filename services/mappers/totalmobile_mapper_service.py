@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, List
 from client.bus import UacChunks
-from models.blaise.case_information_base_model import CaseInformationBaseModel
+from models.blaise.blaise_case_information_base_model import BlaiseCaseInformationBaseModel
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from models.totalmobile.totalmobile_outgoing_create_job_payload_model import TotalMobileOutgoingCreateJobPayloadModel
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
@@ -26,7 +26,7 @@ class TotalmobileMapperService:
     def map_totalmobile_job_payload(
         self,
         questionnaire_name: str,
-        case: CaseInformationBaseModel
+        case: BlaiseCaseInformationBaseModel
         ) -> Dict[str, str]:
 
         uac_chunks = self.get_uac_chunks(questionnaire_name, case.case_id) if case.has_uac else None
@@ -42,7 +42,7 @@ class TotalmobileMapperService:
     def map_totalmobile_create_job_models(
         self,
         questionnaire_name: str,
-        cases: List[CaseInformationBaseModel],
+        cases: List[BlaiseCaseInformationBaseModel],
         world_model: TotalmobileWorldModel,
     ) -> List[TotalmobileCreateJobModel]:
 

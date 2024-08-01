@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from models.blaise.blaise_case_information_model import (
+from models.blaise.blaise_case_information_base_model import (
     Address,
     AddressCoordinates,
     AddressDetails,

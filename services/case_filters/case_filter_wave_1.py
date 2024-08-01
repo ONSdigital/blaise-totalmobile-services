@@ -1,4 +1,4 @@
-from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
 from services.case_filters.case_filter_base import CaseFilterBase
 
 
@@ -11,7 +11,7 @@ class CaseFilterWave1(CaseFilterBase):
         return 1
 
     def case_is_eligible_additional_checks(
-        self, case: BlaiseCaseInformationModel
+        self, case: BlaiseLMSCaseInformationModel
     ) -> bool:
         return (
             self.telephone_number_1_is_empty(case)

@@ -5,7 +5,7 @@ from models.blaise.blaise_frs_case_information_model import BlaiseFRSCaseInforma
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 
 
-class EligibleFRSCaseService:
+class FRSEligibleCaseService:
     def get_eligible_cases(
         self, cases: List[BlaiseFRSCaseInformationModel]
     ) -> List[BlaiseFRSCaseInformationModel]:

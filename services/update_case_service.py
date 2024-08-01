@@ -6,12 +6,12 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireCaseError,
     QuestionnaireDoesNotExistError,
 )
-from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
 from models.blaise.blaise_case_update_model import BlaiseCaseUpdateModel
 from models.totalmobile.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
-from services.questionnaire_service import QuestionnaireService
+from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
 
 
 class QuestionnaireOutcomeCodes(Enum):
@@ -31,7 +31,7 @@ class QuestionnaireOutcomeCodes(Enum):
 
 
 class UpdateCaseService:
-    def __init__(self, questionnaire_service: QuestionnaireService):
+    def __init__(self, questionnaire_service: LMSQuestionnaireService):
         self._questionnaire_service = questionnaire_service
 
     def update_case(
@@ -148,7 +148,7 @@ class UpdateCaseService:
         self,
         questionnaire_name: str,
         case_id: str,
-    ) -> BlaiseCaseInformationModel:
+    ) -> BlaiseLMSCaseInformationModel:
         try:
             case = self._questionnaire_service.get_case(questionnaire_name, case_id)
         except QuestionnaireCaseDoesNotExistError as err:

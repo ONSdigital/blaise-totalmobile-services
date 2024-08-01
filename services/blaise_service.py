@@ -8,17 +8,15 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireCaseError,
 )
 from appconfig import Config
-from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
-from models.blaise.blaise_frs_case_information_model import BlaiseFRSCaseInformationModel
 
 
 class BlaiseService(Protocol):
-    def get_cases(self, questionnaire_name: str) -> List[BlaiseCaseInformationModel]:
+    def get_cases(self, questionnaire_name: str) -> List[Dict[str, str]]:
         pass
 
     def get_case(
         self, questionnaire_name: str, case_id: str
-    ) -> BlaiseCaseInformationModel:
+    ) -> Dict[str, str]:
         pass
 
     def questionnaire_exists(self, questionnaire_name: str) -> bool:
@@ -35,28 +33,19 @@ class RealBlaiseService:
         self._config = config
         self.restapi_client = blaise_restapi.Client(self._config.blaise_api_url)
 
-    def get_cases(self, questionnaire_name: str) -> List[BlaiseCaseInformationModel]:
+    def get_cases(self, questionnaire_name: str, required_fields: List[str]) -> List[Dict[str, str]]:
 
         questionnaire_case_data = self.restapi_client.get_questionnaire_data(
             self._config.blaise_server_park,
             questionnaire_name,
-            BlaiseCaseInformationModel.required_fields_from_blaise(),
+            required_fields,
         )
 
-        questionnaire_cases: List[BlaiseCaseInformationModel] = []
-
-        for case_data_item in questionnaire_case_data["reportingData"]:
-            case = BlaiseCaseInformationModel.import_case(
-                questionnaire_name, case_data_item
-            )
-
-            questionnaire_cases.append(case)
-
-        return questionnaire_cases
+        return questionnaire_case_data["reportingData"]
 
     def get_case(
         self, questionnaire_name: str, case_id: str
-    ) -> BlaiseCaseInformationModel:
+    ) -> Dict[str, str]:
 
         if not self.case_exists(questionnaire_name, case_id):
             raise QuestionnaireCaseDoesNotExistError()
@@ -68,27 +57,7 @@ class RealBlaiseService:
         except HTTPError:
             raise QuestionnaireCaseError()
 
-        return BlaiseCaseInformationModel.import_case(
-            questionnaire_name, questionnaire_case_data["fieldData"]
-        )
-
-    def get_frs_case(
-        self, questionnaire_name: str, case_id: str
-    ) -> BlaiseFRSCaseInformationModel:
-
-        if not self.case_exists(questionnaire_name, case_id):
-            raise QuestionnaireCaseDoesNotExistError()
-
-        try:
-            questionnaire_case_data = self.restapi_client.get_case(
-                self._config.blaise_server_park, questionnaire_name, case_id
-            )
-        except HTTPError:
-            raise QuestionnaireCaseError()
-
-        return BlaiseFRSCaseInformationModel.import_frs_case(
-            questionnaire_name, questionnaire_case_data["fieldData"]
-        )
+        return questionnaire_case_data["fieldData"]
 
     def case_exists(self, questionnaire_name: str, case_id: str) -> bool:
 

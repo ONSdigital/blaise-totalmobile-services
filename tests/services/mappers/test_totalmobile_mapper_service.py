@@ -2,7 +2,7 @@ from typing import Dict
 from unittest.mock import Mock
 import pytest
 from client.bus import Uac
-from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
 from models.blaise.blaise_frs_case_information_model import BlaiseFRSCaseInformationModel
 from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
@@ -58,7 +58,7 @@ class TestMapTotalmobileJobModelsForLMS:
     def totalmobile_payload_helper(
             self,
             questionnaire_name: str,
-            case: BlaiseCaseInformationModel,
+            case: BlaiseLMSCaseInformationModel,
             uac_chunks: UacChunks | None) -> Dict[str, str]:
 
         payload_dictionary = {'additionalProperties': [

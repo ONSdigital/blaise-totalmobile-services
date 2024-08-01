@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, List
 
-from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
 from services.blaise_service import BlaiseService
 
 
@@ -29,5 +29,5 @@ class BlaiseCaseOutcomeService:
         return self._questionnaire_case_outcomes[questionnaire_name]
 
     @staticmethod
-    def _get_case_outcomes(cases: List[BlaiseCaseInformationModel]) -> Dict[str, int]:
+    def _get_case_outcomes(cases: List[BlaiseLMSCaseInformationModel]) -> Dict[str, int]:
         return {str(case.case_id): case.outcome_code for case in cases}

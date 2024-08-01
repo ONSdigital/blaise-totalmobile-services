@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from services.questionnaire_service import QuestionnaireService
+from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
 from tests.helpers import get_blaise_case_model_helper
 from tests.helpers.datastore_helper import DatastoreHelper
 
@@ -13,6 +13,9 @@ from tests.helpers.datastore_helper import DatastoreHelper
 def mock_blaise_service():
     return Mock()
 
+@pytest.fixture()
+def mock_mapper_service():
+    return Mock()
 
 @pytest.fixture()
 def mock_eligible_case_service():
@@ -26,10 +29,11 @@ def mock_datastore_service():
 
 @pytest.fixture()
 def service(
-    mock_blaise_service, mock_eligible_case_service, mock_datastore_service
-) -> QuestionnaireService:
-    return QuestionnaireService(
+    mock_blaise_service, mock_mapper_service, mock_eligible_case_service, mock_datastore_service
+) -> LMSQuestionnaireService:
+    return LMSQuestionnaireService(
         blaise_service=mock_blaise_service,
+        mapper_service=mock_mapper_service,
         eligible_case_service=mock_eligible_case_service,
         datastore_service=mock_datastore_service,
     )
@@ -37,8 +41,9 @@ def service(
 
 def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
     mock_blaise_service,
+    mock_mapper_service,
     mock_eligible_case_service,
-    service: QuestionnaireService,
+    service: LMSQuestionnaireService,
 ):
     questionnaire_cases = [
         get_blaise_case_model_helper.get_populated_case_model(),  # eligible
@@ -47,7 +52,7 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
 
     eligible_cases = [questionnaire_cases[0]]
 
-    mock_blaise_service.get_cases.return_value = questionnaire_cases
+    mock_mapper_service.map_lms_case_information_models.return_value = questionnaire_cases
     mock_eligible_case_service.get_eligible_cases.return_value = eligible_cases
 
     questionnaire_name = "LMS2101_AA1"
@@ -64,8 +69,9 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
 
 def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible_case_service(
     mock_blaise_service,
+    mock_mapper_service,
     mock_eligible_case_service,
-    service: QuestionnaireService,
+    service: LMSQuestionnaireService,
 ):
     questionnaire_cases = [
         get_blaise_case_model_helper.get_populated_case_model(),  # eligible
@@ -74,7 +80,7 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
 
     eligible_cases = [questionnaire_cases[0]]
 
-    mock_blaise_service.get_cases.return_value = questionnaire_cases
+    mock_mapper_service.map_lms_case_information_models.return_value = questionnaire_cases
     mock_eligible_case_service.get_eligible_cases.return_value = eligible_cases
 
     questionnaire_name = "LMS2101_AA1"
@@ -87,7 +93,8 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
 
 
 def test_get_cases_returns_a_list_of_fully_populated_cases(
-    service: QuestionnaireService,
+    service: LMSQuestionnaireService,
+    mock_mapper_service,
     mock_blaise_service,
 ):
     questionnaire_cases = [
@@ -95,7 +102,7 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(
         get_blaise_case_model_helper.get_populated_case_model(case_id="20003"),
     ]
 
-    mock_blaise_service.get_cases.return_value = questionnaire_cases
+    mock_mapper_service.map_lms_case_information_models.return_value = questionnaire_cases
 
     questionnaire_name = "LMS2101_AA1"
 
@@ -107,14 +114,15 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(
 
 
 def test_get_case_returns_a_case(
-    service: QuestionnaireService,
+    service: LMSQuestionnaireService,
     mock_blaise_service,
+    mock_mapper_service,
 ):
     questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
         case_id="10010"
     )
 
-    mock_blaise_service.get_case.return_value = questionnaire_case
+    mock_mapper_service.map_lms_case_information_model.return_value = questionnaire_case
 
     questionnaire_name = "LMS2101_AA1"
     case_id = "10010"
@@ -128,7 +136,7 @@ def test_get_case_returns_a_case(
 
 def test_questionnaire_exists_calls_the_blaise_service_with_the_correct_parameters(
     mock_blaise_service,
-    service: QuestionnaireService,
+    service: LMSQuestionnaireService,
 ):
     questionnaire_name = "LMS2101_AA1"
 
@@ -146,7 +154,7 @@ def test_questionnaire_exists_returns_correct_response(
     api_response,
     mock_blaise_service,
     expected_response,
-    service: QuestionnaireService,
+    service: LMSQuestionnaireService,
 ):
     questionnaire_name = "LMS2101_AA1"
     mock_blaise_service.questionnaire_exists.return_value = api_response
@@ -160,7 +168,7 @@ def test_questionnaire_exists_returns_correct_response(
 
 def test_update_case_calls_the_blaise_service_with_the_correct_parameters(
     mock_blaise_service,
-    service: QuestionnaireService,
+    service: LMSQuestionnaireService,
 ):
     questionnaire_name = "LMS2101_AA1"
     case_id = "900001"
@@ -181,7 +189,7 @@ def test_update_case_calls_the_blaise_service_with_the_correct_parameters(
 
 
 def test_update_case_does_not_log_personal_identifiable_information(
-    mock_blaise_service, service: QuestionnaireService, caplog
+    mock_blaise_service, service: LMSQuestionnaireService, caplog
 ):
     # arrange
     mock_blaise_service.update_case.return_value = None
@@ -239,7 +247,7 @@ def test_update_case_does_not_log_personal_identifiable_information(
 
 def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_questionnaires_with_todays_date(
     mock_datastore_service,
-    service: QuestionnaireService,
+    service: LMSQuestionnaireService,
 ):
     # arrange
     mock_datastore_entity_list = [
@@ -261,9 +269,41 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_
     assert result == ["LMS2111Z"]
 
 
+def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_lms_questionnaires_with_todays_date(
+    mock_datastore_service,
+    service: LMSQuestionnaireService,
+):
+    # arrange
+    mock_datastore_entity_list = [
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            1, "LMS2111Z", datetime.today()
+        ),
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            2, "LMS2000Z", datetime(2021, 12, 31)
+        ),
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            2, "lms2031_aa1", datetime.today()
+        ),
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            1, "FRS2111z", datetime.today()
+        ),
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            2, "FRS2000Z", datetime(2021, 12, 31)
+        ),
+    ]
+    mock_datastore_service.get_totalmobile_release_date_records.return_value = (
+        mock_datastore_entity_list
+    )
+
+    # act
+    result = service.get_questionnaires_with_totalmobile_release_date_of_today()
+
+    # assert
+    assert result == ["LMS2111Z", "lms2031_aa1"]
+
 def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_empty_list_when_there_are_no_release_dates_for_today(
     mock_datastore_service,
-    service: QuestionnaireService,
+    service: LMSQuestionnaireService,
 ):
     # arrange
     mock_datastore_entity_list = [
@@ -288,7 +328,7 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_em
 
 def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_empty_list_when_there_are_no_records_in_datastore(
     mock_datastore_service,
-    service: QuestionnaireService,
+    service: LMSQuestionnaireService,
 ):
     # arrange
     mock_datastore_service.get_totalmobile_release_date_records.return_value = []

@@ -1,4 +1,4 @@
-from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
 from services.case_filters.case_filter_base import CaseFilterBase
 
 
@@ -12,7 +12,7 @@ class CaseFilterWave2(CaseFilterBase):
         return 2
 
     def case_is_eligible_additional_checks(
-        self, case: BlaiseCaseInformationModel
+        self, case: BlaiseLMSCaseInformationModel
     ) -> bool:
         return (
             self.case_has_field_case_of_y(case)

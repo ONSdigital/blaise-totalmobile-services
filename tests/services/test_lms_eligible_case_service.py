@@ -4,7 +4,7 @@ from unittest.mock import Mock
 import pytest
 
 from services.case_filters.case_filter_base import CaseFilterBase
-from services.eligible_case_service import EligibleCaseService
+from services.lms_eligible__case_service import LMSEligibleCaseService
 from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
 
@@ -19,12 +19,12 @@ def mock_case_filter_wave_2() -> CaseFilterBase:
 
 
 @pytest.fixture()
-def service(mock_case_filter_wave_1) -> EligibleCaseService:
-    return EligibleCaseService(wave_filters=[mock_case_filter_wave_1])
+def service(mock_case_filter_wave_1) -> LMSEligibleCaseService:
+    return LMSEligibleCaseService(wave_filters=[mock_case_filter_wave_1])
 
 
 def test_get_eligible_cases_returns_expected_list_of_cases_with_one_filter(
-    mock_case_filter_wave_1, service: EligibleCaseService
+    mock_case_filter_wave_1, service: LMSEligibleCaseService
 ):
     # arrange
     cases = [
@@ -68,7 +68,7 @@ def test_get_eligible_cases_returns_expected_list_of_cases_with_two_filters(
     ]  # false will pass down to filter 2
     mock_case_filter_wave_2.case_is_eligible.side_effect = [True]
 
-    service = EligibleCaseService(
+    service = LMSEligibleCaseService(
         wave_filters=[mock_case_filter_wave_1, mock_case_filter_wave_2]
     )
 
@@ -87,7 +87,7 @@ def test_get_eligible_cases_returns_expected_list_of_cases_with_two_filters(
 
 
 def test_get_eligible_cases_logs_filtered_cases(
-    mock_case_filter_wave_1, service: EligibleCaseService, caplog
+    mock_case_filter_wave_1, service: LMSEligibleCaseService, caplog
 ):
     # arrange
     cases = [

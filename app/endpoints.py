@@ -22,8 +22,9 @@ from services.case_filters.case_filter_wave_3 import CaseFilterWave3
 from services.case_filters.case_filter_wave_4 import CaseFilterWave4
 from services.case_filters.case_filter_wave_5 import CaseFilterWave5
 from services.datastore_service import DatastoreService
-from services.eligible_case_service import EligibleCaseService
-from services.questionnaire_service import QuestionnaireService
+from services.lms_eligible__case_service import LMSEligibleCaseService
+from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
+from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
 from services.update_case_service import UpdateCaseService
 
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
@@ -45,9 +46,10 @@ def add_header(response):
 def submit_form_result_request():
     logging.info(f"Incoming request via the 'submitformresultrequest' endpoint")
     try:
-        questionnaire_service = QuestionnaireService(
+        questionnaire_service = LMSQuestionnaireService(
             blaise_service=current_app.blaise_service,
-            eligible_case_service=EligibleCaseService(
+            mapper_service=BlaiseLMSCaseMapperService(),
+            eligible_case_service=LMSEligibleCaseService(
                 wave_filters=[
                     CaseFilterWave1(),
                     CaseFilterWave2(),

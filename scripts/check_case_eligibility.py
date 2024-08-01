@@ -9,8 +9,8 @@ from services.case_filters.case_filter_wave_3 import CaseFilterWave3
 from services.case_filters.case_filter_wave_4 import CaseFilterWave4
 from services.case_filters.case_filter_wave_5 import CaseFilterWave5
 from services.datastore_service import DatastoreService
-from services.eligible_case_service import EligibleCaseService
-from services.questionnaire_service import QuestionnaireService
+from services.lms_eligible__case_service import LMSEligibleCaseService
+from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
 
 
 def __check_for_env_var(name: str):
@@ -36,7 +36,7 @@ if __name__ == "__main__":
     questionnaire_name = sys.argv[1]
 
     config = Config.from_env()
-    eligible_case_service = EligibleCaseService(
+    eligible_case_service = LMSEligibleCaseService(
         wave_filters=[
             CaseFilterWave1(),
             CaseFilterWave2(),
@@ -45,7 +45,7 @@ if __name__ == "__main__":
             CaseFilterWave5(),
         ]
     )
-    questionnaire_service = QuestionnaireService(
+    questionnaire_service = LMSQuestionnaireService(
         blaise_service=RealBlaiseService(config),
         eligible_case_service=eligible_case_service,
         datastore_service=DatastoreService(),

@@ -1,13 +1,17 @@
 import pytest
 
 from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
-from models.blaise.blaise_case_information_model import (
+from models.blaise.blaise_lms_case_information_model import (
+    BlaiseLMSCaseInformationModel,
+    ContactDetails,
+)
+
+from models.blaise.blaise_case_information_base_model import (
     Address,
     AddressCoordinates,
     AddressDetails,
-    BlaiseCaseInformationModel,
-    ContactDetails,
 )
+
 from tests.fakes.fake_blaise_service import FakeBlaiseService
 
 
@@ -113,7 +117,7 @@ def test_get_case_when_case_exists(service: FakeBlaiseService):
     service.add_case_to_questionnaire("LMS12345", "99999")
 
     case = service.get_case("LMS12345", "99999")
-    assert case == BlaiseCaseInformationModel(
+    assert case == BlaiseLMSCaseInformationModel(
         questionnaire_name="LMS12345",
         tla="LMS",
         case_id="99999",

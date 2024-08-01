@@ -2,7 +2,7 @@ import logging
 from abc import abstractmethod
 from typing import List
 
-from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 
 
@@ -12,7 +12,7 @@ class CaseFilterBase:
     def wave_number(self) -> int:
         pass
 
-    def case_is_eligible(self, case: BlaiseCaseInformationModel) -> bool:
+    def case_is_eligible(self, case: BlaiseLMSCaseInformationModel) -> bool:
         return (
             case.wave == self.wave_number
             and self.case_is_in_a_known_region(case)
@@ -21,12 +21,12 @@ class CaseFilterBase:
 
     @abstractmethod
     def case_is_eligible_additional_checks(
-        self, case: BlaiseCaseInformationModel
+        self, case: BlaiseLMSCaseInformationModel
     ) -> bool:
         pass
 
     @staticmethod
-    def telephone_number_1_is_empty(case: BlaiseCaseInformationModel) -> bool:
+    def telephone_number_1_is_empty(case: BlaiseLMSCaseInformationModel) -> bool:
         if case.contact_details.telephone_number_1 == "":
             return True
 
@@ -36,7 +36,7 @@ class CaseFilterBase:
         return False
 
     @staticmethod
-    def telephone_number_2_is_empty(case: BlaiseCaseInformationModel) -> bool:
+    def telephone_number_2_is_empty(case: BlaiseLMSCaseInformationModel) -> bool:
         if case.contact_details.telephone_number_2 == "":
             return True
 
@@ -46,7 +46,7 @@ class CaseFilterBase:
         return False
 
     @staticmethod
-    def appointment_telephone_number_is_empty(case: BlaiseCaseInformationModel) -> bool:
+    def appointment_telephone_number_is_empty(case: BlaiseLMSCaseInformationModel) -> bool:
         if case.contact_details.appointment_telephone_number == "":
             return True
 
@@ -56,7 +56,7 @@ class CaseFilterBase:
         return False
 
     @staticmethod
-    def case_has_field_case_of_y(case: BlaiseCaseInformationModel) -> bool:
+    def case_has_field_case_of_y(case: BlaiseLMSCaseInformationModel) -> bool:
         if case.field_case == "Y" or case.field_case == "y":
             return True
 
@@ -67,7 +67,7 @@ class CaseFilterBase:
 
     @staticmethod
     def case_has_rotational_knock_to_nudge_indicator_of_empty_or_n(
-        case: BlaiseCaseInformationModel,
+        case: BlaiseLMSCaseInformationModel,
     ) -> bool:
         if (
             case.rotational_knock_to_nudge_indicator == ""
@@ -83,7 +83,7 @@ class CaseFilterBase:
 
     @staticmethod
     def case_has_a_desired_outcome_code_of(
-        value_range: List[int], case: BlaiseCaseInformationModel
+        value_range: List[int], case: BlaiseLMSCaseInformationModel
     ) -> bool:
         if case.outcome_code in value_range:
             return True
@@ -95,7 +95,7 @@ class CaseFilterBase:
 
     @staticmethod
     def case_has_a_desired_rotational_outcome_code_of(
-        value_range: List[int], case: BlaiseCaseInformationModel
+        value_range: List[int], case: BlaiseLMSCaseInformationModel
     ) -> bool:
         if case.rotational_outcome_code in value_range:
             return True
@@ -106,7 +106,7 @@ class CaseFilterBase:
         return False
 
     @staticmethod
-    def case_is_in_a_known_region(case: BlaiseCaseInformationModel) -> bool:
+    def case_is_in_a_known_region(case: BlaiseLMSCaseInformationModel) -> bool:
         value_range = TotalmobileWorldModel.get_available_regions()
         if case.field_region in value_range:
             return True

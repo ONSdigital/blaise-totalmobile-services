@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from services.frs_questionnaire_service import FRSQuestionnaireService
+from services.questionnaires.frs_questionnaire_service import FRSQuestionnaireService
 from tests.helpers import get_blaise_frs_case_model_helper
 from tests.helpers.datastore_helper import DatastoreHelper
 
@@ -165,11 +165,7 @@ def test_update_case_calls_the_blaise_service_with_the_correct_parameters(
     questionnaire_name = "FRS2101"
     case_id = "900001"
     data_fields = {
-        # TODO: Confirm dis
-        # "hOut": "110",
         "dMktnName": "John Smith",
-        # "qDataBag.TelNo": "01234 567890",
-        # "qDataBag.TelNo2": "07734 567890",
     }
 
     # act
@@ -189,11 +185,7 @@ def test_update_case_does_not_log_personal_identifiable_information(
     questionnaire_name = "FRS2101"
     case_id = "900001"
     data_fields = {
-        # TODO: Confirm dis
-        # "hOut": "110",
         "dMktnName": "John Smith",
-        # "qDataBag.TelNo": "01234 567890",
-        # "qDataBag.TelNo2": "07734 567890",
     }
 
     # act & assert
@@ -216,89 +208,95 @@ def test_update_case_does_not_log_personal_identifiable_information(
         in caplog.record_tuples
     )
 
-    # TODO: Confirm these
-    # with caplog.at_level(logging.INFO):
-    #     service.update_case(questionnaire_name, case_id, data_fields)
-    # assert (
-    #     not (
-    #         "root",
-    #         logging.INFO,
-    #         "01234 567890",
-    #     )
-    #     in caplog.record_tuples
-    # )
-    #
-    # with caplog.at_level(logging.INFO):
-    #     service.update_case(questionnaire_name, case_id, data_fields)
-    # assert (
-    #     not (
-    #         "root",
-    #         logging.INFO,
-    #         "07734 567890",
-    #     )
-    #     in caplog.record_tuples
-    # )
+def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_questionnaires_with_todays_date(
+    mock_datastore_service,
+    service: FRSQuestionnaireService,
+):
+    # arrange
+    mock_datastore_entity_list = [
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            1, "FRS2111", datetime.today()
+        ),
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            2, "FSR2000", datetime(2021, 12, 31)
+        ),
+    ]
+    mock_datastore_service.get_totalmobile_release_date_records.return_value = (
+        mock_datastore_entity_list
+    )
+
+    # act
+    result = service.get_questionnaires_with_totalmobile_release_date_of_today()
+
+    # assert
+    assert result == ["FRS2111"]
+
+def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_frs_questionnaires_with_todays_date(
+    mock_datastore_service,
+    service: FRSQuestionnaireService,
+):
+    # arrange
+    mock_datastore_entity_list = [
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            1, "LMS2111Z", datetime.today()
+        ),
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            2, "LMS2000Z", datetime(2021, 12, 31)
+        ),
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            1, "FRS2111z", datetime.today()
+        ),
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            2, "frs2031", datetime.today()
+        ),
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            2, "FRS2000Z", datetime(2021, 12, 31)
+        ),
+    ]
+    mock_datastore_service.get_totalmobile_release_date_records.return_value = (
+        mock_datastore_entity_list
+    )
+
+    # act
+    result = service.get_questionnaires_with_totalmobile_release_date_of_today()
+
+    # assert
+    assert result == ["FRS2111z", "frs2031"]
+
+def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_empty_list_when_there_are_no_release_dates_for_today(
+    mock_datastore_service,
+    service: FRSQuestionnaireService,
+):
+    # arrange
+    mock_datastore_entity_list = [
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            1, "FRS2111", datetime(2021, 12, 31)
+        ),
+        DatastoreHelper.totalmobile_release_date_entity_builder(
+            2, "FRS2000", datetime(2021, 12, 31)
+        ),
+    ]
+
+    mock_datastore_service.get_totalmobile_release_date_records.return_value = (
+        mock_datastore_entity_list
+    )
+
+    # act
+    result = service.get_questionnaires_with_totalmobile_release_date_of_today()
+
+    # assert
+    assert result == []
 
 
-# TODO: Probably don't need to test these again - generic Datastore service (???)
-# def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_questionnaires_with_todays_date(
-#     mock_datastore_service,
-#     service: FRSQuestionnaireService,
-# ):
-#     # arrange
-#     mock_datastore_entity_list = [
-#         DatastoreHelper.totalmobile_release_date_entity_builder(
-#             1, "FRS2111", datetime.today()
-#         ),
-#         DatastoreHelper.totalmobile_release_date_entity_builder(
-#             2, "FSR2000", datetime(2021, 12, 31)
-#         ),
-#     ]
-#     mock_datastore_service.get_totalmobile_release_date_records.return_value = (
-#         mock_datastore_entity_list
-#     )
-#
-#     # act
-#     result = service.get_questionnaires_with_totalmobile_release_date_of_today()
-#
-#     # assert
-#     assert result == ["FRS2111"]
-#
-#
-# def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_empty_list_when_there_are_no_release_dates_for_today(
-#     mock_datastore_service,
-#     service: FRSQuestionnaireService,
-# ):
-#     # arrange
-#     mock_datastore_entity_list = [
-#         DatastoreHelper.totalmobile_release_date_entity_builder(
-#             1, "FRS2111", datetime(2021, 12, 31)
-#         ),
-#         DatastoreHelper.totalmobile_release_date_entity_builder(
-#             2, "FRS2000", datetime(2021, 12, 31)
-#         ),
-#     ]
-#
-#     mock_datastore_service.get_totalmobile_release_date_records.return_value = (
-#         mock_datastore_entity_list
-#     )
-#
-#     # act
-#     result = service.get_questionnaires_with_totalmobile_release_date_of_today()
-#
-#     # assert
-#     assert result == []
-#
-#
-# def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_empty_list_when_there_are_no_records_in_datastore(
-#     mock_datastore_service,
-#     service: FRSQuestionnaireService,
-# ):
-#     # arrange
-#     mock_datastore_service.get_totalmobile_release_date_records.return_value = []
-#
-#     # act
-#     result = service.get_questionnaires_with_totalmobile_release_date_of_today()
-#
-#     # assert
-#     assert result == []
+def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_empty_list_when_there_are_no_records_in_datastore(
+    mock_datastore_service,
+    service: FRSQuestionnaireService,
+):
+    # arrange
+    mock_datastore_service.get_totalmobile_release_date_records.return_value = []
+
+    # act
+    result = service.get_questionnaires_with_totalmobile_release_date_of_today()
+
+    # assert
+    assert result == []

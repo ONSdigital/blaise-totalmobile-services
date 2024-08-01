@@ -2,7 +2,7 @@ import logging
 
 import pytest
 
-from models.blaise.blaise_case_information_model import BlaiseCaseInformationModel
+from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 from services.case_filters.case_filter_base import CaseFilterBase
 from services.case_filters.case_filter_wave_2 import CaseFilterWave2
@@ -11,7 +11,7 @@ from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
 
 @pytest.fixture()
-def valid_case_without_telephone_numbers() -> BlaiseCaseInformationModel:
+def valid_case_without_telephone_numbers() -> BlaiseLMSCaseInformationModel:
     return get_populated_case_model(
         case_id="90001",
         telephone_number_1="",

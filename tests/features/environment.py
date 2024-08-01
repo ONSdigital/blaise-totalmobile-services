@@ -7,8 +7,8 @@ from services.case_filters.case_filter_wave_2 import CaseFilterWave2
 from services.case_filters.case_filter_wave_3 import CaseFilterWave3
 from services.case_filters.case_filter_wave_4 import CaseFilterWave4
 from services.case_filters.case_filter_wave_5 import CaseFilterWave5
-from services.eligible_case_service import EligibleCaseService
-from services.questionnaire_service import QuestionnaireService
+from services.lms_eligible__case_service import LMSEligibleCaseService
+from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
 from tests.fakes.fake_blaise_service import FakeBlaiseService
 from tests.fakes.fake_cloud_task_service import FakeCloudTaskService
 from tests.fakes.fake_datastore_service import FakeDatastoreService
@@ -25,9 +25,9 @@ def before_scenario(context, scenario):
     context.totalmobile_service = app.totalmobile_service
     context.datastore_service = FakeDatastoreService()
     context.blaise_outcome_service = BlaiseCaseOutcomeService(context.blaise_service)
-    context.questionnaire_service = QuestionnaireService(
+    context.questionnaire_service = LMSQuestionnaireService(
         app.blaise_service,
-        EligibleCaseService(
+        LMSEligibleCaseService(
             wave_filters=[
                 CaseFilterWave1(),
                 CaseFilterWave2(),

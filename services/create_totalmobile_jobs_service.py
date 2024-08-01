@@ -3,14 +3,15 @@ from typing import List
 from models.cloud_tasks.task_request_model import TaskRequestModel
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from services.cloud_task_service import CloudTaskService
-from services.questionnaire_service import QuestionnaireService
+from services.questionnaires.questionnaire_service_base import QuestionnaireServiceBase
 from services.totalmobile_service import TotalmobileService
+
 
 class CreateTotalmobileJobsService:
     def __init__(
         self,
         totalmobile_service: TotalmobileService,
-        questionnaire_service: QuestionnaireService,
+        questionnaire_service: QuestionnaireServiceBase,
         cloud_task_service: CloudTaskService,
     ):
         self._totalmobile_service = totalmobile_service

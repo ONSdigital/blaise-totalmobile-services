@@ -1,10 +1,10 @@
-from services.eligible_frs_case_service import EligibleFRSCaseService
+from services.frs_eligible_case_service import FRSEligibleCaseService
 from tests.helpers.get_blaise_frs_case_model_helper import get_frs_populated_case_model
 
 
 def test_get_eligible_cases_returns_expected_list_of_eligible_cases_for_frs():
     # arrange
-    service = EligibleFRSCaseService()
+    service = FRSEligibleCaseService()
 
     cases = [
         get_frs_populated_case_model(case_id="90001", field_region="Region 1"),

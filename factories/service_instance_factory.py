@@ -11,9 +11,10 @@ from services.case_filters.case_filter_wave_5 import CaseFilterWave5
 from services.cloud_task_service import CloudTaskService
 from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 from services.datastore_service import DatastoreService
-from services.eligible_case_service import EligibleCaseService
+from services.lms_eligible__case_service import LMSEligibleCaseService
+from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
 from services.mappers.totalmobile_mapper_service import TotalmobileMapperService
-from services.questionnaire_service import QuestionnaireService
+from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
 from services.totalmobile_service import RealTotalmobileService
 from services.uac_service import UacService
 
@@ -25,14 +26,13 @@ class ServiceInstanceFactory:
         self._config = Config.from_env()
 
     def create_blaise_service(self) -> RealBlaiseService:
-        config = self._config
-        return RealBlaiseService(config)
+        return RealBlaiseService(self._config)
 
     def create_datastore_service(self) -> DatastoreService:
         return DatastoreService()
     
-    def create_eligible_case_service(self) -> EligibleCaseService:
-        return EligibleCaseService(
+    def create_eligible_case_service(self) -> LMSEligibleCaseService:
+        return LMSEligibleCaseService(
                wave_filters=[
                     CaseFilterWave1(),
                     CaseFilterWave2(),
@@ -42,9 +42,13 @@ class ServiceInstanceFactory:
                 ]
             )
 
-    def create_questionnaire_service(self) -> QuestionnaireService:
-        return QuestionnaireService(
+    def create_lms_mapper_service(self) -> BlaiseLMSCaseMapperService:
+        return BlaiseLMSCaseMapperService()
+
+    def create_lms_questionnaire_service(self) -> LMSQuestionnaireService:
+        return LMSQuestionnaireService(
             blaise_service=self.create_blaise_service(),
+            mapper_service=self.create_lms_mapper_service(),
             eligible_case_service=self.create_eligible_case_service(),
             datastore_service=self.create_datastore_service(),
         )
@@ -79,7 +83,7 @@ class ServiceInstanceFactory:
     def create_totalmobile_jobs_service(self) -> CreateTotalmobileJobsService:
         return CreateTotalmobileJobsService(
                     totalmobile_service=self.create_totalmobile_service(),
-                    questionnaire_service=self.create_questionnaire_service(),
+                    questionnaire_service=self.create_lms_questionnaire_service(),
                     cloud_task_service=self.create_cloud_task_service(),
                 )
     
