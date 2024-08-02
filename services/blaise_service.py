@@ -11,7 +11,7 @@ from appconfig import Config
 
 
 class BlaiseService(Protocol):
-    def get_cases(self, questionnaire_name: str) -> List[Dict[str, str]]:
+    def get_cases(self, questionnaire_name: str, required_fields: List[str]) -> List[Dict[str, str]]:
         pass
 
     def get_case(

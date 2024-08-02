@@ -25,6 +25,9 @@ class ServiceInstanceFactory:
     ):
         self._config = Config.from_env()
 
+    @property
+    def config(self):
+        return self._config
     def create_blaise_service(self) -> RealBlaiseService:
         return RealBlaiseService(self._config)
 

@@ -7,7 +7,7 @@ from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 from services.case_filters.case_filter_base import CaseFilterBase
 from services.case_filters.case_filter_wave_4 import CaseFilterWave4
 from services.case_filters.case_filter_wave_5 import CaseFilterWave5
-from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
+from tests.helpers.get_blaise_lms_case_model_helper import get_populated_case_model
 
 
 @pytest.fixture()

@@ -4,8 +4,9 @@ from unittest.mock import Mock
 
 import pytest
 
+from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
 from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
-from tests.helpers import get_blaise_case_model_helper
+from tests.helpers import get_blaise_lms_case_model_helper
 from tests.helpers.datastore_helper import DatastoreHelper
 
 
@@ -46,8 +47,8 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
     service: LMSQuestionnaireService,
 ):
     questionnaire_cases = [
-        get_blaise_case_model_helper.get_populated_case_model(),  # eligible
-        get_blaise_case_model_helper.get_populated_case_model(),  # not eligible
+        get_blaise_lms_case_model_helper.get_populated_case_model(),  # eligible
+        get_blaise_lms_case_model_helper.get_populated_case_model(),  # not eligible
     ]
 
     eligible_cases = [questionnaire_cases[0]]
@@ -56,12 +57,13 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
     mock_eligible_case_service.get_eligible_cases.return_value = eligible_cases
 
     questionnaire_name = "LMS2101_AA1"
+    required_fields = BlaiseLMSCaseInformationModel.required_fields()
 
     # act
     service.get_eligible_cases(questionnaire_name)
 
     # assert
-    mock_blaise_service.get_cases.assert_called_with(questionnaire_name)
+    mock_blaise_service.get_cases.assert_called_with(questionnaire_name, required_fields)
     mock_eligible_case_service.get_eligible_cases.assert_called_with(
         questionnaire_cases
     )
@@ -74,8 +76,8 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
     service: LMSQuestionnaireService,
 ):
     questionnaire_cases = [
-        get_blaise_case_model_helper.get_populated_case_model(),  # eligible
-        get_blaise_case_model_helper.get_populated_case_model(),  # not eligible
+        get_blaise_lms_case_model_helper.get_populated_case_model(),  # eligible
+        get_blaise_lms_case_model_helper.get_populated_case_model(),  # not eligible
     ]
 
     eligible_cases = [questionnaire_cases[0]]
@@ -98,8 +100,8 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(
     mock_blaise_service,
 ):
     questionnaire_cases = [
-        get_blaise_case_model_helper.get_populated_case_model(case_id="20001"),
-        get_blaise_case_model_helper.get_populated_case_model(case_id="20003"),
+        get_blaise_lms_case_model_helper.get_populated_case_model(case_id="20001"),
+        get_blaise_lms_case_model_helper.get_populated_case_model(case_id="20003"),
     ]
 
     mock_mapper_service.map_lms_case_information_models.return_value = questionnaire_cases
@@ -118,7 +120,7 @@ def test_get_case_returns_a_case(
     mock_blaise_service,
     mock_mapper_service,
 ):
-    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
         case_id="10010"
     )
 

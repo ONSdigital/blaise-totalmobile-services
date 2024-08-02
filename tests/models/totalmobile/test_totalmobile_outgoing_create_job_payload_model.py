@@ -14,14 +14,14 @@ from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     Skill,
     TotalMobileOutgoingCreateJobPayloadModel,
 )
-from tests.helpers import get_blaise_case_model_helper
+from tests.helpers import get_blaise_lms_case_model_helper
 
 
 def test_import_case_returns_a_populated_model():
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
-    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
         case_id="90001",
         data_model_name="LM2007",
         wave="1",
@@ -111,7 +111,7 @@ def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uac
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
-    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model()
+    questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model()
 
     # act
     result = TotalMobileOutgoingCreateJobPayloadModel.import_case(
@@ -140,7 +140,7 @@ def test_import_case_does_not_populate_lat_and_lon_if_both_are_not_supplied(
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
-    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
         latitude=latitude, longitude=longitude
     )
 
@@ -357,7 +357,7 @@ def test_to_payload_returns_a_correctly_formatted_payload_when_four_uac_chunks_p
 def test_to_payload_sends_an_empty_string_to_totalmobile_if_the_due_date_is_missing():
     questionnaire_name = "LMS2101_AA1"
 
-    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
         wave_com_dte=None
     )
 
@@ -372,7 +372,7 @@ def test_to_payload_sends_an_empty_string_to_totalmobile_if_the_due_date_is_miss
 def test_create_description_returns_a_correctly_formatted_description():
     # Arrange
     questionnaire_name = "LMS2201_AA1"
-    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
         case_id="12345",
         data_model_name="LMS2201_AA1",
         wave_com_dte=datetime(2022, 1, 31),
@@ -399,7 +399,7 @@ def test_create_description_returns_a_correctly_formatted_description():
 def test_create_description_returns_a_correctly_formatted_description_when_four_uac_chunks_are_provided():
     # Arrange
     questionnaire_name = "LMS2201_AA1"
-    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
         case_id="12345",
         data_model_name="LMS2201_AA1",
         wave_com_dte=datetime(2022, 1, 31),
@@ -426,7 +426,7 @@ def test_create_description_returns_a_correctly_formatted_description_when_four_
 def test_create_description_returns_a_correctly_formatted_description_when_all_values_are_empty():
     # Arrange
     questionnaire_name = "LMS2201_AA1"
-    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
         case_id="1234", data_model_name="", wave_com_dte=None, wave=""
     )
 
@@ -444,7 +444,7 @@ def test_create_description_returns_a_correctly_formatted_description_when_all_v
 def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_all_fields_are_populated():
     # Arrange
     questionnaire_name = "LMS2201_AA1"
-    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
         case_id="1234",
         address_line_1="123 Blaise Street",
         address_line_2="Blaisville",
@@ -468,7 +468,7 @@ def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_all
 def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_not_all_fields_are_populated():
     # Arrange
     questionnaire_name = "LMS2201_AA1"
-    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
         case_id="1234",
         address_line_1="123 Blaise Street",
         address_line_2="",
@@ -489,7 +489,7 @@ def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_not
 def test_concatenate_address_line1_returns_a_concatenated_address_of_50_characters_when_a_longer_address_is_provided():
     # Arrange
     questionnaire_name = "LMS2201_AA1"
-    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
         case_id="1234",
         address_line_1="123 Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch",
         address_line_2="Ynys Môn",
@@ -510,7 +510,7 @@ def test_concatenate_address_line1_returns_a_concatenated_address_of_50_characte
 def test_concatenate_address_line1_returns_a_concatenated_address_without_a_comma_and_space_when_address_line_2_is_none():
     # Arrange
     questionnaire_name = "LMS2201_AA1"
-    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
         case_id="1234",
         address_line_1="123 Blaise Street",
         address_line_2=None,
@@ -528,7 +528,7 @@ def test_concatenate_address_line1_returns_a_concatenated_address_without_a_comm
 def test_concatenate_address_line1_returns_a_concatenated_address_without_a_comma_and_space_when_address_line_2_is_an_empty_string():
     # Arrange
     questionnaire_name = "LMS2201_AA1"
-    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
         case_id="1234",
         address_line_1="123 Blaise Street",
         address_line_2="",
@@ -547,7 +547,7 @@ def test_location_reference_is_set_to_an_empty_string_if_location_reference_is_n
     # arrange
     questionnaire_name = "LMS2101_AA1"
 
-    questionnaire_case = get_blaise_case_model_helper.get_populated_case_model(
+    questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
         reference=None
     )
 

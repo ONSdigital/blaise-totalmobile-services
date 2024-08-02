@@ -1,5 +1,6 @@
 import logging
-from typing import List
+from typing import List, Sequence
+
 from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
 from services.blaise_service import RealBlaiseService
 from services.datastore_service import DatastoreService
@@ -26,15 +27,15 @@ class LMSQuestionnaireService(QuestionnaireServiceBase):
 
     def get_eligible_cases(
         self, questionnaire_name: str
-    ) -> List[BlaiseLMSCaseInformationModel]:
+    ) -> Sequence[BlaiseLMSCaseInformationModel]:
         questionnaire_cases = self.get_cases(questionnaire_name)
-        eligible_cases = self._eligible_case_service.get_eligible_cases(
+        eligible_cases: Sequence[BlaiseLMSCaseInformationModel] = self._eligible_case_service.get_eligible_cases(
             questionnaire_cases
         )
         return eligible_cases
 
     def get_cases(self, questionnaire_name: str) -> List[BlaiseLMSCaseInformationModel]:
-        questionnaire_case_data = self._blaise_service.get_cases(questionnaire_name)
+        questionnaire_case_data = self._blaise_service.get_cases(questionnaire_name, BlaiseLMSCaseInformationModel.required_fields())
         cases = self._mapper_service.map_lms_case_information_models(questionnaire_name, questionnaire_case_data)
 
         logging.info(

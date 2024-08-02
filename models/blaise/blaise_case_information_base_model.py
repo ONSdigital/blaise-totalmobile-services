@@ -5,6 +5,7 @@ from typing import Optional, List
 
 from models.base_model import BaseModel
 
+
 @dataclass
 class AddressCoordinates:
     latitude: Optional[str]
@@ -27,8 +28,7 @@ class AddressDetails:
     reference: Optional[str]
     address: Address
 
-
-@dataclass
+@dataclass # type: ignore #seems to be an issue with dataclass inheritance
 class BlaiseCaseInformationBaseModel(BaseModel):
     questionnaire_name: str
     case_id: Optional[str]
@@ -49,5 +49,5 @@ class BlaiseCaseInformationBaseModel(BaseModel):
 
     @staticmethod
     @abstractmethod
-    def required_fields_from_blaise() -> List:
+    def required_fields() -> List:
         pass

@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 from unittest.mock import Mock
 import pytest
 from client.bus import Uac
@@ -7,7 +7,7 @@ from models.blaise.blaise_frs_case_information_model import BlaiseFRSCaseInforma
 from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.mappers.totalmobile_mapper_service import TotalmobileMapperService
-from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
+from tests.helpers.get_blaise_lms_case_model_helper import get_populated_case_model
 from tests.helpers.get_blaise_frs_case_model_helper import get_frs_populated_case_model
 
 
@@ -15,18 +15,18 @@ from tests.helpers.get_blaise_frs_case_model_helper import get_frs_populated_cas
 def mock_uac_service():
     return Mock()
 
+
 @pytest.fixture()
-def service(
-        mock_uac_service,
-) -> TotalmobileMapperService:
+def service(mock_uac_service,
+            ) -> TotalmobileMapperService:
     return TotalmobileMapperService(
         uac_service=mock_uac_service,
     )
 
-
 class TestMapTotalmobileJobModelsForLMS:
 
-    def get_questionnaire_uac_model(self) -> QuestionnaireUacModel:
+    @staticmethod
+    def get_questionnaire_uac_model() -> QuestionnaireUacModel:
         uac_data_dictionary: Dict[str, Uac] = {
             "10010": {
                 "instrument_name": "OPN2101A",
@@ -55,28 +55,32 @@ class TestMapTotalmobileJobModelsForLMS:
         questionnaire_uac_model = QuestionnaireUacModel.import_uac_data(uac_data_dictionary)
         return questionnaire_uac_model
 
+    @staticmethod
     def totalmobile_payload_helper(
-            self,
             questionnaire_name: str,
             case: BlaiseLMSCaseInformationModel,
-            uac_chunks: UacChunks | None) -> Dict[str, str]:
+            uac_chunks: UacChunks | None) -> dict[str, object]:
 
-        payload_dictionary = {'additionalProperties': [
-            {'name': 'surveyName', 'value': case.data_model_name},
-            {'name': 'tla', 'value': case.tla},
-            {'name': 'wave', 'value': f'{case.wave}'},
-            {'name': 'priority', 'value': case.priority},
-            {'name': 'fieldRegion', 'value': case.field_region},
-            {'name': 'fieldTeam', 'value': case.field_team}],
-            'attributes': [{'name': 'Region', 'value': case.field_region},
-                           {'name': 'Team', 'value': case.field_team}],
+        payload_dictionary = {
+            'additionalProperties': [
+                {'name': 'surveyName', 'value': case.data_model_name},
+                {'name': 'tla', 'value': case.tla},
+                {'name': 'wave', 'value': f'{case.wave}'},
+                {'name': 'priority', 'value': case.priority},
+                {'name': 'fieldRegion', 'value': case.field_region},
+                {'name': 'fieldTeam', 'value': case.field_team},
+            ],
+            'attributes': [
+                {'name': 'Region', 'value': case.field_region},
+                {'name': 'Team', 'value': case.field_team}
+            ],
             'contact': {'name': case.address_details.address.postcode},
             'description': f'UAC: {uac_chunks.formatted_chunks() if uac_chunks is not None else ""}\n'
-                           f'Due Date: {case.wave_com_dte.strftime("%d/%m/%Y")}\n'
+                           f'Due Date: {case.wave_com_dte.strftime("%d/%m/%Y") if case.wave_com_dte is not None else ""}\n'
                            f'Study: {questionnaire_name}\n'
                            f'Case ID: {case.case_id}\n'
                            f'Wave: {case.wave}',
-            'dueDate': {'end': case.wave_com_dte.strftime("%Y-%m-%d")},
+            'dueDate': {'end': case.wave_com_dte.strftime("%Y-%m-%d") if case.wave_com_dte is not None else ""},
             'duration': 15,
             'identity': {'reference': f'{questionnaire_name.replace("_", "-")}.{case.case_id}'},
             'location': {'address': '12 Blaise Street, Blaise Hill, Blaiseville, Newport, '
@@ -94,9 +98,9 @@ class TestMapTotalmobileJobModelsForLMS:
             'workType': case.tla}
 
         if uac_chunks is not None:
-            payload_dictionary['additionalProperties'].append({'name': 'uac1', 'value': uac_chunks.uac1})
-            payload_dictionary['additionalProperties'].append({'name': 'uac2', 'value': uac_chunks.uac2})
-            payload_dictionary['additionalProperties'].append({'name': 'uac3', 'value': uac_chunks.uac3})
+            payload_dictionary['additionalProperties'].append({'name': 'uac1', 'value': uac_chunks.uac1}) # type: ignore
+            payload_dictionary['additionalProperties'].append({'name': 'uac2', 'value': uac_chunks.uac2}) # type: ignore
+            payload_dictionary['additionalProperties'].append({'name': 'uac3', 'value': uac_chunks.uac3}) # type: ignore
 
         return payload_dictionary
 
@@ -166,23 +170,29 @@ class TestMapTotalmobileJobModelsForLMS:
 
 
 class TestMapTotalmobileJobModelsForFRS:
+    @staticmethod
     def totalmobile_payload_helper(
-            self,
             questionnaire_name: str,
-            case: BlaiseFRSCaseInformationModel) -> Dict[str, str]:
+            case: BlaiseFRSCaseInformationModel) -> Dict[str, object]:
 
-        payload_dictionary = {'additionalProperties': [
-            {'name': 'surveyName', 'value': case.data_model_name},
-            {'name': 'tla', 'value': case.tla},
-            {'name': 'wave', 'value': f'{case.wave}'},
-            {'name': 'priority', 'value': case.priority},
-            {'name': 'fieldRegion', 'value': case.field_region},
-            {'name': 'fieldTeam', 'value': case.field_team}],
-            'attributes': [{'name': 'Region', 'value': case.field_region},
-                           {'name': 'Team', 'value': case.field_team}],
+        due_date = case.wave_com_dte.strftime("%d/%m/%Y") if case.wave_com_dte is not None else ""
+
+        payload_dictionary = {
+            'additionalProperties': [
+                {'name': 'surveyName', 'value': case.data_model_name},
+                {'name': 'tla', 'value': case.tla},
+                {'name': 'wave', 'value': f'{case.wave}'},
+                {'name': 'priority', 'value': case.priority},
+                {'name': 'fieldRegion', 'value': case.field_region},
+                {'name': 'fieldTeam', 'value': case.field_team}
+            ],
+            'attributes': [
+                {'name': 'Region', 'value': case.field_region},
+                {'name': 'Team', 'value': case.field_team}
+            ],
             'contact': {'name': case.address_details.address.postcode},
             'description': '',
-            'dueDate': {'end': case.wave_com_dte.strftime("%Y-%m-%d") if case.wave_com_dte is not None else ""},
+            'dueDate': {'end': due_date},
             'duration': 15,
             'identity': {'reference': f'{questionnaire_name.replace("_", "-")}.{case.case_id}'},
             'location': {'address': '12 Blaise Street, Blaise Hill, Blaiseville, Newport, '

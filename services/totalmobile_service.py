@@ -1,4 +1,4 @@
-from typing import List, Protocol
+from typing import List, Protocol, Sequence
 
 import requests
 
@@ -47,7 +47,7 @@ class TotalmobileService(Protocol):
     def map_totalmobile_create_job_models(
         self,
         questionnaire_name: str,
-        cases: List[BlaiseCaseInformationBaseModel]
+        cases: Sequence[BlaiseCaseInformationBaseModel]
     ) -> List[TotalmobileCreateJobModel]:    
         pass
 
@@ -103,7 +103,7 @@ class RealTotalmobileService:
     def map_totalmobile_create_job_models(
         self,
         questionnaire_name: str,
-        cases: List[BlaiseCaseInformationBaseModel]
+        cases: Sequence[BlaiseCaseInformationBaseModel]
     ) -> List[TotalmobileCreateJobModel]:
         world_model = self.get_world_model()
         return self._mapper.map_totalmobile_create_job_models(

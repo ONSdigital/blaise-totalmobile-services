@@ -1,14 +1,19 @@
 from datetime import datetime
-from typing import Dict, Optional, List
+from typing import Dict, List
 
 from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel, ContactDetails
 from models.blaise.blaise_case_information_base_model import AddressDetails
 from models.blaise.blaise_case_information_base_model import AddressCoordinates, Address
+from services.mappers.mapper_base import MapperServiceBase
 
 
-class BlaiseLMSCaseMapperService:
+class BlaiseLMSCaseMapperService(MapperServiceBase):
 
-    def map_lms_case_information_models(self,  questionnaire_name: str, questionnaire_case_data: List[Dict[str, str]]):
+    def map_lms_case_information_models(
+            self,
+            questionnaire_name: str,
+            questionnaire_case_data: List[Dict[str, str]]) -> List[BlaiseLMSCaseInformationModel]:
+
         cases = []
         for case_data_item in questionnaire_case_data:
             case = self.map_lms_case_information_model(
@@ -19,7 +24,11 @@ class BlaiseLMSCaseMapperService:
 
         return cases
 
-    def map_lms_case_information_model(self, questionnaire_name: str, case_data_dictionary: Dict[str, str]) -> BlaiseLMSCaseInformationModel:
+    def map_lms_case_information_model(
+            self,
+            questionnaire_name: str,
+            case_data_dictionary: Dict[str, str]) -> BlaiseLMSCaseInformationModel:
+
         wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE", "")
         wave_com_dte = (
             datetime.strptime(wave_com_dte_str, "%d-%m-%Y")
@@ -32,7 +41,7 @@ class BlaiseLMSCaseMapperService:
         return BlaiseLMSCaseInformationModel(
             questionnaire_name=questionnaire_name,
             tla=tla,
-            case_id=case_data_dictionary.get("qiD.Serial_Number"),
+            case_id=self.get_case_id(case_data_dictionary),
             data_model_name=case_data_dictionary.get("dataModelName"),
             wave=int(wave) if wave else None,
             address_details=AddressDetails(
@@ -55,9 +64,7 @@ class BlaiseLMSCaseMapperService:
                 telephone_number_2=case_data_dictionary.get("qDataBag.TelNo2"),
                 appointment_telephone_number=case_data_dictionary.get("telNoAppt"),
             ),
-            outcome_code=self.convert_string_to_integer(
-                case_data_dictionary.get("hOut", "0")
-            ),
+            outcome_code=self.get_outcome_code(case_data_dictionary),
             priority=case_data_dictionary.get("qDataBag.Priority"),
             field_case=case_data_dictionary.get("qDataBag.FieldCase"),
             field_region=case_data_dictionary.get("qDataBag.FieldRegion"),
@@ -73,22 +80,3 @@ class BlaiseLMSCaseMapperService:
                 case_data_dictionary.get("qRotate.RHOut", "0")
             ),
         )
-
-    @staticmethod
-    def convert_indicator_to_y_n_or_empty(value: Optional[str]):
-        if not value or value == "":
-            return ""
-
-        return "Y" if value == "1" else "N"
-
-    @staticmethod
-    def convert_string_to_integer(value: str) -> int:
-        if value == "":
-            return 0
-        return int(value)
-
-    @staticmethod
-    def string_to_bool(value: Optional[str]) -> bool:
-        if value == "" or value is None:
-            return False
-        return True

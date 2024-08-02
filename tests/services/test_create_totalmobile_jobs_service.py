@@ -13,39 +13,36 @@ from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
-from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
+from tests.helpers.get_blaise_lms_case_model_helper import get_populated_case_model
 from tests.helpers.get_blaise_frs_case_model_helper import get_frs_populated_case_model
 
 
-@pytest.fixture()
-def mock_totalmobile_service():
-    return Mock()
-
-
-@pytest.fixture()
-def mock_questionnaire_service():
-    return Mock()
-
-
-@pytest.fixture()
-def mock_cloud_task_service():
-    return Mock()
-
-
-@pytest.fixture()
-def service(
-        mock_totalmobile_service,
-        mock_questionnaire_service,
-        mock_cloud_task_service,
-) -> CreateTotalmobileJobsService:
-    return CreateTotalmobileJobsService(
-        totalmobile_service=mock_totalmobile_service,
-        questionnaire_service=mock_questionnaire_service,
-        cloud_task_service=mock_cloud_task_service,
-    )
-
-
 class TestLMSCreateTotalmobileJobsService:
+
+    @pytest.fixture()
+    def mock_totalmobile_service(self):
+        return Mock()
+
+    @pytest.fixture()
+    def mock_questionnaire_service(self):
+        return Mock()
+
+    @pytest.fixture()
+    def mock_cloud_task_service(self):
+        return Mock()
+
+    @pytest.fixture()
+    def service(self,
+            mock_totalmobile_service,
+            mock_questionnaire_service,
+            mock_cloud_task_service,
+    ) -> CreateTotalmobileJobsService:
+        return CreateTotalmobileJobsService(
+            totalmobile_service=mock_totalmobile_service,
+            questionnaire_service=mock_questionnaire_service,
+            cloud_task_service=mock_cloud_task_service,
+        )
+
     def test_check_questionnaire_release_date_logs_when_there_are_no_questionnaires_for_release(
             self,
             mock_questionnaire_service,
@@ -102,7 +99,7 @@ class TestLMSCreateTotalmobileJobsService:
             questionnaire=questionnaire_name,
             world_id="3fa85f64-5717-4562-b3fc-2c963f66afa6",
             case_id=questionnaire_cases[0].case_id,
-            payload="test"
+            payload={"test-key": "test-value"}
         )
 
         mock_totalmobile_service.map_totalmobile_create_job_models.return_value = [totalmobile_create_job_model]

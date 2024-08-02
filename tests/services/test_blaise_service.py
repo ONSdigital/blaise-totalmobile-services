@@ -11,7 +11,6 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireCaseError,
 )
 from appconfig import Config
-from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
 from services.blaise_service import RealBlaiseService
 from tests.helpers import config_helper
 
@@ -61,7 +60,7 @@ def test_get_cases_returns_the_expected_case_data(
         "questionnaireName": "LMS2101_AA1",
         "questionnaireId": "12345-12345-12345-12345-12345",
         "reportingData": [
-            {"qiD.Serial_Number": "10010","hOut": "110","qDataBag.WaveComDTE": "31-01-2023",},
+            {"qiD.Serial_Number": "10010","hOut": "110","qDataBag.WaveComDTE": "31-01-2023"},
             {"qiD.Serial_Number": "10020", "hOut": "210", "qDataBag.WaveComDTE": ""},
             {"qiD.Serial_Number": "10030", "hOut": "310", "qDataBag.WaveComDTE": ""},
             {"qiD.Serial_Number": "10040", "hOut": "310", "qDataBag.WaveComDTE": ""},

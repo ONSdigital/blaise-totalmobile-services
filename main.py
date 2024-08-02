@@ -11,16 +11,16 @@ from app.app import load_config, setup_app
 from cloud_functions.logging import setup_logger
 from factories.service_instance_factory import ServiceInstanceFactory
 
+service_instance_factory = ServiceInstanceFactory()
+
 
 def create_totalmobile_jobs_trigger(_event, _context) -> str:
-    service_instance_factory = ServiceInstanceFactory()
 
     return cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
                 create_totalmobile_jobs_service=service_instance_factory.create_totalmobile_jobs_service())
 
 
 def create_totalmobile_jobs_processor(request: flask.Request) -> str:
-    service_instance_factory = ServiceInstanceFactory()
 
     return cloud_functions.create_totalmobile_jobs_processor.create_totalmobile_jobs_processor(
         request=request, totalmobile_service=service_instance_factory.create_totalmobile_service()
@@ -28,7 +28,6 @@ def create_totalmobile_jobs_processor(request: flask.Request) -> str:
 
 
 def delete_totalmobile_jobs_completed_in_blaise(_request: flask.Request) -> str:
-    service_instance_factory = ServiceInstanceFactory()
 
     return cloud_functions.delete_totalmobile_jobs_completed_in_blaise.delete_totalmobile_jobs_completed_in_blaise(
         blaise_outcome_service=service_instance_factory.create_blaise_outcome_service(),
@@ -37,7 +36,6 @@ def delete_totalmobile_jobs_completed_in_blaise(_request: flask.Request) -> str:
 
 
 def delete_totalmobile_jobs_past_field_period(_request: flask.Request) -> str:
-    service_instance_factory = ServiceInstanceFactory()
 
     return cloud_functions.delete_totalmobile_jobs_past_field_period.delete_totalmobile_jobs_past_field_period(
         blaise_outcome_service=service_instance_factory.create_blaise_outcome_service(),

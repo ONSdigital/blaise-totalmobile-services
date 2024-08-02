@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from models.totalmobile.totalmobile_get_jobs_response_model import Job
 from services.blaise_case_outcome_service import BlaiseCaseOutcomeService
@@ -67,7 +67,7 @@ class DeleteTotalmobileJobsService:
         job: Job,
         questionnaire_name: str,
         world_id: str,
-        blaise_case_outcomes: Dict[str, int],
+        blaise_case_outcomes: Dict[Optional[str], int],
     ):
         if job.case_id not in blaise_case_outcomes:
             logging.error(

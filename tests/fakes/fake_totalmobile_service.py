@@ -1,9 +1,10 @@
 from collections import defaultdict
-from typing import Dict, Optional
+from typing import Dict, Optional, Sequence, List
 
 import requests
 
 from client.optimise import GetJobResponse, GetJobsResponse
+from models.blaise.blaise_case_information_base_model import BlaiseCaseInformationBaseModel
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from models.totalmobile.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
@@ -128,3 +129,12 @@ class FakeTotalmobileService:
 
     def get_jobs(self, world_id: str) -> GetJobsResponse:
         raise NotImplementedError("Currently not implemented in this mock")
+
+    def map_totalmobile_create_job_models(
+            self,
+            questionnaire_name: str,
+            cases: Sequence[BlaiseCaseInformationBaseModel]
+    ) -> List[TotalmobileCreateJobModel]:
+        return [TotalmobileCreateJobModel(
+            "", "", "", {}
+        )]

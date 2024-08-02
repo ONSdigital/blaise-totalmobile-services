@@ -10,7 +10,7 @@ class ContactDetails:
     appointment_telephone_number: Optional[str]
 
 
-@dataclass
+@dataclass()
 class BlaiseLMSCaseInformationModel(BlaiseCaseInformationBaseModel):
     contact_details: ContactDetails
     outcome_code: int
@@ -23,7 +23,7 @@ class BlaiseLMSCaseInformationModel(BlaiseCaseInformationBaseModel):
         return True
 
     @staticmethod
-    def required_fields_from_blaise() -> List:
+    def required_fields() -> List:
         return [
             "qiD.Serial_Number",
             "dataModelName",

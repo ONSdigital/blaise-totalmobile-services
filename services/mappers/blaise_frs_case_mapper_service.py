@@ -1,23 +1,34 @@
-from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Type, TypeVar
+from typing import Dict, List
 
-from models.blaise.blaise_case_information_base_model import BlaiseCaseInformationBaseModel, AddressCoordinates, \
-    AddressDetails, Address
+from models.blaise.blaise_frs_case_information_model import BlaiseFRSCaseInformationModel
+from models.blaise.blaise_case_information_base_model import AddressDetails
+from models.blaise.blaise_case_information_base_model import AddressCoordinates, Address
+from services.mappers.mapper_base import MapperServiceBase
 
-V = TypeVar("V", bound="BlaiseFRSCaseInformationModel")
 
-@dataclass
-class BlaiseFRSCaseInformationModel(BlaiseCaseInformationBaseModel):
+class BlaiseFRSCaseMapperService(MapperServiceBase):
 
-    @property
-    def has_uac(self) -> bool:
-        return False
+    def map_frs_case_information_models(
+            self,
+            questionnaire_name: str,
+            questionnaire_case_data: List[Dict[str, str]]) -> List[BlaiseFRSCaseInformationModel]:
 
-    @classmethod
-    def import_frs_case(
-        cls: Type[V], questionnaire_name: str, case_data_dictionary: Dict[str, str]
-    ) -> V:
+        cases = []
+        for case_data_item in questionnaire_case_data:
+            case = self.map_frs_case_information_model(
+                questionnaire_name,
+                case_data_item
+            )
+            cases.append(case)
+
+        return cases
+
+    def map_frs_case_information_model(
+            self,
+            questionnaire_name: str,
+            case_data_dictionary: Dict[str, str]) -> BlaiseFRSCaseInformationModel:
+
         wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE", "")
         wave_com_dte = (
             datetime.strptime(wave_com_dte_str, "%d-%m-%Y")
@@ -27,7 +38,7 @@ class BlaiseFRSCaseInformationModel(BlaiseCaseInformationBaseModel):
         wave = case_data_dictionary.get("qDataBag.Wave")
         tla = questionnaire_name[0:3]
 
-        return cls(
+        return BlaiseFRSCaseInformationModel(
             questionnaire_name=questionnaire_name,
             tla=tla,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
@@ -54,25 +65,3 @@ class BlaiseFRSCaseInformationModel(BlaiseCaseInformationBaseModel):
             field_team=case_data_dictionary.get("qDataBag.FieldTeam"),
             wave_com_dte=wave_com_dte
         )
-
-    @staticmethod
-    def required_fields() -> List:
-        return [
-            "qiD.Serial_Number",
-            "dataModelName",
-            "qDataBag.TLA",
-            "qDataBag.Wave",
-            "qDataBag.Prem1",
-            "qDataBag.Prem2",
-            "qDataBag.Prem3",
-            "qDataBag.District",
-            "qDataBag.PostTown",
-            "qDataBag.PostCode",
-            "qDataBag.UPRN",
-            "qDataBag.UPRN_Latitude",
-            "qDataBag.UPRN_Longitude",
-            "qDataBag.Priority",
-            "qDataBag.FieldCase",
-            "qDataBag.FieldRegion",
-            "qDataBag.FieldTeam",
-        ]
