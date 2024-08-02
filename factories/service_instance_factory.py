@@ -11,9 +11,12 @@ from services.case_filters.case_filter_wave_5 import CaseFilterWave5
 from services.cloud_task_service import CloudTaskService
 from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 from services.datastore_service import DatastoreService
+from services.frs_eligible_case_service import FRSEligibleCaseService
 from services.lms_eligible__case_service import LMSEligibleCaseService
+from services.mappers.blaise_frs_case_mapper_service import BlaiseFRSCaseMapperService
 from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
 from services.mappers.totalmobile_mapper_service import TotalmobileMapperService
+from services.questionnaires.frs_questionnaire_service import FRSQuestionnaireService
 from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
 from services.totalmobile_service import RealTotalmobileService
 from services.uac_service import UacService
@@ -28,13 +31,16 @@ class ServiceInstanceFactory:
     @property
     def config(self):
         return self._config
+
     def create_blaise_service(self) -> RealBlaiseService:
         return RealBlaiseService(self._config)
 
-    def create_datastore_service(self) -> DatastoreService:
+    @staticmethod
+    def create_datastore_service() -> DatastoreService:
         return DatastoreService()
-    
-    def create_eligible_case_service(self) -> LMSEligibleCaseService:
+
+    @staticmethod
+    def create_eligible_lms_case_service() -> LMSEligibleCaseService:
         return LMSEligibleCaseService(
                wave_filters=[
                     CaseFilterWave1(),
@@ -45,14 +51,31 @@ class ServiceInstanceFactory:
                 ]
             )
 
-    def create_lms_mapper_service(self) -> BlaiseLMSCaseMapperService:
+    @staticmethod
+    def create_eligible_frs_case_service() -> FRSEligibleCaseService:
+        return FRSEligibleCaseService()
+
+    @staticmethod
+    def create_lms_mapper_service() -> BlaiseLMSCaseMapperService:
         return BlaiseLMSCaseMapperService()
+
+    @staticmethod
+    def create_frs_mapper_service() -> BlaiseFRSCaseMapperService:
+        return BlaiseFRSCaseMapperService()
 
     def create_lms_questionnaire_service(self) -> LMSQuestionnaireService:
         return LMSQuestionnaireService(
             blaise_service=self.create_blaise_service(),
             mapper_service=self.create_lms_mapper_service(),
-            eligible_case_service=self.create_eligible_case_service(),
+            eligible_case_service=self.create_eligible_lms_case_service(),
+            datastore_service=self.create_datastore_service(),
+        )
+
+    def create_frs_questionnaire_service(self) -> FRSQuestionnaireService:
+        return FRSQuestionnaireService(
+            blaise_service=self.create_blaise_service(),
+            mapper_service=self.create_frs_mapper_service(),
+            eligible_case_service=self.create_eligible_frs_case_service(),
             datastore_service=self.create_datastore_service(),
         )
 
