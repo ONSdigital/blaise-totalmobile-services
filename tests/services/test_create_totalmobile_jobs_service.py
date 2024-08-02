@@ -1,20 +1,11 @@
-import json
 import logging
-from typing import Dict
-from unittest.mock import Mock
-
 import pytest
 
-from client.bus import Uac
-from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
+from unittest.mock import Mock
+
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
-from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
-    TotalMobileOutgoingCreateJobPayloadModel,
-)
-from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 from tests.helpers.get_blaise_lms_case_model_helper import get_populated_case_model
-from tests.helpers.get_blaise_frs_case_model_helper import get_frs_populated_case_model
 
 
 class TestLMSCreateTotalmobileJobsService:
@@ -33,10 +24,10 @@ class TestLMSCreateTotalmobileJobsService:
 
     @pytest.fixture()
     def service(self,
-            mock_totalmobile_service,
-            mock_questionnaire_service,
-            mock_cloud_task_service,
-    ) -> CreateTotalmobileJobsService:
+                mock_totalmobile_service,
+                mock_questionnaire_service,
+                mock_cloud_task_service,
+                ) -> CreateTotalmobileJobsService:
         return CreateTotalmobileJobsService(
             totalmobile_service=mock_totalmobile_service,
             questionnaire_service=mock_questionnaire_service,
@@ -66,7 +57,6 @@ class TestLMSCreateTotalmobileJobsService:
                    logging.INFO,
                    "There are no questionnaires with a release date of today",
                ) in caplog.record_tuples
-
 
     def test_create_totalmobile_jobs_for_eligible_questionnaire_cases(
             self,
@@ -103,7 +93,7 @@ class TestLMSCreateTotalmobileJobsService:
         )
 
         mock_totalmobile_service.map_totalmobile_create_job_models.return_value = [totalmobile_create_job_model]
-       
+
         # act
         result = service.create_totalmobile_jobs_for_eligible_questionnaire_cases(
             questionnaire_name=questionnaire_name
@@ -117,7 +107,7 @@ class TestLMSCreateTotalmobileJobsService:
         assert kwargs["cloud_function"] == "bts-create-totalmobile-jobs-processor"
         assert len(kwargs["task_request_models"]) == 1
         task_request_model = kwargs["task_request_models"][0]
-        assert task_request_model.task_name.startswith("LMS")        
+        assert task_request_model.task_name.startswith("LMS")
         assert task_request_model.task_body == totalmobile_create_job_model.json().encode()
         assert result == "Done"
 
