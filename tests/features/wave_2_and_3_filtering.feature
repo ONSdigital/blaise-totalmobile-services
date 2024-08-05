@@ -26,12 +26,12 @@ Feature: Filter wave 2 and 3 cases
 
     Examples: Waves 2 and 3, no telephone number, outcome_code is 0, rdmktnind is N
       | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rdmktnind | rhout |
-      | 0            | 2    | Y         |        |        |           | Region 1 | N         | 0     |
-      | 0            | 2    | Y         |        |        |           | Region 1 | N         | 310   |
-      | 0            | 2    | Y         |        |        |           | Region 1 | N         | 320   |
-      | 0            | 3    | Y         |        |        |           | Region 1 | N         | 0     |
-      | 0            | 3    | Y         |        |        |           | Region 1 | N         | 310   |
-      | 0            | 3    | Y         |        |        |           | Region 1 | N         | 320   |
+      | 0            | 2    | Y         |        |        |           | Region 1 | 0         | 0     |
+      | 0            | 2    | Y         |        |        |           | Region 1 | 0         | 310   |
+      | 0            | 2    | Y         |        |        |           | Region 1 | 0         | 320   |
+      | 0            | 3    | Y         |        |        |           | Region 1 | 0         | 0     |
+      | 0            | 3    | Y         |        |        |           | Region 1 | 0         | 310   |
+      | 0            | 3    | Y         |        |        |           | Region 1 | 0         | 320   |
 
     Examples: Waves 2 and 3, no telephone number, outcome_code is 310, rdmktnind is empty
       | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rdmktnind | rhout |
@@ -44,12 +44,12 @@ Feature: Filter wave 2 and 3 cases
 
     Examples: Waves 2 and 3, no telephone number, outcome_code is 310, rdmktnind is N
       | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rdmktnind | rhout |
-      | 310          | 2    | Y         |        |        |           | Region 1 | N         | 0     |
-      | 310          | 2    | Y         |        |        |           | Region 1 | N         | 310   |
-      | 310          | 2    | Y         |        |        |           | Region 1 | N         | 320   |
-      | 310          | 3    | Y         |        |        |           | Region 1 | N         | 0     |
-      | 310          | 3    | Y         |        |        |           | Region 1 | N         | 310   |
-      | 310          | 3    | Y         |        |        |           | Region 1 | N         | 320   |
+      | 310          | 2    | Y         |        |        |           | Region 1 | 0         | 0     |
+      | 310          | 2    | Y         |        |        |           | Region 1 | 0         | 310   |
+      | 310          | 2    | Y         |        |        |           | Region 1 | 0         | 320   |
+      | 310          | 3    | Y         |        |        |           | Region 1 | 0         | 0     |
+      | 310          | 3    | Y         |        |        |           | Region 1 | 0         | 310   |
+      | 310          | 3    | Y         |        |        |           | Region 1 | 0         | 320   |
 
     Examples: Waves 2 and 3, no telephone number, outcome_code is 320, rdmktnind is empty
       | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rdmktnind | rhout |
@@ -62,12 +62,12 @@ Feature: Filter wave 2 and 3 cases
 
     Examples: Waves 2 and 3, no telephone number, outcome_code is 320, rdmktnind is N
       | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rdmktnind | rhout |
-      | 320          | 2    | Y         |        |        |           | Region 1 | N         | 0     |
-      | 320          | 2    | Y         |        |        |           | Region 1 | N         | 310   |
-      | 320          | 2    | Y         |        |        |           | Region 1 | N         | 320   |
-      | 320          | 3    | Y         |        |        |           | Region 1 | N         | 0     |
-      | 320          | 3    | Y         |        |        |           | Region 1 | N         | 310   |
-      | 320          | 3    | Y         |        |        |           | Region 1 | N         | 320   |
+      | 320          | 2    | Y         |        |        |           | Region 1 | 0         | 0     |
+      | 320          | 2    | Y         |        |        |           | Region 1 | 0         | 310   |
+      | 320          | 2    | Y         |        |        |           | Region 1 | 0         | 320   |
+      | 320          | 3    | Y         |        |        |           | Region 1 | 0         | 0     |
+      | 320          | 3    | Y         |        |        |           | Region 1 | 0         | 310   |
+      | 320          | 3    | Y         |        |        |           | Region 1 | 0         | 320   |
 
     Examples: Waves 2 and 3 with telephone numbers, outcome_code is 0, rdmktnind is empty
       | outcome_code | wave | fieldcase | telno1  | telno2  | telNoAppt | region   | rdmktnind | rhout |
@@ -92,24 +92,24 @@ Feature: Filter wave 2 and 3 cases
 
     Examples: Waves 2 and 3 with telephone numbers, outcome_code is 0, rdmktnind is N
       | outcome_code | wave | fieldcase | telno1  | telno2  | telNoAppt | region   | rdmktnind | rhout |
-      | 0            | 2    | Y         | 0700000 |         |           | Region 1 | N         | 0     |
-      | 0            | 2    | Y         |         | 0700000 |           | Region 1 | N         | 0     |
-      | 0            | 2    | Y         |         |         | 0700000   | Region 1 | N         | 0     |
-      | 0            | 2    | Y         | 0700000 |         |           | Region 1 | N         | 310   |
-      | 0            | 2    | Y         |         | 0700000 |           | Region 1 | N         | 310   |
-      | 0            | 2    | Y         |         |         | 0700000   | Region 1 | N         | 310   |
-      | 0            | 2    | Y         | 0700000 |         |           | Region 1 | N         | 320   |
-      | 0            | 2    | Y         |         | 0700000 |           | Region 1 | N         | 320   |
-      | 0            | 2    | Y         |         |         | 0700000   | Region 1 | N         | 320   |
-      | 0            | 3    | Y         | 0700000 |         |           | Region 1 | N         | 0     |
-      | 0            | 3    | Y         |         | 0700000 |           | Region 1 | N         | 0     |
-      | 0            | 3    | Y         |         |         | 0700000   | Region 1 | N         | 0     |
-      | 0            | 3    | Y         | 0700000 |         |           | Region 1 | N         | 310   |
-      | 0            | 3    | Y         |         | 0700000 |           | Region 1 | N         | 310   |
-      | 0            | 3    | Y         |         |         | 0700000   | Region 1 | N         | 310   |
-      | 0            | 3    | Y         | 0700000 |         |           | Region 1 | N         | 320   |
-      | 0            | 3    | Y         |         | 0700000 |           | Region 1 | N         | 320   |
-      | 0            | 3    | Y         |         |         | 0700000   | Region 1 | N         | 320   |
+      | 0            | 2    | Y         | 0700000 |         |           | Region 1 | 0         | 0     |
+      | 0            | 2    | Y         |         | 0700000 |           | Region 1 | 0         | 0     |
+      | 0            | 2    | Y         |         |         | 0700000   | Region 1 | 0         | 0     |
+      | 0            | 2    | Y         | 0700000 |         |           | Region 1 | 0         | 310   |
+      | 0            | 2    | Y         |         | 0700000 |           | Region 1 | 0         | 310   |
+      | 0            | 2    | Y         |         |         | 0700000   | Region 1 | 0         | 310   |
+      | 0            | 2    | Y         | 0700000 |         |           | Region 1 | 0         | 320   |
+      | 0            | 2    | Y         |         | 0700000 |           | Region 1 | 0         | 320   |
+      | 0            | 2    | Y         |         |         | 0700000   | Region 1 | 0         | 320   |
+      | 0            | 3    | Y         | 0700000 |         |           | Region 1 | 0         | 0     |
+      | 0            | 3    | Y         |         | 0700000 |           | Region 1 | 0         | 0     |
+      | 0            | 3    | Y         |         |         | 0700000   | Region 1 | 0         | 0     |
+      | 0            | 3    | Y         | 0700000 |         |           | Region 1 | 0         | 310   |
+      | 0            | 3    | Y         |         | 0700000 |           | Region 1 | 0         | 310   |
+      | 0            | 3    | Y         |         |         | 0700000   | Region 1 | 0         | 310   |
+      | 0            | 3    | Y         | 0700000 |         |           | Region 1 | 0         | 320   |
+      | 0            | 3    | Y         |         | 0700000 |           | Region 1 | 0         | 320   |
+      | 0            | 3    | Y         |         |         | 0700000   | Region 1 | 0         | 320   |
 
     Examples: Waves 2 and 3 with telephone numbers, outcome_code is 310, rdmktnind is empty
       | outcome_code | wave | fieldcase | telno1  | telno2  | telNoAppt | region   | rdmktnind | rhout |
@@ -134,24 +134,24 @@ Feature: Filter wave 2 and 3 cases
 
     Examples: Waves 2 and 3 with telephone numbers, outcome_code is 310, rdmktnind is N
       | outcome_code | wave | fieldcase | telno1  | telno2  | telNoAppt | region   | rdmktnind | rhout |
-      | 310          | 2    | Y         | 0700000 |         |           | Region 1 | N         | 0     |
-      | 310          | 2    | Y         |         | 0700000 |           | Region 1 | N         | 0     |
-      | 310          | 2    | Y         |         |         | 0700000   | Region 1 | N         | 0     |
-      | 310          | 2    | Y         | 0700000 |         |           | Region 1 | N         | 310   |
-      | 310          | 2    | Y         |         | 0700000 |           | Region 1 | N         | 310   |
-      | 310          | 2    | Y         |         |         | 0700000   | Region 1 | N         | 310   |
-      | 310          | 2    | Y         | 0700000 |         |           | Region 1 | N         | 320   |
-      | 310          | 2    | Y         |         | 0700000 |           | Region 1 | N         | 320   |
-      | 310          | 2    | Y         |         |         | 0700000   | Region 1 | N         | 320   |
-      | 310          | 3    | Y         | 0700000 |         |           | Region 1 | N         | 0     |
-      | 310          | 3    | Y         |         | 0700000 |           | Region 1 | N         | 0     |
-      | 310          | 3    | Y         |         |         | 0700000   | Region 1 | N         | 0     |
-      | 310          | 3    | Y         | 0700000 |         |           | Region 1 | N         | 310   |
-      | 310          | 3    | Y         |         | 0700000 |           | Region 1 | N         | 310   |
-      | 310          | 3    | Y         |         |         | 0700000   | Region 1 | N         | 310   |
-      | 310          | 3    | Y         | 0700000 |         |           | Region 1 | N         | 320   |
-      | 310          | 3    | Y         |         | 0700000 |           | Region 1 | N         | 320   |
-      | 310          | 3    | Y         |         |         | 0700000   | Region 1 | N         | 320   |
+      | 310          | 2    | Y         | 0700000 |         |           | Region 1 | 0         | 0     |
+      | 310          | 2    | Y         |         | 0700000 |           | Region 1 | 0         | 0     |
+      | 310          | 2    | Y         |         |         | 0700000   | Region 1 | 0         | 0     |
+      | 310          | 2    | Y         | 0700000 |         |           | Region 1 | 0         | 310   |
+      | 310          | 2    | Y         |         | 0700000 |           | Region 1 | 0         | 310   |
+      | 310          | 2    | Y         |         |         | 0700000   | Region 1 | 0         | 310   |
+      | 310          | 2    | Y         | 0700000 |         |           | Region 1 | 0         | 320   |
+      | 310          | 2    | Y         |         | 0700000 |           | Region 1 | 0         | 320   |
+      | 310          | 2    | Y         |         |         | 0700000   | Region 1 | 0         | 320   |
+      | 310          | 3    | Y         | 0700000 |         |           | Region 1 | 0         | 0     |
+      | 310          | 3    | Y         |         | 0700000 |           | Region 1 | 0         | 0     |
+      | 310          | 3    | Y         |         |         | 0700000   | Region 1 | 0         | 0     |
+      | 310          | 3    | Y         | 0700000 |         |           | Region 1 | 0         | 310   |
+      | 310          | 3    | Y         |         | 0700000 |           | Region 1 | 0         | 310   |
+      | 310          | 3    | Y         |         |         | 0700000   | Region 1 | 0         | 310   |
+      | 310          | 3    | Y         | 0700000 |         |           | Region 1 | 0         | 320   |
+      | 310          | 3    | Y         |         | 0700000 |           | Region 1 | 0         | 320   |
+      | 310          | 3    | Y         |         |         | 0700000   | Region 1 | 0         | 320   |
 
     Examples: Waves 2 and 3 with telephone numbers, outcome_code is 320, rdmktnind is empty
       | outcome_code | wave | fieldcase | telno1  | telno2  | telNoAppt | region   | rdmktnind | rhout |
@@ -176,24 +176,24 @@ Feature: Filter wave 2 and 3 cases
 
     Examples: Waves 2 and 3 with telephone numbers, outcome_code is 320, rdmktnind is N
       | outcome_code | wave | fieldcase | telno1  | telno2  | telNoAppt | region   | rdmktnind | rhout |
-      | 320          | 2    | Y         | 0700000 |         |           | Region 1 | N         | 0     |
-      | 320          | 2    | Y         |         | 0700000 |           | Region 1 | N         | 0     |
-      | 320          | 2    | Y         |         |         | 0700000   | Region 1 | N         | 0     |
-      | 320          | 2    | Y         | 0700000 |         |           | Region 1 | N         | 310   |
-      | 320          | 2    | Y         |         | 0700000 |           | Region 1 | N         | 310   |
-      | 320          | 2    | Y         |         |         | 0700000   | Region 1 | N         | 310   |
-      | 320          | 2    | Y         | 0700000 |         |           | Region 1 | N         | 320   |
-      | 320          | 2    | Y         |         | 0700000 |           | Region 1 | N         | 320   |
-      | 320          | 2    | Y         |         |         | 0700000   | Region 1 | N         | 320   |
-      | 320          | 3    | Y         | 0700000 |         |           | Region 1 | N         | 0     |
-      | 320          | 3    | Y         |         | 0700000 |           | Region 1 | N         | 0     |
-      | 320          | 3    | Y         |         |         | 0700000   | Region 1 | N         | 0     |
-      | 320          | 3    | Y         | 0700000 |         |           | Region 1 | N         | 310   |
-      | 320          | 3    | Y         |         | 0700000 |           | Region 1 | N         | 310   |
-      | 320          | 3    | Y         |         |         | 0700000   | Region 1 | N         | 310   |
-      | 320          | 3    | Y         | 0700000 |         |           | Region 1 | N         | 320   |
-      | 320          | 3    | Y         |         | 0700000 |           | Region 1 | N         | 320   |
-      | 320          | 3    | Y         |         |         | 0700000   | Region 1 | N         | 320   |
+      | 320          | 2    | Y         | 0700000 |         |           | Region 1 | 0         | 0     |
+      | 320          | 2    | Y         |         | 0700000 |           | Region 1 | 0         | 0     |
+      | 320          | 2    | Y         |         |         | 0700000   | Region 1 | 0         | 0     |
+      | 320          | 2    | Y         | 0700000 |         |           | Region 1 | 0         | 310   |
+      | 320          | 2    | Y         |         | 0700000 |           | Region 1 | 0         | 310   |
+      | 320          | 2    | Y         |         |         | 0700000   | Region 1 | 0         | 310   |
+      | 320          | 2    | Y         | 0700000 |         |           | Region 1 | 0         | 320   |
+      | 320          | 2    | Y         |         | 0700000 |           | Region 1 | 0         | 320   |
+      | 320          | 2    | Y         |         |         | 0700000   | Region 1 | 0         | 320   |
+      | 320          | 3    | Y         | 0700000 |         |           | Region 1 | 0         | 0     |
+      | 320          | 3    | Y         |         | 0700000 |           | Region 1 | 0         | 0     |
+      | 320          | 3    | Y         |         |         | 0700000   | Region 1 | 0         | 0     |
+      | 320          | 3    | Y         | 0700000 |         |           | Region 1 | 0         | 310   |
+      | 320          | 3    | Y         |         | 0700000 |           | Region 1 | 0         | 310   |
+      | 320          | 3    | Y         |         |         | 0700000   | Region 1 | 0         | 310   |
+      | 320          | 3    | Y         | 0700000 |         |           | Region 1 | 0         | 320   |
+      | 320          | 3    | Y         |         | 0700000 |           | Region 1 | 0         | 320   |
+      | 320          | 3    | Y         |         |         | 0700000   | Region 1 | 0         | 320   |
 
   Scenario Outline: Ineligible wave 2 and 3 LMS cases are not sent to Totalmobile
     Given there is a LMS2210_AA1 with a totalmobile release date of today
@@ -224,14 +224,14 @@ Feature: Filter wave 2 and 3 cases
 
     Examples: Waves 2 and 3, outcome_code is 0, rdmktnind is Y (thus making it ineligible)
       | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rdmktnind | rhout |
-      | 0            | 2    | Y         |        |        |           | Region 1 | Y          | 0     |
-      | 0            | 2    | Y         | 070000 |        |           | Region 1 | Y          | 0     |
-      | 0            | 2    | Y         |        | 070000 |           | Region 1 | Y          | 0     |
-      | 0            | 2    | Y         |        |        | 070000    | Region 1 | Y          | 0     |
-      | 0            | 3    | Y         |        |        |           | Region 1 | Y          | 0     |
-      | 0            | 3    | Y         | 070000 |        |           | Region 1 | Y          | 0     |
-      | 0            | 3    | Y         |        | 070000 |           | Region 1 | Y          | 0     |
-      | 0            | 3    | Y         |        |        | 070000    | Region 1 | Y          | 0     |
+      | 0            | 2    | Y         |        |        |           | Region 1 | 1          | 0     |
+      | 0            | 2    | Y         | 070000 |        |           | Region 1 | 1          | 0     |
+      | 0            | 2    | Y         |        | 070000 |           | Region 1 | 1          | 0     |
+      | 0            | 2    | Y         |        |        | 070000    | Region 1 | 1          | 0     |
+      | 0            | 3    | Y         |        |        |           | Region 1 | 1          | 0     |
+      | 0            | 3    | Y         | 070000 |        |           | Region 1 | 1          | 0     |
+      | 0            | 3    | Y         |        | 070000 |           | Region 1 | 1          | 0     |
+      | 0            | 3    | Y         |        |        | 070000    | Region 1 | 1          | 0     |
 
     Examples: Waves 2 and 3, outcome_code is 110 (thus making it ineligible)
       | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rdmktnind | rhout |
