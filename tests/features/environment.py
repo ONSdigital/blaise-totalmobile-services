@@ -8,6 +8,7 @@ from services.case_filters.case_filter_wave_3 import CaseFilterWave3
 from services.case_filters.case_filter_wave_4 import CaseFilterWave4
 from services.case_filters.case_filter_wave_5 import CaseFilterWave5
 from services.lms_eligible__case_service import LMSEligibleCaseService
+from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
 from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
 from tests.fakes.fake_blaise_service import FakeBlaiseService
 from tests.fakes.fake_cloud_task_service import FakeCloudTaskService
@@ -26,8 +27,9 @@ def before_scenario(context, scenario):
     context.datastore_service = FakeDatastoreService()
     context.blaise_outcome_service = BlaiseCaseOutcomeService(context.blaise_service)
     context.questionnaire_service = LMSQuestionnaireService(
-        app.blaise_service,
-        LMSEligibleCaseService(
+        blaise_service=app.blaise_service,
+        mapper_service=BlaiseLMSCaseMapperService(),
+        eligible_case_service=LMSEligibleCaseService(
             wave_filters=[
                 CaseFilterWave1(),
                 CaseFilterWave2(),
@@ -36,7 +38,7 @@ def before_scenario(context, scenario):
                 CaseFilterWave5(),
             ]
         ),
-        context.datastore_service,
+        datastore_service=context.datastore_service,
     )
 
     context.uac_service = FakeUacService()
