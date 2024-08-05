@@ -135,4 +135,9 @@ class FakeTotalmobileService:
             questionnaire_name: str,
             cases: Sequence[BlaiseCaseInformationBaseModel]
     ) -> List[TotalmobileCreateJobModel]:
-        raise NotImplementedError("Currently not implemented in this mock")
+        case = cases[0]
+        return [TotalmobileCreateJobModel(
+            questionnaire_name,
+            self.REGIONS[case.field_region],
+            case.case_id, {}
+        )]
