@@ -370,7 +370,7 @@ def step_impl(context):
     create_totalmobile_jobs_service = CreateTotalmobileJobsService(
         totalmobile_service=context.totalmobile_service,
         questionnaire_service=context.questionnaire_service,
-        # uac_service=context.uac_service,
+        uac_service=context.uac_service,
         cloud_task_service=context.cloud_task_service,
     )
 
