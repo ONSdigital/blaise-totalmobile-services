@@ -66,7 +66,7 @@ class FakeBlaiseService:
             self, has_case_history: bool, questionnaire: str, case_id: str
     ):
         self._assert_case_exists(questionnaire, case_id)
-        self._questionnaires[questionnaire][case_id]["catiMana.CatiCall.RegsCalls[1].DialResult"] = has_case_history
+        self._questionnaires[questionnaire][case_id]["catiMana.CatiCall.RegsCalls[1].DialResult"] ='1' if has_case_history else None
         pass
 
     def case_has_been_updated(self, questionnaire_name: str, case_id: str) -> bool:
