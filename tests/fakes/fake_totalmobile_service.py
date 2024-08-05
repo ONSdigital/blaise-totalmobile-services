@@ -4,13 +4,16 @@ from typing import Dict, Optional, Sequence, List
 import requests
 
 from client.optimise import GetJobResponse, GetJobsResponse
+from factories.service_instance_factory import ServiceInstanceFactory
 from models.blaise.blaise_case_information_base_model import BlaiseCaseInformationBaseModel
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from models.totalmobile.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
+from services.mappers.totalmobile_mapper_service import TotalmobileMapperService
 from services.totalmobile_service import DeleteJobError
+from tests.fakes.fake_uac_service import FakeUacService
 
 
 class FakeTotalmobileService:
@@ -135,12 +138,10 @@ class FakeTotalmobileService:
             questionnaire_name: str,
             cases: Sequence[BlaiseCaseInformationBaseModel]
     ) -> List[TotalmobileCreateJobModel]:
-        return [
-            TotalmobileCreateJobModel(
-                questionnaire_name,
-                self.REGIONS[case.field_region],
-                case.case_id,
-                {'identity': {'reference': f'{questionnaire_name.replace("_", "-")}.{case.case_id}'}}
-            )
-            for case in cases
-        ]
+        world_model = self.get_world_model()
+        mapper = TotalmobileMapperService(FakeUacService())
+        return mapper.map_totalmobile_create_job_models(
+            questionnaire_name,
+            cases,
+            world_model
+        )
