@@ -135,9 +135,12 @@ class FakeTotalmobileService:
             questionnaire_name: str,
             cases: Sequence[BlaiseCaseInformationBaseModel]
     ) -> List[TotalmobileCreateJobModel]:
-        case = cases[0]
-        return [TotalmobileCreateJobModel(
-            questionnaire_name,
-            self.REGIONS[case.field_region],
-            case.case_id, {}
-        )]
+        return [
+            TotalmobileCreateJobModel(
+                questionnaire_name,
+                self.REGIONS[case.field_region],
+                case.case_id,
+                {}
+            )
+            for case in cases
+        ]
