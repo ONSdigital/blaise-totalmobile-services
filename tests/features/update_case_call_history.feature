@@ -80,7 +80,6 @@ Feature: Update call history
       | 310          |
       | 320          |
 
-
   Scenario Outline: Totalmobile sends a request with an outcome code of 510 (ineligible) when the case has no pre-existing call history
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
     And the case has an outcome code of <outcome_code>
@@ -120,7 +119,6 @@ Feature: Update call history
       | 0            |
       | 310          |
       | 320          |
-
 
   Scenario Outline: Totalmobile sends a request with an outcome code of 540 (ineligible) when the case has no pre-existing call history
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
