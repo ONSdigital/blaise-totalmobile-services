@@ -140,7 +140,7 @@ class FakeTotalmobileService:
                 questionnaire_name,
                 self.REGIONS[case.field_region],
                 case.case_id,
-                {}
+                {'identity': {'reference': f'{questionnaire_name.replace("_", "-")}.{case.case_id}'}}
             )
             for case in cases
         ]
