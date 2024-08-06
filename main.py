@@ -25,6 +25,8 @@ def create_totalmobile_jobs_trigger(_event, _context) -> str:
     except Exception as err:
         print(f"Danger, Will Robinson: {err}")
 
+    return ""
+
 
 def create_totalmobile_jobs_processor(request: flask.Request) -> str:
 
