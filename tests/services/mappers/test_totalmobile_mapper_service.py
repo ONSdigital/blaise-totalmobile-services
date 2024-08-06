@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict
 from unittest.mock import Mock
 import pytest
 from client.bus import Uac
