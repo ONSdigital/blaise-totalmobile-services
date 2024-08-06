@@ -17,11 +17,11 @@ def mock_uac_service():
 
 
 @pytest.fixture()
-def service(mock_uac_service,
-            ) -> TotalmobileMapperService:
+def service(mock_uac_service) -> TotalmobileMapperService:
     return TotalmobileMapperService(
         uac_service=mock_uac_service,
     )
+
 
 class TestMapTotalmobileJobModelsForLMS:
 
