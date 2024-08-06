@@ -24,7 +24,7 @@ Feature: Filter wave 2 and 3 cases
       | 0            | 3    | Y         |        |        |           | Region 1 |           | 310   |
       | 0            | 3    | Y         |        |        |           | Region 1 |           | 320   |
 
-    Examples: Waves 2 and 3, no telephone number, outcome_code is 0, rdmktnind is N
+    Examples: Waves 2 and 3, no telephone number, outcome_code is 0, rdmktnind is 0
       | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rdmktnind | rhout |
       | 0            | 2    | Y         |        |        |           | Region 1 | 0         | 0     |
       | 0            | 2    | Y         |        |        |           | Region 1 | 0         | 310   |
@@ -42,7 +42,7 @@ Feature: Filter wave 2 and 3 cases
       | 310          | 3    | Y         |        |        |           | Region 1 |           | 310   |
       | 310          | 3    | Y         |        |        |           | Region 1 |           | 320   |
 
-    Examples: Waves 2 and 3, no telephone number, outcome_code is 310, rdmktnind is N
+    Examples: Waves 2 and 3, no telephone number, outcome_code is 310, rdmktnind is 0
       | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rdmktnind | rhout |
       | 310          | 2    | Y         |        |        |           | Region 1 | 0         | 0     |
       | 310          | 2    | Y         |        |        |           | Region 1 | 0         | 310   |
@@ -60,7 +60,7 @@ Feature: Filter wave 2 and 3 cases
       | 320          | 3    | Y         |        |        |           | Region 1 |           | 310   |
       | 320          | 3    | Y         |        |        |           | Region 1 |           | 320   |
 
-    Examples: Waves 2 and 3, no telephone number, outcome_code is 320, rdmktnind is N
+    Examples: Waves 2 and 3, no telephone number, outcome_code is 320, rdmktnind is 0
       | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rdmktnind | rhout |
       | 320          | 2    | Y         |        |        |           | Region 1 | 0         | 0     |
       | 320          | 2    | Y         |        |        |           | Region 1 | 0         | 310   |
@@ -90,7 +90,7 @@ Feature: Filter wave 2 and 3 cases
       | 0            | 3    | Y         |         | 0700000 |           | Region 1 |           | 320   |
       | 0            | 3    | Y         |         |         | 0700000   | Region 1 |           | 320   |
 
-    Examples: Waves 2 and 3 with telephone numbers, outcome_code is 0, rdmktnind is N
+    Examples: Waves 2 and 3 with telephone numbers, outcome_code is 0, rdmktnind is 0
       | outcome_code | wave | fieldcase | telno1  | telno2  | telNoAppt | region   | rdmktnind | rhout |
       | 0            | 2    | Y         | 0700000 |         |           | Region 1 | 0         | 0     |
       | 0            | 2    | Y         |         | 0700000 |           | Region 1 | 0         | 0     |
@@ -132,7 +132,7 @@ Feature: Filter wave 2 and 3 cases
       | 310          | 3    | Y         |         | 0700000 |           | Region 1 |           | 320   |
       | 310          | 3    | Y         |         |         | 0700000   | Region 1 |           | 320   |
 
-    Examples: Waves 2 and 3 with telephone numbers, outcome_code is 310, rdmktnind is N
+    Examples: Waves 2 and 3 with telephone numbers, outcome_code is 310, rdmktnind is 0
       | outcome_code | wave | fieldcase | telno1  | telno2  | telNoAppt | region   | rdmktnind | rhout |
       | 310          | 2    | Y         | 0700000 |         |           | Region 1 | 0         | 0     |
       | 310          | 2    | Y         |         | 0700000 |           | Region 1 | 0         | 0     |
@@ -174,7 +174,7 @@ Feature: Filter wave 2 and 3 cases
       | 320          | 3    | Y         |         | 0700000 |           | Region 1 |           | 320   |
       | 320          | 3    | Y         |         |         | 0700000   | Region 1 |           | 320   |
 
-    Examples: Waves 2 and 3 with telephone numbers, outcome_code is 320, rdmktnind is N
+    Examples: Waves 2 and 3 with telephone numbers, outcome_code is 320, rdmktnind is 0
       | outcome_code | wave | fieldcase | telno1  | telno2  | telNoAppt | region   | rdmktnind | rhout |
       | 320          | 2    | Y         | 0700000 |         |           | Region 1 | 0         | 0     |
       | 320          | 2    | Y         |         | 0700000 |           | Region 1 | 0         | 0     |
@@ -222,7 +222,7 @@ Feature: Filter wave 2 and 3 cases
       | 0            | 3    | N         |        | 070000 |           | Region 1 |           | 0     |
       | 0            | 3    | N         |        |        | 070000    | Region 1 |           | 0     |
 
-    Examples: Waves 2 and 3, outcome_code is 0, rdmktnind is Y (thus making it ineligible)
+    Examples: Waves 2 and 3, outcome_code is 0, rdmktnind is 1 (thus making it ineligible)
       | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region   | rdmktnind | rhout |
       | 0            | 2    | Y         |        |        |           | Region 1 | 1          | 0     |
       | 0            | 2    | Y         | 070000 |        |           | Region 1 | 1          | 0     |
