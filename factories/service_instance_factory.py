@@ -106,12 +106,19 @@ class ServiceInstanceFactory:
     def create_cloud_task_service(self) -> CloudTaskService:
         return CloudTaskService(config=self._config, task_queue_id=self._config.create_totalmobile_jobs_task_queue_id)
         
-    def create_totalmobile_jobs_service(self) -> CreateTotalmobileJobsService:
+    def create_totalmobile_jobs_service(self, survey_type: str) -> CreateTotalmobileJobsService:
+        if survey_type == 'LMS':
+            return CreateTotalmobileJobsService(
+                        totalmobile_service=self.create_totalmobile_service(),
+                        questionnaire_service=self.create_lms_questionnaire_service(),
+                        cloud_task_service=self.create_cloud_task_service(),
+                    )
+
         return CreateTotalmobileJobsService(
-                    totalmobile_service=self.create_totalmobile_service(),
-                    questionnaire_service=self.create_lms_questionnaire_service(),
-                    cloud_task_service=self.create_cloud_task_service(),
-                )
+                        totalmobile_service=self.create_totalmobile_service(),
+                        questionnaire_service=self.create_frs_questionnaire_service(),
+                        cloud_task_service=self.create_cloud_task_service(),
+                    )
     
     def create_blaise_outcome_service(self) -> BlaiseCaseOutcomeService:
         return BlaiseCaseOutcomeService(
