@@ -1,9 +1,10 @@
 from appconfig import Config
 from client.bus import BusClient
 from models.blaise.questionnaire_uac_model import QuestionnaireUacModel
+from services.uac.uac_service_base import UacServiceBase
 
 
-class UacService:
+class UacService(UacServiceBase):
     def __init__(self, config: Config):
         self._config = config
 

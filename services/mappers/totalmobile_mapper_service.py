@@ -5,13 +5,13 @@ from models.blaise.blaise_case_information_base_model import BlaiseCaseInformati
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from models.totalmobile.totalmobile_outgoing_create_job_payload_model import TotalMobileOutgoingCreateJobPayloadModel
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from services.uac_service import UacService
+from services.uac.uac_service_base import UacServiceBase
 
 
 class TotalmobileMapperService:
     def __init__(
         self,
-        uac_service: UacService,
+        uac_service: UacServiceBase,
     ):
         self._uac_service = uac_service
     

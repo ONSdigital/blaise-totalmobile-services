@@ -5,7 +5,7 @@ import pytest
 from appconfig import Config
 from client import bus
 from models.blaise.questionnaire_uac_model import UacChunks
-from services.uac_service import UacService
+from services.uac.uac_service import UacService
 from tests.helpers import config_helper
 
 

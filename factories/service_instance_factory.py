@@ -19,7 +19,7 @@ from services.mappers.totalmobile_mapper_service import TotalmobileMapperService
 from services.questionnaires.frs_questionnaire_service import FRSQuestionnaireService
 from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
 from services.totalmobile_service import RealTotalmobileService
-from services.uac_service import UacService
+from services.uac.uac_service import UacService
 
 
 class ServiceInstanceFactory:
