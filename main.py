@@ -21,11 +21,13 @@ def create_totalmobile_jobs_trigger(request: flask.Request) -> str:
     survey_type = request_json["survey_type"]
     print(f"BTS Create Jobs triggered for survey: '{survey_type}'")
 
-    return cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
-        create_totalmobile_jobs_service=service_instance_factory.create_totalmobile_jobs_service(
-            survey_type
-        )
-    )
+    return "Done"
+
+    # return cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
+    #     create_totalmobile_jobs_service=service_instance_factory.create_totalmobile_jobs_service(
+    #         survey_type
+    #     )
+    # )
 
 
 def create_totalmobile_jobs_processor(request: flask.Request) -> str:
