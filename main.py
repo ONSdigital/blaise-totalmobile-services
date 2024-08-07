@@ -40,9 +40,11 @@ def create_totalmobile_jobs_processor(request: flask.Request) -> str:
 
 
 def delete_totalmobile_jobs_completed_in_blaise(_request: flask.Request) -> str:
-    # print("delete_totalmobile_jobs_completed_in_blaise() started")
-    # request_json = _request.get_json()
-    # print(f"DEBUG: request_json: {request_json}")
+    try:
+        request_json = _request.get_json()
+        print(f"DEBUG: request_json: {request_json}")
+    except Exception as e:
+        print(f"DEBUG: Computer said no: {e}")
     return cloud_functions.delete_totalmobile_jobs_completed_in_blaise.delete_totalmobile_jobs_completed_in_blaise(
         blaise_outcome_service=service_instance_factory.create_blaise_outcome_service(),
         totalmobile_service=service_instance_factory.create_totalmobile_service(),
