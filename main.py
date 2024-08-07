@@ -15,19 +15,20 @@ service_instance_factory = ServiceInstanceFactory()
 
 
 def create_totalmobile_jobs_trigger(request: flask.Request) -> str:
+    # purely for initial debugging
     try:
-        print(f"DEBUG: request: {request}")
         request_json = request.get_json()
         print(f"DEBUG: request_json: {request_json}")
     except Exception as e:
         print(f"DEBUG: Computer said no: {e}")
-    # survey_type = request_json["survey_type"]
-    # print(f"BTS Create Jobs triggered for survey: '{survey_type}'")
+        return ""
+
+    survey_type = request_json["survey_type"]
+    print(f"BTS Create Jobs triggered for survey: '{survey_type}'")
 
     return cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
         create_totalmobile_jobs_service=service_instance_factory.create_totalmobile_jobs_service(
-            # survey_type
-            "LMS"
+            survey_type
         )
     )
 
@@ -41,11 +42,7 @@ def create_totalmobile_jobs_processor(request: flask.Request) -> str:
 
 
 def delete_totalmobile_jobs_completed_in_blaise(_request: flask.Request) -> str:
-    try:
-        request_json = _request.get_json()
-        print(f"DEBUG: request_json: {request_json}")
-    except Exception as e:
-        print(f"DEBUG: Computer said no: {e}")
+
     return cloud_functions.delete_totalmobile_jobs_completed_in_blaise.delete_totalmobile_jobs_completed_in_blaise(
         blaise_outcome_service=service_instance_factory.create_blaise_outcome_service(),
         totalmobile_service=service_instance_factory.create_totalmobile_service(),
@@ -53,9 +50,7 @@ def delete_totalmobile_jobs_completed_in_blaise(_request: flask.Request) -> str:
 
 
 def delete_totalmobile_jobs_past_field_period(_request: flask.Request) -> str:
-    # print("delete_totalmobile_jobs_past_field_period() started")
-    # request_json = _request.get_json()
-    # print(f"DEBUG: request_json: {request_json}")
+
     return cloud_functions.delete_totalmobile_jobs_past_field_period.delete_totalmobile_jobs_past_field_period(
         blaise_outcome_service=service_instance_factory.create_blaise_outcome_service(),
         totalmobile_service=service_instance_factory.create_totalmobile_service(),
