@@ -131,6 +131,16 @@ Run check-types tests:
 poetry run mypy .
 ```
 
+Run black refactoring:
+```shell
+poetry run black .
+```
+
+Run isort refactoring:
+```shell
+poetry run isort .
+```
+
 ### Poetry Problems
 
 #### Dependencies (like the blaise-restapi) not updating properly after running ```poetry update blaise-restapi``` ???
