@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 from unittest.mock import Mock
 import pytest
 from client.bus import Uac
@@ -59,7 +59,7 @@ class TestMapTotalmobileJobModelsForLMS:
     def totalmobile_payload_helper(
             questionnaire_name: str,
             case: BlaiseLMSCaseInformationModel,
-            uac_chunks: UacChunks | None) -> dict[str, object]:
+            uac_chunks: Optional[UacChunks]) -> dict[str, object]:
 
         payload_dictionary = {
             'additionalProperties': [
