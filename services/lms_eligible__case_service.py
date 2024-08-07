@@ -1,7 +1,9 @@
 import logging
 from typing import List
 
-from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
+from models.blaise.blaise_lms_case_information_model import (
+    BlaiseLMSCaseInformationModel,
+)
 from services.case_filters.case_filter_base import CaseFilterBase
 
 

@@ -3,7 +3,9 @@ from typing import Dict
 
 import pytest
 
-from models.blaise.blaise_frs_case_information_model import BlaiseFRSCaseInformationModel
+from models.blaise.blaise_frs_case_information_model import (
+    BlaiseFRSCaseInformationModel,
+)
 
 
 @pytest.fixture()

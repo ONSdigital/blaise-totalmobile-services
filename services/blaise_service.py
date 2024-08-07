@@ -11,12 +11,12 @@ from appconfig import Config
 
 
 class BlaiseService(Protocol):
-    def get_cases(self, questionnaire_name: str, required_fields: List[str]) -> List[Dict[str, str]]:
+    def get_cases(
+        self, questionnaire_name: str, required_fields: List[str]
+    ) -> List[Dict[str, str]]:
         pass
 
-    def get_case(
-        self, questionnaire_name: str, case_id: str
-    ) -> Dict[str, str]:
+    def get_case(self, questionnaire_name: str, case_id: str) -> Dict[str, str]:
         pass
 
     def questionnaire_exists(self, questionnaire_name: str) -> bool:
@@ -33,7 +33,9 @@ class RealBlaiseService:
         self._config = config
         self.restapi_client = blaise_restapi.Client(self._config.blaise_api_url)
 
-    def get_cases(self, questionnaire_name: str, required_fields: List[str]) -> List[Dict[str, str]]:
+    def get_cases(
+        self, questionnaire_name: str, required_fields: List[str]
+    ) -> List[Dict[str, str]]:
 
         questionnaire_case_data = self.restapi_client.get_questionnaire_data(
             self._config.blaise_server_park,
@@ -43,9 +45,7 @@ class RealBlaiseService:
 
         return questionnaire_case_data["reportingData"]
 
-    def get_case(
-        self, questionnaire_name: str, case_id: str
-    ) -> Dict[str, str]:
+    def get_case(self, questionnaire_name: str, case_id: str) -> Dict[str, str]:
 
         if not self.case_exists(questionnaire_name, case_id):
             raise QuestionnaireCaseDoesNotExistError()

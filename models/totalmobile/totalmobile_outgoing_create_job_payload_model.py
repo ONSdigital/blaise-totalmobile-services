@@ -2,7 +2,9 @@ from dataclasses import asdict, dataclass
 from datetime import datetime
 from typing import List, Optional, Type, TypeVar
 
-from models.blaise.blaise_case_information_base_model import BlaiseCaseInformationBaseModel
+from models.blaise.blaise_case_information_base_model import (
+    BlaiseCaseInformationBaseModel,
+)
 from models.blaise.questionnaire_uac_model import UacChunks
 from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
 
@@ -88,9 +90,9 @@ class TotalMobileOutgoingCreateJobPayloadModel:
 
     @staticmethod
     def create_lms_description(
-            questionnaire_name: str,
-            questionnaire_case: BlaiseCaseInformationBaseModel,
-            uac_chunks: Optional[UacChunks],
+        questionnaire_name: str,
+        questionnaire_case: BlaiseCaseInformationBaseModel,
+        uac_chunks: Optional[UacChunks],
     ) -> str:
         uac_string = "" if uac_chunks is None else uac_chunks.formatted_chunks()
         due_date_string = (
@@ -120,7 +122,9 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         if questionnaire_case.tla == "FRS":
             return cls.create_frs_description()
 
-        return cls.create_lms_description(questionnaire_name, questionnaire_case, uac_chunks)
+        return cls.create_lms_description(
+            questionnaire_name, questionnaire_case, uac_chunks
+        )
 
     @staticmethod
     def concatenate_address(questionnaire_case: BlaiseCaseInformationBaseModel) -> str:

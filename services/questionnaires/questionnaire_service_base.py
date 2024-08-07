@@ -1,17 +1,19 @@
 import logging
 from abc import abstractmethod
 from datetime import datetime
-from typing import List, Dict, Sequence
-from models.blaise.blaise_case_information_base_model import BlaiseCaseInformationBaseModel
+from typing import Dict, List, Sequence
+
+from models.blaise.blaise_case_information_base_model import (
+    BlaiseCaseInformationBaseModel,
+)
 from services.blaise_service import RealBlaiseService
 from services.datastore_service import DatastoreService
 
 
 class QuestionnaireServiceBase:
     def __init__(
-            self,
-            blaise_service: RealBlaiseService,
-            datastore_service: DatastoreService):
+        self, blaise_service: RealBlaiseService, datastore_service: DatastoreService
+    ):
         self._datastore_service = datastore_service
         self._blaise_service = blaise_service
 
@@ -21,7 +23,9 @@ class QuestionnaireServiceBase:
         pass
 
     @abstractmethod
-    def get_eligible_cases(self, questionnaire_name: str) -> Sequence[BlaiseCaseInformationBaseModel]:
+    def get_eligible_cases(
+        self, questionnaire_name: str
+    ) -> Sequence[BlaiseCaseInformationBaseModel]:
         pass
 
     def questionnaire_exists(self, questionnaire_name: str) -> bool:
@@ -46,4 +50,3 @@ class QuestionnaireServiceBase:
             if record["tmreleasedate"].strftime("%d/%m/%Y") == today
             and record["questionnaire"].upper().startswith(self.questionnaire_tla)
         ]
-

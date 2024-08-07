@@ -4,7 +4,9 @@ import requests
 
 from client.messaging import MessagingClient
 from client.optimise import GetJobsResponse, OptimiseClient
-from models.blaise.blaise_case_information_base_model import BlaiseCaseInformationBaseModel
+from models.blaise.blaise_case_information_base_model import (
+    BlaiseCaseInformationBaseModel,
+)
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from models.totalmobile.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
@@ -45,19 +47,17 @@ class TotalmobileService(Protocol):
         pass
 
     def map_totalmobile_create_job_models(
-        self,
-        questionnaire_name: str,
-        cases: Sequence[BlaiseCaseInformationBaseModel]
-    ) -> List[TotalmobileCreateJobModel]:    
+        self, questionnaire_name: str, cases: Sequence[BlaiseCaseInformationBaseModel]
+    ) -> List[TotalmobileCreateJobModel]:
         pass
 
 
 class RealTotalmobileService:
     def __init__(
-        self, 
+        self,
         optimise_client: OptimiseClient,
         messaging_client: MessagingClient,
-        mapper_service: TotalmobileMapperService
+        mapper_service: TotalmobileMapperService,
     ):
         self._optimise_client = optimise_client
         self._messaging_client = messaging_client
@@ -99,14 +99,11 @@ class RealTotalmobileService:
     def get_jobs_model(self, world_id: str) -> TotalmobileGetJobsResponseModel:
         jobs_response = self.get_jobs(world_id)
         return TotalmobileGetJobsResponseModel.from_get_jobs_response(jobs_response)
-    
+
     def map_totalmobile_create_job_models(
-        self,
-        questionnaire_name: str,
-        cases: Sequence[BlaiseCaseInformationBaseModel]
+        self, questionnaire_name: str, cases: Sequence[BlaiseCaseInformationBaseModel]
     ) -> List[TotalmobileCreateJobModel]:
         world_model = self.get_world_model()
         return self._mapper.map_totalmobile_create_job_models(
-            questionnaire_name=questionnaire_name, 
-            cases=cases,
-            world_model=world_model)
+            questionnaire_name=questionnaire_name, cases=cases, world_model=world_model
+        )

@@ -6,8 +6,10 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireCaseError,
     QuestionnaireDoesNotExistError,
 )
-from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
 from models.blaise.blaise_case_update_model import BlaiseCaseUpdateModel
+from models.blaise.blaise_lms_case_information_model import (
+    BlaiseLMSCaseInformationModel,
+)
 from models.totalmobile.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )

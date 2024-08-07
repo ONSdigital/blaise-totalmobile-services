@@ -3,7 +3,9 @@ from unittest.mock import Mock
 
 import pytest
 
-from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
+from models.blaise.blaise_lms_case_information_model import (
+    BlaiseLMSCaseInformationModel,
+)
 from services.blaise_case_outcome_service import BlaiseCaseOutcomeService
 
 
@@ -21,8 +23,14 @@ class TestGetCaseOutcomesForLMS:
     ):
         questionnaire_name = "LMS2101_AA1"
         case_data = [
-            {"qiD.Serial_Number": "12002", "hOut": "110", },
-            {"qiD.Serial_Number": "14002", "hOut": "210", },
+            {
+                "qiD.Serial_Number": "12002",
+                "hOut": "110",
+            },
+            {
+                "qiD.Serial_Number": "14002",
+                "hOut": "210",
+            },
         ]
         mock_blaise_service.get_cases.return_value = case_data
         required_fields = BlaiseLMSCaseInformationModel.required_fields()
@@ -31,15 +39,23 @@ class TestGetCaseOutcomesForLMS:
         service.get_case_outcomes_for_questionnaire(questionnaire_name)
 
         # assert
-        mock_blaise_service.get_cases.assert_called_with(questionnaire_name, required_fields)
+        mock_blaise_service.get_cases.assert_called_with(
+            questionnaire_name, required_fields
+        )
 
     def test_get_case_outcomes_for_questionnaire_returns_the_expected_dictionary(
         self, mock_blaise_service, service
     ):
         questionnaire_name = "LMS2101_AA1"
         case_data = [
-            {"qiD.Serial_Number": "12002", "hOut": "110", },
-            {"qiD.Serial_Number": "14002", "hOut": "210", },
+            {
+                "qiD.Serial_Number": "12002",
+                "hOut": "110",
+            },
+            {
+                "qiD.Serial_Number": "14002",
+                "hOut": "210",
+            },
         ]
         mock_blaise_service.get_cases.return_value = case_data
 
@@ -55,8 +71,14 @@ class TestGetCaseOutcomesForLMS:
     ):
         questionnaire_name = "LMS2101_AA1"
         case_data = [
-            {"qiD.Serial_Number": "12002", "hOut": "110", },
-            {"qiD.Serial_Number": "14002", "hOut": "210", },
+            {
+                "qiD.Serial_Number": "12002",
+                "hOut": "110",
+            },
+            {
+                "qiD.Serial_Number": "14002",
+                "hOut": "210",
+            },
         ]
         mock_blaise_service.get_cases.return_value = case_data
 
@@ -100,8 +122,14 @@ class TestGetCaseOutcomesForLMS:
     ):
         questionnaire_name = "LMS2101_AA1"
         case_data = [
-            {"qiD.Serial_Number": "12002", "hOut": "110", },
-            {"qiD.Serial_Number": "14002", "hOut": "210", },
+            {
+                "qiD.Serial_Number": "12002",
+                "hOut": "110",
+            },
+            {
+                "qiD.Serial_Number": "14002",
+                "hOut": "210",
+            },
         ]
         mock_blaise_service.get_cases.return_value = case_data
 

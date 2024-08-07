@@ -4,7 +4,9 @@ from unittest.mock import Mock
 
 import pytest
 
-from models.blaise.blaise_frs_case_information_model import BlaiseFRSCaseInformationModel
+from models.blaise.blaise_frs_case_information_model import (
+    BlaiseFRSCaseInformationModel,
+)
 from services.questionnaires.frs_questionnaire_service import FRSQuestionnaireService
 from tests.helpers import get_blaise_frs_case_model_helper
 from tests.helpers.datastore_helper import DatastoreHelper
@@ -14,9 +16,11 @@ from tests.helpers.datastore_helper import DatastoreHelper
 def mock_blaise_service():
     return Mock()
 
+
 @pytest.fixture()
 def mock_mapper_service():
     return Mock()
+
 
 @pytest.fixture()
 def mock_eligible_case_service():
@@ -30,7 +34,10 @@ def mock_datastore_service():
 
 @pytest.fixture()
 def service(
-    mock_blaise_service, mock_mapper_service, mock_eligible_case_service, mock_datastore_service
+    mock_blaise_service,
+    mock_mapper_service,
+    mock_eligible_case_service,
+    mock_datastore_service,
 ) -> FRSQuestionnaireService:
     return FRSQuestionnaireService(
         blaise_service=mock_blaise_service,
@@ -53,7 +60,9 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
 
     eligible_cases = [questionnaire_cases[0]]
 
-    mock_mapper_service.map_frs_case_information_models.return_value = questionnaire_cases
+    mock_mapper_service.map_frs_case_information_models.return_value = (
+        questionnaire_cases
+    )
     mock_eligible_case_service.get_eligible_cases.return_value = eligible_cases
 
     questionnaire_name = "FRS2101"
@@ -63,7 +72,9 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
     service.get_eligible_cases(questionnaire_name)
 
     # assert
-    mock_blaise_service.get_cases.assert_called_with(questionnaire_name, required_fields)
+    mock_blaise_service.get_cases.assert_called_with(
+        questionnaire_name, required_fields
+    )
     mock_eligible_case_service.get_eligible_cases.assert_called_with(
         questionnaire_cases
     )
@@ -82,7 +93,9 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
 
     eligible_cases = [questionnaire_cases[0]]
 
-    mock_mapper_service.map_frs_case_information_models.return_value = questionnaire_cases
+    mock_mapper_service.map_frs_case_information_models.return_value = (
+        questionnaire_cases
+    )
     mock_eligible_case_service.get_eligible_cases.return_value = eligible_cases
 
     questionnaire_name = "FRS2101"
@@ -95,16 +108,16 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
 
 
 def test_get_cases_returns_a_list_of_fully_populated_cases(
-    service: FRSQuestionnaireService,
-    mock_blaise_service,
-    mock_mapper_service
+    service: FRSQuestionnaireService, mock_blaise_service, mock_mapper_service
 ):
     questionnaire_cases = [
         get_blaise_frs_case_model_helper.get_frs_populated_case_model(case_id="20001"),
         get_blaise_frs_case_model_helper.get_frs_populated_case_model(case_id="20003"),
     ]
 
-    mock_mapper_service.map_frs_case_information_models.return_value = questionnaire_cases
+    mock_mapper_service.map_frs_case_information_models.return_value = (
+        questionnaire_cases
+    )
 
     questionnaire_name = "FRS2101"
 
@@ -218,6 +231,7 @@ def test_update_case_does_not_log_personal_identifiable_information(
         in caplog.record_tuples
     )
 
+
 def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_questionnaires_with_todays_date(
     mock_datastore_service,
     service: FRSQuestionnaireService,
@@ -273,6 +287,7 @@ def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_
 
     # assert
     assert result == ["FRS2111z", "frs2031"]
+
 
 def test_get_questionnaires_with_totalmobile_release_date_of_today_returns_an_empty_list_when_there_are_no_release_dates_for_today(
     mock_datastore_service,

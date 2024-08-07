@@ -2,7 +2,9 @@ import logging
 from abc import abstractmethod
 from typing import List
 
-from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
+from models.blaise.blaise_lms_case_information_model import (
+    BlaiseLMSCaseInformationModel,
+)
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 
 
@@ -46,7 +48,9 @@ class CaseFilterBase:
         return False
 
     @staticmethod
-    def appointment_telephone_number_is_empty(case: BlaiseLMSCaseInformationModel) -> bool:
+    def appointment_telephone_number_is_empty(
+        case: BlaiseLMSCaseInformationModel,
+    ) -> bool:
         if case.contact_details.appointment_telephone_number == "":
             return True
 

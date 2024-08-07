@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from google.cloud import datastore
 
 
@@ -7,4 +8,3 @@ class DatastoreService:
         datastore_client = datastore.Client()
         query = datastore_client.query(kind="TmReleaseDate")
         return list(query.fetch())
-    

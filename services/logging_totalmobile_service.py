@@ -1,10 +1,12 @@
 import logging
-from typing import Sequence, List
+from typing import List, Sequence
 
 import requests
 
 from client.optimise import GetJobsResponse
-from models.blaise.blaise_case_information_base_model import BlaiseCaseInformationBaseModel
+from models.blaise.blaise_case_information_base_model import (
+    BlaiseCaseInformationBaseModel,
+)
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from models.totalmobile.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
@@ -65,8 +67,8 @@ class LoggingTotalmobileService:
         return model
 
     def map_totalmobile_create_job_models(
-            self,
-            questionnaire_name: str,
-            cases: Sequence[BlaiseCaseInformationBaseModel]
+        self, questionnaire_name: str, cases: Sequence[BlaiseCaseInformationBaseModel]
     ) -> List[TotalmobileCreateJobModel]:
-        return self._service.map_totalmobile_create_job_models(questionnaire_name, cases)
+        return self._service.map_totalmobile_create_job_models(
+            questionnaire_name, cases
+        )

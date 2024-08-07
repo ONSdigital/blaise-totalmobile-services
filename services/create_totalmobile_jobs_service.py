@@ -1,5 +1,6 @@
 import logging
 from typing import List
+
 from models.cloud_tasks.task_request_model import TaskRequestModel
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from services.cloud_task_service import CloudTaskService
@@ -58,9 +59,10 @@ class CreateTotalmobileJobsService:
             f"Found {len(eligible_cases)} eligible cases for questionnaire {questionnaire_name}"
         )
 
-        totalmobile_job_models = self._totalmobile_service.map_totalmobile_create_job_models(
-            cases=eligible_cases,
-            questionnaire_name=questionnaire_name
+        totalmobile_job_models = (
+            self._totalmobile_service.map_totalmobile_create_job_models(
+                cases=eligible_cases, questionnaire_name=questionnaire_name
+            )
         )
 
         return self.create_cloud_tasks_for_jobs(

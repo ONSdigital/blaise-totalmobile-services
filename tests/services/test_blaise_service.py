@@ -28,10 +28,10 @@ def blaise_service(config) -> RealBlaiseService:
 @pytest.fixture()
 def required_fields() -> List:
     return [
-            "qiD.Serial_Number",
-            "dataModelName",
-            "qDataBag.TLA",
-        ]
+        "qiD.Serial_Number",
+        "dataModelName",
+        "qDataBag.TLA",
+    ]
 
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
@@ -60,7 +60,11 @@ def test_get_cases_returns_the_expected_case_data(
         "questionnaireName": "LMS2101_AA1",
         "questionnaireId": "12345-12345-12345-12345-12345",
         "reportingData": [
-            {"qiD.Serial_Number": "10010","hOut": "110","qDataBag.WaveComDTE": "31-01-2023"},
+            {
+                "qiD.Serial_Number": "10010",
+                "hOut": "110",
+                "qDataBag.WaveComDTE": "31-01-2023",
+            },
             {"qiD.Serial_Number": "10020", "hOut": "210", "qDataBag.WaveComDTE": ""},
             {"qiD.Serial_Number": "10030", "hOut": "310", "qDataBag.WaveComDTE": ""},
             {"qiD.Serial_Number": "10040", "hOut": "310", "qDataBag.WaveComDTE": ""},

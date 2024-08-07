@@ -1,7 +1,10 @@
 from dataclasses import dataclass
 from typing import List, Optional, Type, TypeVar
 
-from models.blaise.blaise_case_information_base_model import BlaiseCaseInformationBaseModel
+from models.blaise.blaise_case_information_base_model import (
+    BlaiseCaseInformationBaseModel,
+)
+
 
 @dataclass
 class ContactDetails:

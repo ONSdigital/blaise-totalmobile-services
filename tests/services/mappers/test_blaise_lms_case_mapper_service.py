@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Dict
 
 import pytest
+
 from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
 
 
@@ -41,16 +42,16 @@ class TestLMSCaseMapping:
         }
 
     def test_map_lms_case_information_model_maps_the_correct_model(
-            self,
-            service,
-            valid_case_data_dictionary):
+        self, service, valid_case_data_dictionary
+    ):
 
         # arrange
         questionnaire_name = "LMS2101_AA1"
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, valid_case_data_dictionary)
+            questionnaire_name, valid_case_data_dictionary
+        )
 
         # assert
         assert result.questionnaire_name == "LMS2101_AA1"
@@ -94,12 +95,12 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, valid_case_data_dictionary)
+            questionnaire_name, valid_case_data_dictionary
+        )
 
         # assert
         assert result.questionnaire_name == "LMS2101_AA1"
         assert result.case_id is None
-
 
     def test_map_lms_case_information_model_returns_a_valid_object_with_the_field_set_to_none_when_an_optional_blaise_field_is_missing(
         self,
@@ -114,16 +115,17 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, valid_case_data_dictionary)
+            questionnaire_name, valid_case_data_dictionary
+        )
 
         # assert
         assert result.questionnaire_name == "LMS2101_AA1"
         assert result.case_id is None
 
     def test_map_lms_case_information_model_sets_outcome_code_to_zero_if_empty(
-            self,
-            service,
-            valid_case_data_dictionary,
+        self,
+        service,
+        valid_case_data_dictionary,
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
@@ -132,15 +134,16 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, valid_case_data_dictionary)
+            questionnaire_name, valid_case_data_dictionary
+        )
 
         # assert
         assert result.outcome_code == 0
 
     def test_map_lms_case_information_model_sets_outcome_code_to_zero_if_not_supplied(
-            self,
-            service,
-            valid_case_data_dictionary,
+        self,
+        service,
+        valid_case_data_dictionary,
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
@@ -149,14 +152,15 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, valid_case_data_dictionary)
+            questionnaire_name, valid_case_data_dictionary
+        )
 
         # assert
         assert result.outcome_code == 0
 
     def test_map_lms_case_information_model_sets_has_call_history_to_true_when_blaise_case_has_call_history(
-            self,
-            service,
+        self,
+        service,
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
@@ -168,14 +172,15 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, case_data_dictionary)
+            questionnaire_name, case_data_dictionary
+        )
 
         # assert
         assert result.has_call_history is True
 
     def test_map_lms_case_information_model_sets_has_call_history_to_false_when_blaise_case_has_no_call_history(
-            self,
-            service,
+        self,
+        service,
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
@@ -187,15 +192,15 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, case_data_dictionary)
+            questionnaire_name, case_data_dictionary
+        )
 
         # assert
         assert result.has_call_history is False
 
-
     def test_map_lms_case_information_model_sets_has_call_history_to_false_when_blaise_case_is_missing_call_history(
-            self,
-            service,
+        self,
+        service,
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
@@ -206,16 +211,14 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, case_data_dictionary)
+            questionnaire_name, case_data_dictionary
+        )
 
         # assert
         assert result.has_call_history is False
 
-
     def test_map_lms_case_information_model_sets_date_to_none_if_date_is_an_empty_string(
-            self,
-            service,
-            valid_case_data_dictionary
+        self, service, valid_case_data_dictionary
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
@@ -224,11 +227,11 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, case_data_dictionary)
+            questionnaire_name, case_data_dictionary
+        )
 
         # assert
         assert result.wave_com_dte is None
-
 
     def test_map_lms_case_information_model_sets_rotational_outcome_code_to_zero_if_empty(
         self,
@@ -242,11 +245,11 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, case_data_dictionary)
+            questionnaire_name, case_data_dictionary
+        )
 
         # assert
         assert result.rotational_outcome_code == 0
-
 
     def test_map_lms_case_information_model_sets_rotational_knock_to_nudge_indicator_to_empty_if_not_supplied(
         self,
@@ -260,11 +263,11 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, case_data_dictionary)
+            questionnaire_name, case_data_dictionary
+        )
 
         # assert
         assert result.rotational_knock_to_nudge_indicator == ""
-
 
     def test_map_lms_case_information_model_sets_rotational_knock_to_nudge_indicator_to_empty_if_not_it_doesnt_have_a_value(
         self,
@@ -278,11 +281,11 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, case_data_dictionary)
+            questionnaire_name, case_data_dictionary
+        )
 
         # assert
         assert result.rotational_knock_to_nudge_indicator == ""
-
 
     def test_map_lms_case_information_model_sets_rotational_knock_to_nudge_indicator_to_y_if_its_value_is_1(
         self,
@@ -296,11 +299,11 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, case_data_dictionary)
+            questionnaire_name, case_data_dictionary
+        )
 
         # assert
         assert result.rotational_knock_to_nudge_indicator == "Y"
-
 
     def test_map_lms_case_information_model_sets_rotational_knock_to_nudge_indicator_to_n_if_its_value_is_2(
         self,
@@ -314,11 +317,11 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, case_data_dictionary)
+            questionnaire_name, case_data_dictionary
+        )
 
         # assert
         assert result.rotational_knock_to_nudge_indicator == "N"
-
 
     def test_map_lms_case_information_model_sets_rotational_outcome_code_to_zero_if_not_supplied(
         self,
@@ -332,11 +335,11 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, case_data_dictionary)
+            questionnaire_name, case_data_dictionary
+        )
 
         # assert
         assert result.rotational_outcome_code == 0
-
 
     def test_map_lms_case_information_model_sets_address_reference_to_an_empty_string_when_the_uprn_field_does_not_exist(
         self,
@@ -350,7 +353,8 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, case_data_dictionary)
+            questionnaire_name, case_data_dictionary
+        )
 
         # assert
         assert result.address_details.reference == ""

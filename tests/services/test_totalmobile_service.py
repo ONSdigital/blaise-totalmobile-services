@@ -40,9 +40,14 @@ def messaging_client_mock():
 def mock_mapper_service():
     return Mock()
 
+
 @pytest.fixture()
-def totalmobile_service(optimise_client_mock, messaging_client_mock, mock_mapper_service):
-    return RealTotalmobileService(optimise_client_mock, messaging_client_mock, mock_mapper_service)
+def totalmobile_service(
+    optimise_client_mock, messaging_client_mock, mock_mapper_service
+):
+    return RealTotalmobileService(
+        optimise_client_mock, messaging_client_mock, mock_mapper_service
+    )
 
 
 class TestGetWorldModel:

@@ -1,7 +1,9 @@
 import logging
 from typing import List, Sequence
 
-from models.blaise.blaise_frs_case_information_model import BlaiseFRSCaseInformationModel
+from models.blaise.blaise_frs_case_information_model import (
+    BlaiseFRSCaseInformationModel,
+)
 from services.blaise_service import RealBlaiseService
 from services.datastore_service import DatastoreService
 from services.frs_eligible_case_service import FRSEligibleCaseService
@@ -30,14 +32,18 @@ class FRSQuestionnaireService(QuestionnaireServiceBase):
         self, questionnaire_name: str
     ) -> Sequence[BlaiseFRSCaseInformationModel]:
         questionnaire_cases = self.get_cases(questionnaire_name)
-        eligible_cases: Sequence[BlaiseFRSCaseInformationModel] = self._eligible_case_service.get_eligible_cases(
-            questionnaire_cases
-        )
+        eligible_cases: Sequence[
+            BlaiseFRSCaseInformationModel
+        ] = self._eligible_case_service.get_eligible_cases(questionnaire_cases)
         return eligible_cases
 
     def get_cases(self, questionnaire_name: str) -> List[BlaiseFRSCaseInformationModel]:
-        questionnaire_case_data = self._blaise_service.get_cases(questionnaire_name, BlaiseFRSCaseInformationModel.required_fields())
-        cases = self._mapper_service.map_frs_case_information_models(questionnaire_name, questionnaire_case_data)
+        questionnaire_case_data = self._blaise_service.get_cases(
+            questionnaire_name, BlaiseFRSCaseInformationModel.required_fields()
+        )
+        cases = self._mapper_service.map_frs_case_information_models(
+            questionnaire_name, questionnaire_case_data
+        )
 
         logging.info(
             f"Retrieved {len(cases)} cases from questionnaire {questionnaire_name}"
@@ -48,4 +54,6 @@ class FRSQuestionnaireService(QuestionnaireServiceBase):
         self, questionnaire_name: str, case_id: str
     ) -> BlaiseFRSCaseInformationModel:
         case_data = self._blaise_service.get_case(questionnaire_name, case_id)
-        return self._mapper_service.map_frs_case_information_model(questionnaire_name, case_data)
+        return self._mapper_service.map_frs_case_information_model(
+            questionnaire_name, case_data
+        )

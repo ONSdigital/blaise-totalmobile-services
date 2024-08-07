@@ -1,7 +1,9 @@
 import logging
 from typing import List
 
-from models.blaise.blaise_frs_case_information_model import BlaiseFRSCaseInformationModel
+from models.blaise.blaise_frs_case_information_model import (
+    BlaiseFRSCaseInformationModel,
+)
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 
 
@@ -31,4 +33,3 @@ class FRSEligibleCaseService:
             f"Case '{case.case_id}' in questionnaire '{case.questionnaire_name}' was not eligible to be sent to Totalmobile as it has a value '{case.field_region}' outside of the range '{value_range}' set for the field 'field_region'"
         )
         return False
-

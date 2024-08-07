@@ -1,7 +1,9 @@
 import logging
 from typing import Dict, List, Optional
 
-from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
+from models.blaise.blaise_lms_case_information_model import (
+    BlaiseLMSCaseInformationModel,
+)
 from services.blaise_service import BlaiseService
 from services.mappers.mapper_base import MapperServiceBase
 
@@ -16,8 +18,12 @@ class BlaiseCaseOutcomeService:
     ) -> Dict[Optional[str], int]:
         if questionnaire_name not in self._questionnaire_case_outcomes:
             try:
-                cases = self._blaise_service.get_cases(questionnaire_name, BlaiseLMSCaseInformationModel.required_fields())
-                self._questionnaire_case_outcomes[questionnaire_name] = self._get_case_outcomes(cases)
+                cases = self._blaise_service.get_cases(
+                    questionnaire_name, BlaiseLMSCaseInformationModel.required_fields()
+                )
+                self._questionnaire_case_outcomes[
+                    questionnaire_name
+                ] = self._get_case_outcomes(cases)
             except Exception as error:
                 logging.error(
                     f"Unable to retrieve cases from Blaise for questionnaire {questionnaire_name}",
@@ -28,7 +34,12 @@ class BlaiseCaseOutcomeService:
         return self._questionnaire_case_outcomes[questionnaire_name]
 
     @staticmethod
-    def _get_case_outcomes(case_data_list: List[Dict[str, str]]) -> Dict[Optional[str], int]:
-        return {MapperServiceBase.get_case_id(case_data): MapperServiceBase.get_outcome_code(case_data) for case_data in case_data_list}
-
-
+    def _get_case_outcomes(
+        case_data_list: List[Dict[str, str]]
+    ) -> Dict[Optional[str], int]:
+        return {
+            MapperServiceBase.get_case_id(
+                case_data
+            ): MapperServiceBase.get_outcome_code(case_data)
+            for case_data in case_data_list
+        }

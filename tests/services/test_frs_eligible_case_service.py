@@ -34,4 +34,3 @@ def test_get_eligible_cases_returns_expected_list_of_eligible_cases_for_frs():
         get_frs_populated_case_model(case_id="90007", field_region="Region 7"),
         get_frs_populated_case_model(case_id="90008", field_region="Region 8"),
     ]
-    

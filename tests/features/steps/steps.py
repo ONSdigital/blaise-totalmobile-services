@@ -360,7 +360,7 @@ def step_impl(context, case_id, questionnaire_name):
         appointment_telephone_number=data_fields["telNoAppt"],
         field_region=data_fields["qDataBag.FieldRegion"],
         rotational_knock_to_nudge_indicator=data_fields.get("qRotate.RDMktnIND"),
-        rotational_outcome_code=rotational_outcome_code
+        rotational_outcome_code=rotational_outcome_code,
     )
     context.case_id = case_id
 

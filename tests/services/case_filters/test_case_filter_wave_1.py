@@ -2,7 +2,9 @@ import logging
 
 import pytest
 
-from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
+from models.blaise.blaise_lms_case_information_model import (
+    BlaiseLMSCaseInformationModel,
+)
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 from services.case_filters.case_filter_wave_1 import CaseFilterWave1
 from tests.helpers.get_blaise_lms_case_model_helper import get_populated_case_model

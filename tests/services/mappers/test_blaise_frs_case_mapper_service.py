@@ -36,16 +36,16 @@ class TestFRSCaseMapping:
         }
 
     def test_map_frs_case_information_model_maps_the_correct_model(
-            self,
-            service,
-            valid_case_data_dictionary):
+        self, service, valid_case_data_dictionary
+    ):
 
         # arrange
         questionnaire_name = "FRS2101"
 
         # act
         result = service.map_frs_case_information_model(
-            questionnaire_name, valid_case_data_dictionary)
+            questionnaire_name, valid_case_data_dictionary
+        )
 
         # assert
         assert result.questionnaire_name == "FRS2101"
@@ -82,12 +82,12 @@ class TestFRSCaseMapping:
 
         # act
         result = service.map_frs_case_information_model(
-            questionnaire_name, valid_case_data_dictionary)
+            questionnaire_name, valid_case_data_dictionary
+        )
 
         # assert
         assert result.questionnaire_name == "FRS2101"
         assert result.case_id is None
-
 
     def test_map_frs_case_information_model_returns_a_valid_object_with_the_field_set_to_none_when_an_optional_blaise_field_is_missing(
         self,
@@ -102,16 +102,15 @@ class TestFRSCaseMapping:
 
         # act
         result = service.map_frs_case_information_model(
-            questionnaire_name, valid_case_data_dictionary)
+            questionnaire_name, valid_case_data_dictionary
+        )
 
         # assert
         assert result.questionnaire_name == "FRS2101"
         assert result.case_id is None
 
     def test_map_frs_case_information_model_sets_date_to_none_if_date_is_an_empty_string(
-            self,
-            service,
-            valid_case_data_dictionary
+        self, service, valid_case_data_dictionary
     ):
         # arrange
         questionnaire_name = "FRS2101"
@@ -130,7 +129,8 @@ class TestFRSCaseMapping:
 
         # act
         result = service.map_frs_case_information_model(
-            questionnaire_name, case_data_dictionary)
+            questionnaire_name, case_data_dictionary
+        )
 
         # assert
         assert result.address_details.reference == ""

@@ -42,14 +42,14 @@ class ServiceInstanceFactory:
     @staticmethod
     def create_eligible_lms_case_service() -> LMSEligibleCaseService:
         return LMSEligibleCaseService(
-               wave_filters=[
-                    CaseFilterWave1(),
-                    CaseFilterWave2(),
-                    CaseFilterWave3(),
-                    CaseFilterWave4(),
-                    CaseFilterWave5(),
-                ]
-            )
+            wave_filters=[
+                CaseFilterWave1(),
+                CaseFilterWave2(),
+                CaseFilterWave3(),
+                CaseFilterWave4(),
+                CaseFilterWave5(),
+            ]
+        )
 
     @staticmethod
     def create_eligible_frs_case_service() -> FRSEligibleCaseService:
@@ -84,43 +84,47 @@ class ServiceInstanceFactory:
 
     def create_totalmobile_service(self) -> RealTotalmobileService:
         optimise_client = OptimiseClient(
-                self._config.totalmobile_url,
-                self._config.totalmobile_instance,
-                self._config.totalmobile_client_id,
-                self._config.totalmobile_client_secret,
-            )
+            self._config.totalmobile_url,
+            self._config.totalmobile_instance,
+            self._config.totalmobile_client_id,
+            self._config.totalmobile_client_secret,
+        )
         messaging_client = MessagingClient(
-                self._config.totalmobile_url,
-                self._config.totalmobile_instance,
-                self._config.totalmobile_client_id,
-                self._config.totalmobile_client_secret,
-            )
+            self._config.totalmobile_url,
+            self._config.totalmobile_instance,
+            self._config.totalmobile_client_id,
+            self._config.totalmobile_client_secret,
+        )
         return RealTotalmobileService(
-                optimise_client=optimise_client, 
-                messaging_client=messaging_client,
-                mapper_service=self.create_totalmobile_mapper_service())
-        
+            optimise_client=optimise_client,
+            messaging_client=messaging_client,
+            mapper_service=self.create_totalmobile_mapper_service(),
+        )
+
     def create_uac_service(self) -> UacService:
         return UacService(config=self._config)
-        
+
     def create_cloud_task_service(self) -> CloudTaskService:
-        return CloudTaskService(config=self._config, task_queue_id=self._config.create_totalmobile_jobs_task_queue_id)
-        
-    def create_totalmobile_jobs_service(self, survey_type: str) -> CreateTotalmobileJobsService:
-        if survey_type == 'LMS':
+        return CloudTaskService(
+            config=self._config,
+            task_queue_id=self._config.create_totalmobile_jobs_task_queue_id,
+        )
+
+    def create_totalmobile_jobs_service(
+        self, survey_type: str
+    ) -> CreateTotalmobileJobsService:
+        if survey_type == "LMS":
             return CreateTotalmobileJobsService(
-                        totalmobile_service=self.create_totalmobile_service(),
-                        questionnaire_service=self.create_lms_questionnaire_service(),
-                        cloud_task_service=self.create_cloud_task_service(),
-                    )
+                totalmobile_service=self.create_totalmobile_service(),
+                questionnaire_service=self.create_lms_questionnaire_service(),
+                cloud_task_service=self.create_cloud_task_service(),
+            )
 
         return CreateTotalmobileJobsService(
-                        totalmobile_service=self.create_totalmobile_service(),
-                        questionnaire_service=self.create_frs_questionnaire_service(),
-                        cloud_task_service=self.create_cloud_task_service(),
-                    )
-    
+            totalmobile_service=self.create_totalmobile_service(),
+            questionnaire_service=self.create_frs_questionnaire_service(),
+            cloud_task_service=self.create_cloud_task_service(),
+        )
+
     def create_blaise_outcome_service(self) -> BlaiseCaseOutcomeService:
-        return BlaiseCaseOutcomeService(
-                blaise_service=self.create_blaise_service()
-            )
+        return BlaiseCaseOutcomeService(blaise_service=self.create_blaise_service())

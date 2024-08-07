@@ -6,7 +6,9 @@ from models.blaise.blaise_case_information_base_model import (
     AddressCoordinates,
     AddressDetails,
 )
-from models.blaise.blaise_frs_case_information_model import BlaiseFRSCaseInformationModel
+from models.blaise.blaise_frs_case_information_model import (
+    BlaiseFRSCaseInformationModel,
+)
 
 
 def get_frs_populated_case_model(

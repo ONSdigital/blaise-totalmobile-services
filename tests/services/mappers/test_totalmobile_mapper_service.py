@@ -1,14 +1,20 @@
 from typing import Dict, Optional
 from unittest.mock import Mock
+
 import pytest
+
 from client.bus import Uac
-from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel
-from models.blaise.blaise_frs_case_information_model import BlaiseFRSCaseInformationModel
+from models.blaise.blaise_frs_case_information_model import (
+    BlaiseFRSCaseInformationModel,
+)
+from models.blaise.blaise_lms_case_information_model import (
+    BlaiseLMSCaseInformationModel,
+)
 from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.mappers.totalmobile_mapper_service import TotalmobileMapperService
-from tests.helpers.get_blaise_lms_case_model_helper import get_populated_case_model
 from tests.helpers.get_blaise_frs_case_model_helper import get_frs_populated_case_model
+from tests.helpers.get_blaise_lms_case_model_helper import get_populated_case_model
 
 
 @pytest.fixture()
@@ -24,7 +30,6 @@ def service(mock_uac_service) -> TotalmobileMapperService:
 
 
 class TestMapTotalmobileJobModelsForLMS:
-
     @staticmethod
     def get_questionnaire_uac_model() -> QuestionnaireUacModel:
         uac_data_dictionary: Dict[str, Uac] = {
@@ -52,60 +57,73 @@ class TestMapTotalmobileJobModelsForLMS:
             },
         }
 
-        questionnaire_uac_model = QuestionnaireUacModel.import_uac_data(uac_data_dictionary)
+        questionnaire_uac_model = QuestionnaireUacModel.import_uac_data(
+            uac_data_dictionary
+        )
         return questionnaire_uac_model
 
     @staticmethod
     def totalmobile_payload_helper(
-            questionnaire_name: str,
-            case: BlaiseLMSCaseInformationModel,
-            uac_chunks: Optional[UacChunks]) -> dict[str, object]:
+        questionnaire_name: str,
+        case: BlaiseLMSCaseInformationModel,
+        uac_chunks: Optional[UacChunks],
+    ) -> dict[str, object]:
 
         payload_dictionary = {
-            'additionalProperties': [
-                {'name': 'surveyName', 'value': case.data_model_name},
-                {'name': 'tla', 'value': case.tla},
-                {'name': 'wave', 'value': f'{case.wave}'},
-                {'name': 'priority', 'value': case.priority},
-                {'name': 'fieldRegion', 'value': case.field_region},
-                {'name': 'fieldTeam', 'value': case.field_team},
+            "additionalProperties": [
+                {"name": "surveyName", "value": case.data_model_name},
+                {"name": "tla", "value": case.tla},
+                {"name": "wave", "value": f"{case.wave}"},
+                {"name": "priority", "value": case.priority},
+                {"name": "fieldRegion", "value": case.field_region},
+                {"name": "fieldTeam", "value": case.field_team},
             ],
-            'attributes': [
-                {'name': 'Region', 'value': case.field_region},
-                {'name': 'Team', 'value': case.field_team}
+            "attributes": [
+                {"name": "Region", "value": case.field_region},
+                {"name": "Team", "value": case.field_team},
             ],
-            'contact': {'name': case.address_details.address.postcode},
-            'description': f'UAC: {uac_chunks.formatted_chunks() if uac_chunks is not None else ""}\n'
-                           f'Due Date: {case.wave_com_dte.strftime("%d/%m/%Y") if case.wave_com_dte is not None else ""}\n'
-                           f'Study: {questionnaire_name}\n'
-                           f'Case ID: {case.case_id}\n'
-                           f'Wave: {case.wave}',
-            'dueDate': {'end': case.wave_com_dte.strftime("%Y-%m-%d") if case.wave_com_dte is not None else ""},
-            'duration': 15,
-            'identity': {'reference': f'{questionnaire_name.replace("_", "-")}.{case.case_id}'},
-            'location': {'address': '12 Blaise Street, Blaise Hill, Blaiseville, Newport, '
-                                    'FML134D',
-                         'addressDetail': {'addressLine1': '12 Blaise Street, Blaise Hill',
-                                           'addressLine2': 'Blaiseville',
-                                           'addressLine3': 'Gwent',
-                                           'addressLine4': 'Newport',
-                                           'coordinates': {'latitude': '10020202',
-                                                           'longitude': '34949494'},
-                                           'postCode': 'FML134D'},
-                         'reference': case.address_details.reference},
-            'origin': 'ONS',
-            'skills': [{'identity': {'reference': case.tla}}],
-            'workType': case.tla}
+            "contact": {"name": case.address_details.address.postcode},
+            "description": f'UAC: {uac_chunks.formatted_chunks() if uac_chunks is not None else ""}\n'
+            f'Due Date: {case.wave_com_dte.strftime("%d/%m/%Y") if case.wave_com_dte is not None else ""}\n'
+            f"Study: {questionnaire_name}\n"
+            f"Case ID: {case.case_id}\n"
+            f"Wave: {case.wave}",
+            "dueDate": {
+                "end": case.wave_com_dte.strftime("%Y-%m-%d")
+                if case.wave_com_dte is not None
+                else ""
+            },
+            "duration": 15,
+            "identity": {
+                "reference": f'{questionnaire_name.replace("_", "-")}.{case.case_id}'
+            },
+            "location": {
+                "address": "12 Blaise Street, Blaise Hill, Blaiseville, Newport, "
+                "FML134D",
+                "addressDetail": {
+                    "addressLine1": "12 Blaise Street, Blaise Hill",
+                    "addressLine2": "Blaiseville",
+                    "addressLine3": "Gwent",
+                    "addressLine4": "Newport",
+                    "coordinates": {"latitude": "10020202", "longitude": "34949494"},
+                    "postCode": "FML134D",
+                },
+                "reference": case.address_details.reference,
+            },
+            "origin": "ONS",
+            "skills": [{"identity": {"reference": case.tla}}],
+            "workType": case.tla,
+        }
 
         if uac_chunks is not None:
-            payload_dictionary['additionalProperties'].append({'name': 'uac1', 'value': uac_chunks.uac1}) # type: ignore
-            payload_dictionary['additionalProperties'].append({'name': 'uac2', 'value': uac_chunks.uac2}) # type: ignore
-            payload_dictionary['additionalProperties'].append({'name': 'uac3', 'value': uac_chunks.uac3}) # type: ignore
+            payload_dictionary["additionalProperties"].append({"name": "uac1", "value": uac_chunks.uac1})  # type: ignore
+            payload_dictionary["additionalProperties"].append({"name": "uac2", "value": uac_chunks.uac2})  # type: ignore
+            payload_dictionary["additionalProperties"].append({"name": "uac3", "value": uac_chunks.uac3})  # type: ignore
 
         return payload_dictionary
 
     def test_map_totalmobile_job_models_maps_the_correct_list_of_models(
-            self, mock_uac_service, service: TotalmobileMapperService
+        self, mock_uac_service, service: TotalmobileMapperService
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
@@ -123,7 +141,9 @@ class TestMapTotalmobileJobModelsForLMS:
         ]
 
         questionnaire_uac_model = self.get_questionnaire_uac_model()
-        mock_uac_service.get_questionnaire_uac_model.return_value = questionnaire_uac_model
+        mock_uac_service.get_questionnaire_uac_model.return_value = (
+            questionnaire_uac_model
+        )
 
         world_model = TotalmobileWorldModel(
             worlds=[
@@ -135,7 +155,9 @@ class TestMapTotalmobileJobModelsForLMS:
 
         # act
         result = service.map_totalmobile_create_job_models(
-            questionnaire_name=questionnaire_name, cases=case_data, world_model=world_model
+            questionnaire_name=questionnaire_name,
+            cases=case_data,
+            world_model=world_model,
         )
 
         # assert
@@ -147,7 +169,8 @@ class TestMapTotalmobileJobModelsForLMS:
         assert result[0].payload == self.totalmobile_payload_helper(
             questionnaire_name=questionnaire_name,
             case=case_data[0],
-            uac_chunks=questionnaire_uac_model.get_uac_chunks(case_data[0].case_id))
+            uac_chunks=questionnaire_uac_model.get_uac_chunks(case_data[0].case_id),
+        )
         assert result[0].payload["description"].startswith("UAC: 8175 4725 3990")
 
         assert result[1].questionnaire == "LMS2101_AA1"
@@ -156,77 +179,81 @@ class TestMapTotalmobileJobModelsForLMS:
         assert result[1].payload == self.totalmobile_payload_helper(
             questionnaire_name=questionnaire_name,
             case=case_data[1],
-            uac_chunks=questionnaire_uac_model.get_uac_chunks(case_data[1].case_id))
+            uac_chunks=questionnaire_uac_model.get_uac_chunks(case_data[1].case_id),
+        )
         assert result[1].payload["description"].startswith("UAC: 4175 5725 6990")
 
         assert result[2].questionnaire == "LMS2101_AA1"
         assert result[2].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
         assert result[2].case_id == "10030"
         assert result[2].payload == self.totalmobile_payload_helper(
-            questionnaire_name=questionnaire_name,
-            case=case_data[2],
-            uac_chunks=None)
+            questionnaire_name=questionnaire_name, case=case_data[2], uac_chunks=None
+        )
         assert result[2].payload["description"].startswith("UAC: \nDue Date")
 
 
 class TestMapTotalmobileJobModelsForFRS:
     @staticmethod
     def totalmobile_payload_helper(
-            questionnaire_name: str,
-            case: BlaiseFRSCaseInformationModel) -> Dict[str, object]:
+        questionnaire_name: str, case: BlaiseFRSCaseInformationModel
+    ) -> Dict[str, object]:
 
-        due_date = case.wave_com_dte.strftime("%d/%m/%Y") if case.wave_com_dte is not None else ""
+        due_date = (
+            case.wave_com_dte.strftime("%d/%m/%Y")
+            if case.wave_com_dte is not None
+            else ""
+        )
 
         payload_dictionary = {
-            'additionalProperties': [
-                {'name': 'surveyName', 'value': case.data_model_name},
-                {'name': 'tla', 'value': case.tla},
-                {'name': 'wave', 'value': f'{case.wave}'},
-                {'name': 'priority', 'value': case.priority},
-                {'name': 'fieldRegion', 'value': case.field_region},
-                {'name': 'fieldTeam', 'value': case.field_team}
+            "additionalProperties": [
+                {"name": "surveyName", "value": case.data_model_name},
+                {"name": "tla", "value": case.tla},
+                {"name": "wave", "value": f"{case.wave}"},
+                {"name": "priority", "value": case.priority},
+                {"name": "fieldRegion", "value": case.field_region},
+                {"name": "fieldTeam", "value": case.field_team},
             ],
-            'attributes': [
-                {'name': 'Region', 'value': case.field_region},
-                {'name': 'Team', 'value': case.field_team}
+            "attributes": [
+                {"name": "Region", "value": case.field_region},
+                {"name": "Team", "value": case.field_team},
             ],
-            'contact': {'name': case.address_details.address.postcode},
-            'description': '',
-            'dueDate': {'end': due_date},
-            'duration': 15,
-            'identity': {'reference': f'{questionnaire_name.replace("_", "-")}.{case.case_id}'},
-            'location': {'address': '12 Blaise Street, Blaise Hill, Blaiseville, Newport, '
-                                    'FML134D',
-                         'addressDetail': {'addressLine1': '12 Blaise Street, Blaise Hill',
-                                           'addressLine2': 'Blaiseville',
-                                           'addressLine3': 'Gwent',
-                                           'addressLine4': 'Newport',
-                                           'coordinates': {'latitude': '10020202',
-                                                           'longitude': '34949494'},
-                                           'postCode': 'FML134D'},
-                         'reference': case.address_details.reference},
-            'origin': 'ONS',
-            'skills': [{'identity': {'reference': case.tla}}],
-            'workType': case.tla}
+            "contact": {"name": case.address_details.address.postcode},
+            "description": "",
+            "dueDate": {"end": due_date},
+            "duration": 15,
+            "identity": {
+                "reference": f'{questionnaire_name.replace("_", "-")}.{case.case_id}'
+            },
+            "location": {
+                "address": "12 Blaise Street, Blaise Hill, Blaiseville, Newport, "
+                "FML134D",
+                "addressDetail": {
+                    "addressLine1": "12 Blaise Street, Blaise Hill",
+                    "addressLine2": "Blaiseville",
+                    "addressLine3": "Gwent",
+                    "addressLine4": "Newport",
+                    "coordinates": {"latitude": "10020202", "longitude": "34949494"},
+                    "postCode": "FML134D",
+                },
+                "reference": case.address_details.reference,
+            },
+            "origin": "ONS",
+            "skills": [{"identity": {"reference": case.tla}}],
+            "workType": case.tla,
+        }
 
         return payload_dictionary
 
     def test_map_totalmobile_job_models_maps_the_correct_list_of_models(
-            self, mock_uac_service, service: TotalmobileMapperService
+        self, mock_uac_service, service: TotalmobileMapperService
     ):
         # arrange
         questionnaire_name = "FRS2101"
 
         case_data = [
-            get_frs_populated_case_model(
-                case_id="10010", field_region="region1"
-            ),
-            get_frs_populated_case_model(
-                case_id="10020", field_region="region2"
-            ),
-            get_frs_populated_case_model(
-                case_id="10030", field_region="region3"
-            ),
+            get_frs_populated_case_model(case_id="10010", field_region="region1"),
+            get_frs_populated_case_model(case_id="10020", field_region="region2"),
+            get_frs_populated_case_model(case_id="10030", field_region="region3"),
         ]
 
         world_model = TotalmobileWorldModel(
@@ -239,7 +266,9 @@ class TestMapTotalmobileJobModelsForFRS:
 
         # act
         result = service.map_totalmobile_create_job_models(
-            questionnaire_name=questionnaire_name, cases=case_data, world_model=world_model
+            questionnaire_name=questionnaire_name,
+            cases=case_data,
+            world_model=world_model,
         )
 
         # assert
@@ -249,17 +278,17 @@ class TestMapTotalmobileJobModelsForFRS:
         assert result[0].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         assert result[0].case_id == "10010"
         assert result[0].payload == self.totalmobile_payload_helper(
-            questionnaire_name=questionnaire_name,
-            case=case_data[0])
+            questionnaire_name=questionnaire_name, case=case_data[0]
+        )
 
-        assert result[0].payload["description"]  == ""
+        assert result[0].payload["description"] == ""
 
         assert result[1].questionnaire == "FRS2101"
         assert result[1].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa7"
         assert result[1].case_id == "10020"
         assert result[1].payload == self.totalmobile_payload_helper(
-            questionnaire_name=questionnaire_name,
-            case=case_data[1])
+            questionnaire_name=questionnaire_name, case=case_data[1]
+        )
 
         assert result[1].payload["description"] == ""
 
@@ -267,6 +296,6 @@ class TestMapTotalmobileJobModelsForFRS:
         assert result[2].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
         assert result[2].case_id == "10030"
         assert result[2].payload == self.totalmobile_payload_helper(
-            questionnaire_name=questionnaire_name,
-            case=case_data[2])
+            questionnaire_name=questionnaire_name, case=case_data[2]
+        )
         assert result[2].payload["description"] == ""

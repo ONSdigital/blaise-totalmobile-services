@@ -2,14 +2,18 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List, Type, TypeVar
 
-from models.blaise.blaise_case_information_base_model import BlaiseCaseInformationBaseModel, AddressCoordinates, \
-    AddressDetails, Address
+from models.blaise.blaise_case_information_base_model import (
+    Address,
+    AddressCoordinates,
+    AddressDetails,
+    BlaiseCaseInformationBaseModel,
+)
 
 V = TypeVar("V", bound="BlaiseFRSCaseInformationModel")
 
+
 @dataclass
 class BlaiseFRSCaseInformationModel(BlaiseCaseInformationBaseModel):
-
     @property
     def has_uac(self) -> bool:
         return False
@@ -52,7 +56,7 @@ class BlaiseFRSCaseInformationModel(BlaiseCaseInformationBaseModel):
             field_case=case_data_dictionary.get("qDataBag.FieldCase"),
             field_region=case_data_dictionary.get("qDataBag.FieldRegion"),
             field_team=case_data_dictionary.get("qDataBag.FieldTeam"),
-            wave_com_dte=wave_com_dte
+            wave_com_dte=wave_com_dte,
         )
 
     @staticmethod

@@ -1,33 +1,34 @@
 from datetime import datetime
 from typing import Dict, List
 
-from models.blaise.blaise_frs_case_information_model import BlaiseFRSCaseInformationModel
-from models.blaise.blaise_case_information_base_model import AddressDetails
-from models.blaise.blaise_case_information_base_model import AddressCoordinates, Address
+from models.blaise.blaise_case_information_base_model import (
+    Address,
+    AddressCoordinates,
+    AddressDetails,
+)
+from models.blaise.blaise_frs_case_information_model import (
+    BlaiseFRSCaseInformationModel,
+)
 from services.mappers.mapper_base import MapperServiceBase
 
 
 class BlaiseFRSCaseMapperService(MapperServiceBase):
-
     def map_frs_case_information_models(
-            self,
-            questionnaire_name: str,
-            questionnaire_case_data: List[Dict[str, str]]) -> List[BlaiseFRSCaseInformationModel]:
+        self, questionnaire_name: str, questionnaire_case_data: List[Dict[str, str]]
+    ) -> List[BlaiseFRSCaseInformationModel]:
 
         cases = []
         for case_data_item in questionnaire_case_data:
             case = self.map_frs_case_information_model(
-                questionnaire_name,
-                case_data_item
+                questionnaire_name, case_data_item
             )
             cases.append(case)
 
         return cases
 
     def map_frs_case_information_model(
-            self,
-            questionnaire_name: str,
-            case_data_dictionary: Dict[str, str]) -> BlaiseFRSCaseInformationModel:
+        self, questionnaire_name: str, case_data_dictionary: Dict[str, str]
+    ) -> BlaiseFRSCaseInformationModel:
 
         wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE", "")
         wave_com_dte = (
@@ -63,5 +64,5 @@ class BlaiseFRSCaseMapperService(MapperServiceBase):
             field_case=case_data_dictionary.get("qDataBag.FieldCase"),
             field_region=case_data_dictionary.get("qDataBag.FieldRegion"),
             field_team=case_data_dictionary.get("qDataBag.FieldTeam"),
-            wave_com_dte=wave_com_dte
+            wave_com_dte=wave_com_dte,
         )

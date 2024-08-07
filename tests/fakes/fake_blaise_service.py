@@ -6,6 +6,7 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireCaseError,
 )
 
+
 def nested_dict() -> defaultdict:
     return defaultdict(nested_dict)
 
@@ -24,61 +25,61 @@ class FakeBlaiseService:
         self._questionnaires[questionnaire_name] = {}
 
     def add_case_to_questionnaire(
-            self,
-            questionnaire: str,
-            case_id: str,
-            outcome_code: int = 0,
-            wave: int = None,
-            field_case: str = None,
-            telephone_number_1: str = None,
-            telephone_number_2: str = None,
-            appointment_telephone_number: str = None,
-            field_region: str = None,
-            rotational_knock_to_nudge_indicator: str = None,
-            rotational_outcome_code: int = 0,
+        self,
+        questionnaire: str,
+        case_id: str,
+        outcome_code: int = 0,
+        wave: int = None,
+        field_case: str = None,
+        telephone_number_1: str = None,
+        telephone_number_2: str = None,
+        appointment_telephone_number: str = None,
+        field_region: str = None,
+        rotational_knock_to_nudge_indicator: str = None,
+        rotational_outcome_code: int = 0,
     ) -> None:
         self._assert_questionnaire_exists(questionnaire)
 
         self._questionnaires[questionnaire][case_id] = {
-            "qiD.Serial_Number": f'{case_id}',
-            "qDataBag.TLA": f'{questionnaire[0:3]}',
-            "qDataBag.Wave": f'{wave}',
+            "qiD.Serial_Number": f"{case_id}",
+            "qDataBag.TLA": f"{questionnaire[0:3]}",
+            "qDataBag.Wave": f"{wave}",
             "hOut": outcome_code,
-            "qDataBag.FieldCase": f'{field_case}',
-            "qDataBag.TelNo": f'{telephone_number_1}',
-            "qDataBag.TelNo2": f'{telephone_number_2}',
-            "telNoAppt": f'{appointment_telephone_number}',
-            "qDataBag.FieldRegion": f'{field_region}',
-            "qRotate.RDMktnIND": f'{rotational_knock_to_nudge_indicator}',
+            "qDataBag.FieldCase": f"{field_case}",
+            "qDataBag.TelNo": f"{telephone_number_1}",
+            "qDataBag.TelNo2": f"{telephone_number_2}",
+            "telNoAppt": f"{appointment_telephone_number}",
+            "qDataBag.FieldRegion": f"{field_region}",
+            "qRotate.RDMktnIND": f"{rotational_knock_to_nudge_indicator}",
             "qRotate.RHOut": rotational_outcome_code,
-            "catiMana.CatiCall.RegsCalls[1].DialResult": False
-            }
+            "catiMana.CatiCall.RegsCalls[1].DialResult": False,
+        }
 
     def update_outcome_code_of_case_in_questionnaire(
-            self, questionnaire_name: str, case_id: str, outcome_code: str
+        self, questionnaire_name: str, case_id: str, outcome_code: str
     ) -> None:
         self._assert_case_exists(questionnaire_name, case_id)
-        self._questionnaires[questionnaire_name][case_id]["hOut"] = int(
-            outcome_code
-        )
+        self._questionnaires[questionnaire_name][case_id]["hOut"] = int(outcome_code)
 
     def set_case_has_call_history(
-            self, has_case_history: bool, questionnaire: str, case_id: str
+        self, has_case_history: bool, questionnaire: str, case_id: str
     ):
         self._assert_case_exists(questionnaire, case_id)
-        self._questionnaires[questionnaire][case_id]["catiMana.CatiCall.RegsCalls[1].DialResult"] ='1' if has_case_history else None
+        self._questionnaires[questionnaire][case_id][
+            "catiMana.CatiCall.RegsCalls[1].DialResult"
+        ] = ("1" if has_case_history else None)
         pass
 
     def case_has_been_updated(self, questionnaire_name: str, case_id: str) -> bool:
         return (
-                questionnaire_name in self._updates
-                and case_id in self._updates[questionnaire_name]
+            questionnaire_name in self._updates
+            and case_id in self._updates[questionnaire_name]
         )
 
     def get_updates(self, questionnaire_name: str, case_id: str) -> Dict[str, str]:
         if (
-                questionnaire_name not in self._updates
-                or case_id not in self._updates[questionnaire_name]
+            questionnaire_name not in self._updates
+            or case_id not in self._updates[questionnaire_name]
         ):
             raise Exception(
                 f"No update has been performed for case '{case_id}' in questionnaire '{questionnaire_name}'"
@@ -88,7 +89,9 @@ class FakeBlaiseService:
     def required_fields_from_blaise(self) -> List[str]:
         raise NotImplementedError()
 
-    def get_cases(self, questionnaire_name: str, required_fields: List[str]) -> List[Dict[str, str]]:
+    def get_cases(
+        self, questionnaire_name: str, required_fields: List[str]
+    ) -> List[Dict[str, str]]:
         if "get_cases" in self._errors_when_method_is_called:
             raise Exception("get_case has errored")
 
@@ -101,9 +104,7 @@ class FakeBlaiseService:
     def get_cases_call_count(self, questionnaire_name: str) -> int:
         return self._get_cases_call_count[questionnaire_name]
 
-    def get_case(
-            self, questionnaire_name: str, case_id: str
-    ) -> Dict[str, str]:
+    def get_case(self, questionnaire_name: str, case_id: str) -> Dict[str, str]:
         if "get_case" in self._errors_when_method_is_called:
             raise QuestionnaireCaseError("get_case has errored")
 
@@ -117,7 +118,7 @@ class FakeBlaiseService:
         return questionnaire_name in self._questionnaires
 
     def update_case(
-            self, questionnaire_name: str, case_id: str, data_fields: Dict[str, str]
+        self, questionnaire_name: str, case_id: str, data_fields: Dict[str, str]
     ) -> None:
         if "update_case" in self._errors_when_method_is_called:
             raise Exception("update_case has errored")

@@ -1,15 +1,14 @@
 import base64
 import json
 import os
-import flask
 
+import flask
 from dotenv import load_dotenv
 
 import cloud_functions.create_totalmobile_jobs_processor
 import cloud_functions.create_totalmobile_jobs_trigger
 import cloud_functions.delete_totalmobile_jobs_completed_in_blaise
 import cloud_functions.delete_totalmobile_jobs_past_field_period
-
 from app.app import load_config, setup_app
 from cloud_functions.logging import setup_logger
 from factories.service_instance_factory import ServiceInstanceFactory
@@ -18,15 +17,21 @@ service_instance_factory = ServiceInstanceFactory()
 
 
 def create_totalmobile_jobs_trigger(_event, _context) -> str:
-    survey_type = json.loads(base64.b64decode(_event["data"]).decode("utf-8"))['survey_type']
+    survey_type = json.loads(base64.b64decode(_event["data"]).decode("utf-8"))[
+        "survey_type"
+    ]
     return cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
-        create_totalmobile_jobs_service=service_instance_factory.create_totalmobile_jobs_service(survey_type))
+        create_totalmobile_jobs_service=service_instance_factory.create_totalmobile_jobs_service(
+            survey_type
+        )
+    )
 
 
 def create_totalmobile_jobs_processor(request: flask.Request) -> str:
 
     return cloud_functions.create_totalmobile_jobs_processor.create_totalmobile_jobs_processor(
-        request=request, totalmobile_service=service_instance_factory.create_totalmobile_service()
+        request=request,
+        totalmobile_service=service_instance_factory.create_totalmobile_service(),
     )
 
 

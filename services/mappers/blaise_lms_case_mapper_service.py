@@ -1,33 +1,35 @@
 from datetime import datetime
 from typing import Dict, List
 
-from models.blaise.blaise_lms_case_information_model import BlaiseLMSCaseInformationModel, ContactDetails
-from models.blaise.blaise_case_information_base_model import AddressDetails
-from models.blaise.blaise_case_information_base_model import AddressCoordinates, Address
+from models.blaise.blaise_case_information_base_model import (
+    Address,
+    AddressCoordinates,
+    AddressDetails,
+)
+from models.blaise.blaise_lms_case_information_model import (
+    BlaiseLMSCaseInformationModel,
+    ContactDetails,
+)
 from services.mappers.mapper_base import MapperServiceBase
 
 
 class BlaiseLMSCaseMapperService(MapperServiceBase):
-
     def map_lms_case_information_models(
-            self,
-            questionnaire_name: str,
-            questionnaire_case_data: List[Dict[str, str]]) -> List[BlaiseLMSCaseInformationModel]:
+        self, questionnaire_name: str, questionnaire_case_data: List[Dict[str, str]]
+    ) -> List[BlaiseLMSCaseInformationModel]:
 
         cases = []
         for case_data_item in questionnaire_case_data:
             case = self.map_lms_case_information_model(
-                questionnaire_name,
-                case_data_item
+                questionnaire_name, case_data_item
             )
             cases.append(case)
 
         return cases
 
     def map_lms_case_information_model(
-            self,
-            questionnaire_name: str,
-            case_data_dictionary: Dict[str, str]) -> BlaiseLMSCaseInformationModel:
+        self, questionnaire_name: str, case_data_dictionary: Dict[str, str]
+    ) -> BlaiseLMSCaseInformationModel:
 
         wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE", "")
         wave_com_dte = (
@@ -43,7 +45,7 @@ class BlaiseLMSCaseMapperService(MapperServiceBase):
             tla=tla,
             case_id=self.get_case_id(case_data_dictionary),
             data_model_name=case_data_dictionary.get("dataModelName"),
-            wave=int(wave) if wave != 'None' else None,
+            wave=int(wave) if wave != "None" else None,
             address_details=AddressDetails(
                 reference=case_data_dictionary.get("qDataBag.UPRN", ""),
                 address=Address(

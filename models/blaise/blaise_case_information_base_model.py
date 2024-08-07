@@ -1,7 +1,7 @@
-from datetime import datetime
-from dataclasses import dataclass
 from abc import abstractmethod
-from typing import Optional, List
+from dataclasses import dataclass
+from datetime import datetime
+from typing import List, Optional
 
 from models.base_model import BaseModel
 
@@ -28,7 +28,8 @@ class AddressDetails:
     reference: Optional[str]
     address: Address
 
-@dataclass # type: ignore #seems to be an issue with dataclass inheritance
+
+@dataclass  # type: ignore #seems to be an issue with dataclass inheritance
 class BlaiseCaseInformationBaseModel(BaseModel):
     questionnaire_name: str
     case_id: Optional[str]
