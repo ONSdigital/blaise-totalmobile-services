@@ -20,6 +20,8 @@ def create_totalmobile_jobs_trigger(_event, _context) -> str:
     survey_type = json.loads(base64.b64decode(_event["data"]).decode("utf-8"))[
         "survey_type"
     ]
+    print(f"BTS Create Jobs triggered for survey: '{survey_type}'")
+
     return cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
         create_totalmobile_jobs_service=service_instance_factory.create_totalmobile_jobs_service(
             survey_type
