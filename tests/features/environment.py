@@ -7,7 +7,7 @@ from services.case_filters.case_filter_wave_2 import CaseFilterWave2
 from services.case_filters.case_filter_wave_3 import CaseFilterWave3
 from services.case_filters.case_filter_wave_4 import CaseFilterWave4
 from services.case_filters.case_filter_wave_5 import CaseFilterWave5
-from services.lms_eligible__case_service import LMSEligibleCaseService
+from services.lms_eligible_case_service import LMSEligibleCaseService
 from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
 from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
 from tests.fakes.fake_blaise_service import FakeBlaiseService

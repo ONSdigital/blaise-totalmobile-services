@@ -4,7 +4,7 @@ from unittest.mock import Mock
 import pytest
 
 from services.case_filters.case_filter_base import CaseFilterBase
-from services.lms_eligible__case_service import LMSEligibleCaseService
+from services.lms_eligible_case_service import LMSEligibleCaseService
 from tests.helpers.get_blaise_lms_case_model_helper import get_populated_case_model
 
 
