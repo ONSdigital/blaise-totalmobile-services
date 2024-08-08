@@ -64,7 +64,9 @@ class ServiceInstanceFactory:
     def create_frs_mapper_service() -> BlaiseFRSCaseMapperService:
         return BlaiseFRSCaseMapperService()
 
-    def create_questionnaire_service(self, survey_type: str) -> QuestionnaireServiceBase:
+    def create_questionnaire_service(
+        self, survey_type: str
+    ) -> QuestionnaireServiceBase:
         if survey_type == "FRS":
             return self.create_frs_questionnaire_service()
         if survey_type == "LMS":

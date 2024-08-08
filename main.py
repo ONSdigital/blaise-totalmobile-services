@@ -1,7 +1,7 @@
-import flask
 import logging
 import os
 
+import flask
 from dotenv import load_dotenv
 
 import cloud_functions.create_totalmobile_jobs_processor
