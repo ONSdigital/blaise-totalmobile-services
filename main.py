@@ -1,6 +1,7 @@
+import flask
+import logging
 import os
 
-import flask
 from dotenv import load_dotenv
 
 import cloud_functions.create_totalmobile_jobs_processor
@@ -15,12 +16,17 @@ service_instance_factory = ServiceInstanceFactory()
 
 
 def create_totalmobile_jobs_trigger(request: flask.Request) -> str:
-    survey_type = request.get_json()["survey_type"]
-    if survey_type not in ("LMS", "FRS"):
+    try:
+        survey_type = request.get_json()["survey_type"]
+    except Exception as err:
+        logging.error(f"Could not parse JSON request: {err}")
         raise Exception
 
-    print(f"BTS Create Jobs triggered for survey: '{survey_type}'")
+    if survey_type not in ("LMS", "FRS"):
+        logging.error(f"survey_type of '{survey_type}' is invalid")
+        raise Exception
 
+    logging.info(f"BTS Create Jobs triggered for survey: '{survey_type}'")
     return cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
         create_totalmobile_jobs_service=service_instance_factory.create_totalmobile_jobs_service(
             survey_type
