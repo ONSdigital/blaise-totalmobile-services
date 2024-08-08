@@ -16,6 +16,9 @@ service_instance_factory = ServiceInstanceFactory()
 
 def create_totalmobile_jobs_trigger(request: flask.Request) -> str:
     survey_type = request.get_json()["survey_type"]
+    if survey_type not in ("LMS", "FRS"):
+        raise Exception
+
     print(f"BTS Create Jobs triggered for survey: '{survey_type}'")
 
     return cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
@@ -26,7 +29,6 @@ def create_totalmobile_jobs_trigger(request: flask.Request) -> str:
 
 
 def create_totalmobile_jobs_processor(request: flask.Request) -> str:
-
     return cloud_functions.create_totalmobile_jobs_processor.create_totalmobile_jobs_processor(
         request=request,
         totalmobile_service=service_instance_factory.create_totalmobile_service(),
@@ -34,7 +36,6 @@ def create_totalmobile_jobs_processor(request: flask.Request) -> str:
 
 
 def delete_totalmobile_jobs_completed_in_blaise(_request: flask.Request) -> str:
-
     return cloud_functions.delete_totalmobile_jobs_completed_in_blaise.delete_totalmobile_jobs_completed_in_blaise(
         blaise_outcome_service=service_instance_factory.create_blaise_outcome_service(),
         totalmobile_service=service_instance_factory.create_totalmobile_service(),
@@ -42,7 +43,6 @@ def delete_totalmobile_jobs_completed_in_blaise(_request: flask.Request) -> str:
 
 
 def delete_totalmobile_jobs_past_field_period(_request: flask.Request) -> str:
-
     return cloud_functions.delete_totalmobile_jobs_past_field_period.delete_totalmobile_jobs_past_field_period(
         blaise_outcome_service=service_instance_factory.create_blaise_outcome_service(),
         totalmobile_service=service_instance_factory.create_totalmobile_service(),
@@ -55,7 +55,6 @@ if os.path.isfile("./.env"):
 
 app = setup_app()
 load_config(app)
-
 
 if __name__ == "__main__":
     setup_logger()
