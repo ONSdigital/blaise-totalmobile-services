@@ -28,10 +28,11 @@ def test_create_questionnaire_service_returns_FRSQuestionnaireService_when_given
 
 
 @pytest.mark.parametrize(
-    "survey_type", [None, 0, "", "Bendyschnapps Cabbagepatch"],
+    "survey_type",
+    [None, 0, "", "Bendyschnapps Cabbagepatch"],
 )
 def test_create_questionnaire_service_raises_an_exception_when_survey_type_not_found(
-        survey_type
+    survey_type,
 ):
     # arrange
     service_instance_factory = ServiceInstanceFactory()
