@@ -18,6 +18,7 @@ from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperS
 from services.mappers.totalmobile_mapper_service import TotalmobileMapperService
 from services.questionnaires.frs_questionnaire_service import FRSQuestionnaireService
 from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
+from services.questionnaires.questionnaire_service_base import QuestionnaireServiceBase
 from services.totalmobile_service import RealTotalmobileService
 from services.uac.uac_service import UacService
 
@@ -62,6 +63,13 @@ class ServiceInstanceFactory:
     @staticmethod
     def create_frs_mapper_service() -> BlaiseFRSCaseMapperService:
         return BlaiseFRSCaseMapperService()
+
+    def create_questionnaire_service(self, survey_type: str) -> QuestionnaireServiceBase:
+        if survey_type == "FRS":
+            return self.create_frs_questionnaire_service()
+        if survey_type == "LMS":
+            return self.create_lms_questionnaire_service()
+        raise Exception
 
     def create_lms_questionnaire_service(self) -> LMSQuestionnaireService:
         return LMSQuestionnaireService(
@@ -113,16 +121,9 @@ class ServiceInstanceFactory:
     def create_totalmobile_jobs_service(
         self, survey_type: str
     ) -> CreateTotalmobileJobsService:
-        if survey_type == "LMS":
-            return CreateTotalmobileJobsService(
-                totalmobile_service=self.create_totalmobile_service(),
-                questionnaire_service=self.create_lms_questionnaire_service(),
-                cloud_task_service=self.create_cloud_task_service(),
-            )
-
         return CreateTotalmobileJobsService(
             totalmobile_service=self.create_totalmobile_service(),
-            questionnaire_service=self.create_frs_questionnaire_service(),
+            questionnaire_service=self.create_questionnaire_service(survey_type),
             cloud_task_service=self.create_cloud_task_service(),
         )
 
