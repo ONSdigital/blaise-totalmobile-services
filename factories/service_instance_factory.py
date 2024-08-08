@@ -67,10 +67,10 @@ class ServiceInstanceFactory:
     def create_questionnaire_service(
         self, survey_type: str
     ) -> QuestionnaireServiceBase:
-        if survey_type == "FRS":
-            return self.create_frs_questionnaire_service()
         if survey_type == "LMS":
             return self.create_lms_questionnaire_service()
+        if survey_type == "FRS":
+            return self.create_frs_questionnaire_service()
         raise Exception
 
     def create_lms_questionnaire_service(self) -> LMSQuestionnaireService:
