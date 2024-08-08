@@ -6,7 +6,7 @@ from models.blaise.blaise_lms_case_information_model import (
 )
 from services.blaise_service import RealBlaiseService
 from services.datastore_service import DatastoreService
-from services.lms_eligible__case_service import LMSEligibleCaseService
+from services.lms_eligible_case_service import LMSEligibleCaseService
 from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
 from services.questionnaires.questionnaire_service_base import QuestionnaireServiceBase
 
