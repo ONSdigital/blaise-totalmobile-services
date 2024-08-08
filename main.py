@@ -15,15 +15,7 @@ service_instance_factory = ServiceInstanceFactory()
 
 
 def create_totalmobile_jobs_trigger(request: flask.Request) -> str:
-    # purely for initial debugging
-    try:
-        request_json = request.get_json()
-        print(f"DEBUG: request_json: {request_json}")
-    except Exception as e:
-        print(f"DEBUG: Computer said no: {e}")
-        return ""
-
-    survey_type = request_json["survey_type"]
+    survey_type = request.get_json()["survey_type"]
     print(f"BTS Create Jobs triggered for survey: '{survey_type}'")
 
     return cloud_functions.create_totalmobile_jobs_trigger.create_totalmobile_jobs_trigger(
