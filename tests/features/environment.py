@@ -26,6 +26,11 @@ def before_scenario(context, scenario):
     context.totalmobile_service = app.totalmobile_service
     context.datastore_service = FakeDatastoreService()
     context.blaise_outcome_service = BlaiseCaseOutcomeService(context.blaise_service)
+
+    # TODO: Ask Jamie: Wave features fail because it previously used FakeBlaiseService() and FakeDatastoreService() :,(
+    # service_instance_factory = ServiceInstanceFactory()
+    # context.questionnaire_service = service_instance_factory.create_questionnaire_service("LMS")
+
     context.questionnaire_service = LMSQuestionnaireService(
         blaise_service=app.blaise_service,
         mapper_service=BlaiseLMSCaseMapperService(),
