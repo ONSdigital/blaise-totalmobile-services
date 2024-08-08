@@ -34,7 +34,7 @@ class TestCreateTotalmobileJobsTrigger:
             None,
             0,
             "",
-            "FFS",
+            "Badgersticks Carriagematch",
         ],
     )
     @mock.patch(
