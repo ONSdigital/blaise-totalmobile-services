@@ -79,4 +79,5 @@ class BlaiseFRSCaseInformationModel(BlaiseCaseInformationBaseModel):
             "qDataBag.FieldCase",
             "qDataBag.FieldRegion",
             "qDataBag.FieldTeam",
+            "qDataBag.DivAddInd",
         ]
