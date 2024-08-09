@@ -42,6 +42,7 @@ class BlaiseCaseInformationBaseModel(BaseModel):
     field_case: Optional[str]
     field_region: Optional[str]
     field_team: Optional[str]
+    divided_address_indicator: Optional[str]
 
     @property
     @abstractmethod

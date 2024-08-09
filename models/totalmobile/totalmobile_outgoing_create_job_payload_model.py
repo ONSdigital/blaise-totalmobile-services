@@ -109,8 +109,13 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         )
 
     @staticmethod
-    def create_frs_description() -> str:
+    def create_frs_description(
+            questionnaire_case: BlaiseCaseInformationBaseModel,
+    ) -> str:
+        if questionnaire_case.divided_address_indicator == "1":
+            return "Warning Divided Address"
         return ""
+
 
     @staticmethod
     def create_description(
@@ -120,7 +125,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         uac_chunks: Optional[UacChunks],
     ) -> str:
         if questionnaire_case.tla == "FRS":
-            return cls.create_frs_description()
+            return cls.create_frs_description(questionnaire_case)
 
         return cls.create_lms_description(
             questionnaire_name, questionnaire_case, uac_chunks
