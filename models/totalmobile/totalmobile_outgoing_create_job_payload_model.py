@@ -90,7 +90,6 @@ class TotalMobileOutgoingCreateJobPayloadModel:
 
     @staticmethod
     def create_lms_description(
-        questionnaire_name: str,
         questionnaire_case: BlaiseCaseInformationBaseModel,
         uac_chunks: Optional[UacChunks],
     ) -> str:
@@ -103,7 +102,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         return (
             f"UAC: {uac_string}\n"
             f"Due Date: {due_date_string}\n"
-            f"Study: {questionnaire_name}\n"
+            f"Study: {questionnaire_case.questionnaire_name}\n"
             f"Case ID: {questionnaire_case.case_id}\n"
             f"Wave: {questionnaire_case.wave}"
         )
@@ -120,15 +119,13 @@ class TotalMobileOutgoingCreateJobPayloadModel:
     @staticmethod
     def create_description(
         cls: Type[T],
-        questionnaire_name: str,
         questionnaire_case: BlaiseCaseInformationBaseModel,
         uac_chunks: Optional[UacChunks],
     ) -> str:
         if questionnaire_case.tla == "FRS":
             return cls.create_frs_description(questionnaire_case)
 
-        return cls.create_lms_description(
-            questionnaire_name, questionnaire_case, uac_chunks
+        return cls.create_lms_description(questionnaire_case, uac_chunks
         )
 
     @staticmethod
@@ -198,7 +195,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
                 )
             ),
             description=cls.create_description(
-                cls, questionnaire_name, questionnaire_case, uac_chunks
+                cls, questionnaire_case, uac_chunks
             ),
             origin="ONS",
             duration=15,

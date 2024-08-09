@@ -24,7 +24,7 @@ def test_import_case_returns_a_populated_model():
     questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
         case_id="90001",
         data_model_name="LM2007",
-        wave="1",
+        wave=1,
         address_line_1="12 Blaise Street",
         address_line_2="Blaise Hill",
         address_line_3="Blaiseville",
@@ -373,10 +373,11 @@ def test_create_description_returns_a_correctly_formatted_description():
     # Arrange
     questionnaire_name = "LMS2201_AA1"
     questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
+        questionnaire_name="LMS2201_AA1",
         case_id="12345",
         data_model_name="LMS2201_AA1",
         wave_com_dte=datetime(2022, 1, 31),
-        wave="4",
+        wave=4,
     )
 
     uac_chunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")
@@ -400,10 +401,11 @@ def test_create_description_returns_a_correctly_formatted_description_when_four_
     # Arrange
     questionnaire_name = "LMS2201_AA1"
     questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
+        questionnaire_name="LMS2201_AA1",
         case_id="12345",
         data_model_name="LMS2201_AA1",
         wave_com_dte=datetime(2022, 1, 31),
-        wave="4",
+        wave=4,
     )
 
     uac_chunks = UacChunks(uac1="1234", uac2="4567", uac3="7890", uac4="0987")
@@ -427,7 +429,11 @@ def test_create_description_returns_a_correctly_formatted_description_when_all_v
     # Arrange
     questionnaire_name = "LMS2201_AA1"
     questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
-        case_id="1234", data_model_name="", wave_com_dte=None, wave=""
+        questionnaire_name="LMS2201_AA1",
+        case_id="1234",
+        data_model_name="",
+        wave_com_dte=None,
+        wave=""
     )
 
     # Act
@@ -445,6 +451,7 @@ def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_all
     # Arrange
     questionnaire_name = "LMS2201_AA1"
     questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
+        questionnaire_name="LMS2201_AA1",
         case_id="1234",
         address_line_1="123 Blaise Street",
         address_line_2="Blaisville",
@@ -469,6 +476,7 @@ def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_not
     # Arrange
     questionnaire_name = "LMS2201_AA1"
     questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
+        questionnaire_name="LMS2201_AA1",
         case_id="1234",
         address_line_1="123 Blaise Street",
         address_line_2="",
@@ -490,6 +498,7 @@ def test_concatenate_address_line1_returns_a_concatenated_address_of_50_characte
     # Arrange
     questionnaire_name = "LMS2201_AA1"
     questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
+        questionnaire_name="LMS2201_AA1",
         case_id="1234",
         address_line_1="123 Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch",
         address_line_2="Ynys Môn",
@@ -511,6 +520,7 @@ def test_concatenate_address_line1_returns_a_concatenated_address_without_a_comm
     # Arrange
     questionnaire_name = "LMS2201_AA1"
     questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
+        questionnaire_name="LMS2201_AA1",
         case_id="1234",
         address_line_1="123 Blaise Street",
         address_line_2=None,
@@ -529,6 +539,7 @@ def test_concatenate_address_line1_returns_a_concatenated_address_without_a_comm
     # Arrange
     questionnaire_name = "LMS2201_AA1"
     questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
+        questionnaire_name="LMS2201_AA1",
         case_id="1234",
         address_line_1="123 Blaise Street",
         address_line_2="",
@@ -548,6 +559,7 @@ def test_location_reference_is_set_to_an_empty_string_if_location_reference_is_n
     questionnaire_name = "LMS2101_AA1"
 
     questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
+        questionnaire_name="LMS2201_AA1",
         reference=None
     )
 

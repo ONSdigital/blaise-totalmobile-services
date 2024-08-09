@@ -295,7 +295,7 @@ class TestMapTotalmobileJobModelsForFRS:
         assert result[2].questionnaire == "FRS2101"
         assert result[2].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
         assert result[2].case_id == "10030"
+        assert result[2].payload["description"] == ""
         assert result[2].payload == self.totalmobile_payload_helper(
             questionnaire_name=questionnaire_name, case=case_data[2]
         )
-        assert result[2].payload["description"] == ""

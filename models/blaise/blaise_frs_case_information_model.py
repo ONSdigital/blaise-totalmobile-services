@@ -1,11 +1,7 @@
 from dataclasses import dataclass
-from datetime import datetime
-from typing import Dict, List, Type, TypeVar
+from typing import List, TypeVar
 
 from models.blaise.blaise_case_information_base_model import (
-    Address,
-    AddressCoordinates,
-    AddressDetails,
     BlaiseCaseInformationBaseModel,
 )
 

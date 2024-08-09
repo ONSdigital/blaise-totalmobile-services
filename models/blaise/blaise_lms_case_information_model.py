@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional, Type, TypeVar
+from typing import List, Optional
 
 from models.blaise.blaise_case_information_base_model import (
     BlaiseCaseInformationBaseModel,
