@@ -81,4 +81,5 @@ class BlaiseLMSCaseMapperService(MapperServiceBase):
             rotational_outcome_code=self.convert_string_to_integer(
                 case_data_dictionary.get("qRotate.RHOut", "0")
             ),
+            divided_address_indicator=None #TODO
         )
