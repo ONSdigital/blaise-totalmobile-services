@@ -74,5 +74,5 @@ def get_populated_case_model(
         rotational_knock_to_nudge_indicator=rotational_knock_to_nudge_indicator,
         rotational_outcome_code=rotational_outcome_code,
         has_call_history=False,
-        divided_address_indicator=None  #TODO
+        divided_address_indicator=None  #TODO refactor base
     )

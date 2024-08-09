@@ -1,4 +1,4 @@
-#     TODO: Ask Jamie
+#     TODO: Ask yourself "What Would Jamie Do?"
 #     Behave tests - use background to setup tests for LMS/FRS, and change environment.py to handle LMS/FRS
 
 Feature: Delete jobs

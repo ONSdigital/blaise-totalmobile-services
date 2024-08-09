@@ -27,7 +27,7 @@ def before_scenario(context, scenario):
     context.datastore_service = FakeDatastoreService()
     context.blaise_outcome_service = BlaiseCaseOutcomeService(context.blaise_service)
 
-    # TODO: Ask Jamie: Wave features fail because it previously used FakeBlaiseService() and FakeDatastoreService() :,(
+    # TODO: Ask yourself "What Would Jamie Do?"
     # service_instance_factory = ServiceInstanceFactory()
     # context.questionnaire_service = service_instance_factory.create_questionnaire_service("LMS")
 
