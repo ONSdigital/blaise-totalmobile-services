@@ -33,6 +33,7 @@ class TestFRSCaseMapping:
             "qDataBag.FieldTeam": "B-Team",
             "qDataBag.WaveComDTE": "31-01-2023",
             "qDataBag.TLA": "FRS",
+            "qDataBag.DivAddInd": ""    # TODO confirm incoming type. str/int and None type
         }
 
     def test_map_frs_case_information_model_maps_the_correct_model(
@@ -67,7 +68,7 @@ class TestFRSCaseMapping:
         assert result.field_team == "B-Team"
         assert result.wave_com_dte == datetime(2023, 1, 31)
         assert result.tla == "FRS"
-        #TODO map divided_address_indicator and maybe additional tests
+        assert result.divided_address_indicator == ""
 
     def test_map_frs_case_information_model_returns_a_valid_object_with_the_field_set_to_none_when_a_blaise_field_is_incorrectly_typed(
         self,
@@ -89,6 +90,7 @@ class TestFRSCaseMapping:
         # assert
         assert result.questionnaire_name == "FRS2101"
         assert result.case_id is None
+
 
     def test_map_frs_case_information_model_returns_a_valid_object_with_the_field_set_to_none_when_an_optional_blaise_field_is_missing(
         self,

@@ -218,7 +218,9 @@ class TestMapTotalmobileJobModelsForFRS:
                 {"name": "Team", "value": case.field_team},
             ],
             "contact": {"name": case.address_details.address.postcode},
-            "description": "", # TODO test dis
+            "description": ("Warning Divided Address"
+                            if case.divided_address_indicator == "1"
+                            else ""),
             "dueDate": {"end": due_date},
             "duration": 15,
             "identity": {
@@ -251,9 +253,9 @@ class TestMapTotalmobileJobModelsForFRS:
         questionnaire_name = "FRS2101"
 
         case_data = [
-            get_frs_populated_case_model(case_id="10010", field_region="region1"), #TODO set divided_address_indicator to different values
-            get_frs_populated_case_model(case_id="10020", field_region="region2"), #TODO set divided_address_indicator to different values
-            get_frs_populated_case_model(case_id="10030", field_region="region3"), #TODO set divided_address_indicator to different values
+            get_frs_populated_case_model(case_id="10010", field_region="region1", divided_address_indicator="1"),
+            get_frs_populated_case_model(case_id="10020", field_region="region2", divided_address_indicator="0"),
+            get_frs_populated_case_model(case_id="10030", field_region="region3", divided_address_indicator=""),
         ]
 
         world_model = TotalmobileWorldModel(
@@ -277,20 +279,18 @@ class TestMapTotalmobileJobModelsForFRS:
         assert result[0].questionnaire == "FRS2101"
         assert result[0].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         assert result[0].case_id == "10010"
+        assert result[0].payload["description"] == "Warning Divided Address"
         assert result[0].payload == self.totalmobile_payload_helper(
             questionnaire_name=questionnaire_name, case=case_data[0]
         )
 
-        assert result[0].payload["description"] == "" #TODO test different values
-
         assert result[1].questionnaire == "FRS2101"
         assert result[1].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa7"
         assert result[1].case_id == "10020"
+        assert result[1].payload["description"] == ""
         assert result[1].payload == self.totalmobile_payload_helper(
             questionnaire_name=questionnaire_name, case=case_data[1]
         )
-
-        assert result[1].payload["description"] == "" #TODO test different values
 
         assert result[2].questionnaire == "FRS2101"
         assert result[2].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
@@ -298,4 +298,4 @@ class TestMapTotalmobileJobModelsForFRS:
         assert result[2].payload == self.totalmobile_payload_helper(
             questionnaire_name=questionnaire_name, case=case_data[2]
         )
-        assert result[2].payload["description"] == "" #TODO test different values
+        assert result[2].payload["description"] == ""
