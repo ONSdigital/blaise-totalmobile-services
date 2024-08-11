@@ -1,20 +1,48 @@
 from datetime import datetime
 from typing import Dict
+from unittest.mock import Mock
 
 import pytest
 
+from client.bus import Uac
+from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
 from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
+
+@pytest.fixture()
+def mock_uac_service():
+    return Mock()
 
 
 class TestLMSCaseMapping:
     @pytest.fixture()
-    def service(self) -> BlaiseLMSCaseMapperService:
-        return BlaiseLMSCaseMapperService()
+    def service(self, mock_uac_service) -> BlaiseLMSCaseMapperService:
+        return BlaiseLMSCaseMapperService(uac_service=mock_uac_service)
+
+    @pytest.fixture()
+    def questionnaire_uac_model(self) -> QuestionnaireUacModel:
+        uac_data_dictionary: Dict[str, Uac] = {
+            "10010": {
+                "instrument_name": "OPN2101A",
+                "case_id": "10010",
+                "uac_chunks": {
+                    "uac1": "8175",
+                    "uac2": "4725",
+                    "uac3": "3990",
+                    "uac4": "None",
+                },
+                "full_uac": "817647263991",
+            }
+        }
+
+        questionnaire_uac_model = QuestionnaireUacModel.import_uac_data(
+            uac_data_dictionary
+        )
+        return questionnaire_uac_model
 
     @pytest.fixture()
     def valid_case_data_dictionary(self) -> Dict:
         return {
-            "qiD.Serial_Number": "90000000",
+            "qiD.Serial_Number": "10010",
             "dataModelName": "LM2007",
             "qDataBag.Wave": 1,
             "qDataBag.Prem1": "12 Blaise Street",
@@ -42,11 +70,17 @@ class TestLMSCaseMapping:
         }
 
     def test_map_lms_case_information_model_maps_the_correct_model(
-        self, service, valid_case_data_dictionary
+        self, service, mock_uac_service, questionnaire_uac_model, valid_case_data_dictionary
     ):
 
         # arrange
         questionnaire_name = "LMS2101_AA1"
+        case_id = "10010"
+        valid_case_data_dictionary["qiD.Serial_Number"] = case_id
+        mock_uac_service.get_questionnaire_uac_model.return_value = (
+            questionnaire_uac_model
+        )
+        uac_chunks = UacChunks(uac1="8175", uac2="4725", uac3="3990", uac4="None")
 
         # act
         result = service.map_lms_case_information_model(
@@ -55,7 +89,7 @@ class TestLMSCaseMapping:
 
         # assert
         assert result.questionnaire_name == "LMS2101_AA1"
-        assert result.case_id == "90000000"
+        assert result.case_id == case_id
         assert result.data_model_name == "LM2007"
         assert result.wave == 1
         assert result.address_details.address.address_line_1 == "12 Blaise Street"
@@ -77,9 +111,58 @@ class TestLMSCaseMapping:
         assert result.field_team == "B-Team"
         assert result.wave_com_dte == datetime(2023, 1, 31)
         assert result.has_call_history is True
+        assert result.has_uac is True
         assert result.rotational_knock_to_nudge_indicator == "N"
         assert result.rotational_outcome_code == 310
         assert result.tla == "LMS"
+        assert result.uac_chunks == uac_chunks
+
+    def test_map_lms_case_information_model_maps_the_correct_model_when_no_uacs_are_available(
+        self, service, mock_uac_service, questionnaire_uac_model, valid_case_data_dictionary
+    ):
+
+        # arrange
+        questionnaire_name = "LMS2101_AA1"
+        case_id = "20010" # no uac in uac dictionary above
+        valid_case_data_dictionary["qiD.Serial_Number"] = case_id
+        mock_uac_service.get_questionnaire_uac_model.return_value = (
+            questionnaire_uac_model
+        )
+
+        # act
+        result = service.map_lms_case_information_model(
+            questionnaire_name, valid_case_data_dictionary
+        )
+
+        # assert
+        assert result.questionnaire_name == "LMS2101_AA1"
+        assert result.case_id == case_id
+        assert result.data_model_name == "LM2007"
+        assert result.wave == 1
+        assert result.address_details.address.address_line_1 == "12 Blaise Street"
+        assert result.address_details.address.address_line_2 == "Blaise Hill"
+        assert result.address_details.address.address_line_3 == "Blaiseville"
+        assert result.address_details.address.county == "Gwent"
+        assert result.address_details.address.town == "Newport"
+        assert result.address_details.address.postcode == "FML134D"
+        assert result.contact_details.telephone_number_1 == "07900990901"
+        assert result.contact_details.telephone_number_2 == "07900990902"
+        assert result.contact_details.appointment_telephone_number == "07900990903"
+        assert result.outcome_code == 301
+        assert result.address_details.reference == "100012675377"
+        assert result.address_details.address.coordinates.latitude == "10020202"
+        assert result.address_details.address.coordinates.longitude == "34949494"
+        assert result.priority == "1"
+        assert result.field_region == "gwent"
+        assert result.field_case == "Y"
+        assert result.field_team == "B-Team"
+        assert result.wave_com_dte == datetime(2023, 1, 31)
+        assert result.has_call_history is True
+        assert result.has_uac is True
+        assert result.rotational_knock_to_nudge_indicator == "N"
+        assert result.rotational_outcome_code == 310
+        assert result.tla == "LMS"
+        assert result.uac_chunks is None
 
     def test_map_lms_case_information_model_returns_a_valid_object_with_the_field_set_to_none_when_a_blaise_field_is_incorrectly_typed(
         self,

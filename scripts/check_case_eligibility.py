@@ -12,6 +12,7 @@ from services.datastore_service import DatastoreService
 from services.lms_eligible_case_service import LMSEligibleCaseService
 from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
 from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
+from services.uac.uac_service import UacService
 
 
 def __check_for_env_var(name: str):
@@ -48,7 +49,7 @@ if __name__ == "__main__":
     )
     questionnaire_service = LMSQuestionnaireService(
         blaise_service=RealBlaiseService(config),
-        mapper_service=BlaiseLMSCaseMapperService(),
+        mapper_service=BlaiseLMSCaseMapperService(UacService(config)),
         eligible_case_service=eligible_case_service,
         datastore_service=DatastoreService(),
     )

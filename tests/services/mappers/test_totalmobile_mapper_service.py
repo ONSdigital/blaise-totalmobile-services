@@ -1,5 +1,4 @@
 from typing import Dict, Optional
-from unittest.mock import Mock
 
 import pytest
 
@@ -10,28 +9,19 @@ from models.blaise.blaise_frs_case_information_model import (
 from models.blaise.blaise_lms_case_information_model import (
     BlaiseLMSCaseInformationModel,
 )
-from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
+from models.blaise.questionnaire_uac_model import UacChunks, QuestionnaireUacModel
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.mappers.totalmobile_mapper_service import TotalmobileMapperService
 from tests.helpers.get_blaise_frs_case_model_helper import get_frs_populated_case_model
 from tests.helpers.get_blaise_lms_case_model_helper import get_populated_case_model
-
-
 @pytest.fixture()
-def mock_uac_service():
-    return Mock()
-
-
-@pytest.fixture()
-def service(mock_uac_service) -> TotalmobileMapperService:
-    return TotalmobileMapperService(
-        uac_service=mock_uac_service,
-    )
+def service() -> TotalmobileMapperService:
+    return TotalmobileMapperService()
 
 
 class TestMapTotalmobileJobModelsForLMS:
-    @staticmethod
-    def get_questionnaire_uac_model() -> QuestionnaireUacModel:
+
+    def get_questionnaire_uac_model(self) -> QuestionnaireUacModel:
         uac_data_dictionary: Dict[str, Uac] = {
             "10010": {
                 "instrument_name": "OPN2101A",
@@ -123,27 +113,32 @@ class TestMapTotalmobileJobModelsForLMS:
         return payload_dictionary
 
     def test_map_totalmobile_job_models_maps_the_correct_list_of_models(
-        self, mock_uac_service, service: TotalmobileMapperService
+        self, service: TotalmobileMapperService
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
+        questionnaire_uac_model = self.get_questionnaire_uac_model()
 
         case_data = [
             get_populated_case_model(
-                case_id="10010", outcome_code=110, field_region="region1"
+                case_id="10010",
+                outcome_code=110,
+                field_region="region1",
+                uac_chunks=questionnaire_uac_model.get_uac_chunks("10010")
             ),
             get_populated_case_model(
-                case_id="10020", outcome_code=120, field_region="region2"
+                case_id="10020",
+                outcome_code=120,
+                field_region="region2",
+                uac_chunks=questionnaire_uac_model.get_uac_chunks("10020")
             ),
             get_populated_case_model(
-                case_id="10030", outcome_code=130, field_region="region3"
+                case_id="10030",
+                outcome_code=130,
+                field_region="region3",
+                uac_chunks=questionnaire_uac_model.get_uac_chunks("10030")
             ),
         ]
-
-        questionnaire_uac_model = self.get_questionnaire_uac_model()
-        mock_uac_service.get_questionnaire_uac_model.return_value = (
-            questionnaire_uac_model
-        )
 
         world_model = TotalmobileWorldModel(
             worlds=[
@@ -247,7 +242,7 @@ class TestMapTotalmobileJobModelsForFRS:
         return payload_dictionary
 
     def test_map_totalmobile_job_models_maps_the_correct_list_of_models(
-        self, mock_uac_service, service: TotalmobileMapperService
+        self, service: TotalmobileMapperService
     ):
         # arrange
         questionnaire_name = "FRS2101"

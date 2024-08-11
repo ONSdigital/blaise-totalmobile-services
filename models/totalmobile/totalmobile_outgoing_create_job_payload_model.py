@@ -5,7 +5,6 @@ from typing import List, Optional, Type, TypeVar
 from models.blaise.blaise_case_information_base_model import (
     BlaiseCaseInformationBaseModel,
 )
-from models.blaise.questionnaire_uac_model import UacChunks
 from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
 
 T = TypeVar("T", bound="TotalMobileOutgoingCreateJobPayloadModel")
@@ -89,44 +88,12 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         return reference_model.create_reference()
 
     @staticmethod
-    def create_lms_description(
-        questionnaire_case: BlaiseCaseInformationBaseModel,
-        uac_chunks: Optional[UacChunks],
+    def get_job_description(
+        questionnaire_case: BlaiseCaseInformationBaseModel
     ) -> str:
-        uac_string = "" if uac_chunks is None else uac_chunks.formatted_chunks()
-        due_date_string = (
-            ""
-            if questionnaire_case.wave_com_dte is None
-            else questionnaire_case.wave_com_dte.strftime("%d/%m/%Y")
-        )
-        return (
-            f"UAC: {uac_string}\n"
-            f"Due Date: {due_date_string}\n"
-            f"Study: {questionnaire_case.questionnaire_name}\n"
-            f"Case ID: {questionnaire_case.case_id}\n"
-            f"Wave: {questionnaire_case.wave}"
-        )
 
-    @staticmethod
-    def create_frs_description(
-            questionnaire_case: BlaiseCaseInformationBaseModel,
-    ) -> str:
-        if questionnaire_case.divided_address_indicator == "1":
-            return "Warning Divided Address"
-        return ""
+        return questionnaire_case.create_case_description_for_interviewer()
 
-
-    @staticmethod
-    def create_description(
-        cls: Type[T],
-        questionnaire_case: BlaiseCaseInformationBaseModel,
-        uac_chunks: Optional[UacChunks],
-    ) -> str:
-        if questionnaire_case.tla == "FRS":
-            return cls.create_frs_description(questionnaire_case)
-
-        return cls.create_lms_description(questionnaire_case, uac_chunks
-        )
 
     @staticmethod
     def concatenate_address(questionnaire_case: BlaiseCaseInformationBaseModel) -> str:
@@ -185,8 +152,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
     def import_case(
         cls: Type[T],
         questionnaire_name: str,
-        questionnaire_case: BlaiseCaseInformationBaseModel,
-        uac_chunks: Optional[UacChunks],
+        questionnaire_case: BlaiseCaseInformationBaseModel
     ) -> T:
         total_mobile_case = cls(
             identity=Reference(
@@ -194,9 +160,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
                     questionnaire_name, questionnaire_case.case_id
                 )
             ),
-            description=cls.create_description(
-                cls, questionnaire_case, uac_chunks
-            ),
+            description=cls.get_job_description(questionnaire_case),
             origin="ONS",
             duration=15,
             workType=questionnaire_case.tla,
@@ -242,12 +206,12 @@ class TotalMobileOutgoingCreateJobPayloadModel:
             ],
         )
 
-        if uac_chunks is not None:
+        if questionnaire_case.has_uac and questionnaire_case.uac_chunks is not None:
             total_mobile_case.additionalProperties.extend(
                 [
-                    AdditionalProperty(name="uac1", value=uac_chunks.uac1),
-                    AdditionalProperty(name="uac2", value=uac_chunks.uac2),
-                    AdditionalProperty(name="uac3", value=uac_chunks.uac3),
+                    AdditionalProperty(name="uac1", value=questionnaire_case.uac_chunks.uac1),
+                    AdditionalProperty(name="uac2", value=questionnaire_case.uac_chunks.uac2),
+                    AdditionalProperty(name="uac3", value=questionnaire_case.uac_chunks.uac3),
                 ]
             )
 

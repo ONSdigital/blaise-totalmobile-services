@@ -1,5 +1,5 @@
 import logging
-
+from appconfig import Config
 from flask import Blueprint, current_app, jsonify, request
 
 from app.auth import auth
@@ -25,6 +25,7 @@ from services.datastore_service import DatastoreService
 from services.lms_eligible_case_service import LMSEligibleCaseService
 from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
 from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
+from services.uac.uac_service import UacService
 from services.update_case_service import UpdateCaseService
 
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
@@ -48,7 +49,7 @@ def submit_form_result_request():
     try:
         questionnaire_service = LMSQuestionnaireService(
             blaise_service=current_app.blaise_service,
-            mapper_service=BlaiseLMSCaseMapperService(),
+            mapper_service=BlaiseLMSCaseMapperService(current_app.uac_service),
             eligible_case_service=LMSEligibleCaseService(
                 wave_filters=[
                     CaseFilterWave1(),

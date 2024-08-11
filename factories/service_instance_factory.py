@@ -21,6 +21,7 @@ from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireSe
 from services.questionnaires.questionnaire_service_base import QuestionnaireServiceBase
 from services.totalmobile_service import RealTotalmobileService
 from services.uac.uac_service import UacService
+from services.uac.uac_service_base import UacServiceBase
 
 
 class ServiceInstanceFactory:
@@ -56,9 +57,8 @@ class ServiceInstanceFactory:
     def create_eligible_frs_case_service() -> FRSEligibleCaseService:
         return FRSEligibleCaseService()
 
-    @staticmethod
-    def create_lms_mapper_service() -> BlaiseLMSCaseMapperService:
-        return BlaiseLMSCaseMapperService()
+    def create_lms_mapper_service(self) -> BlaiseLMSCaseMapperService:
+        return BlaiseLMSCaseMapperService(uac_service=self.create_uac_service())
 
     @staticmethod
     def create_frs_mapper_service() -> BlaiseFRSCaseMapperService:
@@ -90,7 +90,7 @@ class ServiceInstanceFactory:
         )
 
     def create_totalmobile_mapper_service(self) -> TotalmobileMapperService:
-        return TotalmobileMapperService(uac_service=self.create_uac_service())
+        return TotalmobileMapperService()
 
     def create_totalmobile_service(self) -> RealTotalmobileService:
         optimise_client = OptimiseClient(
@@ -111,7 +111,7 @@ class ServiceInstanceFactory:
             mapper_service=self.create_totalmobile_mapper_service(),
         )
 
-    def create_uac_service(self) -> UacService:
+    def create_uac_service(self) -> UacServiceBase:
         return UacService(config=self._config)
 
     def create_cloud_task_service(self) -> CloudTaskService:

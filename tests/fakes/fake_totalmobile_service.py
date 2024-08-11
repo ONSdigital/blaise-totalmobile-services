@@ -4,7 +4,6 @@ from typing import Dict, List, Optional, Sequence
 import requests
 
 from client.optimise import GetJobResponse, GetJobsResponse
-from factories.service_instance_factory import ServiceInstanceFactory
 from models.blaise.blaise_case_information_base_model import (
     BlaiseCaseInformationBaseModel,
 )
@@ -15,7 +14,6 @@ from models.totalmobile.totalmobile_get_jobs_response_model import (
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.mappers.totalmobile_mapper_service import TotalmobileMapperService
 from services.totalmobile_service import DeleteJobError
-from tests.fakes.fake_uac_service import FakeUacService
 
 
 class FakeTotalmobileService:
@@ -139,7 +137,7 @@ class FakeTotalmobileService:
         self, questionnaire_name: str, cases: Sequence[BlaiseCaseInformationBaseModel]
     ) -> List[TotalmobileCreateJobModel]:
         world_model = self.get_world_model()
-        mapper = TotalmobileMapperService(FakeUacService())
+        mapper = TotalmobileMapperService()
         return mapper.map_totalmobile_create_job_models(
             questionnaire_name, cases, world_model
         )

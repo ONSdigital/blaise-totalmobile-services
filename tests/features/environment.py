@@ -21,11 +21,14 @@ def before_scenario(context, scenario):
     app = setup_app()
     app.blaise_service = FakeBlaiseService()
     app.totalmobile_service = FakeTotalmobileService()
+    app.uac_service = FakeUacService()
 
     context.blaise_service = app.blaise_service
+    context.uac_service = app.uac_service
     context.totalmobile_service = app.totalmobile_service
     context.datastore_service = FakeDatastoreService()
     context.blaise_outcome_service = BlaiseCaseOutcomeService(context.blaise_service)
+    context.mapper_service = BlaiseLMSCaseMapperService(context.uac_service)
 
     # TODO: Ask yourself "What Would Jamie Do?"
     # service_instance_factory = ServiceInstanceFactory()
@@ -33,7 +36,7 @@ def before_scenario(context, scenario):
 
     context.questionnaire_service = LMSQuestionnaireService(
         blaise_service=app.blaise_service,
-        mapper_service=BlaiseLMSCaseMapperService(),
+        mapper_service=context.mapper_service,
         eligible_case_service=LMSEligibleCaseService(
             wave_filters=[
                 CaseFilterWave1(),
@@ -45,8 +48,6 @@ def before_scenario(context, scenario):
         ),
         datastore_service=context.datastore_service,
     )
-
-    context.uac_service = FakeUacService()
     context.cloud_task_service = FakeCloudTaskService()
 
     app.config["user"] = "test_username"

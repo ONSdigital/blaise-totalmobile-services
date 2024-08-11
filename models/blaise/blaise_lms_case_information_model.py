@@ -4,6 +4,7 @@ from typing import List, Optional
 from models.blaise.blaise_case_information_base_model import (
     BlaiseCaseInformationBaseModel,
 )
+from models.blaise.questionnaire_uac_model import UacChunks
 
 
 @dataclass
@@ -24,6 +25,21 @@ class BlaiseLMSCaseInformationModel(BlaiseCaseInformationBaseModel):
     @property
     def has_uac(self) -> bool:
         return True
+
+    def create_case_description_for_interviewer(self) -> str:
+        uac_string = "" if self.uac_chunks is None else self.uac_chunks.formatted_chunks()
+        due_date_string = (
+            ""
+            if self.wave_com_dte is None
+            else self.wave_com_dte.strftime("%d/%m/%Y")
+        )
+        return (
+            f"UAC: {uac_string}\n"
+            f"Due Date: {due_date_string}\n"
+            f"Study: {self.questionnaire_name}\n"
+            f"Case ID: {self.case_id}\n"
+            f"Wave: {self.wave}"
+        )
 
     @staticmethod
     def required_fields() -> List:

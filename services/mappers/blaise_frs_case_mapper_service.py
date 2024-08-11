@@ -66,4 +66,5 @@ class BlaiseFRSCaseMapperService(MapperServiceBase):
             field_team=case_data_dictionary.get("qDataBag.FieldTeam"),
             wave_com_dte=wave_com_dte,
             divided_address_indicator=case_data_dictionary.get("qDataBag.DivAddInd"),
+            uac_chunks=None
         )
