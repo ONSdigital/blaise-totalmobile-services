@@ -33,7 +33,7 @@ class TestFRSCaseMapping:
             "qDataBag.FieldTeam": "B-Team",
             "qDataBag.WaveComDTE": "31-01-2023",
             "qDataBag.TLA": "FRS",
-            "qDataBag.DivAddInd": "",  # TODO confirm incoming type. str/int and None type
+            "qDataBag.DivAddInd": "",
         }
 
     def test_map_frs_case_information_model_maps_the_correct_model(
