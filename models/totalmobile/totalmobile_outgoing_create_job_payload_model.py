@@ -1,3 +1,4 @@
+import logging
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from typing import List, Optional, Type, TypeVar
@@ -78,6 +79,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         payload["dueDate"]["end"] = (
             self.dueDate.end.strftime("%Y-%m-%d") if self.dueDate.end else ""
         )
+        logging.debug(f'DEBUG: payload["dueDate"]["end"]: {payload["dueDate"]["end"]}')
         return payload
 
     @staticmethod
