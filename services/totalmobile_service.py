@@ -100,10 +100,11 @@ class RealTotalmobileService:
         jobs_response = self.get_jobs(world_id)
         return TotalmobileGetJobsResponseModel.from_get_jobs_response(jobs_response)
 
-    def map_totalmobile_create_job_models(
-        self, questionnaire_name: str, cases: Sequence[BlaiseCaseInformationBaseModel]
-    ) -> List[TotalmobileCreateJobModel]:
-        world_model = self.get_world_model()
-        return self._mapper.map_totalmobile_create_job_models(
-            questionnaire_name=questionnaire_name, cases=cases, world_model=world_model
-        )
+    # TODO: unused
+    # def map_totalmobile_create_job_models(
+    #     self, questionnaire_name: str, cases: Sequence[BlaiseCaseInformationBaseModel]
+    # ) -> List[TotalmobileCreateJobModel]:
+    #     world_model = self.get_world_model()
+    #     return self._mapper.map_totalmobile_create_job_models(
+    #         questionnaire_name=questionnaire_name, cases=cases, world_model=world_model
+    #     )
