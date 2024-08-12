@@ -1,5 +1,5 @@
 import logging
-from appconfig import Config
+
 from flask import Blueprint, current_app, jsonify, request
 
 from app.auth import auth
@@ -16,6 +16,7 @@ from app.handlers.totalmobile_incoming_handler import (
     submit_form_result_request_handler,
     update_visit_status_request_handler,
 )
+from appconfig import Config
 from services.case_filters.case_filter_wave_1 import CaseFilterWave1
 from services.case_filters.case_filter_wave_2 import CaseFilterWave2
 from services.case_filters.case_filter_wave_3 import CaseFilterWave3

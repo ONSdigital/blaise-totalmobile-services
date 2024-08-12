@@ -3,8 +3,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Optional
 
-from models.blaise.questionnaire_uac_model import UacChunks
 from models.base_model import BaseModel
+from models.blaise.questionnaire_uac_model import UacChunks
 
 
 @dataclass

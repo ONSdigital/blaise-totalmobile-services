@@ -9,18 +9,19 @@ from models.blaise.blaise_frs_case_information_model import (
 from models.blaise.blaise_lms_case_information_model import (
     BlaiseLMSCaseInformationModel,
 )
-from models.blaise.questionnaire_uac_model import UacChunks, QuestionnaireUacModel
+from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.mappers.totalmobile_mapper_service import TotalmobileMapperService
 from tests.helpers.get_blaise_frs_case_model_helper import get_frs_populated_case_model
 from tests.helpers.get_blaise_lms_case_model_helper import get_populated_case_model
+
+
 @pytest.fixture()
 def service() -> TotalmobileMapperService:
     return TotalmobileMapperService()
 
 
 class TestMapTotalmobileJobModelsForLMS:
-
     def get_questionnaire_uac_model(self) -> QuestionnaireUacModel:
         uac_data_dictionary: Dict[str, Uac] = {
             "10010": {
@@ -124,19 +125,19 @@ class TestMapTotalmobileJobModelsForLMS:
                 case_id="10010",
                 outcome_code=110,
                 field_region="region1",
-                uac_chunks=questionnaire_uac_model.get_uac_chunks("10010")
+                uac_chunks=questionnaire_uac_model.get_uac_chunks("10010"),
             ),
             get_populated_case_model(
                 case_id="10020",
                 outcome_code=120,
                 field_region="region2",
-                uac_chunks=questionnaire_uac_model.get_uac_chunks("10020")
+                uac_chunks=questionnaire_uac_model.get_uac_chunks("10020"),
             ),
             get_populated_case_model(
                 case_id="10030",
                 outcome_code=130,
                 field_region="region3",
-                uac_chunks=questionnaire_uac_model.get_uac_chunks("10030")
+                uac_chunks=questionnaire_uac_model.get_uac_chunks("10030"),
             ),
         ]
 
@@ -213,9 +214,11 @@ class TestMapTotalmobileJobModelsForFRS:
                 {"name": "Team", "value": case.field_team},
             ],
             "contact": {"name": case.address_details.address.postcode},
-            "description": ("Warning Divided Address"
-                            if case.divided_address_indicator == "1"
-                            else ""),
+            "description": (
+                "Warning Divided Address"
+                if case.divided_address_indicator == "1"
+                else ""
+            ),
             "dueDate": {"end": due_date},
             "duration": 15,
             "identity": {
@@ -248,9 +251,15 @@ class TestMapTotalmobileJobModelsForFRS:
         questionnaire_name = "FRS2101"
 
         case_data = [
-            get_frs_populated_case_model(case_id="10010", field_region="region1", divided_address_indicator="1"),
-            get_frs_populated_case_model(case_id="10020", field_region="region2", divided_address_indicator="0"),
-            get_frs_populated_case_model(case_id="10030", field_region="region3", divided_address_indicator=""),
+            get_frs_populated_case_model(
+                case_id="10010", field_region="region1", divided_address_indicator="1"
+            ),
+            get_frs_populated_case_model(
+                case_id="10020", field_region="region2", divided_address_indicator="0"
+            ),
+            get_frs_populated_case_model(
+                case_id="10030", field_region="region3", divided_address_indicator=""
+            ),
         ]
 
         world_model = TotalmobileWorldModel(

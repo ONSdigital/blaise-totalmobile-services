@@ -41,7 +41,7 @@ def test_import_case_returns_a_populated_model():
         field_region="Gwent",
         field_team="B-Team",
         wave_com_dte=datetime(2023, 1, 31),
-        uac_chunks=UacChunks(uac1="3456", uac2="3453", uac3="4546")
+        uac_chunks=UacChunks(uac1="3456", uac2="3453", uac3="4546"),
     )
 
     # act
@@ -142,10 +142,7 @@ def test_import_case_does_not_populate_lat_and_lon_if_both_are_not_supplied(
     questionnaire_name = "LMS2101_AA1"
 
     questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
-        latitude=latitude,
-        longitude=longitude,
-        uac_chunks=None
-
+        latitude=latitude, longitude=longitude, uac_chunks=None
     )
 
     # act
@@ -362,8 +359,7 @@ def test_to_payload_sends_an_empty_string_to_totalmobile_if_the_due_date_is_miss
     questionnaire_name = "LMS2101_AA1"
 
     questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
-        wave_com_dte=None,
-        uac_chunks=None
+        wave_com_dte=None, uac_chunks=None
     )
 
     case = TotalMobileOutgoingCreateJobPayloadModel.import_case(
@@ -383,7 +379,7 @@ def test_create_description_returns_a_correctly_formatted_description():
         data_model_name="LMS2201_AA1",
         wave_com_dte=datetime(2022, 1, 31),
         wave=4,
-        uac_chunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")
+        uac_chunks=UacChunks(uac1="3456", uac2="3453", uac3="4546"),
     )
 
     # Act
@@ -410,7 +406,7 @@ def test_create_description_returns_a_correctly_formatted_description_when_four_
         data_model_name="LMS2201_AA1",
         wave_com_dte=datetime(2022, 1, 31),
         wave=4,
-        uac_chunks = UacChunks(uac1="1234", uac2="4567", uac3="7890", uac4="0987")
+        uac_chunks=UacChunks(uac1="1234", uac2="4567", uac3="7890", uac4="0987"),
     )
 
     # Act
@@ -437,8 +433,7 @@ def test_create_description_returns_a_correctly_formatted_description_when_all_v
         data_model_name="",
         wave_com_dte=None,
         wave="",
-        uac_chunks=None
-
+        uac_chunks=None,
     )
 
     # Act
@@ -463,7 +458,7 @@ def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_all
         address_line_3="Upper Blaise",
         town="Blaisingdom",
         postcode="BS1 1BS",
-        uac_chunks=None
+        uac_chunks=None,
     )
 
     # Act
@@ -489,7 +484,7 @@ def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_not
         address_line_3=None,
         town="Blaisingdom",
         postcode="BS1 1BS",
-        uac_chunks=None
+        uac_chunks=None,
     )
 
     # Act
@@ -509,7 +504,7 @@ def test_concatenate_address_line1_returns_a_concatenated_address_of_50_characte
         case_id="1234",
         address_line_1="123 Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch",
         address_line_2="Ynys Môn",
-        uac_chunks=None
+        uac_chunks=None,
     )
 
     # Act
@@ -532,7 +527,7 @@ def test_concatenate_address_line1_returns_a_concatenated_address_without_a_comm
         case_id="1234",
         address_line_1="123 Blaise Street",
         address_line_2=None,
-        uac_chunks=None
+        uac_chunks=None,
     )
 
     # Act
@@ -552,7 +547,7 @@ def test_concatenate_address_line1_returns_a_concatenated_address_without_a_comm
         case_id="1234",
         address_line_1="123 Blaise Street",
         address_line_2="",
-        uac_chunks=None
+        uac_chunks=None,
     )
 
     # Act
@@ -569,9 +564,7 @@ def test_location_reference_is_set_to_an_empty_string_if_location_reference_is_n
     questionnaire_name = "LMS2101_AA1"
 
     questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
-        questionnaire_name="LMS2201_AA1",
-        reference=None,
-        uac_chunks=None
+        questionnaire_name="LMS2201_AA1", reference=None, uac_chunks=None
     )
 
     # act

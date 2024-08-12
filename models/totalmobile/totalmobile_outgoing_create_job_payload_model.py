@@ -88,12 +88,9 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         return reference_model.create_reference()
 
     @staticmethod
-    def get_job_description(
-        questionnaire_case: BlaiseCaseInformationBaseModel
-    ) -> str:
+    def get_job_description(questionnaire_case: BlaiseCaseInformationBaseModel) -> str:
 
         return questionnaire_case.create_case_description_for_interviewer()
-
 
     @staticmethod
     def concatenate_address(questionnaire_case: BlaiseCaseInformationBaseModel) -> str:
@@ -152,7 +149,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
     def import_case(
         cls: Type[T],
         questionnaire_name: str,
-        questionnaire_case: BlaiseCaseInformationBaseModel
+        questionnaire_case: BlaiseCaseInformationBaseModel,
     ) -> T:
         total_mobile_case = cls(
             identity=Reference(
@@ -209,9 +206,15 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         if questionnaire_case.has_uac and questionnaire_case.uac_chunks is not None:
             total_mobile_case.additionalProperties.extend(
                 [
-                    AdditionalProperty(name="uac1", value=questionnaire_case.uac_chunks.uac1),
-                    AdditionalProperty(name="uac2", value=questionnaire_case.uac_chunks.uac2),
-                    AdditionalProperty(name="uac3", value=questionnaire_case.uac_chunks.uac3),
+                    AdditionalProperty(
+                        name="uac1", value=questionnaire_case.uac_chunks.uac1
+                    ),
+                    AdditionalProperty(
+                        name="uac2", value=questionnaire_case.uac_chunks.uac2
+                    ),
+                    AdditionalProperty(
+                        name="uac3", value=questionnaire_case.uac_chunks.uac3
+                    ),
                 ]
             )
 

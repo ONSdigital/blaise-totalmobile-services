@@ -12,15 +12,13 @@ from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 
 
 class TotalmobileMapperService:
-
     def map_totalmobile_job_payload(
         self, questionnaire_name: str, case: BlaiseCaseInformationBaseModel
     ) -> Dict[str, str]:
 
         totalmobile_outgoing_payload_model = (
             TotalMobileOutgoingCreateJobPayloadModel.import_case(
-                questionnaire_name,
-                case
+                questionnaire_name, case
             )
         )
 

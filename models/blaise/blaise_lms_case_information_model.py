@@ -27,11 +27,11 @@ class BlaiseLMSCaseInformationModel(BlaiseCaseInformationBaseModel):
         return True
 
     def create_case_description_for_interviewer(self) -> str:
-        uac_string = "" if self.uac_chunks is None else self.uac_chunks.formatted_chunks()
+        uac_string = (
+            "" if self.uac_chunks is None else self.uac_chunks.formatted_chunks()
+        )
         due_date_string = (
-            ""
-            if self.wave_com_dte is None
-            else self.wave_com_dte.strftime("%d/%m/%Y")
+            "" if self.wave_com_dte is None else self.wave_com_dte.strftime("%d/%m/%Y")
         )
         return (
             f"UAC: {uac_string}\n"

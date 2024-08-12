@@ -8,6 +8,7 @@ from client.bus import Uac
 from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
 from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
 
+
 @pytest.fixture()
 def mock_uac_service():
     return Mock()
@@ -70,7 +71,11 @@ class TestLMSCaseMapping:
         }
 
     def test_map_lms_case_information_model_maps_the_correct_model(
-        self, service, mock_uac_service, questionnaire_uac_model, valid_case_data_dictionary
+        self,
+        service,
+        mock_uac_service,
+        questionnaire_uac_model,
+        valid_case_data_dictionary,
     ):
 
         # arrange
@@ -118,12 +123,16 @@ class TestLMSCaseMapping:
         assert result.uac_chunks == uac_chunks
 
     def test_map_lms_case_information_model_maps_the_correct_model_when_no_uacs_are_available(
-        self, service, mock_uac_service, questionnaire_uac_model, valid_case_data_dictionary
+        self,
+        service,
+        mock_uac_service,
+        questionnaire_uac_model,
+        valid_case_data_dictionary,
     ):
 
         # arrange
         questionnaire_name = "LMS2101_AA1"
-        case_id = "20010" # no uac in uac dictionary above
+        case_id = "20010"  # no uac in uac dictionary above
         valid_case_data_dictionary["qiD.Serial_Number"] = case_id
         mock_uac_service.get_questionnaire_uac_model.return_value = (
             questionnaire_uac_model

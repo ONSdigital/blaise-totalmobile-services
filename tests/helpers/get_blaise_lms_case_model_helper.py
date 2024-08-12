@@ -39,7 +39,7 @@ def get_populated_case_model(
     wave_com_dte: Optional[datetime] = datetime(2023, 1, 31),
     rotational_knock_to_nudge_indicator: str = "Y",
     rotational_outcome_code: int = 310,
-    uac_chunks: Optional[UacChunks] = None
+    uac_chunks: Optional[UacChunks] = None,
 ):
     return BlaiseLMSCaseInformationModel(
         questionnaire_name=questionnaire_name,
@@ -76,6 +76,6 @@ def get_populated_case_model(
         rotational_knock_to_nudge_indicator=rotational_knock_to_nudge_indicator,
         rotational_outcome_code=rotational_outcome_code,
         has_call_history=False,
-        divided_address_indicator=None,  #TODO refactor base,
-        uac_chunks=uac_chunks
+        divided_address_indicator=None,  # TODO refactor base,
+        uac_chunks=uac_chunks,
     )

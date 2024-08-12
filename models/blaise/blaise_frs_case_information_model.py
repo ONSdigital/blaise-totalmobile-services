@@ -10,12 +10,13 @@ V = TypeVar("V", bound="BlaiseFRSCaseInformationModel")
 
 @dataclass
 class BlaiseFRSCaseInformationModel(BlaiseCaseInformationBaseModel):
-
     @property
     def has_uac(self) -> bool:
         return False
 
-    def create_case_description_for_interviewer(self, ) -> str:
+    def create_case_description_for_interviewer(
+        self,
+    ) -> str:
         if self.divided_address_indicator == "1":
             return "Warning Divided Address"
         return ""
