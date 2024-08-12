@@ -12,18 +12,6 @@ from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 
 
 class TotalmobileMapperService:
-    def map_totalmobile_job_payload(
-        self, questionnaire_name: str, case: BlaiseCaseInformationBaseModel
-    ) -> Dict[str, str]:
-
-        totalmobile_outgoing_payload_model = (
-            TotalMobileOutgoingCreateJobPayloadModel.import_case(
-                questionnaire_name, case
-            )
-        )
-
-        return totalmobile_outgoing_payload_model.to_payload()
-
     def map_totalmobile_create_job_models(
         self,
         questionnaire_name: str,
@@ -36,7 +24,7 @@ class TotalmobileMapperService:
                 questionnaire_name,
                 world_model.get_world_id(case.field_region),
                 case.case_id,
-                self.map_totalmobile_job_payload(questionnaire_name, case),
+                self._map_totalmobile_job_payload(questionnaire_name, case),
             )
             for case in cases
         ]
@@ -46,3 +34,16 @@ class TotalmobileMapperService:
         )
 
         return job_models
+
+    @staticmethod
+    def _map_totalmobile_job_payload(
+            questionnaire_name: str, case: BlaiseCaseInformationBaseModel
+    ) -> Dict[str, str]:
+
+        totalmobile_outgoing_payload_model = (
+            TotalMobileOutgoingCreateJobPayloadModel.import_case(
+                questionnaire_name, case
+            )
+        )
+
+        return totalmobile_outgoing_payload_model.to_payload()
