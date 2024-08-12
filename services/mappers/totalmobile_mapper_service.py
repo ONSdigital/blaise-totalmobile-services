@@ -29,9 +29,7 @@ class TotalmobileMapperService:
             for case in cases
         ]
 
-        logging.info(
-            f"Finished mapping Totalmobile jobs for questionnaire {questionnaire_name}"
-        )
+        logging.info(f"Finished mapping Totalmobile jobs for questionnaire {questionnaire_name}")
 
         return job_models
 
@@ -39,7 +37,7 @@ class TotalmobileMapperService:
     def _map_totalmobile_job_payload(
             questionnaire_name: str, case: BlaiseCaseInformationBaseModel
     ) -> Dict[str, str]:
-
+        logging.info(f"_map_totalmobile_job_payload for questionnaire {questionnaire_name} and case {case.case_id}")
         totalmobile_outgoing_payload_model = (
             TotalMobileOutgoingCreateJobPayloadModel.import_case(
                 questionnaire_name, case
