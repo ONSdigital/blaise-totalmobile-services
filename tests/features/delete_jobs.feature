@@ -1,7 +1,6 @@
-#     TODO: Ask yourself "What Would Jamie Do?"
-#     Behave tests - use background to setup tests for LMS/FRS, and change environment.py to handle LMS/FRS
-
 Feature: Delete jobs
+  Background:
+    Given the survey type is "LMS"
 
   Scenario Outline: Delete jobs from Totalmobile devices for cases in Blaise that no longer require a K2N
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise

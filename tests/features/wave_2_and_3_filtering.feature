@@ -1,4 +1,7 @@
 Feature: Filter wave 2 and 3 cases
+  Background:
+    Given the survey type is "LMS"
+
   Scenario Outline: Eligible wave 2 and 3 LMS cases are sent to Totalmobile
     Given there is a LMS2210_AA1 with a totalmobile release date of today
     And case 12345 for LMS2210_AA1 has the following data

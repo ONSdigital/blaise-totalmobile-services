@@ -1,4 +1,6 @@
 Feature: Filter wave 1 cases
+  Background:
+    Given the survey type is "LMS"
 
   Scenario Outline: Eligible LMS cases are sent to Totalmobile
     Given there is a <questionnaire_name> with a totalmobile release date of today

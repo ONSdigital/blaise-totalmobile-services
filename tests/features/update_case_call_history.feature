@@ -1,4 +1,6 @@
 Feature: Update call history
+  Background:
+    Given the survey type is "LMS"
 
   Scenario Outline: Totalmobile sends a request with an outcome code of 460 (hard refusal) when the case has no pre-existing call history
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise

@@ -9,9 +9,39 @@ from behave import given, then, when
 
 import cloud_functions.delete_totalmobile_jobs_completed_in_blaise
 import cloud_functions.delete_totalmobile_jobs_past_field_period
+from services.case_filters.case_filter_wave_1 import CaseFilterWave1
+from services.case_filters.case_filter_wave_2 import CaseFilterWave2
+from services.case_filters.case_filter_wave_3 import CaseFilterWave3
+from services.case_filters.case_filter_wave_4 import CaseFilterWave4
+from services.case_filters.case_filter_wave_5 import CaseFilterWave5
 from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
+from services.lms_eligible_case_service import LMSEligibleCaseService
+from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
+from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
+from tests.fakes.fake_cloud_task_service import FakeCloudTaskService
 from tests.helpers import incoming_request_helper
 from tests.helpers.date_helper import get_date_as_totalmobile_formatted_string
+
+
+@given('the survey type is "{survey_type}"')
+def step_impl(context, survey_type):
+    if survey_type == "LMS":
+        context.mapper_service = BlaiseLMSCaseMapperService(context.uac_service)
+        context.questionnaire_service = LMSQuestionnaireService(
+            blaise_service=context.blaise_service,
+            mapper_service=context.mapper_service,
+            eligible_case_service=LMSEligibleCaseService(
+                wave_filters=[
+                    CaseFilterWave1(),
+                    CaseFilterWave2(),
+                    CaseFilterWave3(),
+                    CaseFilterWave4(),
+                    CaseFilterWave5(),
+                ]
+            ),
+            datastore_service=context.datastore_service,
+        )
+        context.cloud_task_service = FakeCloudTaskService()
 
 
 @given('there is a questionnaire "{questionnaire}" with case "{case_id}" in Blaise')
