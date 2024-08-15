@@ -79,7 +79,6 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         payload["dueDate"]["end"] = (
             self.dueDate.end.strftime("%Y-%m-%d") if self.dueDate.end else ""
         )
-        logging.info(f'DEBUG: payload["dueDate"]["end"]: {payload["dueDate"]["end"]} for {payload["description"]}')
         return payload
 
     @staticmethod

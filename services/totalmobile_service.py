@@ -50,7 +50,6 @@ class TotalmobileService(Protocol):
     def map_totalmobile_create_job_models(
         self, questionnaire_name: str, cases: Sequence[BlaiseCaseInformationBaseModel]
     ) -> List[TotalmobileCreateJobModel]:
-        logging.info(f'DEBUG: map_totalmobile_create_job_models in PROTOCOL service')
         pass
 
 
@@ -105,7 +104,6 @@ class RealTotalmobileService:
     def map_totalmobile_create_job_models(
         self, questionnaire_name: str, cases: Sequence[BlaiseCaseInformationBaseModel]
     ) -> List[TotalmobileCreateJobModel]:
-        logging.info(f'DEBUG: map_totalmobile_create_job_models in REAL service')
         world_model = self.get_world_model()
         return self._mapper.map_totalmobile_create_job_models(
             questionnaire_name=questionnaire_name, cases=cases, world_model=world_model
