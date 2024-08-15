@@ -31,9 +31,7 @@ class FRSQuestionnaireService(QuestionnaireServiceBase):
     def get_eligible_cases(
         self, questionnaire_name: str
     ) -> Sequence[BlaiseFRSCaseInformationModel]:
-        logging.info(f"DEBUG: get_eligible_cases() called")
         questionnaire_cases = self.get_cases(questionnaire_name)
-        logging.info(f"DEBUG: questionnaire_cases: {questionnaire_cases}")
         eligible_cases: Sequence[
             BlaiseFRSCaseInformationModel
         ] = self._eligible_case_service.get_eligible_cases(questionnaire_cases)
@@ -43,7 +41,6 @@ class FRSQuestionnaireService(QuestionnaireServiceBase):
         questionnaire_case_data = self._blaise_service.get_cases(
             questionnaire_name, BlaiseFRSCaseInformationModel.required_fields()
         )
-        logging.info(f"DEBUG: FRSQuestionnaireService.get_cases() called")
         cases = self._mapper_service.map_frs_case_information_models(
             questionnaire_name, questionnaire_case_data
         )

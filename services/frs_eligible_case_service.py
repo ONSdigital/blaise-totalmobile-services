@@ -11,11 +11,7 @@ class FRSEligibleCaseService:
     def get_eligible_cases(
         self, cases: List[BlaiseFRSCaseInformationModel]
     ) -> List[BlaiseFRSCaseInformationModel]:
-        logging.info(f"DEBUG: FRSEligibleCaseService.get_eligible_cases() called")
-
         filtered_cases = [case for case in cases if self.case_is_eligible(case)]
-        logging.info(f"DEBUG: filtered_cases: {filtered_cases}")
-
         for filtered_case in filtered_cases:
             logging.info(
                 f"Case '{filtered_case.case_id}' in questionnaire '{filtered_case.questionnaire_name}' was eligible and will be included"
