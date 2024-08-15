@@ -35,7 +35,7 @@ class BlaiseLMSCaseInformationModel(BlaiseCaseInformationBaseModel):
             "priority": f"{self.priority}",
             "fieldRegion": f"{self.field_region}",
             "fieldTeam": f"{self.field_team}",
-            "postCode": f"{self.address_details.address.postcode}"
+            "postCode": f"{self.address_details.address.postcode}",
         }
 
     def create_case_description_for_interviewer(self) -> str:

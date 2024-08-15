@@ -127,21 +127,21 @@ class TestMapTotalmobileJobModelsForLMS:
                 outcome_code=110,
                 field_region="region1",
                 uac_chunks=questionnaire_uac_model.get_uac_chunks("10010"),
-                postcode="AB12 3CD"
+                postcode="AB12 3CD",
             ),
             get_populated_case_model(
                 case_id="10020",
                 outcome_code=120,
                 field_region="region2",
                 uac_chunks=questionnaire_uac_model.get_uac_chunks("10020"),
-                postcode="EF45 6GH"
+                postcode="EF45 6GH",
             ),
             get_populated_case_model(
                 case_id="10030",
                 outcome_code=130,
                 field_region="region3",
                 uac_chunks=questionnaire_uac_model.get_uac_chunks("10030"),
-                postcode="IJ78 9KL"
+                postcode="IJ78 9KL",
             ),
         ]
 
@@ -259,19 +259,19 @@ class TestMapTotalmobileJobModelsForFRS:
                 case_id="10010",
                 field_region="region1",
                 postcode="AB12 3CD",
-                divided_address_indicator="1"
+                divided_address_indicator="1",
             ),
             get_frs_populated_case_model(
                 case_id="10020",
                 field_region="region2",
                 postcode="EF45 6GH",
-                divided_address_indicator="0"
+                divided_address_indicator="0",
             ),
             get_frs_populated_case_model(
                 case_id="10030",
                 field_region="region3",
                 postcode="IJ78 9KL",
-                divided_address_indicator=""
+                divided_address_indicator="",
             ),
         ]
 
