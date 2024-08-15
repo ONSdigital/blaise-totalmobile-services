@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from typing import Dict, List
 
@@ -16,6 +17,7 @@ class BlaiseFRSCaseMapperService(MapperServiceBase):
     def map_frs_case_information_models(
         self, questionnaire_name: str, questionnaire_case_data: List[Dict[str, str]]
     ) -> List[BlaiseFRSCaseInformationModel]:
+        logging.info(f"DEBUG: BlaiseFRSCaseMapperService.map_frs_case_information_models() called")
 
         cases = []
         for case_data_item in questionnaire_case_data:
@@ -24,6 +26,7 @@ class BlaiseFRSCaseMapperService(MapperServiceBase):
             )
             cases.append(case)
 
+        logging.info(f"DEBUG: cases: {cases}")
         return cases
 
     def map_frs_case_information_model(

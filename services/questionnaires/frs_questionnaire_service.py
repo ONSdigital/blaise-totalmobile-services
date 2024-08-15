@@ -43,6 +43,7 @@ class FRSQuestionnaireService(QuestionnaireServiceBase):
         questionnaire_case_data = self._blaise_service.get_cases(
             questionnaire_name, BlaiseFRSCaseInformationModel.required_fields()
         )
+        logging.info(f"DEBUG: FRSQuestionnaireService.get_cases() called")
         cases = self._mapper_service.map_frs_case_information_models(
             questionnaire_name, questionnaire_case_data
         )
