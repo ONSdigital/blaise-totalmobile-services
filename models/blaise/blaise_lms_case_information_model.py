@@ -21,10 +21,21 @@ class BlaiseLMSCaseInformationModel(BlaiseCaseInformationBaseModel):
     has_call_history: bool
     rotational_knock_to_nudge_indicator: Optional[str]
     rotational_outcome_code: int
+    wave: Optional[int]
 
     @property
     def has_uac(self) -> bool:
         return True
+
+    def create_case_overview_for_interviewer(self) -> dict[str, str]:
+        return {
+            "surveyName": f"{self.data_model_name}",
+            "tla": f"{self.tla}",
+            "wave": f"{self.wave}",
+            "priority": f"{self.priority}",
+            "fieldRegion": f"{self.field_region}",
+            "fieldTeam": f"{self.field_team}",
+        }
 
     def create_case_description_for_interviewer(self) -> str:
         uac_string = (

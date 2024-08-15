@@ -204,7 +204,6 @@ class TestMapTotalmobileJobModelsForFRS:
             "additionalProperties": [
                 {"name": "surveyName", "value": case.data_model_name},
                 {"name": "tla", "value": case.tla},
-                {"name": "wave", "value": f"{case.wave}"},
                 {"name": "priority", "value": case.priority},
                 {"name": "fieldRegion", "value": case.field_region},
                 {"name": "fieldTeam", "value": case.field_team},

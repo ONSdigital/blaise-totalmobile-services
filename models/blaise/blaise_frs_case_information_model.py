@@ -14,6 +14,15 @@ class BlaiseFRSCaseInformationModel(BlaiseCaseInformationBaseModel):
     def has_uac(self) -> bool:
         return False
 
+    def create_case_overview_for_interviewer(self) -> dict[str, str]:
+        return {
+            "surveyName": f"{self.data_model_name}",
+            "tla": f"{self.tla}",
+            "priority": f"{self.priority}",
+            "fieldRegion": f"{self.field_region}",
+            "fieldTeam": f"{self.field_team}",
+        }
+
     def create_case_description_for_interviewer(
         self,
     ) -> str:
@@ -27,7 +36,6 @@ class BlaiseFRSCaseInformationModel(BlaiseCaseInformationBaseModel):
             "qiD.Serial_Number",
             "dataModelName",
             "qDataBag.TLA",
-            "qDataBag.Wave",
             "qDataBag.Prem1",
             "qDataBag.Prem2",
             "qDataBag.Prem3",

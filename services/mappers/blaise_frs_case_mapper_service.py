@@ -36,7 +36,6 @@ class BlaiseFRSCaseMapperService(MapperServiceBase):
             if wave_com_dte_str != ""
             else None
         )
-        wave = case_data_dictionary.get("qDataBag.Wave")
         tla = questionnaire_name[0:3]
 
         return BlaiseFRSCaseInformationModel(
@@ -44,7 +43,6 @@ class BlaiseFRSCaseMapperService(MapperServiceBase):
             tla=tla,
             case_id=case_data_dictionary.get("qiD.Serial_Number"),
             data_model_name=case_data_dictionary.get("dataModelName"),
-            wave=int(wave) if wave else None,
             address_details=AddressDetails(
                 reference=case_data_dictionary.get("qDataBag.UPRN", ""),
                 address=Address(

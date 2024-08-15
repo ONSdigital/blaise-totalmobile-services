@@ -90,6 +90,18 @@ class TotalMobileOutgoingCreateJobPayloadModel:
         return reference_model.create_reference()
 
     @staticmethod
+    def get_job_additional_properties(questionnaire_case: BlaiseCaseInformationBaseModel) -> list[AdditionalProperty]:
+        additional_properties = []
+        case_overview = questionnaire_case.create_case_overview_for_interviewer()
+        for key, value in case_overview.items():
+            additional_properties.append(AdditionalProperty(
+                name=key,
+                value=value
+            ))
+        return additional_properties
+
+
+    @staticmethod
     def get_job_description(questionnaire_case: BlaiseCaseInformationBaseModel) -> str:
 
         return questionnaire_case.create_case_description_for_interviewer()
@@ -189,20 +201,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
                 ),
                 AdditionalProperty(name="Team", value=questionnaire_case.field_team),
             ],
-            additionalProperties=[
-                AdditionalProperty(
-                    name="surveyName", value=questionnaire_case.data_model_name
-                ),
-                AdditionalProperty(name="tla", value=questionnaire_case.tla),
-                AdditionalProperty(name="wave", value=str(questionnaire_case.wave)),
-                AdditionalProperty(name="priority", value=questionnaire_case.priority),
-                AdditionalProperty(
-                    name="fieldRegion", value=questionnaire_case.field_region
-                ),
-                AdditionalProperty(
-                    name="fieldTeam", value=questionnaire_case.field_team
-                ),
-            ],
+            additionalProperties=cls.get_job_additional_properties(questionnaire_case),
         )
 
         if questionnaire_case.has_uac and questionnaire_case.uac_chunks is not None:

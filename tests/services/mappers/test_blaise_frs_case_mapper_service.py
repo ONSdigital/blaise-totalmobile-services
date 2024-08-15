@@ -16,7 +16,6 @@ class TestFRSCaseMapping:
         return {
             "qiD.Serial_Number": "90000000",
             "dataModelName": "LM2007",
-            "qDataBag.Wave": 1,
             "qDataBag.Prem1": "12 Blaise Street",
             "qDataBag.Prem2": "Blaise Hill",
             "qDataBag.Prem3": "Blaiseville",
@@ -52,7 +51,6 @@ class TestFRSCaseMapping:
         assert result.questionnaire_name == "FRS2101"
         assert result.case_id == "90000000"
         assert result.data_model_name == "LM2007"
-        assert result.wave == 1
         assert result.address_details.address.address_line_1 == "12 Blaise Street"
         assert result.address_details.address.address_line_2 == "Blaise Hill"
         assert result.address_details.address.address_line_3 == "Blaiseville"

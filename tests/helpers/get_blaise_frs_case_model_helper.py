@@ -16,7 +16,6 @@ def get_frs_populated_case_model(
     tla: str = "FRS",
     case_id: str = "910000",
     data_model_name: str = "FRS2101",
-    wave: int = 1,
     address_line_1: str = "12 Blaise Street",
     address_line_2: str = "Blaise Hill",
     address_line_3: str = "Blaiseville",
@@ -38,7 +37,6 @@ def get_frs_populated_case_model(
         tla=tla,
         case_id=case_id,
         data_model_name=data_model_name,
-        wave=wave,
         address_details=AddressDetails(
             reference=reference,
             address=Address(

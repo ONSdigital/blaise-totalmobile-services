@@ -36,7 +36,6 @@ class BlaiseCaseInformationBaseModel(BaseModel):
     case_id: Optional[str]
     tla: str
     data_model_name: Optional[str]
-    wave: Optional[int]
     wave_com_dte: Optional[datetime]
     address_details: AddressDetails
     priority: Optional[str]
@@ -49,6 +48,10 @@ class BlaiseCaseInformationBaseModel(BaseModel):
     @property
     @abstractmethod
     def has_uac(self) -> bool:
+        pass
+
+    @abstractmethod
+    def create_case_overview_for_interviewer(self) -> dict[str, str]:
         pass
 
     @abstractmethod
