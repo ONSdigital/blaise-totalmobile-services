@@ -96,14 +96,17 @@ def test_import_case_returns_a_populated_model():
     assert result.additionalProperties[5].name == "fieldTeam"
     assert result.additionalProperties[5].value == "B-Team"
 
-    assert result.additionalProperties[6].name == "uac1"
-    assert result.additionalProperties[6].value == "3456"
+    assert result.additionalProperties[6].name == "postCode"
+    assert result.additionalProperties[6].value == "FML134D"
 
-    assert result.additionalProperties[7].name == "uac2"
-    assert result.additionalProperties[7].value == "3453"
+    assert result.additionalProperties[7].name == "uac1"
+    assert result.additionalProperties[7].value == "3456"
 
-    assert result.additionalProperties[8].name == "uac3"
-    assert result.additionalProperties[8].value == "4546"
+    assert result.additionalProperties[8].name == "uac2"
+    assert result.additionalProperties[8].value == "3453"
+
+    assert result.additionalProperties[9].name == "uac3"
+    assert result.additionalProperties[9].value == "4546"
 
 
 def test_import_case_returns_a_model_with_no_uac_additional_properties_if_no_uacs_are_set():

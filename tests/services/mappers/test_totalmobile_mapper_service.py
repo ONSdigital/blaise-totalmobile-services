@@ -68,6 +68,7 @@ class TestMapTotalmobileJobModelsForLMS:
                 {"name": "priority", "value": case.priority},
                 {"name": "fieldRegion", "value": case.field_region},
                 {"name": "fieldTeam", "value": case.field_team},
+                {"name": "postCode", "value": case.address_details.address.postcode},
             ],
             "attributes": [
                 {"name": "Region", "value": case.field_region},
@@ -90,14 +91,14 @@ class TestMapTotalmobileJobModelsForLMS:
             },
             "location": {
                 "address": "12 Blaise Street, Blaise Hill, Blaiseville, Newport, "
-                "FML134D",
+                f"{case.address_details.address.postcode}",
                 "addressDetail": {
                     "addressLine1": "12 Blaise Street, Blaise Hill",
                     "addressLine2": "Blaiseville",
                     "addressLine3": "Gwent",
                     "addressLine4": "Newport",
                     "coordinates": {"latitude": "10020202", "longitude": "34949494"},
-                    "postCode": "FML134D",
+                    "postCode": case.address_details.address.postcode,
                 },
                 "reference": case.address_details.reference,
             },
@@ -126,18 +127,21 @@ class TestMapTotalmobileJobModelsForLMS:
                 outcome_code=110,
                 field_region="region1",
                 uac_chunks=questionnaire_uac_model.get_uac_chunks("10010"),
+                postcode="AB12 3CD"
             ),
             get_populated_case_model(
                 case_id="10020",
                 outcome_code=120,
                 field_region="region2",
                 uac_chunks=questionnaire_uac_model.get_uac_chunks("10020"),
+                postcode="EF45 6GH"
             ),
             get_populated_case_model(
                 case_id="10030",
                 outcome_code=130,
                 field_region="region3",
                 uac_chunks=questionnaire_uac_model.get_uac_chunks("10030"),
+                postcode="IJ78 9KL"
             ),
         ]
 
@@ -207,6 +211,7 @@ class TestMapTotalmobileJobModelsForFRS:
                 {"name": "priority", "value": case.priority},
                 {"name": "fieldRegion", "value": case.field_region},
                 {"name": "fieldTeam", "value": case.field_team},
+                {"name": "postCode", "value": case.address_details.address.postcode},
             ],
             "attributes": [
                 {"name": "Region", "value": case.field_region},
@@ -225,14 +230,14 @@ class TestMapTotalmobileJobModelsForFRS:
             },
             "location": {
                 "address": "12 Blaise Street, Blaise Hill, Blaiseville, Newport, "
-                "FML134D",
+                f"{case.address_details.address.postcode}",
                 "addressDetail": {
                     "addressLine1": "12 Blaise Street, Blaise Hill",
                     "addressLine2": "Blaiseville",
                     "addressLine3": "Gwent",
                     "addressLine4": "Newport",
                     "coordinates": {"latitude": "10020202", "longitude": "34949494"},
-                    "postCode": "FML134D",
+                    "postCode": f"{case.address_details.address.postcode}",
                 },
                 "reference": case.address_details.reference,
             },
@@ -251,13 +256,22 @@ class TestMapTotalmobileJobModelsForFRS:
 
         case_data = [
             get_frs_populated_case_model(
-                case_id="10010", field_region="region1", divided_address_indicator="1"
+                case_id="10010",
+                field_region="region1",
+                postcode="AB12 3CD",
+                divided_address_indicator="1"
             ),
             get_frs_populated_case_model(
-                case_id="10020", field_region="region2", divided_address_indicator="0"
+                case_id="10020",
+                field_region="region2",
+                postcode="EF45 6GH",
+                divided_address_indicator="0"
             ),
             get_frs_populated_case_model(
-                case_id="10030", field_region="region3", divided_address_indicator=""
+                case_id="10030",
+                field_region="region3",
+                postcode="IJ78 9KL",
+                divided_address_indicator=""
             ),
         ]
 
