@@ -90,15 +90,12 @@ class TotalMobileOutgoingCreateJobPayloadModel:
 
     @staticmethod
     def get_job_additional_properties(questionnaire_case: BlaiseCaseInformationBaseModel) -> list[AdditionalProperty]:
-        additional_properties = []
         case_overview = questionnaire_case.create_case_overview_for_interviewer()
-        for key, value in case_overview.items():
-            additional_properties.append(AdditionalProperty(
-                name=key,
-                value=value
-            ))
+        additional_properties = [
+            AdditionalProperty(name=key, value=value)
+            for key, value in case_overview.items()
+        ]
         return additional_properties
-
 
     @staticmethod
     def get_job_description(questionnaire_case: BlaiseCaseInformationBaseModel) -> str:
