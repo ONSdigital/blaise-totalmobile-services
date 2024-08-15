@@ -45,6 +45,7 @@ class CreateTotalmobileJobsService:
         self, questionnaire_name: str
     ) -> str:
 
+        logging.info(f"DEBUG: create_totalmobile_jobs_for_eligible_questionnaire_cases() called")
         eligible_cases = self._questionnaire_service.get_eligible_cases(
             questionnaire_name
         )
