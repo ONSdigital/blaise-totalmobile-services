@@ -11,15 +11,9 @@ from models.blaise.blaise_lms_case_information_model import (
     ContactDetails,
 )
 from services.mappers.mapper_base import MapperServiceBase
-from services.uac.uac_service_base import UacServiceBase
 
 
 class BlaiseLMSCaseMapperService(MapperServiceBase):
-    def __init__(
-        self,
-        uac_service: UacServiceBase,
-    ):
-        self._uac_service = uac_service
 
     def map_lms_case_information_models(
         self, questionnaire_name: str, questionnaire_case_data: List[Dict[str, str]]
@@ -47,11 +41,7 @@ class BlaiseLMSCaseMapperService(MapperServiceBase):
         wave = str(case_data_dictionary.get("qDataBag.Wave"))
         tla = questionnaire_name[0:3]
 
-        questionnaire_uac_model = self._uac_service.get_questionnaire_uac_model(
-            questionnaire_name
-        )
         case_id = self.get_case_id(case_data_dictionary)
-        uac_chunks = questionnaire_uac_model.get_uac_chunks(case_id)
 
         return BlaiseLMSCaseInformationModel(
             questionnaire_name=questionnaire_name,
@@ -94,6 +84,6 @@ class BlaiseLMSCaseMapperService(MapperServiceBase):
             rotational_outcome_code=self.convert_string_to_integer(
                 case_data_dictionary.get("qRotate.RHOut", "0")
             ),
-            divided_address_indicator=None,
-            uac_chunks=uac_chunks,
+            divided_address_indicator=None
         )
+

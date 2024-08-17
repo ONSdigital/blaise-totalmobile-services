@@ -4,7 +4,6 @@ from datetime import datetime
 from typing import List, Optional
 
 from models.base_model import BaseModel
-from models.blaise.questionnaire_uac_model import UacChunks
 
 
 @dataclass
@@ -43,7 +42,6 @@ class BlaiseCaseInformationBaseModel(BaseModel):
     field_region: Optional[str]
     field_team: Optional[str]
     divided_address_indicator: Optional[str]
-    uac_chunks: Optional[UacChunks]
 
     @property
     @abstractmethod
