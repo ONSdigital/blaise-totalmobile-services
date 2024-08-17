@@ -79,7 +79,7 @@ class ServiceInstanceFactory:
             mapper_service=self.create_lms_mapper_service(),
             eligible_case_service=self.create_eligible_lms_case_service(),
             datastore_service=self.create_datastore_service(),
-            uac_service=self.create_uac_service()
+            uac_service=self.create_uac_service(),
         )
 
     def create_frs_questionnaire_service(self) -> FRSQuestionnaireService:

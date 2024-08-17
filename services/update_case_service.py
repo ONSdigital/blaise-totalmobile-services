@@ -152,7 +152,9 @@ class UpdateCaseService:
         case_id: str,
     ) -> BlaiseLMSCaseInformationModel:
         try:
-            case = self._questionnaire_service.get_case(questionnaire_name, case_id, False)
+            case = self._questionnaire_service.get_case(
+                questionnaire_name, case_id, False
+            )
         except QuestionnaireCaseDoesNotExistError as err:
             logging.error(
                 f"Could not find case {case_id} for questionnaire {questionnaire_name} in Blaise"

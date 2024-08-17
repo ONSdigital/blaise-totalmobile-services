@@ -40,7 +40,7 @@ def step_impl(context, survey_type):
                 ]
             ),
             datastore_service=context.datastore_service,
-            uac_service=context.uac_service
+            uac_service=context.uac_service,
         )
         context.cloud_task_service = FakeCloudTaskService()
 

@@ -6,7 +6,6 @@ from models.blaise.blaise_case_information_base_model import (
 )
 
 
-
 @dataclass
 class ContactDetails:
     telephone_number_1: Optional[str]

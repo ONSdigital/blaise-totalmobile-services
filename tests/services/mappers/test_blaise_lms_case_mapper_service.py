@@ -109,7 +109,9 @@ class TestLMSCaseMapping:
         assert result.rotational_knock_to_nudge_indicator == "N"
         assert result.rotational_outcome_code == 310
         assert result.tla == "LMS"
-        assert result.uac_chunks == UacChunks(uac1="8175", uac2="4725", uac3="3990", uac4="None")
+        assert result.uac_chunks == UacChunks(
+            uac1="8175", uac2="4725", uac3="3990", uac4="None"
+        )
 
     def test_map_lms_case_information_model_maps_the_correct_model_when_no_uacs_are_available(
         self,
@@ -157,7 +159,6 @@ class TestLMSCaseMapping:
         assert result.rotational_outcome_code == 310
         assert result.tla == "LMS"
         assert result.uac_chunks is None
-
 
     def test_map_lms_case_information_model_maps_the_correct_model_when_no_uac_model_is_passed_through(
         self,
@@ -227,7 +228,6 @@ class TestLMSCaseMapping:
         assert result.questionnaire_name == "LMS2101_AA1"
         assert result.case_id is None
 
-
     def test_map_lms_case_information_model_returns_a_valid_object_with_the_field_set_to_none_when_an_optional_blaise_field_is_missing(
         self,
         service,
@@ -262,7 +262,7 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, valid_case_data_dictionary,questionnaire_uac_model
+            questionnaire_name, valid_case_data_dictionary, questionnaire_uac_model
         )
 
         # assert
@@ -281,16 +281,14 @@ class TestLMSCaseMapping:
 
         # act
         result = service.map_lms_case_information_model(
-            questionnaire_name, valid_case_data_dictionary,questionnaire_uac_model
+            questionnaire_name, valid_case_data_dictionary, questionnaire_uac_model
         )
 
         # assert
         assert result.outcome_code == 0
 
     def test_map_lms_case_information_model_sets_has_call_history_to_true_when_blaise_case_has_call_history(
-        self,
-        service,
-        questionnaire_uac_model
+        self, service, questionnaire_uac_model
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
@@ -309,9 +307,7 @@ class TestLMSCaseMapping:
         assert result.has_call_history is True
 
     def test_map_lms_case_information_model_sets_has_call_history_to_false_when_blaise_case_has_no_call_history(
-        self,
-        service,
-        questionnaire_uac_model
+        self, service, questionnaire_uac_model
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
@@ -330,9 +326,7 @@ class TestLMSCaseMapping:
         assert result.has_call_history is False
 
     def test_map_lms_case_information_model_sets_has_call_history_to_false_when_blaise_case_is_missing_call_history(
-        self,
-        service,
-        questionnaire_uac_model
+        self, service, questionnaire_uac_model
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"

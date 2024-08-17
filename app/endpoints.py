@@ -61,7 +61,7 @@ def submit_form_result_request():
                 ]
             ),
             datastore_service=DatastoreService(),
-            uac_service=current_app.uac_service
+            uac_service=current_app.uac_service,
         )
         update_case_service = UpdateCaseService(questionnaire_service)
         submit_form_result_request_handler(request, update_case_service)

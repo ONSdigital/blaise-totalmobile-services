@@ -15,9 +15,11 @@ from services.mappers.mapper_base import MapperServiceBase
 
 
 class BlaiseLMSCaseMapperService(MapperServiceBase):
-
     def map_lms_case_information_models(
-        self, questionnaire_name: str, questionnaire_case_data: List[Dict[str, str]], uac_model: Optional[QuestionnaireUacModel]
+        self,
+        questionnaire_name: str,
+        questionnaire_case_data: List[Dict[str, str]],
+        uac_model: Optional[QuestionnaireUacModel],
     ) -> List[BlaiseLMSCaseInformationModel]:
 
         cases = []
@@ -30,7 +32,10 @@ class BlaiseLMSCaseMapperService(MapperServiceBase):
         return cases
 
     def map_lms_case_information_model(
-        self, questionnaire_name: str, case_data_dictionary: Dict[str, str], uac_model: Optional[QuestionnaireUacModel]
+        self,
+        questionnaire_name: str,
+        case_data_dictionary: Dict[str, str],
+        uac_model: Optional[QuestionnaireUacModel],
     ) -> BlaiseLMSCaseInformationModel:
 
         wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE", "")
@@ -86,6 +91,5 @@ class BlaiseLMSCaseMapperService(MapperServiceBase):
                 case_data_dictionary.get("qRotate.RHOut", "0")
             ),
             divided_address_indicator=None,
-            uac_chunks=None if uac_model is None else uac_model.get_uac_chunks(case_id)
+            uac_chunks=None if uac_model is None else uac_model.get_uac_chunks(case_id),
         )
-
