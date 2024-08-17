@@ -54,7 +54,7 @@ if __name__ == "__main__":
         datastore_service=DatastoreService(),
         uac_service=UacService(config)
     )
-    cases = questionnaire_service.get_cases(questionnaire_name, False)
+    cases = questionnaire_service.get_cases(questionnaire_name)
     eligible_cases = eligible_case_service.get_eligible_cases(cases)
 
     eligible_count = 0
