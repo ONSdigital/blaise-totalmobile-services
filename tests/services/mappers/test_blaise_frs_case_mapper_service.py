@@ -67,6 +67,7 @@ class TestFRSCaseMapping:
         assert result.wave_com_dte == datetime(2023, 1, 31)
         assert result.tla == "FRS"
         assert result.divided_address_indicator == ""
+        assert result.uac_chunks is None
 
     def test_map_frs_case_information_model_returns_a_valid_object_with_the_field_set_to_none_when_a_blaise_field_is_incorrectly_typed(
         self,

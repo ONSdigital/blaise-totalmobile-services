@@ -4,7 +4,7 @@ from typing import List, Optional
 from models.blaise.blaise_case_information_base_model import (
     BlaiseCaseInformationBaseModel,
 )
-from models.blaise.questionnaire_uac_model import UacChunks
+
 
 
 @dataclass

@@ -113,7 +113,6 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
 
 
 def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible_case_service(
-        mock_blaise_service,
         mock_mapper_service,
         mock_eligible_case_service,
         service: LMSQuestionnaireService,
@@ -142,7 +141,6 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
 def test_get_cases_returns_a_list_of_fully_populated_cases(
         service: LMSQuestionnaireService,
         mock_mapper_service,
-        mock_blaise_service,
 ):
     questionnaire_cases = [
         get_blaise_lms_case_model_helper.get_populated_case_model(case_id="20001"),
@@ -164,7 +162,6 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(
 
 def test_get_case_returns_a_case(
         service: LMSQuestionnaireService,
-        mock_blaise_service,
         mock_mapper_service,
 ):
     questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
@@ -181,6 +178,74 @@ def test_get_case_returns_a_case(
 
     # assert
     assert result == questionnaire_case
+
+
+def test_get_case_returns_a_case_calls_the_correct_services(
+        service: LMSQuestionnaireService,
+        mock_blaise_service,
+        mock_mapper_service,
+        mock_uac_service
+):
+    questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
+        case_id="10010"
+    )
+    data_fields = {
+        "hOut": "110",
+        "dMktnName": "John Smith",
+        "qDataBag.TelNo": "01234 567890",
+        "qDataBag.TelNo2": "07734 567890",
+    }
+
+    mock_blaise_service.get_case.return_value = data_fields
+
+    mock_mapper_service.map_lms_case_information_model.return_value = questionnaire_case
+
+    questionnaire_name = "LMS2101_AA1"
+    case_id = "10010"
+
+    # act
+    service.get_case(questionnaire_name, case_id)
+
+    # assert
+    mock_uac_service.get_questionnaire_uac_model.assert_not_called()
+    mock_mapper_service.map_lms_case_information_model.assert_called_with(questionnaire_name, data_fields, None)
+
+
+def test_get_case_returns_a_case_calls_the_correct_services_when_include_uac_is_true(
+        service: LMSQuestionnaireService,
+        mock_blaise_service,
+        mock_mapper_service,
+        mock_uac_service
+):
+    questionnaire_case = get_blaise_lms_case_model_helper.get_populated_case_model(
+        case_id="10010"
+    )
+
+    data_fields = {
+        "hOut": "110",
+        "dMktnName": "John Smith",
+        "qDataBag.TelNo": "01234 567890",
+        "qDataBag.TelNo2": "07734 567890",
+    }
+
+    mock_blaise_service.get_case.return_value = data_fields
+
+    mock_uac_service.get_questionnaire_uac_model.return_value = (
+        questionnaire_uac_model
+    )
+
+    mock_mapper_service.map_lms_case_information_model.return_value = questionnaire_case
+
+    questionnaire_name = "LMS2101_AA1"
+    case_id = "10010"
+
+    # act
+    service.get_case(questionnaire_name, case_id, True)
+
+    # assert
+    mock_uac_service.get_questionnaire_uac_model.assert_called_with(questionnaire_name)
+    mock_mapper_service.map_lms_case_information_model.assert_called_with(questionnaire_name, data_fields,
+                                                                          questionnaire_uac_model)
 
 
 def test_get_questionnaire_uac_model_returns_an_expected_uac_model(

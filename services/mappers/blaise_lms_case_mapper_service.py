@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from models.blaise.blaise_case_information_base_model import (
     Address,
@@ -10,26 +10,27 @@ from models.blaise.blaise_lms_case_information_model import (
     BlaiseLMSCaseInformationModel,
     ContactDetails,
 )
+from models.blaise.questionnaire_uac_model import QuestionnaireUacModel
 from services.mappers.mapper_base import MapperServiceBase
 
 
 class BlaiseLMSCaseMapperService(MapperServiceBase):
 
     def map_lms_case_information_models(
-        self, questionnaire_name: str, questionnaire_case_data: List[Dict[str, str]]
+        self, questionnaire_name: str, questionnaire_case_data: List[Dict[str, str]], uac_model: Optional[QuestionnaireUacModel]
     ) -> List[BlaiseLMSCaseInformationModel]:
 
         cases = []
         for case_data_item in questionnaire_case_data:
             case = self.map_lms_case_information_model(
-                questionnaire_name, case_data_item
+                questionnaire_name, case_data_item, uac_model
             )
             cases.append(case)
 
         return cases
 
     def map_lms_case_information_model(
-        self, questionnaire_name: str, case_data_dictionary: Dict[str, str]
+        self, questionnaire_name: str, case_data_dictionary: Dict[str, str], uac_model: Optional[QuestionnaireUacModel]
     ) -> BlaiseLMSCaseInformationModel:
 
         wave_com_dte_str = case_data_dictionary.get("qDataBag.WaveComDTE", "")
@@ -84,6 +85,7 @@ class BlaiseLMSCaseMapperService(MapperServiceBase):
             rotational_outcome_code=self.convert_string_to_integer(
                 case_data_dictionary.get("qRotate.RHOut", "0")
             ),
-            divided_address_indicator=None
+            divided_address_indicator=None,
+            uac_chunks=None if uac_model is None else uac_model.get_uac_chunks(case_id)
         )
 

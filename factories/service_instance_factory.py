@@ -58,7 +58,7 @@ class ServiceInstanceFactory:
         return FRSEligibleCaseService()
 
     def create_lms_mapper_service(self) -> BlaiseLMSCaseMapperService:
-        return BlaiseLMSCaseMapperService(uac_service=self.create_uac_service())
+        return BlaiseLMSCaseMapperService()
 
     @staticmethod
     def create_frs_mapper_service() -> BlaiseFRSCaseMapperService:
@@ -79,6 +79,7 @@ class ServiceInstanceFactory:
             mapper_service=self.create_lms_mapper_service(),
             eligible_case_service=self.create_eligible_lms_case_service(),
             datastore_service=self.create_datastore_service(),
+            uac_service=self.create_uac_service()
         )
 
     def create_frs_questionnaire_service(self) -> FRSQuestionnaireService:

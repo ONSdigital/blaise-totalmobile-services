@@ -49,11 +49,12 @@ if __name__ == "__main__":
     )
     questionnaire_service = LMSQuestionnaireService(
         blaise_service=RealBlaiseService(config),
-        mapper_service=BlaiseLMSCaseMapperService(UacService(config)),
+        mapper_service=BlaiseLMSCaseMapperService(),
         eligible_case_service=eligible_case_service,
         datastore_service=DatastoreService(),
+        uac_service=UacService(config)
     )
-    cases = questionnaire_service.get_cases(questionnaire_name)
+    cases = questionnaire_service.get_cases(questionnaire_name, False)
     eligible_cases = eligible_case_service.get_eligible_cases(cases)
 
     eligible_count = 0

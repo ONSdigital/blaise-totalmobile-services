@@ -26,7 +26,7 @@ from tests.helpers.date_helper import get_date_as_totalmobile_formatted_string
 @given('the survey type is "{survey_type}"')
 def step_impl(context, survey_type):
     if survey_type == "LMS":
-        context.mapper_service = BlaiseLMSCaseMapperService(context.uac_service)
+        context.mapper_service = BlaiseLMSCaseMapperService()
         context.questionnaire_service = LMSQuestionnaireService(
             blaise_service=context.blaise_service,
             mapper_service=context.mapper_service,
@@ -40,6 +40,7 @@ def step_impl(context, survey_type):
                 ]
             ),
             datastore_service=context.datastore_service,
+            uac_service=context.uac_service
         )
         context.cloud_task_service = FakeCloudTaskService()
 
