@@ -3,10 +3,10 @@ from unittest.mock import Mock
 
 import pytest
 
-from models.blaise.blaise_lms_case_information_model import (
+from models.create.blaise.blaise_lms_case_information_model import (
     BlaiseLMSCaseInformationModel,
 )
-from services.blaise_case_outcome_service import BlaiseCaseOutcomeService
+from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
 
 
 class TestGetCaseOutcomesForLMS:

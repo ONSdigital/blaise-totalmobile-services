@@ -1,12 +1,12 @@
 from typing import Dict, Optional
 
-from models.blaise.blaise_frs_case_information_model import (
+from models.create.blaise.blaise_frs_case_information_model import (
     BlaiseFRSCaseInformationModel,
 )
-from models.blaise.blaise_lms_case_information_model import (
+from models.create.blaise.blaise_lms_case_information_model import (
     BlaiseLMSCaseInformationModel,
 )
-from models.blaise.questionnaire_uac_model import UacChunks
+from models.create.blaise.questionnaire_uac_model import UacChunks
 
 
 def lms_totalmobile_payload_helper(

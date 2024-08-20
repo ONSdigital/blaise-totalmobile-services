@@ -3,8 +3,10 @@ from unittest.mock import Mock
 
 import pytest
 
-from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
-from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
+from models.create.totalmobile.totalmobile_create_job_model import (
+    TotalmobileCreateJobModel,
+)
+from services.create.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 from tests.helpers.lms_case_model_helper import get_lms_populated_case_model
 
 

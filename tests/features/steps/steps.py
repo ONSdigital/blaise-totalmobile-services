@@ -9,15 +9,19 @@ from behave import given, then, when
 
 import cloud_functions.delete_totalmobile_jobs_completed_in_blaise
 import cloud_functions.delete_totalmobile_jobs_past_field_period
-from services.case_filters.case_filter_wave_1 import CaseFilterWave1
-from services.case_filters.case_filter_wave_2 import CaseFilterWave2
-from services.case_filters.case_filter_wave_3 import CaseFilterWave3
-from services.case_filters.case_filter_wave_4 import CaseFilterWave4
-from services.case_filters.case_filter_wave_5 import CaseFilterWave5
-from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
-from services.lms_eligible_case_service import LMSEligibleCaseService
-from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
-from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
+from services.create.create_totalmobile_jobs_service import CreateTotalmobileJobsService
+from services.create.eligibility.case_filters.case_filter_wave_1 import CaseFilterWave1
+from services.create.eligibility.case_filters.case_filter_wave_2 import CaseFilterWave2
+from services.create.eligibility.case_filters.case_filter_wave_3 import CaseFilterWave3
+from services.create.eligibility.case_filters.case_filter_wave_4 import CaseFilterWave4
+from services.create.eligibility.case_filters.case_filter_wave_5 import CaseFilterWave5
+from services.create.eligibility.lms_eligible_case_service import LMSEligibleCaseService
+from services.create.mappers.blaise_lms_case_mapper_service import (
+    BlaiseLMSCaseMapperService,
+)
+from services.create.questionnaires.lms_questionnaire_service import (
+    LMSQuestionnaireService,
+)
 from tests.fakes.fake_cloud_task_service import FakeCloudTaskService
 from tests.helpers import incoming_request_helper
 from tests.helpers.date_helper import get_date_as_totalmobile_formatted_string

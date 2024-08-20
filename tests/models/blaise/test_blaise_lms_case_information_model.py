@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from models.blaise.questionnaire_uac_model import UacChunks
+from models.create.blaise.questionnaire_uac_model import UacChunks
 from tests.helpers.lms_case_model_helper import get_lms_populated_case_model
 
 

@@ -6,14 +6,19 @@ import pytest
 import requests
 
 from client.optimise import GetJobsResponse
-from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
-from models.totalmobile.totalmobile_get_jobs_response_model import (
+from models.common.totalmobile.totalmobile_world_model import (
+    TotalmobileWorldModel,
+    World,
+)
+from models.create.totalmobile.totalmobile_create_job_model import (
+    TotalmobileCreateJobModel,
+)
+from models.delete.totalmobile_get_jobs_response_model import (
     Job,
     TotalmobileGetJobsResponseModel,
 )
-from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
-from services.logging_totalmobile_service import LoggingTotalmobileService
-from services.totalmobile_service import TotalmobileService
+from services.common.logging_totalmobile_service import LoggingTotalmobileService
+from services.common.totalmobile_service import TotalmobileService
 
 
 @pytest.fixture()

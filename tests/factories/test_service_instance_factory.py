@@ -1,8 +1,12 @@
 import pytest
 
 from factories.service_instance_factory import ServiceInstanceFactory
-from services.questionnaires.frs_questionnaire_service import FRSQuestionnaireService
-from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
+from services.create.questionnaires.frs_questionnaire_service import (
+    FRSQuestionnaireService,
+)
+from services.create.questionnaires.lms_questionnaire_service import (
+    LMSQuestionnaireService,
+)
 
 
 def test_create_questionnaire_service_returns_LMSQuestionnaireService_when_given_an_lms_survey_type():

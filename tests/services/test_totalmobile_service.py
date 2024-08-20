@@ -6,9 +6,14 @@ import requests
 from client import AuthException
 from client.messaging import MessagingClient
 from client.optimise import OptimiseClient
-from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
-from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
-from services.totalmobile_service import (
+from models.common.totalmobile.totalmobile_world_model import (
+    TotalmobileWorldModel,
+    World,
+)
+from models.create.totalmobile.totalmobile_create_job_model import (
+    TotalmobileCreateJobModel,
+)
+from services.common.totalmobile_service import (
     DeleteJobError,
     RealTotalmobileService,
     RecallJobError,

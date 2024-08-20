@@ -1,7 +1,7 @@
 import pytest
 
 from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
-from models.blaise.blaise_lms_case_information_model import (
+from models.create.blaise.blaise_lms_case_information_model import (
     BlaiseLMSCaseInformationModel,
 )
 from tests.fakes.fake_blaise_service import FakeBlaiseService

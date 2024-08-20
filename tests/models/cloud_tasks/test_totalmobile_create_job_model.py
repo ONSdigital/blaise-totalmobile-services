@@ -1,8 +1,10 @@
 import pytest
 
-from models.blaise.questionnaire_uac_model import UacChunks
-from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
-from services.mappers.totalmobile_create_job_mapper_service import (
+from models.create.blaise.questionnaire_uac_model import UacChunks
+from models.create.totalmobile.totalmobile_create_job_model import (
+    TotalmobileCreateJobModel,
+)
+from services.create.mappers.totalmobile_create_job_mapper_service import (
     TotalmobileCreateJobMapperService,
 )
 from tests.helpers.lms_case_model_helper import get_lms_populated_case_model

@@ -4,8 +4,13 @@ from typing import Dict
 import pytest
 
 from client.bus import Uac
-from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
-from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
+from models.create.blaise.questionnaire_uac_model import (
+    QuestionnaireUacModel,
+    UacChunks,
+)
+from services.create.mappers.blaise_lms_case_mapper_service import (
+    BlaiseLMSCaseMapperService,
+)
 
 
 class TestLMSCaseMapping:

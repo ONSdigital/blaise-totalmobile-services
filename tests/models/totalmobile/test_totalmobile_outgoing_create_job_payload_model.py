@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
+from models.create.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     AdditionalProperty,
     Address,
     AddressCoordinates,

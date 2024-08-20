@@ -4,21 +4,24 @@ from typing import Dict, List, Optional, Sequence
 import requests
 
 from client.optimise import GetJobResponse, GetJobsResponse
-from models.blaise.blaise_case_information_base_model import (
+from models.common.totalmobile.totalmobile_world_model import (
+    TotalmobileWorldModel,
+    World,
+)
+from models.create.blaise.blaise_case_information_base_model import (
     BlaiseCaseInformationBaseModel,
 )
-from models.cloud_tasks.totalmobile_create_job_model import (
+from models.create.totalmobile.totalmobile_create_job_model import (
     TotalmobileCreateJobModel,
     TotalmobileCreateJobModelRequestJson,
 )
-from models.totalmobile.totalmobile_get_jobs_response_model import (
+from models.delete.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
 )
-from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
-from services.mappers.totalmobile_create_job_mapper_service import (
+from services.common.totalmobile_service import DeleteJobError
+from services.create.mappers.totalmobile_create_job_mapper_service import (
     TotalmobileCreateJobMapperService,
 )
-from services.totalmobile_service import DeleteJobError
 
 
 class FakeTotalmobileService:

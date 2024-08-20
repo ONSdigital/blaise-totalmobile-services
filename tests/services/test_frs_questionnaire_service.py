@@ -1,13 +1,14 @@
-import logging
 from datetime import datetime
 from unittest.mock import Mock
 
 import pytest
 
-from models.blaise.blaise_frs_case_information_model import (
+from models.create.blaise.blaise_frs_case_information_model import (
     BlaiseFRSCaseInformationModel,
 )
-from services.questionnaires.frs_questionnaire_service import FRSQuestionnaireService
+from services.create.questionnaires.frs_questionnaire_service import (
+    FRSQuestionnaireService,
+)
 from tests.helpers.datastore_helper import DatastoreHelper
 from tests.helpers.frs_case_model_helper import get_frs_populated_case_model
 
@@ -145,89 +146,6 @@ def test_get_case_returns_a_case(
 
     # assert
     assert result == questionnaire_case
-
-
-def test_questionnaire_exists_calls_the_blaise_service_with_the_correct_parameters(
-    mock_blaise_service,
-    service: FRSQuestionnaireService,
-):
-    questionnaire_name = "FRS2101"
-
-    # act
-    service.questionnaire_exists(questionnaire_name)
-
-    # assert
-    mock_blaise_service.questionnaire_exists.assert_called_with(questionnaire_name)
-
-
-@pytest.mark.parametrize(
-    "api_response, expected_response", [(False, False), (True, True)]
-)
-def test_questionnaire_exists_returns_correct_response(
-    api_response,
-    mock_blaise_service,
-    expected_response,
-    service: FRSQuestionnaireService,
-):
-    questionnaire_name = "FRS2101"
-    mock_blaise_service.questionnaire_exists.return_value = api_response
-
-    # act
-    result = service.questionnaire_exists(questionnaire_name)
-
-    # assert
-    assert result == expected_response
-
-
-def test_update_case_calls_the_blaise_service_with_the_correct_parameters(
-    mock_blaise_service,
-    service: FRSQuestionnaireService,
-):
-    questionnaire_name = "FRS2101"
-    case_id = "900001"
-    data_fields = {
-        "dMktnName": "John Smith",
-    }
-
-    # act
-    service.update_case(questionnaire_name, case_id, data_fields)
-
-    # assert
-    mock_blaise_service.update_case.assert_called_with(
-        questionnaire_name, case_id, data_fields
-    )
-
-
-def test_update_case_does_not_log_personal_identifiable_information(
-    mock_blaise_service, service: FRSQuestionnaireService, caplog
-):
-    # arrange
-    mock_blaise_service.update_case.return_value = None
-    questionnaire_name = "FRS2101"
-    case_id = "900001"
-    data_fields = {
-        "dMktnName": "John Smith",
-    }
-
-    # act & assert
-    with caplog.at_level(logging.INFO):
-        service.update_case(questionnaire_name, case_id, data_fields)
-    assert (
-        "root",
-        logging.INFO,
-        "Attempting to update case 900001 in questionnaire FRS2101 in Blaise",
-    ) in caplog.record_tuples
-
-    with caplog.at_level(logging.INFO):
-        service.update_case(questionnaire_name, case_id, data_fields)
-    assert (
-        not (
-            "root",
-            logging.INFO,
-            "John Smith",
-        )
-        in caplog.record_tuples
-    )
 
 
 def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_questionnaires_with_todays_date(

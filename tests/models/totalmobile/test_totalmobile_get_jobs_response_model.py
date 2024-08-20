@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import pytest
 
 from client.optimise import DueDate, GetJobResponse, Identity
-from models.totalmobile.totalmobile_get_jobs_response_model import (
+from models.delete.totalmobile_get_jobs_response_model import (
     Job,
     TotalmobileGetJobsResponseModel,
 )

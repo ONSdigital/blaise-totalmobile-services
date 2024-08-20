@@ -3,7 +3,7 @@ from itertools import repeat
 from typing import Dict, List
 
 from factories.service_instance_factory import ServiceInstanceFactory
-from services.totalmobile_service import RealTotalmobileService
+from services.common.totalmobile_service import RealTotalmobileService
 
 
 def __get_active_world_ids(

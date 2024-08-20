@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List
 from unittest import mock
 
@@ -11,7 +10,7 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireCaseError,
 )
 from appconfig import Config
-from services.blaise_service import RealBlaiseService
+from services.common.blaise_service import RealBlaiseService
 from tests.helpers import config_helper
 
 

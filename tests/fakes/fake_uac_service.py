@@ -1,7 +1,10 @@
 from typing import Dict
 
-from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
-from services.uac.uac_service_base import UacServiceBase
+from models.create.blaise.questionnaire_uac_model import (
+    QuestionnaireUacModel,
+    UacChunks,
+)
+from services.create.uac.uac_service_base import UacServiceBase
 
 
 class FakeUacService(UacServiceBase):

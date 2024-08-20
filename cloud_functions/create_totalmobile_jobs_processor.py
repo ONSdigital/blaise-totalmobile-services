@@ -5,7 +5,7 @@ import flask
 
 from client.errors import BadRequest
 from cloud_functions.logging import setup_logger
-from services.totalmobile_service import TotalmobileService
+from services.common.totalmobile_service import TotalmobileService
 
 setup_logger()
 

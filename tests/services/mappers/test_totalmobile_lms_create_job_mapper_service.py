@@ -4,12 +4,18 @@ from typing import Dict
 import pytest
 
 from client.bus import Uac
-from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
-from models.cloud_tasks.totalmobile_create_job_model import (
+from models.common.totalmobile.totalmobile_world_model import (
+    TotalmobileWorldModel,
+    World,
+)
+from models.create.blaise.questionnaire_uac_model import (
+    QuestionnaireUacModel,
+    UacChunks,
+)
+from models.create.totalmobile.totalmobile_create_job_model import (
     TotalmobileCreateJobModelRequestJson,
 )
-from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
-from services.mappers.totalmobile_create_job_mapper_service import (
+from services.create.mappers.totalmobile_create_job_mapper_service import (
     TotalmobileCreateJobMapperService,
 )
 from tests.helpers.lms_case_model_helper import get_lms_populated_case_model

@@ -2,17 +2,21 @@ import os
 import sys
 
 from appconfig import Config
-from services.blaise_service import RealBlaiseService
-from services.case_filters.case_filter_wave_1 import CaseFilterWave1
-from services.case_filters.case_filter_wave_2 import CaseFilterWave2
-from services.case_filters.case_filter_wave_3 import CaseFilterWave3
-from services.case_filters.case_filter_wave_4 import CaseFilterWave4
-from services.case_filters.case_filter_wave_5 import CaseFilterWave5
-from services.datastore_service import DatastoreService
-from services.lms_eligible_case_service import LMSEligibleCaseService
-from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
-from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
-from services.uac.uac_service import UacService
+from services.common.blaise_service import RealBlaiseService
+from services.create.datastore.datastore_service import DatastoreService
+from services.create.eligibility.case_filters.case_filter_wave_1 import CaseFilterWave1
+from services.create.eligibility.case_filters.case_filter_wave_2 import CaseFilterWave2
+from services.create.eligibility.case_filters.case_filter_wave_3 import CaseFilterWave3
+from services.create.eligibility.case_filters.case_filter_wave_4 import CaseFilterWave4
+from services.create.eligibility.case_filters.case_filter_wave_5 import CaseFilterWave5
+from services.create.eligibility.lms_eligible_case_service import LMSEligibleCaseService
+from services.create.mappers.blaise_lms_case_mapper_service import (
+    BlaiseLMSCaseMapperService,
+)
+from services.create.questionnaires.lms_questionnaire_service import (
+    LMSQuestionnaireService,
+)
+from services.create.uac.uac_service import UacService
 
 
 def __check_for_env_var(name: str):

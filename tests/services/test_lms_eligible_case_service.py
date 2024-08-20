@@ -3,8 +3,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from services.case_filters.case_filter_base import CaseFilterBase
-from services.lms_eligible_case_service import LMSEligibleCaseService
+from services.create.eligibility.case_filters.case_filter_base import CaseFilterBase
+from services.create.eligibility.lms_eligible_case_service import LMSEligibleCaseService
 from tests.helpers.lms_case_model_helper import get_lms_populated_case_model
 
 

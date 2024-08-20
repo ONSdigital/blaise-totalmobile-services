@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime
 from typing import Dict
 from unittest.mock import Mock
@@ -6,11 +5,13 @@ from unittest.mock import Mock
 import pytest
 
 from client.bus import Uac
-from models.blaise.blaise_lms_case_information_model import (
+from models.create.blaise.blaise_lms_case_information_model import (
     BlaiseLMSCaseInformationModel,
 )
-from models.blaise.questionnaire_uac_model import QuestionnaireUacModel
-from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
+from models.create.blaise.questionnaire_uac_model import QuestionnaireUacModel
+from services.create.questionnaires.lms_questionnaire_service import (
+    LMSQuestionnaireService,
+)
 from tests.helpers.datastore_helper import DatastoreHelper
 from tests.helpers.lms_case_model_helper import get_lms_populated_case_model
 
@@ -249,124 +250,12 @@ def test_get_questionnaire_uac_model_returns_an_expected_uac_model(
     mock_uac_service.get_questionnaire_uac_model.return_value = questionnaire_uac_model
 
     questionnaire_name = "LMS2101_AA1"
-    case_id = "10010"
 
     # act
     result = service.get_questionnaire_uac_model(questionnaire_name)
 
     # assert
     assert result == questionnaire_uac_model
-
-
-def test_questionnaire_exists_calls_the_blaise_service_with_the_correct_parameters(
-    mock_blaise_service,
-    service: LMSQuestionnaireService,
-):
-    questionnaire_name = "LMS2101_AA1"
-
-    # act
-    service.questionnaire_exists(questionnaire_name)
-
-    # assert
-    mock_blaise_service.questionnaire_exists.assert_called_with(questionnaire_name)
-
-
-@pytest.mark.parametrize(
-    "api_response, expected_response", [(False, False), (True, True)]
-)
-def test_questionnaire_exists_returns_correct_response(
-    api_response,
-    mock_blaise_service,
-    expected_response,
-    service: LMSQuestionnaireService,
-):
-    questionnaire_name = "LMS2101_AA1"
-    mock_blaise_service.questionnaire_exists.return_value = api_response
-
-    # act
-    result = service.questionnaire_exists(questionnaire_name)
-
-    # assert
-    assert result == expected_response
-
-
-def test_update_case_calls_the_blaise_service_with_the_correct_parameters(
-    mock_blaise_service,
-    service: LMSQuestionnaireService,
-):
-    questionnaire_name = "LMS2101_AA1"
-    case_id = "900001"
-    data_fields = {
-        "hOut": "110",
-        "dMktnName": "John Smith",
-        "qDataBag.TelNo": "01234 567890",
-        "qDataBag.TelNo2": "07734 567890",
-    }
-
-    # act
-    service.update_case(questionnaire_name, case_id, data_fields)
-
-    # assert
-    mock_blaise_service.update_case.assert_called_with(
-        questionnaire_name, case_id, data_fields
-    )
-
-
-def test_update_case_does_not_log_personal_identifiable_information(
-    mock_blaise_service, service: LMSQuestionnaireService, caplog
-):
-    # arrange
-    mock_blaise_service.update_case.return_value = None
-    questionnaire_name = "LMS2101_AA1"
-    case_id = "900001"
-    data_fields = {
-        "hOut": "110",
-        "dMktnName": "John Smith",
-        "qDataBag.TelNo": "01234 567890",
-        "qDataBag.TelNo2": "07734 567890",
-    }
-
-    # act & assert
-    with caplog.at_level(logging.INFO):
-        service.update_case(questionnaire_name, case_id, data_fields)
-    assert (
-        "root",
-        logging.INFO,
-        "Attempting to update case 900001 in questionnaire LMS2101_AA1 in Blaise",
-    ) in caplog.record_tuples
-
-    with caplog.at_level(logging.INFO):
-        service.update_case(questionnaire_name, case_id, data_fields)
-    assert (
-        not (
-            "root",
-            logging.INFO,
-            "John Smith",
-        )
-        in caplog.record_tuples
-    )
-
-    with caplog.at_level(logging.INFO):
-        service.update_case(questionnaire_name, case_id, data_fields)
-    assert (
-        not (
-            "root",
-            logging.INFO,
-            "01234 567890",
-        )
-        in caplog.record_tuples
-    )
-
-    with caplog.at_level(logging.INFO):
-        service.update_case(questionnaire_name, case_id, data_fields)
-    assert (
-        not (
-            "root",
-            logging.INFO,
-            "07734 567890",
-        )
-        in caplog.record_tuples
-    )
 
 
 def test_get_questionnaires_with_totalmobile_release_date_of_today_only_returns_questionnaires_with_todays_date(

@@ -3,7 +3,9 @@ from typing import Dict
 
 import pytest
 
-from services.mappers.blaise_frs_case_mapper_service import BlaiseFRSCaseMapperService
+from services.create.mappers.blaise_frs_case_mapper_service import (
+    BlaiseFRSCaseMapperService,
+)
 
 
 class TestFRSCaseMapping:

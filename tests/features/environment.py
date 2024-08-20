@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash
 
 from app.app import setup_app
-from services.blaise_case_outcome_service import BlaiseCaseOutcomeService
+from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
 from tests.fakes.fake_blaise_service import FakeBlaiseService
 from tests.fakes.fake_datastore_service import FakeDatastoreService
 from tests.fakes.fake_totalmobile_service import FakeTotalmobileService

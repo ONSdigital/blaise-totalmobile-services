@@ -9,7 +9,7 @@ from client.errors import BadRequest
 from cloud_functions.create_totalmobile_jobs_processor import (
     create_totalmobile_jobs_processor,
 )
-from services.totalmobile_service import RealTotalmobileService
+from services.common.totalmobile_service import RealTotalmobileService
 
 
 def test_create_totalmobile_job(mock_create_job_task):

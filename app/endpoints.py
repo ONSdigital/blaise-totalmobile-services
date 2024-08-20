@@ -16,18 +16,10 @@ from app.handlers.totalmobile_incoming_handler import (
     submit_form_result_request_handler,
     update_visit_status_request_handler,
 )
-from appconfig import Config
-from services.case_filters.case_filter_wave_1 import CaseFilterWave1
-from services.case_filters.case_filter_wave_2 import CaseFilterWave2
-from services.case_filters.case_filter_wave_3 import CaseFilterWave3
-from services.case_filters.case_filter_wave_4 import CaseFilterWave4
-from services.case_filters.case_filter_wave_5 import CaseFilterWave5
-from services.datastore_service import DatastoreService
-from services.lms_eligible_case_service import LMSEligibleCaseService
-from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
-from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
-from services.uac.uac_service import UacService
-from services.update_case_service import UpdateCaseService
+from services.update.mappers.blaise_update_case_mapper_service import (
+    BlaiseUpdateCaseMapperService,
+)
+from services.update.update_case_service import UpdateCaseService
 
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
 
@@ -48,22 +40,10 @@ def add_header(response):
 def submit_form_result_request():
     logging.info(f"Incoming request via the 'submitformresultrequest' endpoint")
     try:
-        questionnaire_service = LMSQuestionnaireService(
+        update_case_service = UpdateCaseService(
             blaise_service=current_app.blaise_service,
-            mapper_service=BlaiseLMSCaseMapperService(),
-            eligible_case_service=LMSEligibleCaseService(
-                wave_filters=[
-                    CaseFilterWave1(),
-                    CaseFilterWave2(),
-                    CaseFilterWave3(),
-                    CaseFilterWave4(),
-                    CaseFilterWave5(),
-                ]
-            ),
-            datastore_service=DatastoreService(),
-            uac_service=current_app.uac_service,
+            mapper_service=BlaiseUpdateCaseMapperService(),
         )
-        update_case_service = UpdateCaseService(questionnaire_service)
         submit_form_result_request_handler(request, update_case_service)
         return "ok"
     except (MissingReferenceError, BadReferenceError):

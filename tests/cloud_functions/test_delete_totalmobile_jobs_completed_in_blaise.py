@@ -5,7 +5,7 @@ import pytest
 from cloud_functions.delete_totalmobile_jobs_completed_in_blaise import (
     delete_totalmobile_jobs_completed_in_blaise,
 )
-from services.blaise_case_outcome_service import BlaiseCaseOutcomeService
+from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
 from tests.fakes.fake_blaise_service import FakeBlaiseService
 from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
 

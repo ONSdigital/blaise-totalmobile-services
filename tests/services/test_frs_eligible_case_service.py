@@ -1,4 +1,4 @@
-from services.frs_eligible_case_service import FRSEligibleCaseService
+from services.create.eligibility.frs_eligible_case_service import FRSEligibleCaseService
 from tests.helpers.frs_case_model_helper import get_frs_populated_case_model
 
 
