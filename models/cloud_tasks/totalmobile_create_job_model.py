@@ -1,12 +1,12 @@
 import json
 from dataclasses import asdict, dataclass
-from typing import Dict, Optional, Type, TypedDict, TypeVar
+from typing import Dict, Optional, TypedDict, TypeVar
 from uuid import uuid4
 
 T = TypeVar("T", bound="TotalmobileCreateJobModel")
 
 
-class TotalmobileCreateJob(TypedDict):
+class TotalmobileCreateJobModelJson(TypedDict):
     questionnaire: str
     world_id: str
     case_id: str
@@ -28,12 +28,3 @@ class TotalmobileCreateJobModel:
 
     def create_task_name(self) -> str:
         return f"{self.questionnaire}-{self.case_id}-{str(uuid4())}"
-
-    @classmethod
-    def import_job(cls: Type[T], totalmobile_job_dictionary: TotalmobileCreateJob) -> T:
-        return cls(
-            questionnaire=totalmobile_job_dictionary["questionnaire"],
-            world_id=totalmobile_job_dictionary["world_id"],
-            case_id=totalmobile_job_dictionary["case_id"],
-            payload=totalmobile_job_dictionary["payload"],
-        )

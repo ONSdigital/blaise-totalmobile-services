@@ -7,12 +7,17 @@ from client.optimise import GetJobResponse, GetJobsResponse
 from models.blaise.blaise_case_information_base_model import (
     BlaiseCaseInformationBaseModel,
 )
-from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
+from models.cloud_tasks.totalmobile_create_job_model import (
+    TotalmobileCreateJobModel,
+    TotalmobileCreateJobModelJson,
+)
 from models.totalmobile.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
-from services.mappers.totalmobile_mapper_service import TotalmobileMapperService
+from services.mappers.totalmobile_create_job_mapper_service import (
+    TotalmobileCreateJobMapperService,
+)
 from services.totalmobile_service import DeleteJobError
 
 
@@ -137,7 +142,13 @@ class FakeTotalmobileService:
         self, questionnaire_name: str, cases: Sequence[BlaiseCaseInformationBaseModel]
     ) -> List[TotalmobileCreateJobModel]:
         world_model = self.get_world_model()
-        mapper = TotalmobileMapperService()
+        mapper = TotalmobileCreateJobMapperService()
         return mapper.map_totalmobile_create_job_models(
             questionnaire_name, cases, world_model
         )
+
+    def map_totalmobile_create_job_from_json(
+        self, request_json: TotalmobileCreateJobModelJson
+    ):
+        mapper = TotalmobileCreateJobMapperService()
+        return mapper.map_totalmobile_create_job_model_from_json(request_json)

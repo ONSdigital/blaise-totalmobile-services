@@ -13,7 +13,7 @@ from models.blaise.blaise_lms_case_information_model import (
 from models.blaise.questionnaire_uac_model import UacChunks
 
 
-def get_populated_case_model(
+def get_lms_populated_case_model(
     questionnaire_name: str = "LMS2101_AA1",
     tla: str = "LMS",
     case_id: str = "90000",

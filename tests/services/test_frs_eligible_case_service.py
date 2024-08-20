@@ -1,5 +1,5 @@
 from services.frs_eligible_case_service import FRSEligibleCaseService
-from tests.helpers.get_blaise_frs_case_model_helper import get_frs_populated_case_model
+from tests.helpers.frs_case_model_helper import get_frs_populated_case_model
 
 
 def test_get_eligible_cases_returns_expected_list_of_eligible_cases_for_frs():

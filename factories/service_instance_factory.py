@@ -15,7 +15,9 @@ from services.frs_eligible_case_service import FRSEligibleCaseService
 from services.lms_eligible_case_service import LMSEligibleCaseService
 from services.mappers.blaise_frs_case_mapper_service import BlaiseFRSCaseMapperService
 from services.mappers.blaise_lms_case_mapper_service import BlaiseLMSCaseMapperService
-from services.mappers.totalmobile_mapper_service import TotalmobileMapperService
+from services.mappers.totalmobile_create_job_mapper_service import (
+    TotalmobileCreateJobMapperService,
+)
 from services.questionnaires.frs_questionnaire_service import FRSQuestionnaireService
 from services.questionnaires.lms_questionnaire_service import LMSQuestionnaireService
 from services.questionnaires.questionnaire_service_base import QuestionnaireServiceBase
@@ -90,8 +92,8 @@ class ServiceInstanceFactory:
             datastore_service=self.create_datastore_service(),
         )
 
-    def create_totalmobile_mapper_service(self) -> TotalmobileMapperService:
-        return TotalmobileMapperService()
+    def create_totalmobile_mapper_service(self) -> TotalmobileCreateJobMapperService:
+        return TotalmobileCreateJobMapperService()
 
     def create_totalmobile_service(self) -> RealTotalmobileService:
         optimise_client = OptimiseClient(

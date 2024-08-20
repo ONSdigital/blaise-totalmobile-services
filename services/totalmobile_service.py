@@ -1,4 +1,3 @@
-import logging
 from typing import List, Protocol, Sequence
 
 import requests
@@ -8,12 +7,17 @@ from client.optimise import GetJobsResponse, OptimiseClient
 from models.blaise.blaise_case_information_base_model import (
     BlaiseCaseInformationBaseModel,
 )
-from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
+from models.cloud_tasks.totalmobile_create_job_model import (
+    TotalmobileCreateJobModel,
+    TotalmobileCreateJobModelJson,
+)
 from models.totalmobile.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from services.mappers.totalmobile_mapper_service import TotalmobileMapperService
+from services.mappers.totalmobile_create_job_mapper_service import (
+    TotalmobileCreateJobMapperService,
+)
 
 
 class RecallJobError(Exception):
@@ -52,13 +56,18 @@ class TotalmobileService(Protocol):
     ) -> List[TotalmobileCreateJobModel]:
         pass
 
+    def map_totalmobile_create_job_from_json(
+        self, request_json: TotalmobileCreateJobModelJson
+    ):
+        pass
+
 
 class RealTotalmobileService:
     def __init__(
         self,
         optimise_client: OptimiseClient,
         messaging_client: MessagingClient,
-        mapper_service: TotalmobileMapperService,
+        mapper_service: TotalmobileCreateJobMapperService,
     ):
         self._optimise_client = optimise_client
         self._messaging_client = messaging_client
@@ -108,3 +117,8 @@ class RealTotalmobileService:
         return self._mapper.map_totalmobile_create_job_models(
             questionnaire_name=questionnaire_name, cases=cases, world_model=world_model
         )
+
+    def map_totalmobile_create_job_from_json(
+        self, request_json: TotalmobileCreateJobModelJson
+    ):
+        return self._mapper.map_totalmobile_create_job_model_from_json(request_json)

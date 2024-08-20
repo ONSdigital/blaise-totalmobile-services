@@ -7,12 +7,15 @@ from client.optimise import GetJobsResponse
 from models.blaise.blaise_case_information_base_model import (
     BlaiseCaseInformationBaseModel,
 )
-from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
+from models.cloud_tasks.totalmobile_create_job_model import (
+    TotalmobileCreateJobModel,
+    TotalmobileCreateJobModelJson,
+)
 from models.totalmobile.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from services.totalmobile_service import RecallJobError, TotalmobileService
+from services.totalmobile_service import TotalmobileService
 
 
 class LoggingTotalmobileService:
@@ -72,3 +75,8 @@ class LoggingTotalmobileService:
         return self._service.map_totalmobile_create_job_models(
             questionnaire_name, cases
         )
+
+    def map_totalmobile_create_job_from_json(
+        self, request_json: TotalmobileCreateJobModelJson
+    ):
+        return self._service.map_totalmobile_create_job_from_json(request_json)

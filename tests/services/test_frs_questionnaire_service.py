@@ -8,8 +8,8 @@ from models.blaise.blaise_frs_case_information_model import (
     BlaiseFRSCaseInformationModel,
 )
 from services.questionnaires.frs_questionnaire_service import FRSQuestionnaireService
-from tests.helpers import get_blaise_frs_case_model_helper
 from tests.helpers.datastore_helper import DatastoreHelper
+from tests.helpers.frs_case_model_helper import get_frs_populated_case_model
 
 
 @pytest.fixture()
@@ -54,8 +54,8 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
     service: FRSQuestionnaireService,
 ):
     questionnaire_cases = [
-        get_blaise_frs_case_model_helper.get_frs_populated_case_model(),  # eligible
-        get_blaise_frs_case_model_helper.get_frs_populated_case_model(),  # not eligible
+        get_frs_populated_case_model(),  # eligible
+        get_frs_populated_case_model(),  # not eligible
     ]
 
     eligible_cases = [questionnaire_cases[0]]
@@ -87,8 +87,8 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
     service: FRSQuestionnaireService,
 ):
     questionnaire_cases = [
-        get_blaise_frs_case_model_helper.get_frs_populated_case_model(),  # eligible
-        get_blaise_frs_case_model_helper.get_frs_populated_case_model(),  # not eligible
+        get_frs_populated_case_model,  # eligible
+        get_frs_populated_case_model,  # not eligible
     ]
 
     eligible_cases = [questionnaire_cases[0]]
@@ -111,8 +111,8 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(
     service: FRSQuestionnaireService, mock_blaise_service, mock_mapper_service
 ):
     questionnaire_cases = [
-        get_blaise_frs_case_model_helper.get_frs_populated_case_model(case_id="20001"),
-        get_blaise_frs_case_model_helper.get_frs_populated_case_model(case_id="20003"),
+        get_frs_populated_case_model(case_id="20001"),
+        get_frs_populated_case_model(case_id="20003"),
     ]
 
     mock_mapper_service.map_frs_case_information_models.return_value = (
@@ -133,9 +133,7 @@ def test_get_case_returns_a_case(
     mock_blaise_service,
     mock_mapper_service,
 ):
-    questionnaire_case = get_blaise_frs_case_model_helper.get_frs_populated_case_model(
-        case_id="10010"
-    )
+    questionnaire_case = get_frs_populated_case_model(case_id="10010")
 
     mock_mapper_service.map_frs_case_information_model.return_value = questionnaire_case
 

@@ -1,20 +1,27 @@
+import pytest
+
 from models.blaise.questionnaire_uac_model import UacChunks
 from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
-from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
-    TotalMobileOutgoingCreateJobPayloadModel,
+from services.mappers.totalmobile_create_job_mapper_service import (
+    TotalmobileCreateJobMapperService,
 )
-from tests.helpers import get_blaise_lms_case_model_helper
+from tests.helpers.lms_case_model_helper import get_lms_populated_case_model
 
 
-def test_create_task_name_returns_correct_name_when_called():
+@pytest.fixture()
+def totalmobile_mapper_service() -> TotalmobileCreateJobMapperService:
+    return TotalmobileCreateJobMapperService()
+
+
+def test_create_task_name_returns_correct_name_when_called(totalmobile_mapper_service):
     questionnaire_name = "LMS2101_AA1"
 
-    blaise_case = get_blaise_lms_case_model_helper.get_populated_case_model()
+    blaise_case = get_lms_populated_case_model()
     blaise_case.case_id = "90001"
     blaise_case.questionnaire_name = questionnaire_name
     blaise_case.uac_chunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")
 
-    totalmobile_case_model = TotalMobileOutgoingCreateJobPayloadModel.import_case(
+    totalmobile_case_model = totalmobile_mapper_service.map_totalmobile_payload_model(
         questionnaire_name, blaise_case
     )
     model = TotalmobileCreateJobModel(
@@ -24,15 +31,17 @@ def test_create_task_name_returns_correct_name_when_called():
     assert model.create_task_name().startswith("LMS2101_AA1-90001-")
 
 
-def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_model():
+def test_create_task_name_returns_unique_name_each_time_when_passed_the_same_model(
+    totalmobile_mapper_service,
+):
     questionnaire_name = "LMS2101_AA1"
 
-    blaise_case = get_blaise_lms_case_model_helper.get_populated_case_model()
+    blaise_case = get_lms_populated_case_model()
     blaise_case.case_id = "90001"
     blaise_case.questionnaire_name = questionnaire_name
     blaise_case.uac_chunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")
 
-    totalmobile_case_model = TotalMobileOutgoingCreateJobPayloadModel.import_case(
+    totalmobile_case_model = totalmobile_mapper_service.map_totalmobile_payload_model(
         questionnaire_name, blaise_case
     )
     model = TotalmobileCreateJobModel(

@@ -10,7 +10,7 @@ from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, Wo
 from services.delete_totalmobile_job_service import DeleteTotalmobileJobService
 from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from services.totalmobile_service import RealTotalmobileService
-from tests.helpers.get_blaise_lms_case_model_helper import get_populated_case_model
+from tests.helpers.lms_case_model_helper import get_lms_populated_case_model
 
 CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED = [123, 110, 543]
 
