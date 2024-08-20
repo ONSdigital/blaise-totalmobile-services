@@ -6,7 +6,7 @@ from uuid import uuid4
 T = TypeVar("T", bound="TotalmobileCreateJobModel")
 
 
-class TotalmobileCreateJobModelJson(TypedDict):
+class TotalmobileCreateJobModelRequestJson(TypedDict):
     questionnaire: str
     world_id: str
     case_id: str

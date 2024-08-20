@@ -6,7 +6,7 @@ from models.blaise.blaise_case_information_base_model import (
 )
 from models.cloud_tasks.totalmobile_create_job_model import (
     TotalmobileCreateJobModel,
-    TotalmobileCreateJobModelJson,
+    TotalmobileCreateJobModelRequestJson,
 )
 from models.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     AdditionalProperty,
@@ -57,7 +57,7 @@ class TotalmobileCreateJobMapperService:
         )
 
     def map_totalmobile_create_job_model_from_json(
-        self, request_json: TotalmobileCreateJobModelJson
+        self, request_json: TotalmobileCreateJobModelRequestJson
     ) -> TotalmobileCreateJobModel:
 
         return TotalmobileCreateJobModel(

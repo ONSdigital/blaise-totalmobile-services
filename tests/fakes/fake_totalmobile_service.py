@@ -9,7 +9,7 @@ from models.blaise.blaise_case_information_base_model import (
 )
 from models.cloud_tasks.totalmobile_create_job_model import (
     TotalmobileCreateJobModel,
-    TotalmobileCreateJobModelJson,
+    TotalmobileCreateJobModelRequestJson,
 )
 from models.totalmobile.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
@@ -148,7 +148,7 @@ class FakeTotalmobileService:
         )
 
     def map_totalmobile_create_job_from_json(
-        self, request_json: TotalmobileCreateJobModelJson
+        self, request_json: TotalmobileCreateJobModelRequestJson
     ):
         mapper = TotalmobileCreateJobMapperService()
         return mapper.map_totalmobile_create_job_model_from_json(request_json)

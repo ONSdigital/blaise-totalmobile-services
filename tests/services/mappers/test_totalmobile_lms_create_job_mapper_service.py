@@ -6,7 +6,7 @@ import pytest
 from client.bus import Uac
 from models.blaise.questionnaire_uac_model import QuestionnaireUacModel, UacChunks
 from models.cloud_tasks.totalmobile_create_job_model import (
-    TotalmobileCreateJobModelJson,
+    TotalmobileCreateJobModelRequestJson,
 )
 from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
 from services.mappers.totalmobile_create_job_mapper_service import (
@@ -188,7 +188,7 @@ class TestTotalmobileLmsCreateJobMapping:
             uac_chunks=questionnaire_uac_model.get_uac_chunks(case_id),
         )
 
-        request_json = TotalmobileCreateJobModelJson(
+        request_json = TotalmobileCreateJobModelRequestJson(
             questionnaire=questionnaire_name,
             case_id=case_id,
             world_id=world_id,
