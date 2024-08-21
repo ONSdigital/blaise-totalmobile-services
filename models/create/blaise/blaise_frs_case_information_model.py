@@ -10,6 +10,8 @@ V = TypeVar("V", bound="BlaiseFRSCaseInformationModel")
 
 @dataclass
 class BlaiseFRSCaseInformationModel(BlaiseCaseInformationBaseModel):
+    rand: int
+
     @property
     def has_uac(self) -> bool:
         return False
@@ -51,4 +53,5 @@ class BlaiseFRSCaseInformationModel(BlaiseCaseInformationBaseModel):
             "qDataBag.FieldRegion",
             "qDataBag.FieldTeam",
             "qDataBag.DivAddInd",
+            "qDataBag.Rand",
         ]

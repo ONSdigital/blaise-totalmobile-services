@@ -35,6 +35,7 @@ class TestFRSCaseMapping:
             "qDataBag.WaveComDTE": "31-01-2023",
             "qDataBag.TLA": "FRS",
             "qDataBag.DivAddInd": "",
+            "qDataBag.Rand": "1",
         }
 
     def test_map_frs_case_information_model_maps_the_correct_model(
@@ -70,6 +71,7 @@ class TestFRSCaseMapping:
         assert result.tla == "FRS"
         assert result.divided_address_indicator == ""
         assert result.uac_chunks is None
+        assert result.rand == 1
 
     def test_map_frs_case_information_model_returns_a_valid_object_with_the_field_set_to_none_when_a_blaise_field_is_incorrectly_typed(
         self,
@@ -120,7 +122,15 @@ class TestFRSCaseMapping:
         case_data_dictionary = valid_case_data_dictionary
         case_data_dictionary["qDataBag.WaveComDTE"] = ""
 
-    def test_map_lms_case_information_model_sets_address_reference_to_an_empty_string_when_the_uprn_field_does_not_exist(
+        # act
+        result = service.map_frs_case_information_model(
+            questionnaire_name, case_data_dictionary
+        )
+
+        # assert
+        assert result.wave_com_dte is None
+
+    def test_map_frs_case_information_model_sets_address_reference_to_an_empty_string_when_the_uprn_field_does_not_exist(
         self,
         service,
         valid_case_data_dictionary,
@@ -137,3 +147,21 @@ class TestFRSCaseMapping:
 
         # assert
         assert result.address_details.reference == ""
+
+    def test_map_frs_case_information_model_sets_rand_to_zero_when_the_field_is_not_set(
+            self,
+            service,
+            valid_case_data_dictionary
+    ):
+        # arrange
+        questionnaire_name = "FRS2101"
+        case_data_dictionary = valid_case_data_dictionary
+        case_data_dictionary["qDataBag.Rand"] = ""
+
+        # act
+        result = service.map_frs_case_information_model(
+            questionnaire_name, case_data_dictionary
+        )
+
+        # assert
+        assert result.rand == 0
