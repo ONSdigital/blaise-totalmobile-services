@@ -13,7 +13,7 @@ from tests.fakes.fake_uac_service import FakeUacService
 
 def before_scenario(context, _scenario):
     app = setup_test_app()
-    context = setup_context(app, context)
+    setup_context(app, context)
 
 
 def setup_test_app():
@@ -30,11 +30,9 @@ def setup_test_app():
 
 
 def setup_context(app, context):
-    context = setup_test_services(app, context)
+    setup_test_services(app, context)
     context.test_client = app.test_client()
     context.app = app
-
-    return context
 
 
 def setup_test_services(app, context):
@@ -46,5 +44,3 @@ def setup_test_services(app, context):
     context.blaise_outcome_service = BlaiseCaseOutcomeService(
         context.blaise_service, BlaiseDeleteCaseMapperService()
     )
-
-    return context
