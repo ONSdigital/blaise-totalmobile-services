@@ -13,7 +13,7 @@ class TestUpdateCaseMapping:
     def service(self) -> BlaiseUpdateCaseMapperService:
         return BlaiseUpdateCaseMapperService()
 
-    def test_import_case_returns_a_populated_model(
+    def test_map_update_case_model_returns_a_populated_model(
         self, service: BlaiseUpdateCaseMapperService
     ):
         # arrange
@@ -36,3 +36,35 @@ class TestUpdateCaseMapping:
         assert result.contact_name == "Joe Bloggs"
         assert result.home_phone_number == "01234567890"
         assert result.mobile_phone_number == "07123123123"
+
+    @pytest.mark.parametrize(
+        "case_id, outcome_code, has_call_history",
+        [
+            ("10010", 301, False),
+            ("9000", 110, True),
+            ("1002", 210, False),
+        ],
+    )
+    def test_map_blaise_update_case_information_model_returns_a_populated_model(
+        self,
+        service: BlaiseUpdateCaseMapperService,
+        case_id: str,
+        outcome_code: int,
+        has_call_history: bool,
+    ):
+        # arrange
+        case = {
+            "qiD.Serial_Number": case_id,
+            "hOut": str(outcome_code),
+            "catiMana.CatiCall.RegsCalls[1].DialResult": "1"
+            if has_call_history
+            else "",
+        }
+
+        # act
+        result = service.map_blaise_update_case_information_model(case)
+
+        # assert
+        assert result.case_id == case_id
+        assert result.outcome_code == outcome_code
+        assert result.has_call_history == has_call_history

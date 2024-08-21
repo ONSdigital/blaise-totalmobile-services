@@ -8,6 +8,9 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireDoesNotExistError,
 )
 from models.update.blaise_case_update_model import BlaiseCaseUpdateModel
+from models.update.blaise_update_case_information_model import (
+    BlaiseUpdateCaseInformationModel,
+)
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
@@ -53,14 +56,11 @@ class UpdateCaseService:
         blaise_case = self._get_case(
             totalmobile_request.questionnaire_name, totalmobile_request.case_id
         )
-        case_id = self._mapper_service.get_case_id(blaise_case)
-        outcome_code = self._mapper_service.get_outcome_code(blaise_case)
-        has_call_history = self._mapper_service.has_call_history(blaise_case)
 
         if (
             totalmobile_request.outcome_code
             == QuestionnaireOutcomeCodes.APPOINTMENT_300.value
-            and outcome_code
+            and blaise_case.outcome_code
             in (
                 QuestionnaireOutcomeCodes.NOT_STARTED_0.value,
                 QuestionnaireOutcomeCodes.NON_CONTACT_310.value,
@@ -69,8 +69,8 @@ class UpdateCaseService:
         ):
             self._update_case_contact_information(
                 totalmobile_request.questionnaire_name,
-                case_id,
-                outcome_code,
+                blaise_case.case_id,
+                blaise_case.outcome_code,
                 update_blaise_case_model,
             )
             return
@@ -88,16 +88,14 @@ class UpdateCaseService:
 
             self._update_case_outcome_code(
                 totalmobile_request.questionnaire_name,
-                case_id,
-                outcome_code,
-                has_call_history,
+                blaise_case,
                 update_blaise_case_model,
             )
             return
 
         logging.info(
             f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
-            f"has not been updated in Blaise (Blaise hOut={outcome_code}, "
+            f"has not been updated in Blaise (Blaise hOut={blaise_case.outcome_code}, "
             f"TM hOut={totalmobile_request.outcome_code})"
         )
 
@@ -139,9 +137,7 @@ class UpdateCaseService:
     def _update_case_outcome_code(
         self,
         questionnaire_name: str,
-        case_id: Optional[str],
-        outcome_code: int,
-        has_call_history: bool,
+        blaise_case: BlaiseUpdateCaseInformationModel,
         update_blaise_case_model: BlaiseCaseUpdateModel,
     ) -> None:
 
@@ -152,14 +148,16 @@ class UpdateCaseService:
         )
         fields_to_update.update(update_blaise_case_model.call_history_record(1))
 
-        if not has_call_history:
+        if not blaise_case.has_call_history:
             fields_to_update.update(update_blaise_case_model.call_history_record(5))
 
-        self._blaise_service.update_case(questionnaire_name, case_id, fields_to_update)
+        self._blaise_service.update_case(
+            questionnaire_name, blaise_case.case_id, fields_to_update
+        )
 
         logging.info(
             f"Outcome code and call history updated (Questionnaire={questionnaire_name}, "
-            f"Case Id={case_id}, Blaise hOut={outcome_code}, "
+            f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
             f"TM hOut={update_blaise_case_model.outcome_code})"
         )
 
@@ -176,7 +174,7 @@ class UpdateCaseService:
         self,
         questionnaire_name: str,
         case_id: str,
-    ) -> dict[str, str]:
+    ) -> BlaiseUpdateCaseInformationModel:
         try:
             case = self._blaise_service.get_case(questionnaire_name, case_id)
         except QuestionnaireCaseDoesNotExistError as err:
@@ -193,4 +191,4 @@ class UpdateCaseService:
         logging.info(
             f"Successfully found case {case_id} for questionnaire {questionnaire_name} in Blaise"
         )
-        return case
+        return self._mapper_service.map_blaise_update_case_information_model(case)

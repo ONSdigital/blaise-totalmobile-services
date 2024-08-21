@@ -1,8 +1,8 @@
 import logging
 from typing import Dict, Optional
 
-from models.delete.blaise_delete_case_information__model import (
-    BlaiseDeleteCaseInformationBaseModel,
+from models.delete.blaise_delete_case_information_model import (
+    BlaiseDeleteCaseInformationModel,
 )
 from services.common.blaise_service import BlaiseService
 from services.delete.mappers.blaise_delete_case_imapper_service import (
@@ -44,9 +44,9 @@ class BlaiseCaseOutcomeService:
 
     def _get_cases(
         self, questionnaire_name: str
-    ) -> list[BlaiseDeleteCaseInformationBaseModel]:
+    ) -> list[BlaiseDeleteCaseInformationModel]:
         cases = self._blaise_service.get_cases(
-            questionnaire_name, BlaiseDeleteCaseInformationBaseModel.required_fields()
+            questionnaire_name, BlaiseDeleteCaseInformationModel.required_fields()
         )
 
         return self._mapper_service.map_blaise_delete_case_models(cases)
