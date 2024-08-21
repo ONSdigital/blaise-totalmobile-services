@@ -3,10 +3,13 @@ from unittest.mock import Mock
 
 import pytest
 
-from models.create.blaise.blaise_lms_case_information_model import (
-    BlaiseLMSCaseInformationModel,
+from models.delete.blaise_delete_case_information__model import (
+    BlaiseDeleteCaseInformationBaseModel,
 )
 from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
+from services.delete.mappers.blaise_delete_case_imapper_service import (
+    BlaiseDeleteCaseMapperService,
+)
 
 
 class TestGetCaseOutcomesForLMS:
@@ -16,7 +19,10 @@ class TestGetCaseOutcomesForLMS:
 
     @pytest.fixture()
     def service(self, mock_blaise_service) -> BlaiseCaseOutcomeService:
-        return BlaiseCaseOutcomeService(blaise_service=mock_blaise_service)
+        return BlaiseCaseOutcomeService(
+            blaise_service=mock_blaise_service,
+            mapper_service=BlaiseDeleteCaseMapperService(),
+        )
 
     def test_get_case_outcomes_for_lms_questionnaire_calls_the_blaise_service_with_the_correct_parameters(
         self, mock_blaise_service, service
@@ -33,7 +39,7 @@ class TestGetCaseOutcomesForLMS:
             },
         ]
         mock_blaise_service.get_cases.return_value = case_data
-        required_fields = BlaiseLMSCaseInformationModel.required_fields()
+        required_fields = BlaiseDeleteCaseInformationBaseModel.required_fields()
 
         # act
         service.get_case_outcomes_for_questionnaire(questionnaire_name)

@@ -34,6 +34,9 @@ from services.create.questionnaires.questionnaire_service_base import (
 from services.create.uac.uac_service import UacService
 from services.create.uac.uac_service_base import UacServiceBase
 from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
+from services.delete.mappers.blaise_delete_case_imapper_service import (
+    BlaiseDeleteCaseMapperService,
+)
 
 
 class ServiceInstanceFactory:
@@ -71,6 +74,9 @@ class ServiceInstanceFactory:
 
     def create_lms_mapper_service(self) -> BlaiseLMSCaseMapperService:
         return BlaiseLMSCaseMapperService()
+
+    def createdelete_case_mapper_service(self) -> BlaiseDeleteCaseMapperService:
+        return BlaiseDeleteCaseMapperService()
 
     @staticmethod
     def create_frs_mapper_service() -> BlaiseFRSCaseMapperService:
@@ -143,4 +149,7 @@ class ServiceInstanceFactory:
         )
 
     def create_blaise_outcome_service(self) -> BlaiseCaseOutcomeService:
-        return BlaiseCaseOutcomeService(blaise_service=self.create_blaise_service())
+        return BlaiseCaseOutcomeService(
+            blaise_service=self.create_blaise_service(),
+            mapper_service=self.createdelete_case_mapper_service(),
+        )
