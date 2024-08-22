@@ -94,11 +94,11 @@ class TotalmobileCreateJobMapperService:
                 )
             ),
             description=self.get_job_description(questionnaire_case),
-            origin="ONS",
-            duration=15,
+            origin="ONS",   # TODO
+            duration=15,    # TODO
             workType=questionnaire_case.tla,
             skills=[Skill(identity=Reference(reference=questionnaire_case.tla))],
-            dueDate=DueDate(end=questionnaire_case.wave_com_dte),
+            dueDate=DueDate(end=questionnaire_case.wave_com_dte),   # TODO
             location=AddressDetails(
                 reference=self.set_location_reference(questionnaire_case),
                 address=self.concatenate_address(questionnaire_case),
@@ -116,13 +116,13 @@ class TotalmobileCreateJobMapperService:
             ),
             contact=ContactDetails(
                 name=questionnaire_case.address_details.address.postcode
-            ),
+            ),  # TODO
             attributes=[
                 AdditionalProperty(
                     name="Region", value=questionnaire_case.field_region
                 ),
                 AdditionalProperty(name="Team", value=questionnaire_case.field_team),
-            ],
+            ],  # TODO
             additionalProperties=self.get_job_additional_properties(questionnaire_case),
         )
 

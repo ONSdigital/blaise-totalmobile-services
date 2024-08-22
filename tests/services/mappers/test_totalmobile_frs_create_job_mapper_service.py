@@ -185,6 +185,8 @@ class TestTotalmobileFrsCreateJobMapping:
         )
 
         # assert
+        # todo: assert x number of items in additionalProperties
+
         # tla
         assert result.additionalProperties[1].name == "tla"
         assert result.additionalProperties[1].value == "FRS"
@@ -236,11 +238,12 @@ class TestTotalmobileFrsCreateJobMapping:
         # mandatory field per BLAIS5-3238 and BLAIS5-3181
         assert result.duration == 15
 
-        # TODO
+        # TODO remove these fields from the FRS model
         # LMS fields listed in BLAIS5-3181 but not listed in BLAIS5-4331 for FRS
         assert result.dueDate.end == datetime(2023, 1, 31)
         assert result.contact.name == "FML134D"
 
+        # TODO
         assert result.additionalProperties[0].name == "surveyName"
         assert result.additionalProperties[0].value == "FRS2101"
 
@@ -250,6 +253,7 @@ class TestTotalmobileFrsCreateJobMapping:
         # Not listed in BLAIS5-3181 or BLAIS5-4331
         assert result.origin == "ONS"
 
+        # attributes
         assert result.attributes[0].name == "Region"
         assert result.attributes[0].value == "Gwent"
 
