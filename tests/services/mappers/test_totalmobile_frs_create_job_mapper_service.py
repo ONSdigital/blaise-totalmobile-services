@@ -115,7 +115,6 @@ class TestTotalmobileFrsCreateJobMapping:
         )
 
         # assert
-
         assert result.questionnaire == "FRS2101"
         assert result.world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         assert result.case_id == "10010"
@@ -177,6 +176,7 @@ class TestTotalmobileFrsCreateJobMapping:
             field_region="Gwent",
             field_team="B-Team",
             wave_com_dte=datetime(2023, 1, 31),
+            divided_address_indicator="1"
         )
 
         # act
@@ -185,48 +185,70 @@ class TestTotalmobileFrsCreateJobMapping:
         )
 
         # assert
-        assert result.identity.reference == "FRS2101.90001"
-        assert result.description == ""
-        assert result.origin == "ONS"
-        assert result.duration == 15
+        # tla
+        assert result.additionalProperties[1].name == "tla"
+        assert result.additionalProperties[1].value == "FRS"
         assert result.workType == "FRS"
         assert result.skills[0].identity.reference == "FRS"
-        assert result.dueDate.end == datetime(2023, 1, 31)
-        assert (
-            result.location.addressDetail.addressLine1
-            == "12 Blaise Street, Blaise Hill"
-        )
+
+        # reference
+        assert result.identity.reference == "FRS2101.90001"
+
+        # address lines
+        assert result.location.addressDetail.addressLine1 == "12 Blaise Street, Blaise Hill"
         assert result.location.addressDetail.addressLine2 == "Blaiseville"
         assert result.location.addressDetail.addressLine3 == "Gwent"
         assert result.location.addressDetail.addressLine4 == "Newport"
+
+        # address
+        assert result.location.address == "12 Blaise Street, Blaise Hill, Blaiseville, Newport, FML134D"
+
+        # postcode
         assert result.location.addressDetail.postCode == "FML134D"
+        assert result.additionalProperties[5].name == "postCode"
+        assert result.additionalProperties[5].value == "FML134D"
+
+        # divided address description
+        assert result.description == "Warning Divided Address"
+
+        # rand
+        assert result.additionalProperties[6].name == "rand"
+        assert result.additionalProperties[6].value == "1"
+
+        # lat and long
         assert result.location.addressDetail.coordinates.latitude == "10020202"
         assert result.location.addressDetail.coordinates.longitude == "34949494"
+
+        # field region
+        assert result.additionalProperties[3].name == "fieldRegion"
+        assert result.additionalProperties[3].value == "Gwent"
+
+        # field team
+        assert result.additionalProperties[4].name == "fieldTeam"
+        assert result.additionalProperties[4].value == "B-Team"
+
+        # mandatory field per BLAIS5-3238 and BLAIS5-3181
+        assert result.duration == 15
+
+        # TODO
+        # LMS fields listed in BLAIS5-3181 but not listed in BLAIS5-4331 for FRS
+        assert result.dueDate.end == datetime(2023, 1, 31)
         assert result.contact.name == "FML134D"
+
+        assert result.additionalProperties[0].name == "surveyName"
+        assert result.additionalProperties[0].value == "FRS2101"
+
+        assert result.additionalProperties[2].name == "priority"
+        assert result.additionalProperties[2].value == "1"
+
+        # Not listed in BLAIS5-3181 or BLAIS5-4331
+        assert result.origin == "ONS"
 
         assert result.attributes[0].name == "Region"
         assert result.attributes[0].value == "Gwent"
 
         assert result.attributes[1].name == "Team"
         assert result.attributes[1].value == "B-Team"
-
-        assert result.additionalProperties[0].name == "surveyName"
-        assert result.additionalProperties[0].value == "FRS2101"
-
-        assert result.additionalProperties[1].name == "tla"
-        assert result.additionalProperties[1].value == "FRS"
-
-        assert result.additionalProperties[2].name == "priority"
-        assert result.additionalProperties[2].value == "1"
-
-        assert result.additionalProperties[3].name == "fieldRegion"
-        assert result.additionalProperties[3].value == "Gwent"
-
-        assert result.additionalProperties[4].name == "fieldTeam"
-        assert result.additionalProperties[4].value == "B-Team"
-
-        assert result.additionalProperties[5].name == "postCode"
-        assert result.additionalProperties[5].value == "FML134D"
 
     @pytest.mark.parametrize(
         "latitude, longitude",

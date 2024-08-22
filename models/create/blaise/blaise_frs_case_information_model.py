@@ -24,6 +24,7 @@ class BlaiseFRSCaseInformationModel(BlaiseCaseInformationBaseModel):
             "fieldRegion": f"{self.field_region}",
             "fieldTeam": f"{self.field_team}",
             "postCode": f"{self.address_details.address.postcode}",
+            "rand": f"{self.rand}",
         }
 
     def create_case_description_for_interviewer(

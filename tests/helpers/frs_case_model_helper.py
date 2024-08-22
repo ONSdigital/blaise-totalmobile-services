@@ -31,6 +31,7 @@ def get_frs_populated_case_model(
     field_team: str = "B-Team",
     wave_com_dte: Optional[datetime] = None,
     divided_address_indicator: str = "",
+    rand: int = 1,
 ):
     return BlaiseFRSCaseInformationModel(
         questionnaire_name=questionnaire_name,
@@ -59,4 +60,5 @@ def get_frs_populated_case_model(
         wave_com_dte=wave_com_dte,
         divided_address_indicator=divided_address_indicator,
         uac_chunks=None,
+        rand=rand
     )
