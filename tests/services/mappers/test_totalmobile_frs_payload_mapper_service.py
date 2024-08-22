@@ -43,7 +43,6 @@ class TestTotalmobileFRSPayloadMapping:
         )
 
         # assert
-        # todo: assert x number of items in additionalProperties
 
         # tla
         assert result.workType == "FRS"
