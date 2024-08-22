@@ -149,9 +149,7 @@ class TestFRSCaseMapping:
         assert result.address_details.reference == ""
 
     def test_map_frs_case_information_model_returns_an_empty_string_when_the_field_is_not_set(
-            self,
-            service,
-            valid_case_data_dictionary
+        self, service, valid_case_data_dictionary
     ):
         # arrange
         questionnaire_name = "FRS2101"

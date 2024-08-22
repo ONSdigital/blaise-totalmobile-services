@@ -60,5 +60,5 @@ def get_frs_populated_case_model(
         wave_com_dte=wave_com_dte,
         divided_address_indicator=divided_address_indicator,
         uac_chunks=None,
-        rand=rand
+        rand=rand,
     )

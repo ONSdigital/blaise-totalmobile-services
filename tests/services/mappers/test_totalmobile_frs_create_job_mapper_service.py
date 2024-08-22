@@ -176,7 +176,7 @@ class TestTotalmobileFrsCreateJobMapping:
             field_region="Gwent",
             field_team="B-Team",
             wave_com_dte=datetime(2023, 1, 31),
-            divided_address_indicator="1"
+            divided_address_indicator="1",
         )
 
         # act
@@ -195,13 +195,19 @@ class TestTotalmobileFrsCreateJobMapping:
         assert result.identity.reference == "FRS2101.90001"
 
         # address lines
-        assert result.location.addressDetail.addressLine1 == "12 Blaise Street, Blaise Hill"
+        assert (
+            result.location.addressDetail.addressLine1
+            == "12 Blaise Street, Blaise Hill"
+        )
         assert result.location.addressDetail.addressLine2 == "Blaiseville"
         assert result.location.addressDetail.addressLine3 == "Gwent"
         assert result.location.addressDetail.addressLine4 == "Newport"
 
         # address
-        assert result.location.address == "12 Blaise Street, Blaise Hill, Blaiseville, Newport, FML134D"
+        assert (
+            result.location.address
+            == "12 Blaise Street, Blaise Hill, Blaiseville, Newport, FML134D"
+        )
 
         # postcode
         assert result.location.addressDetail.postCode == "FML134D"

@@ -54,5 +54,5 @@ def test_create_case_overview_for_interviewer_returns_the_expected_additional_pr
         "fieldRegion": "Region 2",
         "fieldTeam": "A Team",
         "postCode": "AB01 2CD",
-        "rand": "30"
+        "rand": "30",
     }
