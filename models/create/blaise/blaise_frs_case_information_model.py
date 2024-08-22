@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, TypeVar
+from typing import List, TypeVar, Optional
 
 from models.create.blaise.blaise_case_information_base_model import (
     BlaiseCaseInformationBaseModel,
@@ -10,7 +10,7 @@ V = TypeVar("V", bound="BlaiseFRSCaseInformationModel")
 
 @dataclass
 class BlaiseFRSCaseInformationModel(BlaiseCaseInformationBaseModel):
-    rand: int
+    rand: Optional[str]
 
     @property
     def has_uac(self) -> bool:

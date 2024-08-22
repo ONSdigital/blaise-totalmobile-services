@@ -40,7 +40,7 @@ def test_create_case_overview_for_interviewer_returns_the_expected_additional_pr
         field_region="Region 2",
         field_team="A Team",
         postcode="AB01 2CD",
-        rand=30,
+        rand="30",
     )
 
     # act

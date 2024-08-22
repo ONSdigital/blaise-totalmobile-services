@@ -71,7 +71,7 @@ class TestFRSCaseMapping:
         assert result.tla == "FRS"
         assert result.divided_address_indicator == ""
         assert result.uac_chunks is None
-        assert result.rand == 1
+        assert result.rand == "1"
 
     def test_map_frs_case_information_model_returns_a_valid_object_with_the_field_set_to_none_when_a_blaise_field_is_incorrectly_typed(
         self,
@@ -148,7 +148,7 @@ class TestFRSCaseMapping:
         # assert
         assert result.address_details.reference == ""
 
-    def test_map_frs_case_information_model_sets_rand_to_zero_when_the_field_is_not_set(
+    def test_map_frs_case_information_model_returns_an_empty_string_when_the_field_is_not_set(
             self,
             service,
             valid_case_data_dictionary
@@ -164,4 +164,4 @@ class TestFRSCaseMapping:
         )
 
         # assert
-        assert result.rand == 0
+        assert result.rand == ""

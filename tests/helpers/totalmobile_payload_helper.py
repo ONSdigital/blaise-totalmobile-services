@@ -85,7 +85,7 @@ def frs_totalmobile_payload_helper(
             {"name": "fieldRegion", "value": case.field_region},
             {"name": "fieldTeam", "value": case.field_team},
             {"name": "postCode", "value": case.address_details.address.postcode},
-            {"name": "rand", "value": f"{case.rand}"},
+            {"name": "rand", "value": case.rand},
         ],
         "attributes": [
             {"name": "Region", "value": case.field_region},
