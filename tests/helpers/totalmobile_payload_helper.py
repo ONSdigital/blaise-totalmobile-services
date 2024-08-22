@@ -79,19 +79,14 @@ def frs_totalmobile_payload_helper(
 
     payload_dictionary = {
         "additionalProperties": [
-            {"name": "surveyName", "value": case.data_model_name},
             {"name": "tla", "value": case.tla},
-            {"name": "priority", "value": case.priority},
+            {"name": "rand", "value": case.rand},
             {"name": "fieldRegion", "value": case.field_region},
             {"name": "fieldTeam", "value": case.field_team},
             {"name": "postCode", "value": case.address_details.address.postcode},
-            {"name": "rand", "value": case.rand},
         ],
-        "attributes": [
-            {"name": "Region", "value": case.field_region},
-            {"name": "Team", "value": case.field_team},
-        ],
-        "contact": {"name": case.address_details.address.postcode},
+        "attributes": [],
+        "contact": {"name": None},
         "description": (
             "Warning Divided Address" if case.divided_address_indicator == "1" else ""
         ),
@@ -113,7 +108,7 @@ def frs_totalmobile_payload_helper(
             },
             "reference": case.address_details.reference,
         },
-        "origin": "ONS",
+        "origin": "",
         "skills": [{"identity": {"reference": case.tla}}],
         "workType": case.tla,
     }

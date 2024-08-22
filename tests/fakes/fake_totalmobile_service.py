@@ -22,6 +22,9 @@ from services.common.totalmobile_service import DeleteJobError
 from services.create.mappers.totalmobile_create_job_mapper_service import (
     TotalmobileCreateJobMapperService,
 )
+from services.create.mappers.totalmobile_payload_mapper_service import (
+    TotalmobilePayloadMapperService,
+)
 
 
 class FakeTotalmobileService:
@@ -145,7 +148,7 @@ class FakeTotalmobileService:
         self, questionnaire_name: str, cases: Sequence[BlaiseCaseInformationBaseModel]
     ) -> List[TotalmobileCreateJobModel]:
         world_model = self.get_world_model()
-        mapper = TotalmobileCreateJobMapperService()
+        mapper = TotalmobileCreateJobMapperService(TotalmobilePayloadMapperService())
         return mapper.map_totalmobile_create_job_models(
             questionnaire_name, cases, world_model
         )
@@ -153,5 +156,5 @@ class FakeTotalmobileService:
     def map_totalmobile_create_job_from_json(
         self, request_json: TotalmobileCreateJobModelRequestJson
     ):
-        mapper = TotalmobileCreateJobMapperService()
+        mapper = TotalmobileCreateJobMapperService(TotalmobilePayloadMapperService())
         return mapper.map_totalmobile_create_job_model_from_json(request_json)

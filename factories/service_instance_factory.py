@@ -22,6 +22,9 @@ from services.create.mappers.blaise_lms_case_mapper_service import (
 from services.create.mappers.totalmobile_create_job_mapper_service import (
     TotalmobileCreateJobMapperService,
 )
+from services.create.mappers.totalmobile_payload_mapper_service import (
+    TotalmobilePayloadMapperService,
+)
 from services.create.questionnaires.frs_questionnaire_service import (
     FRSQuestionnaireService,
 )
@@ -109,7 +112,7 @@ class ServiceInstanceFactory:
         )
 
     def create_totalmobile_mapper_service(self) -> TotalmobileCreateJobMapperService:
-        return TotalmobileCreateJobMapperService()
+        return TotalmobileCreateJobMapperService(TotalmobilePayloadMapperService())
 
     def create_totalmobile_service(self) -> RealTotalmobileService:
         optimise_client = OptimiseClient(

@@ -45,11 +45,6 @@ class BlaiseCaseInformationBaseModel(BaseModel):
     divided_address_indicator: Optional[str]
     uac_chunks: Optional[UacChunks]
 
-    @property
-    @abstractmethod
-    def has_uac(self) -> bool:
-        pass
-
     @abstractmethod
     def create_case_overview_for_interviewer(self) -> dict[str, str]:
         pass
