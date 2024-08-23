@@ -1,59 +1,29 @@
 import logging
-from enum import Enum
-from typing import Optional
+from typing import Dict
 
 from app.exceptions.custom_exceptions import (
     QuestionnaireCaseDoesNotExistError,
     QuestionnaireCaseError,
     QuestionnaireDoesNotExistError,
 )
-from models.update.blaise_case_update_model import BlaiseCaseUpdateModel
-from models.update.blaise_update_case_information_model import (
-    BlaiseUpdateCaseInformationModel,
-)
+from models.update.blaise_update_case_model import BlaiseUpdateCase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 from services.common.blaise_service import RealBlaiseService
-from services.update.mappers.blaise_update_case_mapper_service import (
-    BlaiseUpdateCaseMapperService,
-)
-
-
-class QuestionnaireOutcomeCodes(Enum):
-    NOT_STARTED_0 = 0
-    WEB_NUDGED_120 = 120
-    APPOINTMENT_300 = 300
-    NON_CONTACT_310 = 310
-    PHONE_NO_REMOVED_BY_TO_320 = 320
-    REFUSAL_HARD_460 = 460
-    REFUSAL_SOFT_461 = 461
-    INELIGIBLE_NO_TRACE_OF_ADDRESS_510 = 510
-    INELIGIBLE_VACANT_540 = 540
-    INELIGIBLE_NON_RESIDENTIAL_551 = 551
-    INELIGIBLE_INSTITUTION_560 = 560
-    INELIGIBLE_SECOND_OR_HOLIDAY_HOME_580 = 580
-    WRONG_ADDRESS_640 = 640
+from services.update.questionnaire_case_outcome_codes import QuestionnaireOutcomeCodes
 
 
 class UpdateCaseService:
-    def __init__(
-        self,
-        blaise_service: RealBlaiseService,
-        mapper_service: BlaiseUpdateCaseMapperService,
-    ):
+    def __init__(self, blaise_service: RealBlaiseService):
         self._blaise_service = blaise_service
-        self._mapper_service = mapper_service
 
     def update_case(
         self, totalmobile_request: TotalMobileIncomingUpdateRequestModel
     ) -> None:
         self._validate_questionnaire_exists(totalmobile_request.questionnaire_name)
-        update_blaise_case_model = self._mapper_service.map_update_case_model(
-            totalmobile_request
-        )
 
-        blaise_case = self._get_case(
+        blaise_case = self._get_existing_blaise_case(
             totalmobile_request.questionnaire_name, totalmobile_request.case_id
         )
 
@@ -67,12 +37,7 @@ class UpdateCaseService:
                 QuestionnaireOutcomeCodes.PHONE_NO_REMOVED_BY_TO_320.value,
             )
         ):
-            self._update_case_contact_information(
-                totalmobile_request.questionnaire_name,
-                blaise_case.case_id,
-                blaise_case.outcome_code,
-                update_blaise_case_model,
-            )
+            self._update_case_contact_information(totalmobile_request, blaise_case)
             return
 
         if totalmobile_request.outcome_code in (
@@ -86,11 +51,7 @@ class UpdateCaseService:
             QuestionnaireOutcomeCodes.WRONG_ADDRESS_640.value,
         ):
 
-            self._update_case_outcome_code(
-                totalmobile_request.questionnaire_name,
-                blaise_case,
-                update_blaise_case_model,
-            )
+            self._update_case_outcome_code(totalmobile_request, blaise_case)
             return
 
         logging.info(
@@ -101,64 +62,66 @@ class UpdateCaseService:
 
     def _update_case_contact_information(
         self,
-        questionnaire_name: str,
-        case_id: Optional[str],
-        outcome_code: int,
-        update_blaise_case_model: BlaiseCaseUpdateModel,
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+        blaise_case: BlaiseUpdateCase,
     ) -> None:
-        fields_to_update = {}
+        fields_to_update: Dict[str, str] = {}
+        contact_fields = blaise_case.get_contact_details_fields(totalmobile_request)
 
-        contact_fields = update_blaise_case_model.contact_details()
         if len(contact_fields) == 0:
             logging.info(
-                f"Contact information has not been updated as no contact information was provided (Questionnaire={questionnaire_name}, "
-                f"Case Id={case_id}, Blaise hOut={outcome_code}, "
-                f"TM hOut={update_blaise_case_model.outcome_code})"
+                f"Contact information has not been updated as no contact information was provided (Questionnaire={totalmobile_request.questionnaire_name}, "
+                f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
+                f"TM hOut={totalmobile_request.outcome_code})"
             )
             return
 
         fields_to_update.update(contact_fields)
-        fields_to_update.update(
-            update_blaise_case_model.knock_to_nudge_indicator_flag()
+        fields_to_update.update(blaise_case.get_knock_to_nudge_indicator_flag_field())
+
+        logging.info(
+            f"Attempting to update case {totalmobile_request.case_id} in questionnaire {totalmobile_request.questionnaire_name} in Blaise"
+        )
+
+        self._blaise_service.update_case(
+            totalmobile_request.questionnaire_name,
+            totalmobile_request.case_id,
+            fields_to_update,
         )
 
         logging.info(
-            f"Attempting to update case {case_id} in questionnaire {questionnaire_name} in Blaise"
-        )
-
-        self._blaise_service.update_case(questionnaire_name, case_id, fields_to_update)
-
-        logging.info(
-            f"Contact information updated (Questionnaire={questionnaire_name}, "
-            f"Case Id={case_id}, Blaise hOut={outcome_code}, "
-            f"TM hOut={update_blaise_case_model.outcome_code})"
+            f"Contact information updated (Questionnaire={totalmobile_request.questionnaire_name}, "
+            f"Case Id={totalmobile_request.case_id}, Blaise hOut={blaise_case.outcome_code}, "
+            f"TM hOut={totalmobile_request.outcome_code})"
         )
 
     def _update_case_outcome_code(
         self,
-        questionnaire_name: str,
-        blaise_case: BlaiseUpdateCaseInformationModel,
-        update_blaise_case_model: BlaiseCaseUpdateModel,
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+        blaise_case: BlaiseUpdateCase,
     ) -> None:
 
         fields_to_update = {}
-        fields_to_update.update(update_blaise_case_model.outcome_details())
+
         fields_to_update.update(
-            update_blaise_case_model.knock_to_nudge_indicator_flag()
+            blaise_case.get_outcome_code_fields(totalmobile_request)
         )
-        fields_to_update.update(update_blaise_case_model.call_history_record(1))
+        fields_to_update.update(blaise_case.get_knock_to_nudge_indicator_flag_field())
+        fields_to_update.update(blaise_case.get_call_history_record_field(1))
 
         if not blaise_case.has_call_history:
-            fields_to_update.update(update_blaise_case_model.call_history_record(5))
+            fields_to_update.update(blaise_case.get_call_history_record_field(5))
 
         self._blaise_service.update_case(
-            questionnaire_name, blaise_case.case_id, fields_to_update
+            totalmobile_request.questionnaire_name,
+            totalmobile_request.case_id,
+            fields_to_update,
         )
 
         logging.info(
-            f"Outcome code and call history updated (Questionnaire={questionnaire_name}, "
+            f"Outcome code and call history updated (Questionnaire={totalmobile_request.questionnaire_name}, "
             f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
-            f"TM hOut={update_blaise_case_model.outcome_code})"
+            f"TM hOut={totalmobile_request.outcome_code})"
         )
 
     def _validate_questionnaire_exists(self, questionnaire_name: str) -> None:
@@ -170,11 +133,11 @@ class UpdateCaseService:
 
         logging.info(f"Successfully found questionnaire {questionnaire_name} in Blaise")
 
-    def _get_case(
+    def _get_existing_blaise_case(
         self,
         questionnaire_name: str,
         case_id: str,
-    ) -> BlaiseUpdateCaseInformationModel:
+    ) -> BlaiseUpdateCase:
         try:
             case = self._blaise_service.get_case(questionnaire_name, case_id)
         except QuestionnaireCaseDoesNotExistError as err:
@@ -191,4 +154,4 @@ class UpdateCaseService:
         logging.info(
             f"Successfully found case {case_id} for questionnaire {questionnaire_name} in Blaise"
         )
-        return self._mapper_service.map_blaise_update_case_information_model(case)
+        return BlaiseUpdateCase(case)

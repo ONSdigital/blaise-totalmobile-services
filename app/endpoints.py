@@ -16,9 +16,6 @@ from app.handlers.totalmobile_incoming_handler import (
     submit_form_result_request_handler,
     update_visit_status_request_handler,
 )
-from services.update.mappers.blaise_update_case_mapper_service import (
-    BlaiseUpdateCaseMapperService,
-)
 from services.update.update_case_service import UpdateCaseService
 
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
@@ -41,8 +38,7 @@ def submit_form_result_request():
     logging.info(f"Incoming request via the 'submitformresultrequest' endpoint")
     try:
         update_case_service = UpdateCaseService(
-            blaise_service=current_app.blaise_service,
-            mapper_service=BlaiseUpdateCaseMapperService(),
+            blaise_service=current_app.blaise_service
         )
         submit_form_result_request_handler(request, update_case_service)
         return "ok"
