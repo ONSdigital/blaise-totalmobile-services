@@ -2,9 +2,6 @@ from werkzeug.security import generate_password_hash
 
 from app.app import setup_app
 from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
-from services.delete.mappers.blaise_delete_case_imapper_service import (
-    BlaiseDeleteCaseMapperService,
-)
 from tests.fakes.fake_blaise_service import FakeBlaiseService
 from tests.fakes.fake_datastore_service import FakeDatastoreService
 from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
@@ -41,6 +38,4 @@ def setup_test_services(app, context):
     context.totalmobile_service = app.totalmobile_service
 
     context.datastore_service = FakeDatastoreService()
-    context.blaise_outcome_service = BlaiseCaseOutcomeService(
-        context.blaise_service, BlaiseDeleteCaseMapperService()
-    )
+    context.blaise_outcome_service = BlaiseCaseOutcomeService(context.blaise_service)

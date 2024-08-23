@@ -6,9 +6,6 @@ from cloud_functions.delete_totalmobile_jobs_past_field_period import (
     delete_totalmobile_jobs_past_field_period,
 )
 from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
-from services.delete.mappers.blaise_delete_case_imapper_service import (
-    BlaiseDeleteCaseMapperService,
-)
 from tests.fakes.fake_blaise_service import FakeBlaiseService
 from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
 from tests.helpers.date_helper import get_date_as_totalmobile_formatted_string
@@ -25,13 +22,8 @@ def blaise_service() -> FakeBlaiseService:
 
 
 @pytest.fixture()
-def mapper_service() -> BlaiseDeleteCaseMapperService:
-    return BlaiseDeleteCaseMapperService()
-
-
-@pytest.fixture()
-def blaise_outcome_service(blaise_service, mapper_service) -> BlaiseCaseOutcomeService:
-    return BlaiseCaseOutcomeService(blaise_service, mapper_service)
+def blaise_outcome_service(blaise_service) -> BlaiseCaseOutcomeService:
+    return BlaiseCaseOutcomeService(blaise_service)
 
 
 @pytest.fixture(autouse=True)
