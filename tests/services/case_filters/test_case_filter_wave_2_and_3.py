@@ -1,30 +1,29 @@
 import logging
+from typing import Dict
 
 import pytest
 
 from models.common.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from models.create.blaise.blaise_lms_case_information_model import (
-    BlaiseLMSCaseInformationModel,
-)
+from models.create.blaise.blaiise_lms_case_model import BlaiseLMSCaseModel
 from services.create.eligibility.case_filters.case_filter_base import CaseFilterBase
 from services.create.eligibility.case_filters.case_filter_wave_2 import CaseFilterWave2
 from services.create.eligibility.case_filters.case_filter_wave_3 import CaseFilterWave3
-from tests.helpers.lms_case_model_helper import get_lms_populated_case_model
 
 
 @pytest.fixture()
-def valid_case_without_telephone_numbers() -> BlaiseLMSCaseInformationModel:
-    return get_lms_populated_case_model(
-        case_id="90001",
-        telephone_number_1="",
-        telephone_number_2="",
-        appointment_telephone_number="",
-        field_case="Y",
-        outcome_code=310,
-        rotational_knock_to_nudge_indicator="N",
-        rotational_outcome_code=310,
-        field_region="Region 1",
-    )
+def valid_case_data_without_telephone_numbers() -> Dict[str, str]:
+    return {
+        "qiD.Serial_Number": "90001",
+        "qDataBag.Wave": "1",
+        "qDataBag.FieldCase": "Y",
+        "hOut": "310",
+        "qRotate.RHOut": "0",
+        "qDataBag.TelNo": "",
+        "qDataBag.TelNo2": "",
+        "telNoAppt": "",
+        "qDataBag.FieldRegion": "Region 1",
+        "qRotate.RDMktnIND": "",
+    }
 
 
 @pytest.fixture(scope="module", params=[CaseFilterWave2(), CaseFilterWave3()])
@@ -59,17 +58,23 @@ def test_valid_outcome_codes_has_not_changed_for_wave_3():
 
 
 class TestEligibleCasesWithoutTelephoneNumbers:
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", "n", "N"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", None])
     def test_case_is_eligible_returns_true_where_criteria_is_met_for_knock_to_nudge_indicator_without_telephone_number_1_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -77,17 +82,23 @@ class TestEligibleCasesWithoutTelephoneNumbers:
         # assert
         assert result is True
 
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", "n", "N"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", None])
     def test_case_is_eligible_returns_true_where_criteria_is_met_for_knock_to_nudge_indicator_without_telephone_number_2_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -95,17 +106,23 @@ class TestEligibleCasesWithoutTelephoneNumbers:
         # assert
         assert result is True
 
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", "n", "N"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", None])
     def test_case_is_eligible_returns_true_where_criteria_is_met_for_knock_to_nudge_indicator_without_appointment_telephone_number_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -131,14 +148,21 @@ class TestEligibleCasesWithoutTelephoneNumbers:
         self,
         outcome_code,
         rotational_outcome_code,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.outcome_code = outcome_code
-        case.rotational_outcome_code = rotational_outcome_code
+
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
+        valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
+            rotational_outcome_code
+        )
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -148,18 +172,24 @@ class TestEligibleCasesWithoutTelephoneNumbers:
 
 
 class TestEligibleCasesWithATelephoneNumber:
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", "n", "N"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", None])
     def test_case_is_eligible_returns_true_where_criteria_is_met_for_knock_to_nudge_indicator_with_telephone_number_1_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
-        case.contact_details.telephone_number_1 = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -167,18 +197,24 @@ class TestEligibleCasesWithATelephoneNumber:
         # assert
         assert result is True
 
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", "n", "N"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", None])
     def test_case_is_eligible_returns_true_where_criteria_is_met_for_knock_to_nudge_indicator_with_telephone_number_2_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
-        case.contact_details.telephone_number_2 = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -186,18 +222,24 @@ class TestEligibleCasesWithATelephoneNumber:
         # assert
         assert result is True
 
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", "n", "N"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["", None])
     def test_case_is_eligible_returns_true_where_criteria_is_met_for_knock_to_nudge_indicator_with_appointment_telephone_number_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
-        case.contact_details.appointment_telephone_number = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -223,15 +265,21 @@ class TestEligibleCasesWithATelephoneNumber:
         self,
         outcome_code,
         rotational_outcome_code,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.outcome_code = outcome_code
-        case.rotational_outcome_code = rotational_outcome_code
-        case.contact_details.telephone_number_1 = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
+        valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
+            rotational_outcome_code
+        )
+        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -257,15 +305,21 @@ class TestEligibleCasesWithATelephoneNumber:
         self,
         outcome_code,
         rotational_outcome_code,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.outcome_code = outcome_code
-        case.rotational_outcome_code = rotational_outcome_code
-        case.contact_details.telephone_number_2 = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
+        valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
+            rotational_outcome_code
+        )
+        valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -291,15 +345,21 @@ class TestEligibleCasesWithATelephoneNumber:
         self,
         outcome_code,
         rotational_outcome_code,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.outcome_code = outcome_code
-        case.rotational_outcome_code = rotational_outcome_code
-        case.contact_details.appointment_telephone_number = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
+        valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
+            rotational_outcome_code
+        )
+        valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -309,13 +369,18 @@ class TestEligibleCasesWithATelephoneNumber:
 
 
 class TestCaseIsInCorrectWave:
-    @pytest.mark.parametrize("wave_number", [0, 1, 4, 5])
+    @pytest.mark.parametrize("wave_number", ["0", "1", "4", "5"])
     def test_case_is_eligible_returns_false_if_the_case_is_not_wave_2_or_3(
-        self, valid_case_without_telephone_numbers, service: CaseFilterBase, wave_number
+        self,
+        valid_case_data_without_telephone_numbers,
+        service: CaseFilterBase,
+        wave_number,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = wave_number
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = wave_number
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -325,17 +390,23 @@ class TestCaseIsInCorrectWave:
 
 
 class TestIneligibleCasesWithoutTelephoneNumbers:
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["1"])
     def test_case_is_eligible_returns_false_for_invalid_knock_to_nudge_indicator_without_telephone_number_1_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -343,18 +414,24 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         # assert
         assert result is False
 
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["1"])
     def test_case_is_eligible_logs_a_message_if_knock_to_nudge_indicator_is_set_to_y_when_telephone_number_1_is_not_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
         caplog,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act && assert
         with caplog.at_level(logging.INFO):
@@ -362,20 +439,26 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         assert (
             "root",
             logging.INFO,
-            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of '{knock_to_nudge_indicator}', not 'N'",
+            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of 'Y', not 'N'",
         ) in caplog.record_tuples
 
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["1"])
     def test_case_is_eligible_returns_false_for_invalid_knock_to_nudge_indicator_without_telephone_number_2_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -383,18 +466,24 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         # assert
         assert result is False
 
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["1"])
     def test_case_is_eligible_logs_a_message_if_knock_to_nudge_indicator_is_set_to_y_when_telephone_number_2_is_not_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
         caplog,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act && assert
         with caplog.at_level(logging.INFO):
@@ -402,20 +491,26 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         assert (
             "root",
             logging.INFO,
-            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of '{knock_to_nudge_indicator}', not 'N'",
+            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of 'Y', not 'N'",
         ) in caplog.record_tuples
 
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["1"])
     def test_case_is_eligible_returns_false_for_invalid_knock_to_nudge_indicator_without_appointment_telephone_number_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -423,18 +518,24 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         # assert
         assert result is False
 
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["1"])
     def test_case_is_eligible_logs_a_message_if_knock_to_nudge_indicator_is_set_to_y_when_appointment_telephone_number_is_not_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
         caplog,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act && assert
         with caplog.at_level(logging.INFO):
@@ -442,7 +543,7 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         assert (
             "root",
             logging.INFO,
-            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of '{knock_to_nudge_indicator}', not 'N'",
+            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of 'Y', not 'N'",
         ) in caplog.record_tuples
 
     @pytest.mark.parametrize(
@@ -453,14 +554,20 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         self,
         outcome_code,
         rotational_outcome_code,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.outcome_code = outcome_code
-        case.rotational_outcome_code = rotational_outcome_code
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
+        valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
+            rotational_outcome_code
+        )
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -475,14 +582,18 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
     def test_case_is_eligible_logs_a_message_for_all_invalid_outcome_codes_when_no_telephone_numbers_are_set(
         self,
         outcome_code,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
         caplog,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.outcome_code = outcome_code
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act && assert
         with caplog.at_level(logging.INFO):
@@ -500,14 +611,20 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
     def test_case_is_eligible_logs_a_message_for_all_invalid_rotational_outcome_codes_when_no_telephone_numbers_are_set(
         self,
         rotational_outcome_code,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
         caplog,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_outcome_code = rotational_outcome_code
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
+            rotational_outcome_code
+        )
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act && assert
         with caplog.at_level(logging.INFO):
@@ -522,13 +639,17 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
     def test_case_is_eligible_returns_false_if_field_case_is_not_set_to_y_when_no_telephone_numbers_are_set(
         self,
         field_case,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.field_case = field_case
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -540,14 +661,18 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
     def test_case_is_eligible_logs_a_message_if_field_case_is_set_to_n_when_no_telephone_numbers_are_set(
         self,
         field_case,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
         caplog,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.field_case = field_case
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act && assert
         with caplog.at_level(logging.INFO):
@@ -560,18 +685,24 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
 
 
 class TestIneligibleCasesWithATelephoneNumber:
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["1"])
     def test_case_is_eligible_returns_false_for_invalid_knock_to_nudge_indicator_with_telephone_number_1_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
-        case.contact_details.telephone_number_1 = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -579,19 +710,25 @@ class TestIneligibleCasesWithATelephoneNumber:
         # assert
         assert result is False
 
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["1"])
     def test_case_is_eligible_logs_a_message_if_knock_to_nudge_indicator_is_set_to_y_when_telephone_number_1_is_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
         caplog,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
-        case.contact_details.telephone_number_1 = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act && assert
         with caplog.at_level(logging.INFO):
@@ -599,21 +736,27 @@ class TestIneligibleCasesWithATelephoneNumber:
         assert (
             "root",
             logging.INFO,
-            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of '{knock_to_nudge_indicator}', not 'N'",
+            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of 'Y', not 'N'",
         ) in caplog.record_tuples
 
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["1"])
     def test_case_is_eligible_returns_false_for_invalid_knock_to_nudge_indicator_with_telephone_number_2_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
-        case.contact_details.telephone_number_2 = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -621,19 +764,25 @@ class TestIneligibleCasesWithATelephoneNumber:
         # assert
         assert result is False
 
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["1"])
     def test_case_is_eligible_logs_a_message_if_knock_to_nudge_indicator_is_set_to_y_when_telephone_number_2_is_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
         caplog,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
-        case.contact_details.telephone_number_2 = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act && assert
         with caplog.at_level(logging.INFO):
@@ -641,21 +790,27 @@ class TestIneligibleCasesWithATelephoneNumber:
         assert (
             "root",
             logging.INFO,
-            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of '{knock_to_nudge_indicator}', not 'N'",
+            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of 'Y', not 'N'",
         ) in caplog.record_tuples
 
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["1"])
     def test_case_is_eligible_returns_false_for_invalid_knock_to_nudge_indicator_with_appointment_telephone_number_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
-        case.contact_details.appointment_telephone_number = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -663,19 +818,25 @@ class TestIneligibleCasesWithATelephoneNumber:
         # assert
         assert result is False
 
-    @pytest.mark.parametrize("knock_to_nudge_indicator", ["y", "Y"])
+    @pytest.mark.parametrize("knock_to_nudge_indicator", ["1"])
     def test_case_is_eligible_logs_a_message_if_knock_to_nudge_indicator_is_set_to_y_when_appointment_telephone_number_is_set(
         self,
         knock_to_nudge_indicator,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
         caplog,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_knock_to_nudge_indicator = knock_to_nudge_indicator
-        case.contact_details.appointment_telephone_number = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers[
+            "qRotate.RDMktnIND"
+        ] = knock_to_nudge_indicator
+        valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act && assert
         with caplog.at_level(logging.INFO):
@@ -683,7 +844,7 @@ class TestIneligibleCasesWithATelephoneNumber:
         assert (
             "root",
             logging.INFO,
-            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of '{knock_to_nudge_indicator}', not 'N'",
+            f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a knock to knudge indicator value of 'Y', not 'N'",
         ) in caplog.record_tuples
 
     @pytest.mark.parametrize(
@@ -694,15 +855,21 @@ class TestIneligibleCasesWithATelephoneNumber:
         self,
         outcome_code,
         rotational_outcome_code,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.outcome_code = outcome_code
-        case.rotational_outcome_code = rotational_outcome_code
-        case.contact_details.telephone_number_1 = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
+        valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
+            rotational_outcome_code
+        )
+        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -717,15 +884,19 @@ class TestIneligibleCasesWithATelephoneNumber:
     def test_case_is_eligible_logs_a_message_for_all_invalid_outcome_codes_when_telephone_numbers_are_set(
         self,
         outcome_code,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
         caplog,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.outcome_code = outcome_code
-        case.contact_details.telephone_number_1 = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
+        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act && assert
         with caplog.at_level(logging.INFO):
@@ -743,15 +914,21 @@ class TestIneligibleCasesWithATelephoneNumber:
     def test_case_is_eligible_logs_a_message_for_all_invalid_rotational_outcome_codes_when_telephone_numbers_are_set(
         self,
         rotational_outcome_code,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
         caplog,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.rotational_outcome_code = rotational_outcome_code
-        case.contact_details.telephone_number_1 = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
+            rotational_outcome_code
+        )
+        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act && assert
         with caplog.at_level(logging.INFO):
@@ -766,14 +943,18 @@ class TestIneligibleCasesWithATelephoneNumber:
     def test_case_is_eligible_returns_false_if_field_case_is_not_set_to_y_when_a_telephone_number_is_set(
         self,
         field_case,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.field_case = field_case
-        case.contact_details.telephone_number_1 = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
+        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -782,18 +963,22 @@ class TestIneligibleCasesWithATelephoneNumber:
         assert result is False
 
     @pytest.mark.parametrize("field_case", ["", "N", "n"])
-    def test_case_is_eligible_logs_a_message_if_field_case_is_set_to_n_when_when_telephone_number_1_is_set(
+    def test_case_is_eligible_logs_a_message_if_field_case_is_set_to_n_when_when_atelephone_number1_is_set(
         self,
         field_case,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
         caplog,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.field_case = field_case
-        case.contact_details.telephone_number_1 = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
+        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act && assert
         with caplog.at_level(logging.INFO):
@@ -808,14 +993,18 @@ class TestIneligibleCasesWithATelephoneNumber:
     def test_case_is_eligible_returns_false_if_field_case_is_not_set_to_y_when_telephone_number_2_is_set(
         self,
         field_case,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.field_case = field_case
-        case.contact_details.telephone_number_2 = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
+        valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -827,15 +1016,19 @@ class TestIneligibleCasesWithATelephoneNumber:
     def test_case_is_eligible_logs_a_message_if_field_case_is_set_to_n_when_telephone_number_2_is_set(
         self,
         field_case,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
         caplog,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.field_case = field_case
-        case.contact_details.telephone_number_2 = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
+        valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act && assert
         with caplog.at_level(logging.INFO):
@@ -850,14 +1043,18 @@ class TestIneligibleCasesWithATelephoneNumber:
     def test_case_is_eligible_returns_false_if_field_case_is_not_set_to_y_when_appointment_telephone_number_is_set(
         self,
         field_case,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.field_case = field_case
-        case.contact_details.appointment_telephone_number = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
+        valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -869,15 +1066,19 @@ class TestIneligibleCasesWithATelephoneNumber:
     def test_case_is_eligible_logs_a_message_if_field_case_is_set_to_n_when_appointment_telephone_number_is_set(
         self,
         field_case,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
         caplog,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.field_case = field_case
-        case.contact_details.appointment_telephone_number = "07656775679"
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
+        valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act && assert
         with caplog.at_level(logging.INFO):
@@ -888,18 +1089,22 @@ class TestIneligibleCasesWithATelephoneNumber:
             f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a field case value of '{field_case}', not 'Y'",
         ) in caplog.record_tuples
 
-    @pytest.mark.parametrize("test_input", ["Region 0", "Region 9", "Default"])
-    def test_case_is_eligible_returns_false_if_field_region_is_not_in_range_when_A_telephone_numbers_is_set(
+    @pytest.mark.parametrize("field_region", ["Region 0", "Region 9", "Default"])
+    def test_case_is_eligible_returns_false_if_field_region_is_not_in_range_when_telephone_numbers_is_set(
         self,
-        test_input,
-        valid_case_without_telephone_numbers,
+        field_region,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.contact_details.appointment_telephone_number = "07656775679"
-        case.field_region = test_input
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["qDataBag.FieldRegion"] = field_region
+        valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         # act
         result = service.case_is_eligible(case)
@@ -908,18 +1113,22 @@ class TestIneligibleCasesWithATelephoneNumber:
         assert result is False
 
     @pytest.mark.parametrize("field_region", ["Region 0", "Region 9", "Default"])
-    def test_case_is_eligible_logs_a_message_if_field_region_is_not_in_range_when_a_telephone_numbers_is_set(
+    def test_case_is_eligible_logs_a_message_if_field_region_is_not_in_range_when_a_telephone_number_is_set(
         self,
         field_region,
-        valid_case_without_telephone_numbers,
+        valid_case_data_without_telephone_numbers,
         service: CaseFilterBase,
         caplog,
     ):
         # arrange
-        case = valid_case_without_telephone_numbers
-        case.wave = service.wave_number
-        case.contact_details.appointment_telephone_number = "07656775679"
-        case.field_region = field_region
+        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+            service.wave_number
+        )
+        valid_case_data_without_telephone_numbers["qDataBag.FieldRegion"] = field_region
+        valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
+        case = BlaiseLMSCaseModel(
+            "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
+        )
 
         value_range = TotalmobileWorldModel.get_available_regions()
 

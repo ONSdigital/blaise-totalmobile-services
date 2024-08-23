@@ -1,11 +1,8 @@
-import logging
 from abc import abstractmethod
 from datetime import datetime
-from typing import Dict, Sequence
+from typing import Sequence
 
-from models.create.blaise.blaise_case_information_base_model import (
-    BlaiseCaseInformationBaseModel,
-)
+from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
 from services.common.blaise_service import RealBlaiseService
 from services.create.datastore.datastore_service import DatastoreService
 
@@ -25,7 +22,7 @@ class QuestionnaireServiceBase:
     @abstractmethod
     def get_eligible_cases(
         self, questionnaire_name: str
-    ) -> Sequence[BlaiseCaseInformationBaseModel]:
+    ) -> Sequence[BlaiseCreateCaseModel]:
         pass
 
     def get_questionnaires_with_totalmobile_release_date_of_today(self) -> list:

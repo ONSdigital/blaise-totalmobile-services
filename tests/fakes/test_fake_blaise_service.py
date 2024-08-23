@@ -1,9 +1,7 @@
 import pytest
 
 from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
-from models.create.blaise.blaise_lms_case_information_model import (
-    BlaiseLMSCaseInformationModel,
-)
+from models.create.blaise.blaiise_lms_case_model import BlaiseLMSCaseModel
 from tests.fakes.fake_blaise_service import FakeBlaiseService
 
 
@@ -191,7 +189,7 @@ def test_get_cases_called_count(service: FakeBlaiseService):
     service.add_questionnaire("LMS12345")
     service.add_questionnaire("LMS56789")
     service.add_questionnaire("LMS22468")
-    required_fields = BlaiseLMSCaseInformationModel.required_fields()
+    required_fields = BlaiseLMSCaseModel.required_fields()
 
     # act
     service.get_cases("LMS12345", required_fields)

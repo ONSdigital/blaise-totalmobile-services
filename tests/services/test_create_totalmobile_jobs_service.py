@@ -3,11 +3,11 @@ from unittest.mock import Mock
 
 import pytest
 
+from models.create.blaise.blaiise_lms_case_model import BlaiseLMSCaseModel
 from models.create.totalmobile.totalmobile_create_job_model import (
     TotalmobileCreateJobModel,
 )
 from services.create.create_totalmobile_jobs_service import CreateTotalmobileJobsService
-from tests.helpers.lms_case_model_helper import get_lms_populated_case_model
 
 
 class TestLMSCreateTotalmobileJobsService:
@@ -70,16 +70,31 @@ class TestLMSCreateTotalmobileJobsService:
         # arrange
         questionnaire_name = "LMS2101_AA1"
         questionnaire_cases = [
-            get_lms_populated_case_model(
-                case_id="10010",
-                telephone_number_1="",
-                telephone_number_2="",
-                appointment_telephone_number="",
-                wave=1,
-                priority="1",
-                outcome_code=310,
-                field_region="Region 1",
-            ),
+            BlaiseLMSCaseModel(
+                "LMS2101_AA1",
+                {
+                    "qiD.Serial_Number": "10010",
+                    "qDataBag.FieldRegion": "Region 1",
+                    "hOut": "310",
+                    "qDataBag.TelNo": "",
+                    "qDataBag.TelNo2": "",
+                    "telNoAppt": "",
+                    "qDataBag.Wave": "1",
+                    "qDataBag.FieldTeam": "B-Team",
+                    "dataModelName": "LM2007",
+                    "qDataBag.Prem1": "12 Blaise Street",
+                    "qDataBag.Prem2": "Blaise Hill",
+                    "qDataBag.Prem3": "Blaiseville",
+                    "qDataBag.District": "Gwent",
+                    "qDataBag.PostTown": "Newport",
+                    "qDataBag.PostCode": "cf99rsd",
+                    "qDataBag.UPRN_Latitude": "10020202",
+                    "qDataBag.UPRN_Longitude": "34949494",
+                    "qDataBag.WaveComDTE": "31-01-2023",
+                    "qDataBag.priority": "1",
+                },
+                uac_chunks=None,
+            )
         ]
 
         mock_questionnaire_service.get_eligible_cases.return_value = questionnaire_cases

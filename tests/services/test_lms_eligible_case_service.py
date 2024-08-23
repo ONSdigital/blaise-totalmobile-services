@@ -3,9 +3,38 @@ from unittest.mock import Mock
 
 import pytest
 
+from models.create.blaise.blaiise_lms_case_model import BlaiseLMSCaseModel
 from services.create.eligibility.case_filters.case_filter_base import CaseFilterBase
 from services.create.eligibility.lms_eligible_case_service import LMSEligibleCaseService
-from tests.helpers.lms_case_model_helper import get_lms_populated_case_model
+
+
+def get_case(
+    case_id: str,
+) -> BlaiseLMSCaseModel:
+    return BlaiseLMSCaseModel(
+        "LMS2101_AA1",
+        {
+            "qiD.Serial_Number": case_id,
+            "qDataBag.FieldRegion": "Region 1",
+            "hOut": "0",
+            "qDataBag.TelNo": "07900990901",
+            "qDataBag.TelNo2": "07900990902",
+            "telNoAppt": "07900990903",
+            "qDataBag.FieldTeam": "B-Team",
+            "dataModelName": "LM2007",
+            "qDataBag.Prem1": "12 Blaise Street",
+            "qDataBag.Prem2": "Blaise Hill",
+            "qDataBag.Prem3": "Blaiseville",
+            "qDataBag.District": "Gwent",
+            "qDataBag.PostTown": "Newport",
+            "qDataBag.PostCode": "CM1ASD",
+            "qDataBag.UPRN_Latitude": "10020202",
+            "qDataBag.UPRN_Longitude": "34949494",
+            "qDataBag.WaveComDTE": "31-01-2023",
+            "qDataBag.priority": "1",
+        },
+        uac_chunks=None,
+    )
 
 
 @pytest.fixture()
@@ -28,10 +57,10 @@ def test_get_eligible_cases_returns_expected_list_of_cases_with_one_filter(
 ):
     # arrange
     cases = [
-        get_lms_populated_case_model(case_id="90001"),
-        get_lms_populated_case_model(case_id="90002"),
-        get_lms_populated_case_model(case_id="90003"),
-        get_lms_populated_case_model(case_id="90004"),
+        get_case(case_id="90001"),
+        get_case(case_id="90002"),
+        get_case(case_id="90003"),
+        get_case(case_id="90004"),
     ]
 
     mock_case_filter_wave_1.case_is_eligible.side_effect = [True, False, True, True]
@@ -42,11 +71,9 @@ def test_get_eligible_cases_returns_expected_list_of_cases_with_one_filter(
     # assert
     assert len(result) == 3
 
-    assert result == [
-        get_lms_populated_case_model(case_id="90001"),
-        get_lms_populated_case_model(case_id="90003"),
-        get_lms_populated_case_model(case_id="90004"),
-    ]
+    assert result[0].case_id == "90001"
+    assert result[1].case_id == "90003"
+    assert result[2].case_id == "90004"
 
 
 def test_get_eligible_cases_returns_expected_list_of_cases_with_two_filters(
@@ -54,10 +81,10 @@ def test_get_eligible_cases_returns_expected_list_of_cases_with_two_filters(
 ):
     # arrange
     cases = [
-        get_lms_populated_case_model(case_id="90001"),
-        get_lms_populated_case_model(case_id="90002"),
-        get_lms_populated_case_model(case_id="90003"),
-        get_lms_populated_case_model(case_id="90004"),
+        get_case(case_id="90001"),
+        get_case(case_id="90002"),
+        get_case(case_id="90003"),
+        get_case(case_id="90004"),
     ]
 
     mock_case_filter_wave_1.case_is_eligible.side_effect = [
@@ -78,12 +105,10 @@ def test_get_eligible_cases_returns_expected_list_of_cases_with_two_filters(
     # assert
     assert len(result) == 4
 
-    assert result == [
-        get_lms_populated_case_model(case_id="90001"),
-        get_lms_populated_case_model(case_id="90002"),
-        get_lms_populated_case_model(case_id="90003"),
-        get_lms_populated_case_model(case_id="90004"),
-    ]
+    assert result[0].case_id == "90001"
+    assert result[1].case_id == "90002"
+    assert result[2].case_id == "90003"
+    assert result[3].case_id == "90004"
 
 
 def test_get_eligible_cases_logs_filtered_cases(
@@ -91,10 +116,10 @@ def test_get_eligible_cases_logs_filtered_cases(
 ):
     # arrange
     cases = [
-        get_lms_populated_case_model(case_id="90001"),
-        get_lms_populated_case_model(case_id="90002"),
-        get_lms_populated_case_model(case_id="90003"),
-        get_lms_populated_case_model(case_id="90004"),
+        get_case(case_id="90001"),
+        get_case(case_id="90002"),
+        get_case(case_id="90003"),
+        get_case(case_id="90004"),
     ]
 
     mock_case_filter_wave_1.case_is_eligible.side_effect = [True, False, True, True]

@@ -1,6 +1,4 @@
-from datetime import datetime
 from typing import Dict
-from unittest.mock import Mock
 
 import pytest
 
@@ -9,7 +7,11 @@ from models.common.totalmobile.totalmobile_world_model import (
     TotalmobileWorldModel,
     World,
 )
-from models.create.blaise.questionnaire_uac_model import QuestionnaireUacModel
+from models.create.blaise.blaiise_lms_case_model import BlaiseLMSCaseModel
+from models.create.blaise.questionnaire_uac_model import (
+    QuestionnaireUacModel,
+    UacChunks,
+)
 from models.create.totalmobile.totalmobile_create_job_model import (
     TotalmobileCreateJobModelRequestJson,
 )
@@ -19,11 +21,44 @@ from services.create.mappers.totalmobile_create_job_mapper_service import (
 from services.create.mappers.totalmobile_payload_mapper_service import (
     TotalmobilePayloadMapperService,
 )
-from tests.helpers.lms_case_model_helper import get_lms_populated_case_model
 from tests.helpers.totalmobile_payload_helper import lms_totalmobile_payload_helper
 
 
 class TestTotalmobileLMSCreateJobMapping:
+    def get_case(
+        self,
+        questionnaire_name: str,
+        case_id: str,
+        field_region: str,
+        outcome_code: str,
+        postcode: str,
+        uac_chunks: UacChunks,
+    ) -> BlaiseLMSCaseModel:
+        return BlaiseLMSCaseModel(
+            questionnaire_name,
+            {
+                "qiD.Serial_Number": case_id,
+                "qDataBag.FieldRegion": field_region,
+                "hOut": outcome_code,
+                "qDataBag.TelNo": "07900990901",
+                "qDataBag.TelNo2": "07900990902",
+                "telNoAppt": "07900990903",
+                "qDataBag.FieldTeam": "B-Team",
+                "dataModelName": "LM2007",
+                "qDataBag.Prem1": "12 Blaise Street",
+                "qDataBag.Prem2": "Blaise Hill",
+                "qDataBag.Prem3": "Blaiseville",
+                "qDataBag.District": "Gwent",
+                "qDataBag.PostTown": "Newport",
+                "qDataBag.PostCode": postcode,
+                "qDataBag.UPRN_Latitude": "10020202",
+                "qDataBag.UPRN_Longitude": "34949494",
+                "qDataBag.WaveComDTE": "31-01-2023",
+                "qDataBag.priority": "1",
+            },
+            uac_chunks=uac_chunks,
+        )
+
     @pytest.fixture()
     def questionnaire_uac_model(self) -> QuestionnaireUacModel:
         uac_data_dictionary: Dict[str, Uac] = {
@@ -69,30 +104,31 @@ class TestTotalmobileLMSCreateJobMapping:
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
-
-        case_data = [
-            get_lms_populated_case_model(
-                case_id="10010",
-                outcome_code=110,
-                field_region="region1",
-                uac_chunks=questionnaire_uac_model.get_uac_chunks("10010"),
-                postcode="AB12 3CD",
-            ),
-            get_lms_populated_case_model(
-                case_id="10020",
-                outcome_code=120,
-                field_region="region2",
-                uac_chunks=questionnaire_uac_model.get_uac_chunks("10020"),
-                postcode="EF45 6GH",
-            ),
-            get_lms_populated_case_model(
-                case_id="10030",
-                outcome_code=130,
-                field_region="region3",
-                uac_chunks=questionnaire_uac_model.get_uac_chunks("10030"),
-                postcode="IJ78 9KL",
-            ),
-        ]
+        case1 = self.get_case(
+            questionnaire_name=questionnaire_name,
+            case_id="10010",
+            field_region="region1",
+            outcome_code="110",
+            postcode="AB12 3CD",
+            uac_chunks=questionnaire_uac_model.get_uac_chunks("10010"),
+        )
+        case2 = self.get_case(
+            questionnaire_name=questionnaire_name,
+            case_id="10020",
+            field_region="region2",
+            outcome_code="120",
+            postcode="EF45 6GH",
+            uac_chunks=questionnaire_uac_model.get_uac_chunks("10020"),
+        )
+        case3 = self.get_case(
+            questionnaire_name=questionnaire_name,
+            case_id="10030",
+            field_region="region3",
+            outcome_code="130",
+            postcode="IJ78 9KL",
+            uac_chunks=questionnaire_uac_model.get_uac_chunks("10030"),
+        )
+        cases = [case1, case2, case3]
 
         world_model = TotalmobileWorldModel(
             worlds=[
@@ -105,7 +141,7 @@ class TestTotalmobileLMSCreateJobMapping:
         # act
         result = service.map_totalmobile_create_job_models(
             questionnaire_name=questionnaire_name,
-            cases=case_data,
+            cases=cases,
             world_model=world_model,
         )
 
@@ -117,8 +153,8 @@ class TestTotalmobileLMSCreateJobMapping:
         assert result[0].case_id == "10010"
         assert result[0].payload == lms_totalmobile_payload_helper(
             questionnaire_name=questionnaire_name,
-            case=case_data[0],
-            uac_chunks=questionnaire_uac_model.get_uac_chunks(case_data[0].case_id),
+            case=cases[0],
+            uac_chunks=questionnaire_uac_model.get_uac_chunks(cases[0].case_id),
         )
         assert result[0].payload["description"].startswith("UAC: 8175 4725 3990")
 
@@ -127,8 +163,8 @@ class TestTotalmobileLMSCreateJobMapping:
         assert result[1].case_id == "10020"
         assert result[1].payload == lms_totalmobile_payload_helper(
             questionnaire_name=questionnaire_name,
-            case=case_data[1],
-            uac_chunks=questionnaire_uac_model.get_uac_chunks(case_data[1].case_id),
+            case=cases[1],
+            uac_chunks=questionnaire_uac_model.get_uac_chunks(cases[1].case_id),
         )
         assert result[1].payload["description"].startswith("UAC: 4175 5725 6990")
 
@@ -136,7 +172,7 @@ class TestTotalmobileLMSCreateJobMapping:
         assert result[2].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
         assert result[2].case_id == "10030"
         assert result[2].payload == lms_totalmobile_payload_helper(
-            questionnaire_name=questionnaire_name, case=case_data[2], uac_chunks=None
+            questionnaire_name=questionnaire_name, case=cases[2], uac_chunks=None
         )
         assert result[2].payload["description"].startswith("UAC: \nDue Date")
 
@@ -145,13 +181,13 @@ class TestTotalmobileLMSCreateJobMapping:
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
-
-        case = get_lms_populated_case_model(
+        case = self.get_case(
+            questionnaire_name=questionnaire_name,
             case_id="10010",
-            outcome_code=110,
             field_region="region1",
-            uac_chunks=questionnaire_uac_model.get_uac_chunks("10010"),
+            outcome_code="110",
             postcode="AB12 3CD",
+            uac_chunks=questionnaire_uac_model.get_uac_chunks("10010"),
         )
 
         world_model = TotalmobileWorldModel(
@@ -186,13 +222,15 @@ class TestTotalmobileLMSCreateJobMapping:
         questionnaire_name = "LMS2101_AA1"
         world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         case_id = "10010"
-        case = get_lms_populated_case_model(
+        case = self.get_case(
+            questionnaire_name=questionnaire_name,
             case_id="10010",
-            outcome_code=110,
             field_region="region1",
-            uac_chunks=questionnaire_uac_model.get_uac_chunks("10010"),
+            outcome_code="110",
             postcode="AB12 3CD",
+            uac_chunks=questionnaire_uac_model.get_uac_chunks("10010"),
         )
+
         payload = lms_totalmobile_payload_helper(
             questionnaire_name,
             case,

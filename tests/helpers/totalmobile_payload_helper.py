@@ -1,17 +1,13 @@
 from typing import Dict, Optional
 
-from models.create.blaise.blaise_frs_case_information_model import (
-    BlaiseFRSCaseInformationModel,
-)
-from models.create.blaise.blaise_lms_case_information_model import (
-    BlaiseLMSCaseInformationModel,
-)
+from models.create.blaise.blaiise_frs_case_model import BlaiseFRSCaseModel
+from models.create.blaise.blaiise_lms_case_model import BlaiseLMSCaseModel
 from models.create.blaise.questionnaire_uac_model import UacChunks
 
 
 def lms_totalmobile_payload_helper(
     questionnaire_name: str,
-    case: BlaiseLMSCaseInformationModel,
+    case: BlaiseLMSCaseModel,
     uac_chunks: Optional[UacChunks],
 ) -> dict[str, object]:
 
@@ -23,13 +19,13 @@ def lms_totalmobile_payload_helper(
             {"name": "priority", "value": case.priority},
             {"name": "fieldRegion", "value": case.field_region},
             {"name": "fieldTeam", "value": case.field_team},
-            {"name": "postCode", "value": case.address_details.address.postcode},
+            {"name": "postCode", "value": case.postcode},
         ],
         "attributes": [
             {"name": "Region", "value": case.field_region},
             {"name": "Team", "value": case.field_team},
         ],
-        "contact": {"name": case.address_details.address.postcode},
+        "contact": {"name": case.postcode},
         "description": f'UAC: {uac_chunks.formatted_chunks() if uac_chunks is not None else ""}\n'
         f'Due Date: {case.wave_com_dte.strftime("%d/%m/%Y") if case.wave_com_dte is not None else ""}\n'
         f"Study: {questionnaire_name}\n"
@@ -46,16 +42,16 @@ def lms_totalmobile_payload_helper(
         },
         "location": {
             "address": "12 Blaise Street, Blaise Hill, Blaiseville, Newport, "
-            f"{case.address_details.address.postcode}",
+            f"{case.postcode}",
             "addressDetail": {
                 "addressLine1": "12 Blaise Street, Blaise Hill",
                 "addressLine2": "Blaiseville",
                 "addressLine3": "Gwent",
                 "addressLine4": "Newport",
                 "coordinates": {"latitude": "10020202", "longitude": "34949494"},
-                "postCode": case.address_details.address.postcode,
+                "postCode": case.postcode,
             },
-            "reference": case.address_details.reference,
+            "reference": case.reference,
         },
         "origin": "ONS",
         "skills": [{"identity": {"reference": case.tla}}],
@@ -71,7 +67,7 @@ def lms_totalmobile_payload_helper(
 
 
 def frs_totalmobile_payload_helper(
-    questionnaire_name: str, case: BlaiseFRSCaseInformationModel
+    questionnaire_name: str, case: BlaiseFRSCaseModel
 ) -> Dict[str, object]:
     due_date = (
         case.wave_com_dte.strftime("%d/%m/%Y") if case.wave_com_dte is not None else ""
@@ -83,7 +79,7 @@ def frs_totalmobile_payload_helper(
             {"name": "rand", "value": case.rand},
             {"name": "fieldRegion", "value": case.field_region},
             {"name": "fieldTeam", "value": case.field_team},
-            {"name": "postCode", "value": case.address_details.address.postcode},
+            {"name": "postCode", "value": case.postcode},
         ],
         "attributes": [],
         "contact": {"name": None},
@@ -97,16 +93,16 @@ def frs_totalmobile_payload_helper(
         },
         "location": {
             "address": "12 Blaise Street, Blaise Hill, Blaiseville, Newport, "
-            f"{case.address_details.address.postcode}",
+            f"{case.postcode}",
             "addressDetail": {
                 "addressLine1": "12 Blaise Street, Blaise Hill",
                 "addressLine2": "Blaiseville",
                 "addressLine3": "Gwent",
                 "addressLine4": "Newport",
                 "coordinates": {"latitude": "10020202", "longitude": "34949494"},
-                "postCode": f"{case.address_details.address.postcode}",
+                "postCode": f"{case.postcode}",
             },
-            "reference": case.address_details.reference,
+            "reference": case.reference,
         },
         "origin": "",
         "skills": [{"identity": {"reference": case.tla}}],

@@ -1,14 +1,14 @@
 from typing import Dict, List
 
-from models.common.blaise.blaise_case_model import BlaiseCase
+from models.common.blaise.blaise_case_model import BlaiseCaseModel
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 
 
-class BlaiseUpdateCase(BlaiseCase):
-    def __init__(self, case_data: Dict[str, str]):
-        super().__init__(case_data)
+class BlaiseUpdateCase(BlaiseCaseModel):
+    def __init__(self, questionnaire_name: str, case_data: Dict[str, str]):
+        super().__init__(questionnaire_name, case_data)
 
     @staticmethod
     def get_contact_details_fields(

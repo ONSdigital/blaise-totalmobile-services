@@ -1,46 +1,52 @@
 from datetime import datetime
+from typing import Dict
 
 import pytest
 
+from models.create.blaise.blaiise_lms_case_model import BlaiseLMSCaseModel
 from models.create.blaise.questionnaire_uac_model import UacChunks
 from services.create.mappers.totalmobile_payload_mapper_service import (
     TotalmobilePayloadMapperService,
 )
-from tests.helpers.lms_case_model_helper import get_lms_populated_case_model
 
 
 class TestTotalmobileLMSPayloadMapping:
+    @pytest.fixture()
+    def case_data(self) -> Dict[str, str]:
+        return {
+            "qiD.Serial_Number": "90001",
+            "qDataBag.Wave": "1",
+            "hOut": "301",
+            "qDataBag.TelNo": "07900990901",
+            "qDataBag.TelNo2": "07900990902",
+            "telNoAppt": "07900990903",
+            "qDataBag.FieldRegion": "Gwent",
+            "qDataBag.FieldTeam": "B-Team",
+            "dataModelName": "LM2007",
+            "qDataBag.Prem1": "12 Blaise Street",
+            "qDataBag.Prem2": "Blaise Hill",
+            "qDataBag.Prem3": "Blaiseville",
+            "qDataBag.District": "Gwent",
+            "qDataBag.PostTown": "Newport",
+            "qDataBag.PostCode": "FML134D",
+            "qDataBag.UPRN_Latitude": "10020202",
+            "qDataBag.UPRN_Longitude": "34949494",
+            "qDataBag.WaveComDTE": "31-01-2023",
+            "qDataBag.priority": "1",
+        }
+
     @pytest.fixture()
     def service(self) -> TotalmobilePayloadMapperService:
         return TotalmobilePayloadMapperService()
 
     def test_map_totalmobile_payload_model_returns_a_populated_model(
-        self, service: TotalmobilePayloadMapperService
+        self, service: TotalmobilePayloadMapperService, case_data: Dict[str, str]
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
-
-        questionnaire_case = get_lms_populated_case_model(
-            case_id="90001",
-            data_model_name="LM2007",
-            wave=1,
-            address_line_1="12 Blaise Street",
-            address_line_2="Blaise Hill",
-            address_line_3="Blaiseville",
-            county="Gwent",
-            town="Newport",
-            postcode="FML134D",
-            telephone_number_1="07900990901",
-            telephone_number_2="07900990902",
-            appointment_telephone_number="07900990903",
-            outcome_code=301,
-            latitude="10020202",
-            longitude="34949494",
-            priority="1",
-            field_region="Gwent",
-            field_team="B-Team",
-            wave_com_dte=datetime(2023, 1, 31),
-            uac_chunks=UacChunks(uac1="3456", uac2="3453", uac3="4546"),
+        uac_chunks = UacChunks(uac1="3456", uac2="3453", uac3="4546")
+        questionnaire_case = BlaiseLMSCaseModel(
+            questionnaire_name, case_data, uac_chunks
         )
 
         # act
@@ -115,12 +121,11 @@ class TestTotalmobileLMSPayloadMapping:
         assert result.additionalProperties[9].value == "4546"
 
     def test_map_totalmobile_payload_model_returns_a_model_with_no_uac_additional_properties_if_no_uacs_are_set_for_an_lms_case(
-        self, service: TotalmobilePayloadMapperService
+        self, service: TotalmobilePayloadMapperService, case_data: Dict[str, str]
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
-
-        questionnaire_case = get_lms_populated_case_model(uac_chunks=None)
+        questionnaire_case = BlaiseLMSCaseModel(questionnaire_name, case_data, None)
 
         # act
         result = service.map_totalmobile_payload_model(
@@ -143,14 +148,17 @@ class TestTotalmobileLMSPayloadMapping:
         ],
     )
     def test_map_totalmobile_payload_model_does_not_populate_lat_and_lon_if_both_are_not_supplied(
-        self, service: TotalmobilePayloadMapperService, latitude: str, longitude: str
+        self,
+        service: TotalmobilePayloadMapperService,
+        case_data: Dict[str, str],
+        latitude: str,
+        longitude: str,
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
-
-        questionnaire_case = get_lms_populated_case_model(
-            latitude=latitude, longitude=longitude, uac_chunks=None
-        )
+        case_data["qDataBag.UPRN_Latitude"] = latitude
+        case_data["qDataBag.UPRN_Longitude"] = longitude
+        questionnaire_case = BlaiseLMSCaseModel(questionnaire_name, case_data, None)
 
         # act
         result = service.map_totalmobile_payload_model(
@@ -162,20 +170,11 @@ class TestTotalmobileLMSPayloadMapping:
         assert result.location.addressDetail.coordinates.longitude is None
 
     def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_all_fields_are_populated(
-        self, service: TotalmobilePayloadMapperService
+        self, service: TotalmobilePayloadMapperService, case_data: Dict[str, str]
     ):
         # Arrange
         questionnaire_name = "LMS2201_AA1"
-        questionnaire_case = get_lms_populated_case_model(
-            questionnaire_name="LMS2201_AA1",
-            case_id="1234",
-            address_line_1="123 Blaise Street",
-            address_line_2="Blaisville",
-            address_line_3="Upper Blaise",
-            town="Blaisingdom",
-            postcode="BS1 1BS",
-            uac_chunks=None,
-        )
+        questionnaire_case = BlaiseLMSCaseModel(questionnaire_name, case_data, None)
 
         # Act
         case = service.map_totalmobile_payload_model(
@@ -185,24 +184,18 @@ class TestTotalmobileLMSPayloadMapping:
         # Assert
         assert (
             case.location.address
-            == "123 Blaise Street, Blaisville, Upper Blaise, Blaisingdom, BS1 1BS"
+            == "12 Blaise Street, Blaise Hill, Blaiseville, Newport, FML134D"
         )
 
     def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_not_all_fields_are_populated(
-        self, service: TotalmobilePayloadMapperService
+        self, service: TotalmobilePayloadMapperService, case_data: Dict[str, str]
     ):
         # Arrange
         questionnaire_name = "LMS2201_AA1"
-        questionnaire_case = get_lms_populated_case_model(
-            questionnaire_name="LMS2201_AA1",
-            case_id="1234",
-            address_line_1="123 Blaise Street",
-            address_line_2="",
-            address_line_3=None,
-            town="Blaisingdom",
-            postcode="BS1 1BS",
-            uac_chunks=None,
-        )
+        case_data["qDataBag.Prem2"] = ""
+        case_data["qDataBag.Prem3"] = ""
+        case_data["qDataBag.District"] = ""
+        questionnaire_case = BlaiseLMSCaseModel(questionnaire_name, case_data, None)
 
         # Act
         case = service.map_totalmobile_payload_model(
@@ -210,20 +203,18 @@ class TestTotalmobileLMSPayloadMapping:
         )
 
         # Assert
-        assert case.location.address == "123 Blaise Street, Blaisingdom, BS1 1BS"
+        assert case.location.address == "12 Blaise Street, Newport, FML134D"
 
     def test_concatenate_address_line1_returns_a_concatenated_address_of_50_characters_when_a_longer_address_is_provided(
-        self, service: TotalmobilePayloadMapperService
+        self, service: TotalmobilePayloadMapperService, case_data: Dict[str, str]
     ):
         # Arrange
         questionnaire_name = "LMS2201_AA1"
-        questionnaire_case = get_lms_populated_case_model(
-            questionnaire_name="LMS2201_AA1",
-            case_id="1234",
-            address_line_1="123 Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch",
-            address_line_2="Ynys Môn",
-            uac_chunks=None,
-        )
+        case_data[
+            "qDataBag.Prem1"
+        ] = "123 Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch"
+        case_data["qDataBag.Prem2"] = "Ynys Môn"
+        questionnaire_case = BlaiseLMSCaseModel(questionnaire_name, case_data, None)
 
         # Act
         case = service.map_totalmobile_payload_model(
@@ -237,17 +228,13 @@ class TestTotalmobileLMSPayloadMapping:
         )
 
     def test_concatenate_address_line1_returns_a_concatenated_address_without_a_comma_and_space_when_address_line_2_is_none(
-        self, service: TotalmobilePayloadMapperService
+        self, service: TotalmobilePayloadMapperService, case_data: Dict[str, str]
     ):
         # Arrange
         questionnaire_name = "LMS2201_AA1"
-        questionnaire_case = get_lms_populated_case_model(
-            questionnaire_name="LMS2201_AA1",
-            case_id="1234",
-            address_line_1="123 Blaise Street",
-            address_line_2=None,
-            uac_chunks=None,
-        )
+        case_data["qDataBag.Prem1"] = "123 Blaise Street"
+        case_data["qDataBag.Prem2"] = ""
+        questionnaire_case = BlaiseLMSCaseModel(questionnaire_name, case_data, None)
 
         # Act
         case = service.map_totalmobile_payload_model(
@@ -258,17 +245,13 @@ class TestTotalmobileLMSPayloadMapping:
         assert case.location.addressDetail.addressLine1 == "123 Blaise Street"
 
     def test_concatenate_address_line1_returns_a_concatenated_address_without_a_comma_and_space_when_address_line_2_is_an_empty_string(
-        self, service: TotalmobilePayloadMapperService
+        self, service: TotalmobilePayloadMapperService, case_data: Dict[str, str]
     ):
         # Arrange
         questionnaire_name = "LMS2201_AA1"
-        questionnaire_case = get_lms_populated_case_model(
-            questionnaire_name="LMS2201_AA1",
-            case_id="1234",
-            address_line_1="123 Blaise Street",
-            address_line_2="",
-            uac_chunks=None,
-        )
+        case_data["qDataBag.Prem1"] = "123 Blaise Street"
+        case_data["qDataBag.Prem2"] = ""
+        questionnaire_case = BlaiseLMSCaseModel(questionnaire_name, case_data, None)
 
         # Act
         case = service.map_totalmobile_payload_model(
@@ -279,14 +262,12 @@ class TestTotalmobileLMSPayloadMapping:
         assert case.location.addressDetail.addressLine1 == "123 Blaise Street"
 
     def test_location_reference_is_set_to_an_empty_string_if_location_reference_is_none(
-        self, service: TotalmobilePayloadMapperService
+        self, service: TotalmobilePayloadMapperService, case_data: Dict[str, str]
     ):
         # arrange
-        questionnaire_name = "LMS2101_AA1"
-
-        questionnaire_case = get_lms_populated_case_model(
-            questionnaire_name="LMS2201_AA1", reference=None, uac_chunks=None
-        )
+        questionnaire_name = "LMS2201_AA1"
+        case_data["qDataBag.UPRN"] = ""
+        questionnaire_case = BlaiseLMSCaseModel(questionnaire_name, case_data, None)
 
         # act
         case = service.map_totalmobile_payload_model(

@@ -3,14 +3,39 @@ from unittest.mock import Mock
 
 import pytest
 
-from models.create.blaise.blaise_frs_case_information_model import (
-    BlaiseFRSCaseInformationModel,
-)
+from models.create.blaise.blaiise_frs_case_model import BlaiseFRSCaseModel
 from services.create.questionnaires.frs_questionnaire_service import (
     FRSQuestionnaireService,
 )
 from tests.helpers.datastore_helper import DatastoreHelper
-from tests.helpers.frs_case_model_helper import get_frs_populated_case_model
+
+
+def get_case(
+    case_id: str,
+) -> BlaiseFRSCaseModel:
+    return BlaiseFRSCaseModel(
+        "FRS2101",
+        {
+            "qiD.Serial_Number": case_id,
+            "qDataBag.FieldRegion": "Region 1",
+            "hOut": "110",
+            "qDataBag.TelNo": "07900990901",
+            "qDataBag.TelNo2": "07900990902",
+            "telNoAppt": "07900990903",
+            "qDataBag.FieldTeam": "B-Team",
+            "dataModelName": "LM2007",
+            "qDataBag.Prem1": "12 Blaise Street",
+            "qDataBag.Prem2": "Blaise Hill",
+            "qDataBag.Prem3": "Blaiseville",
+            "qDataBag.District": "Gwent",
+            "qDataBag.PostTown": "Newport",
+            "qDataBag.PostCode": "cf99rsd",
+            "qDataBag.UPRN_Latitude": "10020202",
+            "qDataBag.UPRN_Longitude": "34949494",
+            "qDataBag.priority": "1",
+            "qDataBag.Rand": "1",
+        },
+    )
 
 
 @pytest.fixture()
@@ -42,7 +67,6 @@ def service(
 ) -> FRSQuestionnaireService:
     return FRSQuestionnaireService(
         blaise_service=mock_blaise_service,
-        mapper_service=mock_mapper_service,
         eligible_case_service=mock_eligible_case_service,
         datastore_service=mock_datastore_service,
     )
@@ -55,8 +79,8 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
     service: FRSQuestionnaireService,
 ):
     questionnaire_cases = [
-        get_frs_populated_case_model(),  # eligible
-        get_frs_populated_case_model(),  # not eligible
+        get_case(case_id="20001"),  # eligible
+        get_case(case_id="20002"),  # not eligible
     ]
 
     eligible_cases = [questionnaire_cases[0]]
@@ -67,7 +91,7 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
     mock_eligible_case_service.get_eligible_cases.return_value = eligible_cases
 
     questionnaire_name = "FRS2101"
-    required_fields = BlaiseFRSCaseInformationModel.required_fields()
+    required_fields = BlaiseFRSCaseModel.required_fields()
 
     # act
     service.get_eligible_cases(questionnaire_name)
@@ -88,10 +112,9 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases_from_the_eligible
     service: FRSQuestionnaireService,
 ):
     questionnaire_cases = [
-        get_frs_populated_case_model,  # eligible
-        get_frs_populated_case_model,  # not eligible
+        get_case(case_id="20001"),  # eligible
+        get_case(case_id="20002"),  # not eligible
     ]
-
     eligible_cases = [questionnaire_cases[0]]
 
     mock_mapper_service.map_frs_case_information_models.return_value = (
@@ -112,8 +135,8 @@ def test_get_cases_returns_a_list_of_fully_populated_cases(
     service: FRSQuestionnaireService, mock_blaise_service, mock_mapper_service
 ):
     questionnaire_cases = [
-        get_frs_populated_case_model(case_id="20001"),
-        get_frs_populated_case_model(case_id="20003"),
+        get_case(case_id="20001"),  # eligible
+        get_case(case_id="20002"),  # not eligible
     ]
 
     mock_mapper_service.map_frs_case_information_models.return_value = (
@@ -134,7 +157,7 @@ def test_get_case_returns_a_case(
     mock_blaise_service,
     mock_mapper_service,
 ):
-    questionnaire_case = get_frs_populated_case_model(case_id="10010")
+    questionnaire_case = get_case(case_id="10010")
 
     mock_mapper_service.map_frs_case_information_model.return_value = questionnaire_case
 

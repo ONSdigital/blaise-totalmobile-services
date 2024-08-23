@@ -1,20 +1,19 @@
-from dataclasses import dataclass
-from typing import List, Optional, TypeVar
+from typing import Dict, List, Optional
 
-from models.create.blaise.blaise_case_information_base_model import (
-    BlaiseCaseInformationBaseModel,
-)
-
-V = TypeVar("V", bound="BlaiseFRSCaseInformationModel")
+from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
 
 
-@dataclass
-class BlaiseFRSCaseInformationModel(BlaiseCaseInformationBaseModel):
-    rand: Optional[str]
+class BlaiseFRSCaseModel(BlaiseCreateCaseModel):
+    def __init__(self, questionnaire_name: str, case_data: Dict[str, str]):
+        super().__init__(questionnaire_name, case_data)
 
     @property
-    def has_uac(self) -> bool:
-        return False
+    def divided_address_indicator(self) -> Optional[str]:
+        return self.case_data.get("qDataBag.DivAddInd")
+
+    @property
+    def rand(self) -> Optional[str]:
+        return self.case_data.get("qDataBag.Rand")
 
     def create_case_overview_for_interviewer(self) -> dict[str, str]:
         return {
@@ -22,7 +21,7 @@ class BlaiseFRSCaseInformationModel(BlaiseCaseInformationBaseModel):
             "rand": f"{self.rand}",
             "fieldRegion": f"{self.field_region}",
             "fieldTeam": f"{self.field_team}",
-            "postCode": f"{self.address_details.address.postcode}",
+            "postCode": f"{self.postcode}",
         }
 
     def create_case_description_for_interviewer(

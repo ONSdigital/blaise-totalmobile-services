@@ -13,12 +13,6 @@ from services.create.eligibility.case_filters.case_filter_wave_4 import CaseFilt
 from services.create.eligibility.case_filters.case_filter_wave_5 import CaseFilterWave5
 from services.create.eligibility.frs_eligible_case_service import FRSEligibleCaseService
 from services.create.eligibility.lms_eligible_case_service import LMSEligibleCaseService
-from services.create.mappers.blaise_frs_case_mapper_service import (
-    BlaiseFRSCaseMapperService,
-)
-from services.create.mappers.blaise_lms_case_mapper_service import (
-    BlaiseLMSCaseMapperService,
-)
 from services.create.mappers.totalmobile_create_job_mapper_service import (
     TotalmobileCreateJobMapperService,
 )
@@ -72,13 +66,6 @@ class ServiceInstanceFactory:
     def create_eligible_frs_case_service() -> FRSEligibleCaseService:
         return FRSEligibleCaseService()
 
-    def create_lms_mapper_service(self) -> BlaiseLMSCaseMapperService:
-        return BlaiseLMSCaseMapperService()
-
-    @staticmethod
-    def create_frs_mapper_service() -> BlaiseFRSCaseMapperService:
-        return BlaiseFRSCaseMapperService()
-
     def create_questionnaire_service(
         self, survey_type: str
     ) -> QuestionnaireServiceBase:
@@ -91,7 +78,6 @@ class ServiceInstanceFactory:
     def create_lms_questionnaire_service(self) -> LMSQuestionnaireService:
         return LMSQuestionnaireService(
             blaise_service=self.create_blaise_service(),
-            mapper_service=self.create_lms_mapper_service(),
             eligible_case_service=self.create_eligible_lms_case_service(),
             datastore_service=self.create_datastore_service(),
             uac_service=self.create_uac_service(),
@@ -100,7 +86,6 @@ class ServiceInstanceFactory:
     def create_frs_questionnaire_service(self) -> FRSQuestionnaireService:
         return FRSQuestionnaireService(
             blaise_service=self.create_blaise_service(),
-            mapper_service=self.create_frs_mapper_service(),
             eligible_case_service=self.create_eligible_frs_case_service(),
             datastore_service=self.create_datastore_service(),
         )

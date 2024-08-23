@@ -40,4 +40,7 @@ class BlaiseCaseOutcomeService:
             questionnaire_name, BlaiseDeleteCase.required_fields()
         )
 
-        return [BlaiseDeleteCase(case_data) for case_data in case_data_list]
+        return [
+            BlaiseDeleteCase(questionnaire_name, case_data)
+            for case_data in case_data_list
+        ]

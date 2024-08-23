@@ -3,9 +3,7 @@ from typing import Optional
 from models.common.totalmobile.totalmobile_reference_model import (
     TotalmobileReferenceModel,
 )
-from models.create.blaise.blaise_case_information_base_model import (
-    BlaiseCaseInformationBaseModel,
-)
+from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
 from models.create.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     AdditionalProperty,
     Address,
@@ -23,7 +21,7 @@ class TotalmobilePayloadMapperService:
     def map_totalmobile_payload_model(
         self,
         questionnaire_name: str,
-        questionnaire_case: BlaiseCaseInformationBaseModel,
+        questionnaire_case: BlaiseCreateCaseModel,
     ) -> TotalMobileOutgoingCreateJobPayloadModel:
         payload_model = TotalMobileOutgoingCreateJobPayloadModel(
             identity=Reference(
@@ -34,21 +32,21 @@ class TotalmobilePayloadMapperService:
             description=self.get_job_description(questionnaire_case),
             origin="",
             duration=15,
-            workType=questionnaire_case.tla,
-            skills=[Skill(identity=Reference(reference=questionnaire_case.tla))],
+            workType=questionnaire_name[0:3],
+            skills=[Skill(identity=Reference(reference=questionnaire_name[0:3]))],
             dueDate=DueDate(end=None),
             location=AddressDetails(
                 reference=self.set_location_reference(questionnaire_case),
                 address=self.concatenate_address(questionnaire_case),
                 addressDetail=Address(
                     addressLine1=self.concatenate_address_line1(questionnaire_case),
-                    addressLine2=questionnaire_case.address_details.address.address_line_3,
-                    addressLine3=questionnaire_case.address_details.address.county,
-                    addressLine4=questionnaire_case.address_details.address.town,
-                    postCode=questionnaire_case.address_details.address.postcode,
+                    addressLine2=questionnaire_case.address_line_3,
+                    addressLine3=questionnaire_case.county,
+                    addressLine4=questionnaire_case.town,
+                    postCode=questionnaire_case.postcode,
                     coordinates=self.set_address_coordinates(
-                        latitude=questionnaire_case.address_details.address.coordinates.latitude,
-                        longitude=questionnaire_case.address_details.address.coordinates.longitude,
+                        latitude=questionnaire_case.latitude,
+                        longitude=questionnaire_case.longitude,
                     ),
                 ),
             ),
@@ -66,12 +64,12 @@ class TotalmobilePayloadMapperService:
 
     def map_additional_lms_properties(
         self,
-        questionnaire_case: BlaiseCaseInformationBaseModel,
+        questionnaire_case: BlaiseCreateCaseModel,
         payload_model: TotalMobileOutgoingCreateJobPayloadModel,
     ) -> TotalMobileOutgoingCreateJobPayloadModel:
         payload_model.origin = "ONS"
         payload_model.dueDate.end = questionnaire_case.wave_com_dte
-        payload_model.contact.name = questionnaire_case.address_details.address.postcode
+        payload_model.contact.name = questionnaire_case.postcode
         payload_model.attributes = [
             AdditionalProperty(name="Region", value=questionnaire_case.field_region),
             AdditionalProperty(name="Team", value=questionnaire_case.field_team),
@@ -103,7 +101,7 @@ class TotalmobilePayloadMapperService:
 
     @staticmethod
     def get_job_additional_properties(
-        questionnaire_case: BlaiseCaseInformationBaseModel,
+        questionnaire_case: BlaiseCreateCaseModel,
     ) -> list[AdditionalProperty]:
         case_overview = questionnaire_case.create_case_overview_for_interviewer()
         additional_properties = [
@@ -113,18 +111,18 @@ class TotalmobilePayloadMapperService:
         return additional_properties
 
     @staticmethod
-    def get_job_description(questionnaire_case: BlaiseCaseInformationBaseModel) -> str:
+    def get_job_description(questionnaire_case: BlaiseCreateCaseModel) -> str:
 
         return questionnaire_case.create_case_description_for_interviewer()
 
     @staticmethod
-    def concatenate_address(questionnaire_case: BlaiseCaseInformationBaseModel) -> str:
+    def concatenate_address(questionnaire_case: BlaiseCreateCaseModel) -> str:
         fields = [
-            questionnaire_case.address_details.address.address_line_1,
-            questionnaire_case.address_details.address.address_line_2,
-            questionnaire_case.address_details.address.address_line_3,
-            questionnaire_case.address_details.address.town,
-            questionnaire_case.address_details.address.postcode,
+            questionnaire_case.address_line_1,
+            questionnaire_case.address_line_2,
+            questionnaire_case.address_line_3,
+            questionnaire_case.town,
+            questionnaire_case.postcode,
         ]
         concatenated_address = ", ".join(
             [str(i) for i in fields if i != "" and i is not None]
@@ -133,11 +131,11 @@ class TotalmobilePayloadMapperService:
 
     @staticmethod
     def concatenate_address_line1(
-        questionnaire_case: BlaiseCaseInformationBaseModel,
+        questionnaire_case: BlaiseCreateCaseModel,
     ) -> str:
         fields = [
-            questionnaire_case.address_details.address.address_line_1,
-            questionnaire_case.address_details.address.address_line_2,
+            questionnaire_case.address_line_1,
+            questionnaire_case.address_line_2,
         ]
         concatenated_address_line1 = ", ".join(
             [str(i) for i in fields if i != "" and i is not None]
@@ -163,9 +161,7 @@ class TotalmobilePayloadMapperService:
         )
 
     @staticmethod
-    def set_location_reference(questionnaire_case):
+    def set_location_reference(questionnaire_case: BlaiseCreateCaseModel):
         return (
-            ""
-            if questionnaire_case.address_details.reference is None
-            else questionnaire_case.address_details.reference
+            "" if questionnaire_case.reference is None else questionnaire_case.reference
         )

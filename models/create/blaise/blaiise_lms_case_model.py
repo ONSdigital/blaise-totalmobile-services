@@ -1,30 +1,17 @@
-from dataclasses import dataclass
-from typing import List, Optional
+from typing import Dict, List, Optional
 
-from models.create.blaise.blaise_case_information_base_model import (
-    BlaiseCaseInformationBaseModel,
-)
+from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
+from models.create.blaise.questionnaire_uac_model import UacChunks
 
 
-@dataclass
-class ContactDetails:
-    telephone_number_1: Optional[str]
-    telephone_number_2: Optional[str]
-    appointment_telephone_number: Optional[str]
-
-
-@dataclass()
-class BlaiseLMSCaseInformationModel(BlaiseCaseInformationBaseModel):
-    contact_details: ContactDetails
-    outcome_code: int
-    has_call_history: bool
-    rotational_knock_to_nudge_indicator: Optional[str]
-    rotational_outcome_code: int
-    wave: Optional[int]
-
-    @property
-    def has_uac(self) -> bool:
-        return True
+class BlaiseLMSCaseModel(BlaiseCreateCaseModel):
+    def __init__(
+        self,
+        questionnaire_name: str,
+        case_data: Dict[str, str],
+        uac_chunks: Optional[UacChunks],
+    ):
+        super().__init__(questionnaire_name, case_data, uac_chunks)
 
     def create_case_overview_for_interviewer(self) -> dict[str, str]:
         return {
@@ -34,7 +21,7 @@ class BlaiseLMSCaseInformationModel(BlaiseCaseInformationBaseModel):
             "priority": f"{self.priority}",
             "fieldRegion": f"{self.field_region}",
             "fieldTeam": f"{self.field_team}",
-            "postCode": f"{self.address_details.address.postcode}",
+            "postCode": f"{self.postcode}",
         }
 
     def create_case_description_for_interviewer(self) -> str:

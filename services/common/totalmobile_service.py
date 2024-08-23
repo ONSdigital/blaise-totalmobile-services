@@ -5,9 +5,7 @@ import requests
 from client.messaging import MessagingClient
 from client.optimise import GetJobsResponse, OptimiseClient
 from models.common.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from models.create.blaise.blaise_case_information_base_model import (
-    BlaiseCaseInformationBaseModel,
-)
+from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
 from models.create.totalmobile.totalmobile_create_job_model import (
     TotalmobileCreateJobModel,
     TotalmobileCreateJobModelRequestJson,
@@ -52,7 +50,7 @@ class TotalmobileService(Protocol):
         pass
 
     def map_totalmobile_create_job_models(
-        self, questionnaire_name: str, cases: Sequence[BlaiseCaseInformationBaseModel]
+        self, questionnaire_name: str, cases: Sequence[BlaiseCreateCaseModel]
     ) -> List[TotalmobileCreateJobModel]:
         pass
 
@@ -111,7 +109,7 @@ class RealTotalmobileService:
         return TotalmobileGetJobsResponseModel.from_get_jobs_response(jobs_response)
 
     def map_totalmobile_create_job_models(
-        self, questionnaire_name: str, cases: Sequence[BlaiseCaseInformationBaseModel]
+        self, questionnaire_name: str, cases: Sequence[BlaiseCreateCaseModel]
     ) -> List[TotalmobileCreateJobModel]:
         world_model = self.get_world_model()
         return self._mapper.map_totalmobile_create_job_models(

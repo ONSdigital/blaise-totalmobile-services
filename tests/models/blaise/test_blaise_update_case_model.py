@@ -20,6 +20,7 @@ def test_populated_update_case_model_has_the_correct_properties(
     has_call_history: bool,
 ):
     # arrange
+    questionnaire_name = "LMS2101_TLR"
     case_data = {
         "qiD.Serial_Number": case_id,
         "hOut": str(outcome_code),
@@ -27,9 +28,10 @@ def test_populated_update_case_model_has_the_correct_properties(
     }
 
     # act
-    result = BlaiseUpdateCase(case_data)
+    result = BlaiseUpdateCase(questionnaire_name, case_data)
 
     # assert
+    assert result.questionnaire_name == questionnaire_name
     assert result.case_id == case_id
     assert result.outcome_code == outcome_code
     assert result.has_call_history == has_call_history
@@ -37,7 +39,8 @@ def test_populated_update_case_model_has_the_correct_properties(
 
 def test_get_knock_to_nudge_indicator_flag_field_returns_expected_dictionary():
     # arrange
-    blaise_case = BlaiseUpdateCase({})
+    questionnaire_name = "LMS2101_TLR"
+    blaise_case = BlaiseUpdateCase(questionnaire_name, {})
 
     # act
     result = blaise_case.get_knock_to_nudge_indicator_flag_field()
@@ -48,8 +51,8 @@ def test_get_knock_to_nudge_indicator_flag_field_returns_expected_dictionary():
 
 def test_get_outcome_code_fields_returns_an_expected_dictionary():
     # arrange
-
-    blaise_case = BlaiseUpdateCase({})
+    questionnaire_name = "LMS2101_TLR"
+    blaise_case = BlaiseUpdateCase(questionnaire_name, {})
     totalmobile_request = TotalMobileIncomingUpdateRequestModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
@@ -71,7 +74,8 @@ def test_get_outcome_code_fields_returns_an_expected_dictionary():
 
 def test_get_contact_details_fields_returns_an_expected_dictionary():
     # arrange
-    blaise_case = BlaiseUpdateCase({})
+    questionnaire_name = "LMS2101_TLR"
+    blaise_case = BlaiseUpdateCase(questionnaire_name, {})
     totalmobile_request = TotalMobileIncomingUpdateRequestModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
@@ -97,7 +101,8 @@ def test_get_contact_details_fields_returns_an_expected_dictionary_if_contact_na
     test_input,
 ):
     # arrange
-    blaise_case = BlaiseUpdateCase({})
+    questionnaire_name = "LMS2101_TLR"
+    blaise_case = BlaiseUpdateCase(questionnaire_name, {})
     totalmobile_request = TotalMobileIncomingUpdateRequestModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
@@ -122,7 +127,8 @@ def test_get_contact_details_fields_returns_an_expected_dictionary_if_home_numbe
     test_input,
 ):
     # arrange
-    blaise_case = BlaiseUpdateCase({})
+    questionnaire_name = "LMS2101_TLR"
+    blaise_case = BlaiseUpdateCase(questionnaire_name, {})
     totalmobile_request = TotalMobileIncomingUpdateRequestModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
@@ -147,7 +153,8 @@ def test_get_contact_details_fields_returns_an_expected_dictionary_if_mobile_num
     test_input,
 ):
     # arrange
-    blaise_case = BlaiseUpdateCase({})
+    questionnaire_name = "LMS2101_TLR"
+    blaise_case = BlaiseUpdateCase(questionnaire_name, {})
     totalmobile_request = TotalMobileIncomingUpdateRequestModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
@@ -172,7 +179,8 @@ def test_get_contact_details_fields_returns_an_empty_dictionary_if_no_contact_de
     test_input,
 ):
     # arrange
-    blaise_case = BlaiseUpdateCase({})
+    questionnaire_name = "LMS2101_TLR"
+    blaise_case = BlaiseUpdateCase(questionnaire_name, {})
     totalmobile_request = TotalMobileIncomingUpdateRequestModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
@@ -194,7 +202,8 @@ def test_get_call_history_record_field_returns_expected_detail_if_record_number_
     record_number,
 ):
     # arrange
-    blaise_case = BlaiseUpdateCase({})
+    questionnaire_name = "LMS2101_TLR"
+    blaise_case = BlaiseUpdateCase(questionnaire_name, {})
 
     # act
     result = blaise_case.get_call_history_record_field(record_number)

@@ -16,9 +16,7 @@ from services.create.eligibility.case_filters.case_filter_wave_3 import CaseFilt
 from services.create.eligibility.case_filters.case_filter_wave_4 import CaseFilterWave4
 from services.create.eligibility.case_filters.case_filter_wave_5 import CaseFilterWave5
 from services.create.eligibility.lms_eligible_case_service import LMSEligibleCaseService
-from services.create.mappers.blaise_lms_case_mapper_service import (
-    BlaiseLMSCaseMapperService,
-)
+
 from services.create.questionnaires.lms_questionnaire_service import (
     LMSQuestionnaireService,
 )
@@ -30,10 +28,8 @@ from tests.helpers.date_helper import get_date_as_totalmobile_formatted_string
 @given('the survey type is "{survey_type}"')
 def step_impl(context, survey_type):
     if survey_type == "LMS":
-        context.mapper_service = BlaiseLMSCaseMapperService()
         context.questionnaire_service = LMSQuestionnaireService(
             blaise_service=context.blaise_service,
-            mapper_service=context.mapper_service,
             eligible_case_service=LMSEligibleCaseService(
                 wave_filters=[
                     CaseFilterWave1(),

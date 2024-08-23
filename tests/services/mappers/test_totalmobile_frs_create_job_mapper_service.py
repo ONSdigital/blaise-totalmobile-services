@@ -1,11 +1,10 @@
-from unittest.mock import Mock
-
 import pytest
 
 from models.common.totalmobile.totalmobile_world_model import (
     TotalmobileWorldModel,
     World,
 )
+from models.create.blaise.blaiise_frs_case_model import BlaiseFRSCaseModel
 from models.create.totalmobile.totalmobile_create_job_model import (
     TotalmobileCreateJobModelRequestJson,
 )
@@ -15,11 +14,41 @@ from services.create.mappers.totalmobile_create_job_mapper_service import (
 from services.create.mappers.totalmobile_payload_mapper_service import (
     TotalmobilePayloadMapperService,
 )
-from tests.helpers.frs_case_model_helper import get_frs_populated_case_model
 from tests.helpers.totalmobile_payload_helper import frs_totalmobile_payload_helper
 
 
 class TestTotalmobileFRSCreateJobMapping:
+    def get_case(
+        self,
+        questionnaire_name: str,
+        case_id: str,
+        field_region: str,
+        postcode: str,
+    ) -> BlaiseFRSCaseModel:
+        return BlaiseFRSCaseModel(
+            questionnaire_name,
+            {
+                "qiD.Serial_Number": case_id,
+                "qDataBag.FieldRegion": field_region,
+                "hOut": "110",
+                "qDataBag.TelNo": "07900990901",
+                "qDataBag.TelNo2": "07900990902",
+                "telNoAppt": "07900990903",
+                "qDataBag.FieldTeam": "B-Team",
+                "dataModelName": "LM2007",
+                "qDataBag.Prem1": "12 Blaise Street",
+                "qDataBag.Prem2": "Blaise Hill",
+                "qDataBag.Prem3": "Blaiseville",
+                "qDataBag.District": "Gwent",
+                "qDataBag.PostTown": "Newport",
+                "qDataBag.PostCode": postcode,
+                "qDataBag.UPRN_Latitude": "10020202",
+                "qDataBag.UPRN_Longitude": "34949494",
+                "qDataBag.priority": "1",
+                "qDataBag.Rand": "1",
+            },
+        )
+
     @pytest.fixture()
     def payload_mapper(self) -> TotalmobilePayloadMapperService:
         return TotalmobilePayloadMapperService()
@@ -33,24 +62,26 @@ class TestTotalmobileFRSCreateJobMapping:
     ):
         # arrange
         questionnaire_name = "FRS2101"
+        case1 = self.get_case(
+            questionnaire_name=questionnaire_name,
+            case_id="10010",
+            field_region="region1",
+            postcode="AB12 3CD",
+        )
+        case2 = self.get_case(
+            questionnaire_name=questionnaire_name,
+            case_id="10020",
+            field_region="region2",
+            postcode="EF45 6GH",
+        )
+        case3 = self.get_case(
+            questionnaire_name=questionnaire_name,
+            case_id="10030",
+            field_region="region3",
+            postcode="IJ78 9KL",
+        )
 
-        case_data = [
-            get_frs_populated_case_model(
-                case_id="10010",
-                field_region="region1",
-                postcode="AB12 3CD",
-            ),
-            get_frs_populated_case_model(
-                case_id="10020",
-                field_region="region2",
-                postcode="EF45 6GH",
-            ),
-            get_frs_populated_case_model(
-                case_id="10030",
-                field_region="region3",
-                postcode="IJ78 9KL",
-            ),
-        ]
+        cases = [case1, case2, case3]
 
         world_model = TotalmobileWorldModel(
             worlds=[
@@ -63,7 +94,7 @@ class TestTotalmobileFRSCreateJobMapping:
         # act
         result = service.map_totalmobile_create_job_models(
             questionnaire_name=questionnaire_name,
-            cases=case_data,
+            cases=cases,
             world_model=world_model,
         )
 
@@ -75,7 +106,7 @@ class TestTotalmobileFRSCreateJobMapping:
         assert result[0].case_id == "10010"
         assert result[0].payload == frs_totalmobile_payload_helper(
             questionnaire_name=questionnaire_name,
-            case=case_data[0],
+            case=cases[0],
         )
         assert result[0].payload["description"] == ""
 
@@ -84,7 +115,7 @@ class TestTotalmobileFRSCreateJobMapping:
         assert result[1].case_id == "10020"
         assert result[1].payload == frs_totalmobile_payload_helper(
             questionnaire_name=questionnaire_name,
-            case=case_data[1],
+            case=cases[1],
         )
         assert result[1].payload["description"] == ""
 
@@ -92,7 +123,7 @@ class TestTotalmobileFRSCreateJobMapping:
         assert result[2].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
         assert result[2].case_id == "10030"
         assert result[2].payload == frs_totalmobile_payload_helper(
-            questionnaire_name=questionnaire_name, case=case_data[2]
+            questionnaire_name=questionnaire_name, case=cases[2]
         )
         assert result[2].payload["description"] == ""
 
@@ -101,8 +132,8 @@ class TestTotalmobileFRSCreateJobMapping:
     ):
         # arrange
         questionnaire_name = "FRS2101"
-
-        case = get_frs_populated_case_model(
+        case = self.get_case(
+            questionnaire_name=questionnaire_name,
             case_id="10010",
             field_region="region1",
             postcode="AB12 3CD",
@@ -138,8 +169,9 @@ class TestTotalmobileFRSCreateJobMapping:
         questionnaire_name = "FRS2101"
         world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         case_id = "10010"
-        case = get_frs_populated_case_model(
-            case_id="10010",
+        case = self.get_case(
+            questionnaire_name=questionnaire_name,
+            case_id=case_id,
             field_region="region1",
             postcode="AB12 3CD",
         )

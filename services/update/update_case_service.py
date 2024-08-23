@@ -154,4 +154,4 @@ class UpdateCaseService:
         logging.info(
             f"Successfully found case {case_id} for questionnaire {questionnaire_name} in Blaise"
         )
-        return BlaiseUpdateCase(case)
+        return BlaiseUpdateCase(questionnaire_name, case)

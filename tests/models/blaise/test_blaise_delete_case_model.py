@@ -15,13 +15,14 @@ def test_populated_delete_case_model_has_the_correct_properties(
     case_id: str, outcome_code: int
 ):
     # arrange
+    questionnaire_name = "LMS2101_TLR"
     case_data = {
         "qiD.Serial_Number": case_id,
         "hOut": str(outcome_code),
     }
 
     # act
-    result = BlaiseDeleteCase(case_data)
+    result = BlaiseDeleteCase(questionnaire_name, case_data)
 
     # assert
     assert result.case_id == case_id

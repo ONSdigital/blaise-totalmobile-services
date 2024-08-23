@@ -1,41 +1,50 @@
 from datetime import datetime
+from typing import Dict
 
 import pytest
 
+from models.create.blaise.blaiise_frs_case_model import BlaiseFRSCaseModel
 from services.create.mappers.totalmobile_payload_mapper_service import (
     TotalmobilePayloadMapperService,
 )
-from tests.helpers.frs_case_model_helper import get_frs_populated_case_model
 
 
 class TestTotalmobileFRSPayloadMapping:
+    @pytest.fixture()
+    def case_data(self) -> Dict[str, str]:
+        return {
+            "qiD.Serial_Number": "90001",
+            "qDataBag.Wave": "1",
+            "hOut": "301",
+            "qDataBag.TelNo": "07900990901",
+            "qDataBag.TelNo2": "07900990902",
+            "telNoAppt": "07900990903",
+            "qDataBag.FieldRegion": "Gwent",
+            "qDataBag.FieldTeam": "B-Team",
+            "dataModelName": "LM2007",
+            "qDataBag.Prem1": "12 Blaise Street",
+            "qDataBag.Prem2": "Blaise Hill",
+            "qDataBag.Prem3": "Blaiseville",
+            "qDataBag.District": "Gwent",
+            "qDataBag.PostTown": "Newport",
+            "qDataBag.PostCode": "FML134D",
+            "qDataBag.UPRN_Latitude": "10020202",
+            "qDataBag.UPRN_Longitude": "34949494",
+            "qDataBag.priority": "1",
+            "qDataBag.DivAddInd": "",
+            "qDataBag.Rand": "1",
+        }
+
     @pytest.fixture()
     def service(self) -> TotalmobilePayloadMapperService:
         return TotalmobilePayloadMapperService()
 
     def test_map_totalmobile_payload_model_returns_a_populated_model(
-        self, service: TotalmobilePayloadMapperService
+        self, service: TotalmobilePayloadMapperService, case_data: Dict[str, str]
     ):
         # arrange
         questionnaire_name = "FRS2101"
-
-        questionnaire_case = get_frs_populated_case_model(
-            case_id="90001",
-            data_model_name="FRS2101",
-            address_line_1="12 Blaise Street",
-            address_line_2="Blaise Hill",
-            address_line_3="Blaiseville",
-            county="Gwent",
-            town="Newport",
-            postcode="FML134D",
-            latitude="10020202",
-            longitude="34949494",
-            priority="1",
-            field_region="Gwent",
-            field_team="B-Team",
-            wave_com_dte=datetime(2023, 1, 31),
-            divided_address_indicator="1",
-        )
+        questionnaire_case = BlaiseFRSCaseModel(questionnaire_name, case_data)
 
         # act
         result = service.map_totalmobile_payload_model(
@@ -114,14 +123,17 @@ class TestTotalmobileFRSPayloadMapping:
         ],
     )
     def test_map_totalmobile_payload_model_does_not_populate_lat_and_lon_if_both_are_not_supplied(
-        self, service: TotalmobilePayloadMapperService, latitude: str, longitude: str
+        self,
+        service: TotalmobilePayloadMapperService,
+        case_data: Dict[str, str],
+        latitude: str,
+        longitude: str,
     ):
         # arrange
         questionnaire_name = "FRS2101"
-
-        questionnaire_case = get_frs_populated_case_model(
-            latitude=latitude, longitude=longitude
-        )
+        case_data["qDataBag.UPRN_Latitude"] = latitude
+        case_data["qDataBag.UPRN_Longitude"] = longitude
+        questionnaire_case = BlaiseFRSCaseModel(questionnaire_name, case_data)
 
         # act
         result = service.map_totalmobile_payload_model(
@@ -133,19 +145,11 @@ class TestTotalmobileFRSPayloadMapping:
         assert result.location.addressDetail.coordinates.longitude is None
 
     def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_all_fields_are_populated(
-        self, service: TotalmobilePayloadMapperService
+        self, service: TotalmobilePayloadMapperService, case_data: Dict[str, str]
     ):
         # Arrange
         questionnaire_name = "FRS2101"
-        questionnaire_case = get_frs_populated_case_model(
-            questionnaire_name="FRS2101",
-            case_id="1234",
-            address_line_1="123 Blaise Street",
-            address_line_2="Blaisville",
-            address_line_3="Upper Blaise",
-            town="Blaisingdom",
-            postcode="BS1 1BS",
-        )
+        questionnaire_case = BlaiseFRSCaseModel(questionnaire_name, case_data)
 
         # Act
         case = service.map_totalmobile_payload_model(
@@ -159,19 +163,11 @@ class TestTotalmobileFRSPayloadMapping:
         )
 
     def test_concatenate_address_returns_a_concatenated_address_as_a_string_when_not_all_fields_are_populated(
-        self, service: TotalmobilePayloadMapperService
+        self, service: TotalmobilePayloadMapperService, case_data: Dict[str, str]
     ):
         # Arrange
         questionnaire_name = "FRS2101"
-        questionnaire_case = get_frs_populated_case_model(
-            questionnaire_name="FRS2101",
-            case_id="1234",
-            address_line_1="123 Blaise Street",
-            address_line_2="",
-            address_line_3=None,
-            town="Blaisingdom",
-            postcode="BS1 1BS",
-        )
+        questionnaire_case = BlaiseFRSCaseModel(questionnaire_name, case_data)
 
         # Act
         case = service.map_totalmobile_payload_model(
@@ -182,16 +178,11 @@ class TestTotalmobileFRSPayloadMapping:
         assert case.location.address == "123 Blaise Street, Blaisingdom, BS1 1BS"
 
     def test_concatenate_address_line1_returns_a_concatenated_address_of_50_characters_when_a_longer_address_is_provided(
-        self, service: TotalmobilePayloadMapperService
+        self, service: TotalmobilePayloadMapperService, case_data: Dict[str, str]
     ):
         # Arrange
         questionnaire_name = "FRS2101"
-        questionnaire_case = get_frs_populated_case_model(
-            questionnaire_name="FRS2101",
-            case_id="1234",
-            address_line_1="123 Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch",
-            address_line_2="Ynys Môn",
-        )
+        questionnaire_case = BlaiseFRSCaseModel(questionnaire_name, case_data)
 
         # Act
         case = service.map_totalmobile_payload_model(
@@ -205,16 +196,13 @@ class TestTotalmobileFRSPayloadMapping:
         )
 
     def test_concatenate_address_line1_returns_a_concatenated_address_without_a_comma_and_space_when_address_line_2_is_none(
-        self, service: TotalmobilePayloadMapperService
+        self, service: TotalmobilePayloadMapperService, case_data: Dict[str, str]
     ):
         # Arrange
         questionnaire_name = "FRS2101"
-        questionnaire_case = get_frs_populated_case_model(
-            questionnaire_name="FRS2101",
-            case_id="1234",
-            address_line_1="123 Blaise Street",
-            address_line_2=None,
-        )
+        case_data["qDataBag.Prem1"] = "123 Blaise Street"
+        case_data["qDataBag.Prem2"] = ""
+        questionnaire_case = BlaiseFRSCaseModel(questionnaire_name, case_data)
 
         # Act
         case = service.map_totalmobile_payload_model(
@@ -225,16 +213,13 @@ class TestTotalmobileFRSPayloadMapping:
         assert case.location.addressDetail.addressLine1 == "123 Blaise Street"
 
     def test_concatenate_address_line1_returns_a_concatenated_address_without_a_comma_and_space_when_address_line_2_is_an_empty_string(
-        self, service: TotalmobilePayloadMapperService
+        self, service: TotalmobilePayloadMapperService, case_data: Dict[str, str]
     ):
         # Arrange
         questionnaire_name = "FRS2101"
-        questionnaire_case = get_frs_populated_case_model(
-            questionnaire_name="FRS2101",
-            case_id="1234",
-            address_line_1="123 Blaise Street",
-            address_line_2="",
-        )
+        case_data["qDataBag.Prem1"] = "123 Blaise Street"
+        case_data["qDataBag.Prem2"] = ""
+        questionnaire_case = BlaiseFRSCaseModel(questionnaire_name, case_data)
 
         # Act
         case = service.map_totalmobile_payload_model(
@@ -245,14 +230,12 @@ class TestTotalmobileFRSPayloadMapping:
         assert case.location.addressDetail.addressLine1 == "123 Blaise Street"
 
     def test_location_reference_is_set_to_an_empty_string_if_location_reference_is_none(
-        self, service: TotalmobilePayloadMapperService
+        self, service: TotalmobilePayloadMapperService, case_data: Dict[str, str]
     ):
         # arrange
         questionnaire_name = "FRS2101"
-
-        questionnaire_case = get_frs_populated_case_model(
-            questionnaire_name="FRS2101", reference=None
-        )
+        case_data["qDataBag.UPRN"] = ""
+        questionnaire_case = BlaiseFRSCaseModel(questionnaire_name, case_data)
 
         # act
         case = service.map_totalmobile_payload_model(

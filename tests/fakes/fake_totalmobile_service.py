@@ -8,9 +8,7 @@ from models.common.totalmobile.totalmobile_world_model import (
     TotalmobileWorldModel,
     World,
 )
-from models.create.blaise.blaise_case_information_base_model import (
-    BlaiseCaseInformationBaseModel,
-)
+from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
 from models.create.totalmobile.totalmobile_create_job_model import (
     TotalmobileCreateJobModel,
     TotalmobileCreateJobModelRequestJson,
@@ -145,7 +143,7 @@ class FakeTotalmobileService:
         raise NotImplementedError("Currently not implemented in this mock")
 
     def map_totalmobile_create_job_models(
-        self, questionnaire_name: str, cases: Sequence[BlaiseCaseInformationBaseModel]
+        self, questionnaire_name: str, cases: Sequence[BlaiseCreateCaseModel]
     ) -> List[TotalmobileCreateJobModel]:
         world_model = self.get_world_model()
         mapper = TotalmobileCreateJobMapperService(TotalmobilePayloadMapperService())

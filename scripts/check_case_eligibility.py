@@ -10,9 +10,6 @@ from services.create.eligibility.case_filters.case_filter_wave_3 import CaseFilt
 from services.create.eligibility.case_filters.case_filter_wave_4 import CaseFilterWave4
 from services.create.eligibility.case_filters.case_filter_wave_5 import CaseFilterWave5
 from services.create.eligibility.lms_eligible_case_service import LMSEligibleCaseService
-from services.create.mappers.blaise_lms_case_mapper_service import (
-    BlaiseLMSCaseMapperService,
-)
 from services.create.questionnaires.lms_questionnaire_service import (
     LMSQuestionnaireService,
 )
@@ -53,7 +50,6 @@ if __name__ == "__main__":
     )
     questionnaire_service = LMSQuestionnaireService(
         blaise_service=RealBlaiseService(config),
-        mapper_service=BlaiseLMSCaseMapperService(),
         eligible_case_service=eligible_case_service,
         datastore_service=DatastoreService(),
         uac_service=UacService(config),

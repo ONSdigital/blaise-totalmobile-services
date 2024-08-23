@@ -1,13 +1,10 @@
-from tests.helpers.frs_case_model_helper import get_frs_populated_case_model
+from models.create.blaise.blaiise_frs_case_model import BlaiseFRSCaseModel
 
 
 def test_create_case_description_for_interviewer_returns_a_correctly_formatted_description():
     # Arrange
-    questionnaire_case = get_frs_populated_case_model(
-        questionnaire_name="FRS2201",
-        case_id="12345",
-        divided_address_indicator="0",
-    )
+    questionnaire_name = "FRS2201"
+    questionnaire_case = BlaiseFRSCaseModel(questionnaire_name, {})
 
     # Act
     description = questionnaire_case.create_case_description_for_interviewer()
@@ -18,10 +15,9 @@ def test_create_case_description_for_interviewer_returns_a_correctly_formatted_d
 
 def test_create_case_description_for_interviewer_returns_divided_address_if_indicator_is_1():
     # Arrange
-    questionnaire_case = get_frs_populated_case_model(
-        questionnaire_name="FRS2201",
-        case_id="12345",
-        divided_address_indicator="1",
+    questionnaire_name = "FRS2201"
+    questionnaire_case = BlaiseFRSCaseModel(
+        questionnaire_name, {"qDataBag.DivAddInd": "1"}
     )
 
     # Act
@@ -33,12 +29,15 @@ def test_create_case_description_for_interviewer_returns_divided_address_if_indi
 
 def test_create_case_overview_for_interviewer_returns_the_expected_additional_properties():
     # arrange
-    questionnaire_case = get_frs_populated_case_model(
-        tla="FRS",
-        rand="30",
-        field_region="Region 2",
-        field_team="A Team",
-        postcode="AB01 2CD",
+    questionnaire_name = "FRS2201"
+    questionnaire_case = BlaiseFRSCaseModel(
+        questionnaire_name,
+        {
+            "qDataBag.Rand": "30",
+            "qDataBag.FieldRegion": "Region 2",
+            "qDataBag.FieldTeam": "A Team",
+            "qDataBag.PostCode": "AB01 2CD",
+        },
     )
 
     # act
