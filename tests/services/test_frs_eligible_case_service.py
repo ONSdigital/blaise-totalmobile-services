@@ -1,14 +1,11 @@
-from models.create.blaise.blaiise_frs_case_model import BlaiseFRSCaseModel
+from models.create.blaise.blaiise_frs_create_case_model import BlaiseFRSCreateCaseModel
 from services.create.eligibility.frs_eligible_case_service import FRSEligibleCaseService
+from tests.helpers.blaise_case_model_helper import BlaiseCaseModelHelper
 
 
-def get_case(case_id: str, field_region: str) -> BlaiseFRSCaseModel:
-    return BlaiseFRSCaseModel(
-        "FRS2210",
-        {
-            "qiD.Serial_Number": case_id,
-            "qDataBag.FieldRegion": field_region,
-        },
+def get_case(case_id: str, field_region: str) -> BlaiseFRSCreateCaseModel:
+    return BlaiseCaseModelHelper.get_populated_frs_create_case_model(
+        questionnaire_name="FRS2210", case_id=case_id, field_region=field_region
     )
 
 

@@ -3,38 +3,16 @@ from unittest.mock import Mock
 
 import pytest
 
-from models.create.blaise.blaiise_lms_case_model import BlaiseLMSCaseModel
+from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from services.create.eligibility.case_filters.case_filter_base import CaseFilterBase
 from services.create.eligibility.lms_eligible_case_service import LMSEligibleCaseService
+from tests.helpers.blaise_case_model_helper import BlaiseCaseModelHelper
 
 
 def get_case(
     case_id: str,
-) -> BlaiseLMSCaseModel:
-    return BlaiseLMSCaseModel(
-        "LMS2101_AA1",
-        {
-            "qiD.Serial_Number": case_id,
-            "qDataBag.FieldRegion": "Region 1",
-            "hOut": "0",
-            "qDataBag.TelNo": "07900990901",
-            "qDataBag.TelNo2": "07900990902",
-            "telNoAppt": "07900990903",
-            "qDataBag.FieldTeam": "B-Team",
-            "dataModelName": "LM2007",
-            "qDataBag.Prem1": "12 Blaise Street",
-            "qDataBag.Prem2": "Blaise Hill",
-            "qDataBag.Prem3": "Blaiseville",
-            "qDataBag.District": "Gwent",
-            "qDataBag.PostTown": "Newport",
-            "qDataBag.PostCode": "CM1ASD",
-            "qDataBag.UPRN_Latitude": "10020202",
-            "qDataBag.UPRN_Longitude": "34949494",
-            "qDataBag.WaveComDTE": "31-01-2023",
-            "qDataBag.priority": "1",
-        },
-        uac_chunks=None,
-    )
+) -> BlaiseLMSCreateCaseModel:
+    return BlaiseCaseModelHelper.get_populated_lms_create_case_model(case_id=case_id)
 
 
 @pytest.fixture()

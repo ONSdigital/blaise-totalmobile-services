@@ -4,7 +4,7 @@ from models.common.totalmobile.totalmobile_world_model import (
     TotalmobileWorldModel,
     World,
 )
-from models.create.blaise.blaiise_frs_case_model import BlaiseFRSCaseModel
+from models.create.blaise.blaiise_frs_create_case_model import BlaiseFRSCreateCaseModel
 from models.create.totalmobile.totalmobile_create_job_model import (
     TotalmobileCreateJobModelRequestJson,
 )
@@ -14,6 +14,7 @@ from services.create.mappers.totalmobile_create_job_mapper_service import (
 from services.create.mappers.totalmobile_payload_mapper_service import (
     TotalmobilePayloadMapperService,
 )
+from tests.helpers.blaise_case_model_helper import BlaiseCaseModelHelper
 from tests.helpers.totalmobile_payload_helper import frs_totalmobile_payload_helper
 
 
@@ -24,29 +25,13 @@ class TestTotalmobileFRSCreateJobMapping:
         case_id: str,
         field_region: str,
         postcode: str,
-    ) -> BlaiseFRSCaseModel:
-        return BlaiseFRSCaseModel(
-            questionnaire_name,
-            {
-                "qiD.Serial_Number": case_id,
-                "qDataBag.FieldRegion": field_region,
-                "hOut": "110",
-                "qDataBag.TelNo": "07900990901",
-                "qDataBag.TelNo2": "07900990902",
-                "telNoAppt": "07900990903",
-                "qDataBag.FieldTeam": "B-Team",
-                "dataModelName": "LM2007",
-                "qDataBag.Prem1": "12 Blaise Street",
-                "qDataBag.Prem2": "Blaise Hill",
-                "qDataBag.Prem3": "Blaiseville",
-                "qDataBag.District": "Gwent",
-                "qDataBag.PostTown": "Newport",
-                "qDataBag.PostCode": postcode,
-                "qDataBag.UPRN_Latitude": "10020202",
-                "qDataBag.UPRN_Longitude": "34949494",
-                "qDataBag.priority": "1",
-                "qDataBag.Rand": "1",
-            },
+    ) -> BlaiseFRSCreateCaseModel:
+        case_helper = BlaiseCaseModelHelper()
+        return case_helper.get_populated_frs_create_case_model(
+            questionnaire_name=questionnaire_name,
+            case_id=case_id,
+            field_region=field_region,
+            postcode=postcode,
         )
 
     @pytest.fixture()

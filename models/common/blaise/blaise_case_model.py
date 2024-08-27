@@ -45,7 +45,7 @@ class BlaiseCaseModel:
     @property
     def wave(self) -> Optional[int]:
         wave = str(self._case_data.get("qDataBag.Wave"))
-        return int(wave) if wave != "None" else None
+        return int(wave) if wave != "" else None
 
     @property
     def wave_com_dte(self) -> Optional[datetime]:

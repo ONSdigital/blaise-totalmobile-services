@@ -2,13 +2,13 @@ import logging
 from typing import List
 
 from models.common.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from models.create.blaise.blaiise_frs_case_model import BlaiseFRSCaseModel
+from models.create.blaise.blaiise_frs_create_case_model import BlaiseFRSCreateCaseModel
 
 
 class FRSEligibleCaseService:
     def get_eligible_cases(
-        self, cases: List[BlaiseFRSCaseModel]
-    ) -> List[BlaiseFRSCaseModel]:
+        self, cases: List[BlaiseFRSCreateCaseModel]
+    ) -> List[BlaiseFRSCreateCaseModel]:
         filtered_cases = [case for case in cases if self.case_is_eligible(case)]
         for filtered_case in filtered_cases:
             logging.info(
@@ -17,11 +17,11 @@ class FRSEligibleCaseService:
 
         return filtered_cases
 
-    def case_is_eligible(self, case: BlaiseFRSCaseModel) -> bool:
+    def case_is_eligible(self, case: BlaiseFRSCreateCaseModel) -> bool:
         return self.case_is_in_a_known_region(case)
 
     @staticmethod
-    def case_is_in_a_known_region(case: BlaiseFRSCaseModel) -> bool:
+    def case_is_in_a_known_region(case: BlaiseFRSCreateCaseModel) -> bool:
         value_range = TotalmobileWorldModel.get_available_regions()
         if case.field_region in value_range:
             return True

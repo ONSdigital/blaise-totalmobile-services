@@ -1,7 +1,7 @@
 import logging
 from typing import List
 
-from models.create.blaise.blaiise_lms_case_model import BlaiseLMSCaseModel
+from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from services.create.eligibility.case_filters.case_filter_base import CaseFilterBase
 
 
@@ -10,8 +10,8 @@ class LMSEligibleCaseService:
         self._wave_filters = wave_filters
 
     def get_eligible_cases(
-        self, cases: List[BlaiseLMSCaseModel]
-    ) -> List[BlaiseLMSCaseModel]:
+        self, cases: List[BlaiseLMSCreateCaseModel]
+    ) -> List[BlaiseLMSCreateCaseModel]:
         filtered_cases = [case for case in cases if self.case_is_eligible(case)]
 
         for filtered_case in filtered_cases:
@@ -21,7 +21,7 @@ class LMSEligibleCaseService:
 
         return filtered_cases
 
-    def case_is_eligible(self, case: BlaiseLMSCaseModel) -> bool:
+    def case_is_eligible(self, case: BlaiseLMSCreateCaseModel) -> bool:
         for wave_filter in self._wave_filters:
             if wave_filter.case_is_eligible(case):
                 return True

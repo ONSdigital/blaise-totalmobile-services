@@ -4,7 +4,7 @@ from typing import Dict
 import pytest
 
 from models.common.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from models.create.blaise.blaiise_lms_case_model import BlaiseLMSCaseModel
+from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from services.create.eligibility.case_filters.case_filter_base import CaseFilterBase
 from services.create.eligibility.case_filters.case_filter_wave_2 import CaseFilterWave2
 from services.create.eligibility.case_filters.case_filter_wave_3 import CaseFilterWave3
@@ -72,7 +72,7 @@ class TestEligibleCasesWithoutTelephoneNumbers:
         valid_case_data_without_telephone_numbers[
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -96,7 +96,7 @@ class TestEligibleCasesWithoutTelephoneNumbers:
         valid_case_data_without_telephone_numbers[
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -120,7 +120,7 @@ class TestEligibleCasesWithoutTelephoneNumbers:
         valid_case_data_without_telephone_numbers[
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -160,7 +160,7 @@ class TestEligibleCasesWithoutTelephoneNumbers:
         valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
             rotational_outcome_code
         )
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -187,7 +187,7 @@ class TestEligibleCasesWithATelephoneNumber:
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
         valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -212,7 +212,7 @@ class TestEligibleCasesWithATelephoneNumber:
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
         valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -237,7 +237,7 @@ class TestEligibleCasesWithATelephoneNumber:
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
         valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -277,7 +277,7 @@ class TestEligibleCasesWithATelephoneNumber:
             rotational_outcome_code
         )
         valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -317,7 +317,7 @@ class TestEligibleCasesWithATelephoneNumber:
             rotational_outcome_code
         )
         valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -357,7 +357,7 @@ class TestEligibleCasesWithATelephoneNumber:
             rotational_outcome_code
         )
         valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -378,7 +378,7 @@ class TestCaseIsInCorrectWave:
     ):
         # arrange
         valid_case_data_without_telephone_numbers["qDataBag.Wave"] = wave_number
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -404,7 +404,7 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         valid_case_data_without_telephone_numbers[
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -429,7 +429,7 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         valid_case_data_without_telephone_numbers[
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -456,7 +456,7 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         valid_case_data_without_telephone_numbers[
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -481,7 +481,7 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         valid_case_data_without_telephone_numbers[
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -508,7 +508,7 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         valid_case_data_without_telephone_numbers[
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -533,7 +533,7 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         valid_case_data_without_telephone_numbers[
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -565,7 +565,7 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
             rotational_outcome_code
         )
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -591,7 +591,7 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
             service.wave_number
         )
         valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -622,7 +622,7 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
             rotational_outcome_code
         )
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -647,7 +647,7 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
             service.wave_number
         )
         valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -670,7 +670,7 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
             service.wave_number
         )
         valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -700,7 +700,7 @@ class TestIneligibleCasesWithATelephoneNumber:
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
         valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -726,7 +726,7 @@ class TestIneligibleCasesWithATelephoneNumber:
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
         valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -754,7 +754,7 @@ class TestIneligibleCasesWithATelephoneNumber:
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
         valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -780,7 +780,7 @@ class TestIneligibleCasesWithATelephoneNumber:
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
         valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -808,7 +808,7 @@ class TestIneligibleCasesWithATelephoneNumber:
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
         valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -834,7 +834,7 @@ class TestIneligibleCasesWithATelephoneNumber:
             "qRotate.RDMktnIND"
         ] = knock_to_nudge_indicator
         valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -867,7 +867,7 @@ class TestIneligibleCasesWithATelephoneNumber:
             rotational_outcome_code
         )
         valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -894,7 +894,7 @@ class TestIneligibleCasesWithATelephoneNumber:
         )
         valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
         valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -926,7 +926,7 @@ class TestIneligibleCasesWithATelephoneNumber:
             rotational_outcome_code
         )
         valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -952,7 +952,7 @@ class TestIneligibleCasesWithATelephoneNumber:
         )
         valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
         valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -976,7 +976,7 @@ class TestIneligibleCasesWithATelephoneNumber:
         )
         valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
         valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -1002,7 +1002,7 @@ class TestIneligibleCasesWithATelephoneNumber:
         )
         valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
         valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -1026,7 +1026,7 @@ class TestIneligibleCasesWithATelephoneNumber:
         )
         valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
         valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -1052,7 +1052,7 @@ class TestIneligibleCasesWithATelephoneNumber:
         )
         valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
         valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -1076,7 +1076,7 @@ class TestIneligibleCasesWithATelephoneNumber:
         )
         valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
         valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -1102,7 +1102,7 @@ class TestIneligibleCasesWithATelephoneNumber:
         )
         valid_case_data_without_telephone_numbers["qDataBag.FieldRegion"] = field_region
         valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 
@@ -1126,7 +1126,7 @@ class TestIneligibleCasesWithATelephoneNumber:
         )
         valid_case_data_without_telephone_numbers["qDataBag.FieldRegion"] = field_region
         valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
-        case = BlaiseLMSCaseModel(
+        case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
 

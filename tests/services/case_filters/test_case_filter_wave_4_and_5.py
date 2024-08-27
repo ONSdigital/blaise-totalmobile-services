@@ -4,7 +4,7 @@ from typing import Dict
 import pytest
 
 from models.common.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from models.create.blaise.blaiise_lms_case_model import BlaiseLMSCaseModel
+from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from services.create.eligibility.case_filters.case_filter_base import CaseFilterBase
 from services.create.eligibility.case_filters.case_filter_wave_4 import CaseFilterWave4
 from services.create.eligibility.case_filters.case_filter_wave_5 import CaseFilterWave5
@@ -59,7 +59,7 @@ class TestEligibleCases:
     ):
         # arrange
         valid_case_data["qDataBag.Wave"] = str(service.wave_number)
-        case = BlaiseLMSCaseModel("LMS2101_AA1", valid_case_data, None)
+        case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_case_data, None)
 
         # act
         result = service.case_is_eligible(case)
@@ -79,7 +79,7 @@ class TestIneligibleCases:
         # arrange
         valid_case_data["qDataBag.Wave"] = str(service.wave_number)
         valid_case_data["hOut"] = outcome_code
-        case = BlaiseLMSCaseModel("LMS2101_AA1", valid_case_data, None)
+        case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_case_data, None)
 
         # act
         result = service.case_is_eligible(case)
@@ -98,7 +98,7 @@ class TestIneligibleCases:
         # arrange
         valid_case_data["qDataBag.Wave"] = str(service.wave_number)
         valid_case_data["hOut"] = outcome_code
-        case = BlaiseLMSCaseModel("LMS2101_AA1", valid_case_data, None)
+        case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_case_data, None)
 
         # act && assert
         with caplog.at_level(logging.INFO):
@@ -116,7 +116,7 @@ class TestIneligibleCases:
         # arrange
 
         valid_case_data["qDataBag.Wave"] = wave_number
-        case = BlaiseLMSCaseModel("LMS2101_AA1", valid_case_data, None)
+        case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_case_data, None)
         # act
         result = service.case_is_eligible(case)
 
@@ -133,7 +133,7 @@ class TestIneligibleCases:
         # arrange
         valid_case_data["qDataBag.Wave"] = str(service.wave_number)
         valid_case_data["qDataBag.FieldRegion"] = field_region
-        case = BlaiseLMSCaseModel("LMS2101_AA1", valid_case_data, None)
+        case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_case_data, None)
 
         # act
         result = service.case_is_eligible(case)
@@ -152,7 +152,7 @@ class TestIneligibleCases:
         # arrange
         valid_case_data["qDataBag.Wave"] = str(service.wave_number)
         valid_case_data["qDataBag.FieldRegion"] = field_region
-        case = BlaiseLMSCaseModel("LMS2101_AA1", valid_case_data, None)
+        case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_case_data, None)
 
         value_range = TotalmobileWorldModel.get_available_regions()
 

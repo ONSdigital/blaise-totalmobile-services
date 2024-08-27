@@ -4,7 +4,7 @@ from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
 from models.create.blaise.questionnaire_uac_model import UacChunks
 
 
-class BlaiseLMSCaseModel(BlaiseCreateCaseModel):
+class BlaiseLMSCreateCaseModel(BlaiseCreateCaseModel):
     def __init__(
         self,
         questionnaire_name: str,
@@ -36,7 +36,7 @@ class BlaiseLMSCaseModel(BlaiseCreateCaseModel):
             f"Due Date: {due_date_string}\n"
             f"Study: {self.questionnaire_name}\n"
             f"Case ID: {self.case_id}\n"
-            f"Wave: {self.wave}"
+            f"Wave: {self.wave if self.wave is not None else ''}"
         )
 
     @staticmethod

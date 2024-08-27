@@ -1,10 +1,10 @@
-from models.create.blaise.blaiise_frs_case_model import BlaiseFRSCaseModel
+from models.create.blaise.blaiise_frs_create_case_model import BlaiseFRSCreateCaseModel
 
 
 def test_create_case_description_for_interviewer_returns_a_correctly_formatted_description():
     # Arrange
     questionnaire_name = "FRS2201"
-    questionnaire_case = BlaiseFRSCaseModel(questionnaire_name, {})
+    questionnaire_case = BlaiseFRSCreateCaseModel(questionnaire_name, {})
 
     # Act
     description = questionnaire_case.create_case_description_for_interviewer()
@@ -16,7 +16,7 @@ def test_create_case_description_for_interviewer_returns_a_correctly_formatted_d
 def test_create_case_description_for_interviewer_returns_divided_address_if_indicator_is_1():
     # Arrange
     questionnaire_name = "FRS2201"
-    questionnaire_case = BlaiseFRSCaseModel(
+    questionnaire_case = BlaiseFRSCreateCaseModel(
         questionnaire_name, {"qDataBag.DivAddInd": "1"}
     )
 
@@ -30,7 +30,7 @@ def test_create_case_description_for_interviewer_returns_divided_address_if_indi
 def test_create_case_overview_for_interviewer_returns_the_expected_additional_properties():
     # arrange
     questionnaire_name = "FRS2201"
-    questionnaire_case = BlaiseFRSCaseModel(
+    questionnaire_case = BlaiseFRSCreateCaseModel(
         questionnaire_name,
         {
             "qDataBag.Rand": "30",

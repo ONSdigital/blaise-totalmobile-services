@@ -1,13 +1,13 @@
 from typing import Dict, Optional
 
-from models.create.blaise.blaiise_frs_case_model import BlaiseFRSCaseModel
-from models.create.blaise.blaiise_lms_case_model import BlaiseLMSCaseModel
+from models.create.blaise.blaiise_frs_create_case_model import BlaiseFRSCreateCaseModel
+from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from models.create.blaise.questionnaire_uac_model import UacChunks
 
 
 def lms_totalmobile_payload_helper(
     questionnaire_name: str,
-    case: BlaiseLMSCaseModel,
+    case: BlaiseLMSCreateCaseModel,
     uac_chunks: Optional[UacChunks],
 ) -> dict[str, object]:
 
@@ -67,7 +67,7 @@ def lms_totalmobile_payload_helper(
 
 
 def frs_totalmobile_payload_helper(
-    questionnaire_name: str, case: BlaiseFRSCaseModel
+    questionnaire_name: str, case: BlaiseFRSCreateCaseModel
 ) -> Dict[str, object]:
     due_date = (
         case.wave_com_dte.strftime("%d/%m/%Y") if case.wave_com_dte is not None else ""

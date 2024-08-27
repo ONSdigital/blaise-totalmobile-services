@@ -1,7 +1,7 @@
 import logging
 from typing import List, Sequence
 
-from models.create.blaise.blaiise_frs_case_model import BlaiseFRSCaseModel
+from models.create.blaise.blaiise_frs_create_case_model import BlaiseFRSCreateCaseModel
 from services.common.blaise_service import RealBlaiseService
 from services.create.datastore.datastore_service import DatastoreService
 from services.create.eligibility.frs_eligible_case_service import FRSEligibleCaseService
@@ -27,19 +27,19 @@ class FRSQuestionnaireService(QuestionnaireServiceBase):
 
     def get_eligible_cases(
         self, questionnaire_name: str
-    ) -> Sequence[BlaiseFRSCaseModel]:
+    ) -> Sequence[BlaiseFRSCreateCaseModel]:
         questionnaire_cases = self.get_cases(questionnaire_name)
         eligible_cases: Sequence[
-            BlaiseFRSCaseModel
+            BlaiseFRSCreateCaseModel
         ] = self._eligible_case_service.get_eligible_cases(questionnaire_cases)
         return eligible_cases
 
-    def get_cases(self, questionnaire_name: str) -> List[BlaiseFRSCaseModel]:
+    def get_cases(self, questionnaire_name: str) -> List[BlaiseFRSCreateCaseModel]:
         case_data_list = self._blaise_service.get_cases(
-            questionnaire_name, BlaiseFRSCaseModel.required_fields()
+            questionnaire_name, BlaiseFRSCreateCaseModel.required_fields()
         )
         cases = [
-            BlaiseFRSCaseModel(questionnaire_name, case_data)
+            BlaiseFRSCreateCaseModel(questionnaire_name, case_data)
             for case_data in case_data_list
         ]
 
@@ -48,6 +48,8 @@ class FRSQuestionnaireService(QuestionnaireServiceBase):
         )
         return cases
 
-    def get_case(self, questionnaire_name: str, case_id: str) -> BlaiseFRSCaseModel:
+    def get_case(
+        self, questionnaire_name: str, case_id: str
+    ) -> BlaiseFRSCreateCaseModel:
         case_data = self._blaise_service.get_case(questionnaire_name, case_id)
-        return BlaiseFRSCaseModel(questionnaire_name, case_data)
+        return BlaiseFRSCreateCaseModel(questionnaire_name, case_data)

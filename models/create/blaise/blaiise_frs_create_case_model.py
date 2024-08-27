@@ -3,7 +3,7 @@ from typing import Dict, List, Optional
 from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
 
 
-class BlaiseFRSCaseModel(BlaiseCreateCaseModel):
+class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
     def __init__(self, questionnaire_name: str, case_data: Dict[str, str]):
         super().__init__(questionnaire_name, case_data)
 

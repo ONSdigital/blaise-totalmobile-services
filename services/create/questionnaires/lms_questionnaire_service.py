@@ -1,7 +1,7 @@
 import logging
 from typing import List, Sequence
 
-from models.create.blaise.blaiise_lms_case_model import BlaiseLMSCaseModel
+from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from models.create.blaise.questionnaire_uac_model import QuestionnaireUacModel
 from services.common.blaise_service import RealBlaiseService
 from services.create.datastore.datastore_service import DatastoreService
@@ -31,18 +31,18 @@ class LMSQuestionnaireService(QuestionnaireServiceBase):
 
     def get_eligible_cases(
         self, questionnaire_name: str
-    ) -> Sequence[BlaiseLMSCaseModel]:
+    ) -> Sequence[BlaiseLMSCreateCaseModel]:
         questionnaire_cases = self.get_cases(questionnaire_name, True)
         eligible_cases: Sequence[
-            BlaiseLMSCaseModel
+            BlaiseLMSCreateCaseModel
         ] = self._eligible_case_service.get_eligible_cases(questionnaire_cases)
         return eligible_cases
 
     def get_cases(
         self, questionnaire_name: str, include_uac: bool = False
-    ) -> List[BlaiseLMSCaseModel]:
+    ) -> List[BlaiseLMSCreateCaseModel]:
         case_data_list = self._blaise_service.get_cases(
-            questionnaire_name, BlaiseLMSCaseModel.required_fields()
+            questionnaire_name, BlaiseLMSCreateCaseModel.required_fields()
         )
         questionnaire_uac_model = (
             self.get_questionnaire_uac_model(questionnaire_name)
@@ -52,12 +52,12 @@ class LMSQuestionnaireService(QuestionnaireServiceBase):
 
         if include_uac or questionnaire_uac_model is None:
             cases = [
-                BlaiseLMSCaseModel(questionnaire_name, case_data, None)
+                BlaiseLMSCreateCaseModel(questionnaire_name, case_data, None)
                 for case_data in case_data_list
             ]
         else:
             cases = [
-                BlaiseLMSCaseModel(
+                BlaiseLMSCreateCaseModel(
                     questionnaire_name,
                     case_data,
                     questionnaire_uac_model.get_uac_chunks(
@@ -74,7 +74,7 @@ class LMSQuestionnaireService(QuestionnaireServiceBase):
 
     def get_case(
         self, questionnaire_name: str, case_id: str, include_uac: bool = False
-    ) -> BlaiseLMSCaseModel:
+    ) -> BlaiseLMSCreateCaseModel:
         case_data = self._blaise_service.get_case(questionnaire_name, case_id)
         questionnaire_uac_model = (
             self.get_questionnaire_uac_model(questionnaire_name)
@@ -88,7 +88,7 @@ class LMSQuestionnaireService(QuestionnaireServiceBase):
             else questionnaire_uac_model.get_uac_chunks(case_id)
         )
 
-        return BlaiseLMSCaseModel(questionnaire_name, case_data, uac_chunks)
+        return BlaiseLMSCreateCaseModel(questionnaire_name, case_data, uac_chunks)
 
     def get_questionnaire_uac_model(
         self, questionnaire_name: str

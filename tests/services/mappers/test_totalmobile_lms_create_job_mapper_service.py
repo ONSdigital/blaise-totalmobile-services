@@ -7,11 +7,7 @@ from models.common.totalmobile.totalmobile_world_model import (
     TotalmobileWorldModel,
     World,
 )
-from models.create.blaise.blaiise_lms_case_model import BlaiseLMSCaseModel
-from models.create.blaise.questionnaire_uac_model import (
-    QuestionnaireUacModel,
-    UacChunks,
-)
+from models.create.blaise.questionnaire_uac_model import QuestionnaireUacModel
 from models.create.totalmobile.totalmobile_create_job_model import (
     TotalmobileCreateJobModelRequestJson,
 )
@@ -21,44 +17,11 @@ from services.create.mappers.totalmobile_create_job_mapper_service import (
 from services.create.mappers.totalmobile_payload_mapper_service import (
     TotalmobilePayloadMapperService,
 )
+from tests.helpers.blaise_case_model_helper import BlaiseCaseModelHelper
 from tests.helpers.totalmobile_payload_helper import lms_totalmobile_payload_helper
 
 
 class TestTotalmobileLMSCreateJobMapping:
-    def get_case(
-        self,
-        questionnaire_name: str,
-        case_id: str,
-        field_region: str,
-        outcome_code: str,
-        postcode: str,
-        uac_chunks: UacChunks,
-    ) -> BlaiseLMSCaseModel:
-        return BlaiseLMSCaseModel(
-            questionnaire_name,
-            {
-                "qiD.Serial_Number": case_id,
-                "qDataBag.FieldRegion": field_region,
-                "hOut": outcome_code,
-                "qDataBag.TelNo": "07900990901",
-                "qDataBag.TelNo2": "07900990902",
-                "telNoAppt": "07900990903",
-                "qDataBag.FieldTeam": "B-Team",
-                "dataModelName": "LM2007",
-                "qDataBag.Prem1": "12 Blaise Street",
-                "qDataBag.Prem2": "Blaise Hill",
-                "qDataBag.Prem3": "Blaiseville",
-                "qDataBag.District": "Gwent",
-                "qDataBag.PostTown": "Newport",
-                "qDataBag.PostCode": postcode,
-                "qDataBag.UPRN_Latitude": "10020202",
-                "qDataBag.UPRN_Longitude": "34949494",
-                "qDataBag.WaveComDTE": "31-01-2023",
-                "qDataBag.priority": "1",
-            },
-            uac_chunks=uac_chunks,
-        )
-
     @pytest.fixture()
     def questionnaire_uac_model(self) -> QuestionnaireUacModel:
         uac_data_dictionary: Dict[str, Uac] = {
@@ -104,7 +67,7 @@ class TestTotalmobileLMSCreateJobMapping:
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
-        case1 = self.get_case(
+        case1 = BlaiseCaseModelHelper.get_populated_lms_create_case_model(
             questionnaire_name=questionnaire_name,
             case_id="10010",
             field_region="region1",
@@ -112,7 +75,7 @@ class TestTotalmobileLMSCreateJobMapping:
             postcode="AB12 3CD",
             uac_chunks=questionnaire_uac_model.get_uac_chunks("10010"),
         )
-        case2 = self.get_case(
+        case2 = BlaiseCaseModelHelper.get_populated_lms_create_case_model(
             questionnaire_name=questionnaire_name,
             case_id="10020",
             field_region="region2",
@@ -120,7 +83,7 @@ class TestTotalmobileLMSCreateJobMapping:
             postcode="EF45 6GH",
             uac_chunks=questionnaire_uac_model.get_uac_chunks("10020"),
         )
-        case3 = self.get_case(
+        case3 = BlaiseCaseModelHelper.get_populated_lms_create_case_model(
             questionnaire_name=questionnaire_name,
             case_id="10030",
             field_region="region3",
@@ -181,7 +144,7 @@ class TestTotalmobileLMSCreateJobMapping:
     ):
         # arrange
         questionnaire_name = "LMS2101_AA1"
-        case = self.get_case(
+        case = BlaiseCaseModelHelper.get_populated_lms_create_case_model(
             questionnaire_name=questionnaire_name,
             case_id="10010",
             field_region="region1",
@@ -222,7 +185,7 @@ class TestTotalmobileLMSCreateJobMapping:
         questionnaire_name = "LMS2101_AA1"
         world_id = "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         case_id = "10010"
-        case = self.get_case(
+        case = BlaiseCaseModelHelper.get_populated_lms_create_case_model(
             questionnaire_name=questionnaire_name,
             case_id="10010",
             field_region="region1",
