@@ -1,5 +1,7 @@
 from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
-from services.create.eligibility.case_filters.case_filter_base import CaseFilterBase
+from services.create.questionnaires.eligibility.case_filters.case_filter_base import (
+    CaseFilterBase,
+)
 
 
 class CaseFilterWave1(CaseFilterBase):

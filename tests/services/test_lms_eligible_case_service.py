@@ -4,8 +4,12 @@ from unittest.mock import Mock
 import pytest
 
 from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
-from services.create.eligibility.case_filters.case_filter_base import CaseFilterBase
-from services.create.eligibility.lms_eligible_case_service import LMSEligibleCaseService
+from services.create.questionnaires.eligibility.case_filters.case_filter_base import (
+    CaseFilterBase,
+)
+from services.create.questionnaires.eligibility.lms_eligible_case_service import (
+    LMSEligibleCaseService,
+)
 from tests.helpers.blaise_case_model_helper import BlaiseCaseModelHelper
 
 

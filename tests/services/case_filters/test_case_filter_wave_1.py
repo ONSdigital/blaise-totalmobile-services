@@ -5,7 +5,9 @@ import pytest
 
 from models.common.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
-from services.create.eligibility.case_filters.case_filter_wave_1 import CaseFilterWave1
+from services.create.questionnaires.eligibility.case_filters.case_filter_wave_1 import (
+    CaseFilterWave1,
+)
 
 
 @pytest.fixture()

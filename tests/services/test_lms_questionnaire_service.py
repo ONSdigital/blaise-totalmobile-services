@@ -136,7 +136,7 @@ def test_get_eligible_cases_returns_the_list_of_eligible_cases(
     assert result[0].case_id == "20001"
 
 
-def test_get_cases_returns_a_list_of_cases(
+def test_get_cases_returns_an_expected_list_of_cases_when_include_uac_is_false(
     mock_blaise_service,
     service: LMSQuestionnaireService,
 ):
@@ -153,32 +153,96 @@ def test_get_cases_returns_a_list_of_cases(
     questionnaire_name = "LMS2101_AA1"
 
     # act
-    result = service.get_cases(questionnaire_name)
+    result = service.get_cases(questionnaire_name, False)
 
     # assert
     assert len(result) == 2
     assert result[0].case_id == "20001"
+    assert result[0].uac_chunks is None
     assert result[1].case_id == "20003"
+    assert result[1].uac_chunks is None
 
 
-def test_get_case_returns_a_case(
+def test_get_cases_returns_an_expected_list_of_cases_when_include_uac_is_true(
     mock_blaise_service,
+    mock_uac_service,
+    questionnaire_uac_model,
+    service: LMSQuestionnaireService,
+):
+    questionnaire_cases = [
+        get_case(case_id="10010", uac_chunks=None),
+        get_case(case_id="20003", uac_chunks=None),
+    ]
+
+    mock_blaise_service.get_cases.return_value = [
+        questionnaire_cases[0].case_data,
+        questionnaire_cases[1].case_data,
+    ]
+
+    mock_uac_service.get_questionnaire_uac_model.return_value = questionnaire_uac_model
+
+    questionnaire_name = "LMS2101_AA1"
+
+    # act
+    result = service.get_cases(questionnaire_name, True)
+
+    # assert
+    assert len(result) == 2
+    assert result[0].case_id == "10010"
+    assert result[0].uac_chunks == UacChunks(
+        uac1="8175", uac2="4725", uac3="3990", uac4="None"
+    )
+    assert result[1].case_id == "20003"
+    assert result[1].uac_chunks is None
+
+
+def test_get_case_returns_an_expected_case_when_include_uac_is_false(
+    mock_blaise_service,
+    mock_uac_service,
+    questionnaire_uac_model,
     service: LMSQuestionnaireService,
 ):
     questionnaire_case = get_case(case_id="10010", uac_chunks=None)
     mock_blaise_service.get_case.return_value = questionnaire_case.case_data
 
+    mock_uac_service.get_questionnaire_uac_model.return_value = questionnaire_uac_model
+
     questionnaire_name = "LMS2101_AA1"
     case_id = "10010"
 
     # act
-    result = service.get_case(questionnaire_name, case_id)
+    result = service.get_case(questionnaire_name, case_id, False)
 
     # assert
     assert result.case_id == "10010"
+    assert result.uac_chunks is None
 
 
-def test_get_case_returns_a_case_calls_the_correct_services(
+def test_get_case_returns_an_expected_case_when_include_uac_is_true(
+    mock_blaise_service,
+    mock_uac_service,
+    questionnaire_uac_model,
+    service: LMSQuestionnaireService,
+):
+    questionnaire_case = get_case(case_id="10010", uac_chunks=None)
+    mock_blaise_service.get_case.return_value = questionnaire_case.case_data
+
+    mock_uac_service.get_questionnaire_uac_model.return_value = questionnaire_uac_model
+
+    questionnaire_name = "LMS2101_AA1"
+    case_id = "10010"
+
+    # act
+    result = service.get_case(questionnaire_name, case_id, True)
+
+    # assert
+    assert result.case_id == "10010"
+    assert result.uac_chunks == UacChunks(
+        uac1="8175", uac2="4725", uac3="3990", uac4="None"
+    )
+
+
+def test_get_case_returns_a_case_calls_the_correct_services_when_include_uac_is_false(
     service: LMSQuestionnaireService,
     mock_blaise_service,
     mock_uac_service,
@@ -196,7 +260,7 @@ def test_get_case_returns_a_case_calls_the_correct_services(
     case_id = "10010"
 
     # act
-    service.get_case(questionnaire_name, case_id)
+    service.get_case(questionnaire_name, case_id, False)
 
     # assert
     mock_uac_service.get_questionnaire_uac_model.assert_not_called()

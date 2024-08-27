@@ -10,12 +10,24 @@ from behave import given, then, when
 import cloud_functions.delete_totalmobile_jobs_completed_in_blaise
 import cloud_functions.delete_totalmobile_jobs_past_field_period
 from services.create.create_totalmobile_jobs_service import CreateTotalmobileJobsService
-from services.create.eligibility.case_filters.case_filter_wave_1 import CaseFilterWave1
-from services.create.eligibility.case_filters.case_filter_wave_2 import CaseFilterWave2
-from services.create.eligibility.case_filters.case_filter_wave_3 import CaseFilterWave3
-from services.create.eligibility.case_filters.case_filter_wave_4 import CaseFilterWave4
-from services.create.eligibility.case_filters.case_filter_wave_5 import CaseFilterWave5
-from services.create.eligibility.lms_eligible_case_service import LMSEligibleCaseService
+from services.create.questionnaires.eligibility.case_filters.case_filter_wave_1 import (
+    CaseFilterWave1,
+)
+from services.create.questionnaires.eligibility.case_filters.case_filter_wave_2 import (
+    CaseFilterWave2,
+)
+from services.create.questionnaires.eligibility.case_filters.case_filter_wave_3 import (
+    CaseFilterWave3,
+)
+from services.create.questionnaires.eligibility.case_filters.case_filter_wave_4 import (
+    CaseFilterWave4,
+)
+from services.create.questionnaires.eligibility.case_filters.case_filter_wave_5 import (
+    CaseFilterWave5,
+)
+from services.create.questionnaires.eligibility.lms_eligible_case_service import (
+    LMSEligibleCaseService,
+)
 from services.create.questionnaires.lms_questionnaire_service import (
     LMSQuestionnaireService,
 )

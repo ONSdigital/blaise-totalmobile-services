@@ -5,7 +5,9 @@ from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCa
 from models.create.blaise.questionnaire_uac_model import QuestionnaireUacModel
 from services.blaise_service import RealBlaiseService
 from services.create.datastore_service import DatastoreService
-from services.create.eligibility.lms_eligible_case_service import LMSEligibleCaseService
+from services.create.questionnaires.eligibility.lms_eligible_case_service import (
+    LMSEligibleCaseService,
+)
 from services.create.questionnaires.questionnaire_service_base import (
     QuestionnaireServiceBase,
 )
@@ -44,28 +46,27 @@ class LMSQuestionnaireService(QuestionnaireServiceBase):
         case_data_list = self._blaise_service.get_cases(
             questionnaire_name, BlaiseLMSCreateCaseModel.required_fields()
         )
+
         questionnaire_uac_model = (
             self.get_questionnaire_uac_model(questionnaire_name)
             if include_uac
             else None
         )
 
-        if include_uac or questionnaire_uac_model is None:
-            cases = [
-                BlaiseLMSCreateCaseModel(questionnaire_name, case_data, None)
-                for case_data in case_data_list
-            ]
-        else:
-            cases = [
-                BlaiseLMSCreateCaseModel(
-                    questionnaire_name,
-                    case_data,
-                    questionnaire_uac_model.get_uac_chunks(
+        cases = [
+            BlaiseLMSCreateCaseModel(
+                questionnaire_name=questionnaire_name,
+                case_data=case_data,
+                uac_chunks=(
+                    None
+                    if questionnaire_uac_model is None
+                    else questionnaire_uac_model.get_uac_chunks(
                         case_data["qiD.Serial_Number"]
-                    ),
-                )
-                for case_data in case_data_list
-            ]
+                    )
+                ),
+            )
+            for case_data in case_data_list
+        ]
 
         logging.info(
             f"Retrieved {len(cases)} cases from questionnaire {questionnaire_name}"

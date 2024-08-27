@@ -1,5 +1,7 @@
 from models.create.blaise.blaiise_frs_create_case_model import BlaiseFRSCreateCaseModel
-from services.create.eligibility.frs_eligible_case_service import FRSEligibleCaseService
+from services.create.questionnaires.eligibility.frs_eligible_case_service import (
+    FRSEligibleCaseService,
+)
 from tests.helpers.blaise_case_model_helper import BlaiseCaseModelHelper
 
 
