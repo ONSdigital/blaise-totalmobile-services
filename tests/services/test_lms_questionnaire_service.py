@@ -107,11 +107,6 @@ def test_get_eligible_cases_calls_the_services_with_the_correct_parameters(
         questionnaire_name, required_fields
     )
 
-    # TODO
-    # mock_eligible_case_service.get_eligible_cases.assert_called_with(
-    #     questionnaire_cases
-    # )
-
 
 def test_get_eligible_cases_returns_the_list_of_eligible_cases(
     mock_blaise_service,
