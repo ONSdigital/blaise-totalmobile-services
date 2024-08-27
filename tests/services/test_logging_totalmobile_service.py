@@ -17,8 +17,8 @@ from models.delete.totalmobile_get_jobs_response_model import (
     Job,
     TotalmobileGetJobsResponseModel,
 )
-from services.common.logging_totalmobile_service import LoggingTotalmobileService
-from services.common.totalmobile_service import TotalmobileService
+from services.logging_totalmobile_service import LoggingTotalmobileService
+from services.totalmobile_service import TotalmobileService
 
 
 @pytest.fixture()

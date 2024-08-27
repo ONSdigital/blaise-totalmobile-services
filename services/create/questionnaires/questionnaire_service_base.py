@@ -3,8 +3,8 @@ from datetime import datetime
 from typing import Sequence
 
 from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
-from services.common.blaise_service import RealBlaiseService
-from services.create.datastore.datastore_service import DatastoreService
+from services.blaise_service import RealBlaiseService
+from services.create.datastore_service import DatastoreService
 
 
 class QuestionnaireServiceBase:

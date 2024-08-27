@@ -13,7 +13,7 @@ from models.create.totalmobile.totalmobile_create_job_model import (
 from models.delete.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
 )
-from services.common.totalmobile_service import TotalmobileService
+from services.totalmobile_service import TotalmobileService
 
 
 class LoggingTotalmobileService:

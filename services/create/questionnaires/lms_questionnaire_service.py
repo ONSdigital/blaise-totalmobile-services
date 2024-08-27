@@ -3,8 +3,8 @@ from typing import List, Sequence
 
 from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from models.create.blaise.questionnaire_uac_model import QuestionnaireUacModel
-from services.common.blaise_service import RealBlaiseService
-from services.create.datastore.datastore_service import DatastoreService
+from services.blaise_service import RealBlaiseService
+from services.create.datastore_service import DatastoreService
 from services.create.eligibility.lms_eligible_case_service import LMSEligibleCaseService
 from services.create.questionnaires.questionnaire_service_base import (
     QuestionnaireServiceBase,

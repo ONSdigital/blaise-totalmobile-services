@@ -1,5 +1,5 @@
 from models.delete.totalmobile_get_jobs_response_model import Job
-from services.common.totalmobile_service import (
+from services.totalmobile_service import (
     DeleteJobError,
     RecallJobError,
     TotalmobileService,

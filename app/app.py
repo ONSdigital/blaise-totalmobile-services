@@ -4,7 +4,7 @@ from app.auth import auth
 from app.config import Config
 from app.endpoints import incoming
 from appconfig.config import Config as AppConfig
-from services.common.blaise_service import RealBlaiseService
+from services.blaise_service import RealBlaiseService
 from services.create.uac.uac_service import UacService
 
 

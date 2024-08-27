@@ -5,7 +5,7 @@ from google.cloud import tasks_v2
 
 from appconfig import Config
 from models.common.cloud_tasks.task_request_model import TaskRequestModel
-from services.common.cloud_task_service import CloudTaskService
+from services.cloud_task_service import CloudTaskService
 from tests.helpers import config_helper
 
 

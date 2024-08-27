@@ -10,9 +10,9 @@ from models.delete.totalmobile_get_jobs_response_model import (
     Job,
     TotalmobileGetJobsResponseModel,
 )
-from services.common.totalmobile_service import RealTotalmobileService
 from services.delete.delete_totalmobile_job_service import DeleteTotalmobileJobService
 from services.delete.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
+from services.totalmobile_service import RealTotalmobileService
 
 CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED = [123, 110, 543]
 

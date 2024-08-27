@@ -5,7 +5,7 @@ from models.common.totalmobile.totalmobile_world_model import (
     World,
 )
 from models.delete.totalmobile_get_jobs_response_model import Job
-from services.common.totalmobile_service import DeleteJobError
+from services.totalmobile_service import DeleteJobError
 from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
 
 

@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from google.cloud import datastore
 
 

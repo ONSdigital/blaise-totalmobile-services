@@ -10,7 +10,7 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireCaseError,
 )
 from appconfig import Config
-from services.common.blaise_service import RealBlaiseService
+from services.blaise_service import RealBlaiseService
 from tests.helpers import config_helper
 
 

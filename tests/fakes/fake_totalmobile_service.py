@@ -16,13 +16,13 @@ from models.create.totalmobile.totalmobile_create_job_model import (
 from models.delete.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
 )
-from services.common.totalmobile_service import DeleteJobError
 from services.create.mappers.totalmobile_create_job_mapper_service import (
     TotalmobileCreateJobMapperService,
 )
 from services.create.mappers.totalmobile_payload_mapper_service import (
     TotalmobilePayloadMapperService,
 )
+from services.totalmobile_service import DeleteJobError
 
 
 class FakeTotalmobileService:

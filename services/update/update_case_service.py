@@ -10,7 +10,7 @@ from models.update.blaise_update_case_model import BlaiseUpdateCase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
-from services.common.blaise_service import RealBlaiseService
+from services.blaise_service import RealBlaiseService
 from services.update.questionnaire_case_outcome_codes import QuestionnaireOutcomeCodes
 
 

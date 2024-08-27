@@ -5,11 +5,11 @@ from models.common.cloud_tasks.task_request_model import TaskRequestModel
 from models.create.totalmobile.totalmobile_create_job_model import (
     TotalmobileCreateJobModel,
 )
-from services.common.cloud_task_service import CloudTaskService
-from services.common.totalmobile_service import TotalmobileService
+from services.cloud_task_service import CloudTaskService
 from services.create.questionnaires.questionnaire_service_base import (
     QuestionnaireServiceBase,
 )
+from services.totalmobile_service import TotalmobileService
 
 
 class CreateTotalmobileJobsService:

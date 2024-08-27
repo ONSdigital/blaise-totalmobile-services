@@ -2,9 +2,9 @@ import logging
 from typing import Dict, List, Optional
 
 from models.delete.totalmobile_get_jobs_response_model import Job
-from services.common.totalmobile_service import TotalmobileService
 from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
 from services.delete.delete_totalmobile_job_service import DeleteTotalmobileJobService
+from services.totalmobile_service import TotalmobileService
 
 
 class DeleteTotalmobileJobsService:

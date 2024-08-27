@@ -2,7 +2,7 @@ import logging
 from typing import Dict, Optional
 
 from models.delete.blaise_delete_case_model import BlaiseDeleteCase
-from services.common.blaise_service import BlaiseService
+from services.blaise_service import BlaiseService
 
 
 class BlaiseCaseOutcomeService:

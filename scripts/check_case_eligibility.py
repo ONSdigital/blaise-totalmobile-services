@@ -2,8 +2,8 @@ import os
 import sys
 
 from appconfig import Config
-from services.common.blaise_service import RealBlaiseService
-from services.create.datastore.datastore_service import DatastoreService
+from services.blaise_service import RealBlaiseService
+from services.create.datastore_service import DatastoreService
 from services.create.eligibility.case_filters.case_filter_wave_1 import CaseFilterWave1
 from services.create.eligibility.case_filters.case_filter_wave_2 import CaseFilterWave2
 from services.create.eligibility.case_filters.case_filter_wave_3 import CaseFilterWave3

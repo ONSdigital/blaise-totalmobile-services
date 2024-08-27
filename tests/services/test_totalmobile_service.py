@@ -13,7 +13,7 @@ from models.common.totalmobile.totalmobile_world_model import (
 from models.create.totalmobile.totalmobile_create_job_model import (
     TotalmobileCreateJobModel,
 )
-from services.common.totalmobile_service import (
+from services.totalmobile_service import (
     DeleteJobError,
     RealTotalmobileService,
     RecallJobError,

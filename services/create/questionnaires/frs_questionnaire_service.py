@@ -2,8 +2,8 @@ import logging
 from typing import List, Sequence
 
 from models.create.blaise.blaiise_frs_create_case_model import BlaiseFRSCreateCaseModel
-from services.common.blaise_service import RealBlaiseService
-from services.create.datastore.datastore_service import DatastoreService
+from services.blaise_service import RealBlaiseService
+from services.create.datastore_service import DatastoreService
 from services.create.eligibility.frs_eligible_case_service import FRSEligibleCaseService
 from services.create.questionnaires.questionnaire_service_base import (
     QuestionnaireServiceBase,

@@ -8,7 +8,7 @@ from scripts.delete_totalmobile_jobs import (
     __get_active_world_ids,
     __map_world_id_to_job_reference,
 )
-from services.common.totalmobile_service import RealTotalmobileService
+from services.totalmobile_service import RealTotalmobileService
 
 
 def test_get_list_of_active_world_ids_returns_a_list_of_active_world_ids():

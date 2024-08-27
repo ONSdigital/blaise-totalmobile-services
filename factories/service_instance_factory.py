@@ -1,11 +1,10 @@
 from appconfig import Config
 from client.messaging import MessagingClient
 from client.optimise import OptimiseClient
-from services.common.blaise_service import RealBlaiseService
-from services.common.cloud_task_service import CloudTaskService
-from services.common.totalmobile_service import RealTotalmobileService
+from services.blaise_service import RealBlaiseService
+from services.cloud_task_service import CloudTaskService
 from services.create.create_totalmobile_jobs_service import CreateTotalmobileJobsService
-from services.create.datastore.datastore_service import DatastoreService
+from services.create.datastore_service import DatastoreService
 from services.create.eligibility.case_filters.case_filter_wave_1 import CaseFilterWave1
 from services.create.eligibility.case_filters.case_filter_wave_2 import CaseFilterWave2
 from services.create.eligibility.case_filters.case_filter_wave_3 import CaseFilterWave3
@@ -31,6 +30,7 @@ from services.create.questionnaires.questionnaire_service_base import (
 from services.create.uac.uac_service import UacService
 from services.create.uac.uac_service_base import UacServiceBase
 from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
+from services.totalmobile_service import RealTotalmobileService
 
 
 class ServiceInstanceFactory:
