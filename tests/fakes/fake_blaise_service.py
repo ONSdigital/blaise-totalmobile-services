@@ -5,6 +5,7 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireCaseDoesNotExistError,
     QuestionnaireCaseError,
 )
+from enums.blaise_fields import BlaiseFields
 
 
 def nested_dict() -> defaultdict:
@@ -41,33 +42,35 @@ class FakeBlaiseService:
         self._assert_questionnaire_exists(questionnaire)
 
         self._questionnaires[questionnaire][case_id] = {
-            "qiD.Serial_Number": f"{case_id}",
-            "qDataBag.TLA": f"{questionnaire[0:3]}",
-            "qDataBag.Wave": f"{wave}",
-            "hOut": outcome_code,
-            "qDataBag.FieldCase": f"{field_case}",
-            "qDataBag.TelNo": f"{telephone_number_1}",
-            "qDataBag.TelNo2": f"{telephone_number_2}",
-            "telNoAppt": f"{appointment_telephone_number}",
-            "qDataBag.FieldRegion": f"{field_region}",
-            "qRotate.RDMktnIND": f"{rotational_knock_to_nudge_indicator}",
-            "qRotate.RHOut": rotational_outcome_code,
-            "catiMana.CatiCall.RegsCalls[1].DialResult": False,
+            BlaiseFields.case_id: f"{case_id}",
+            BlaiseFields.tla: f"{questionnaire[0:3]}",
+            BlaiseFields.wave: f"{wave}",
+            BlaiseFields.outcome_code: outcome_code,
+            BlaiseFields.field_case: f"{field_case}",
+            BlaiseFields.telephone_number_1: f"{telephone_number_1}",
+            BlaiseFields.telephone_number_2: f"{telephone_number_2}",
+            BlaiseFields.appointment_telephone_number: f"{appointment_telephone_number}",
+            BlaiseFields.field_region: f"{field_region}",
+            BlaiseFields.rotational_knock_to_nudge_indicator: f"{rotational_knock_to_nudge_indicator}",
+            BlaiseFields.rotational_outcome_code: rotational_outcome_code,
+            BlaiseFields.call_history: False,
         }
 
     def update_outcome_code_of_case_in_questionnaire(
         self, questionnaire_name: str, case_id: str, outcome_code: str
     ) -> None:
         self._assert_case_exists(questionnaire_name, case_id)
-        self._questionnaires[questionnaire_name][case_id]["hOut"] = int(outcome_code)
+        self._questionnaires[questionnaire_name][case_id][
+            BlaiseFields.outcome_code
+        ] = int(outcome_code)
 
     def set_case_has_call_history(
         self, has_case_history: bool, questionnaire: str, case_id: str
     ):
         self._assert_case_exists(questionnaire, case_id)
-        self._questionnaires[questionnaire][case_id][
-            "catiMana.CatiCall.RegsCalls[1].DialResult"
-        ] = ("1" if has_case_history else None)
+        self._questionnaires[questionnaire][case_id][BlaiseFields.call_history] = (
+            "1" if has_case_history else None
+        )
         pass
 
     def case_has_been_updated(self, questionnaire_name: str, case_id: str) -> bool:

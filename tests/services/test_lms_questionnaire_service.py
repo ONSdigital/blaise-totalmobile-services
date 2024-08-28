@@ -5,6 +5,7 @@ from unittest.mock import Mock
 import pytest
 
 from client.bus import Uac
+from enums.blaise_fields import BlaiseFields
 from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from models.create.blaise.questionnaire_uac_model import (
     QuestionnaireUacModel,
@@ -248,10 +249,10 @@ def test_get_case_returns_a_case_calls_the_correct_services_when_include_uac_is_
     mock_uac_service,
 ):
     data_fields = {
-        "hOut": "110",
-        "dMktnName": "John Smith",
-        "qDataBag.TelNo": "01234 567890",
-        "qDataBag.TelNo2": "07734 567890",
+        BlaiseFields.outcome_code: "110",
+        BlaiseFields.knock_to_nudge_contact_name: "John Smith",
+        BlaiseFields.telephone_number_1: "01234 567890",
+        BlaiseFields.telephone_number_2: "07734 567890",
     }
 
     mock_blaise_service.get_case.return_value = data_fields
@@ -273,10 +274,10 @@ def test_get_case_returns_a_case_calls_the_correct_services_when_include_uac_is_
     questionnaire_uac_model,
 ):
     data_fields = {
-        "hOut": "110",
-        "dMktnName": "John Smith",
-        "qDataBag.TelNo": "01234 567890",
-        "qDataBag.TelNo2": "07734 567890",
+        BlaiseFields.outcome_code: "110",
+        BlaiseFields.knock_to_nudge_contact_name: "John Smith",
+        BlaiseFields.telephone_number_1: "01234 567890",
+        BlaiseFields.telephone_number_2: "07734 567890",
     }
 
     mock_blaise_service.get_case.return_value = data_fields

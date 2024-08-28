@@ -157,7 +157,7 @@ class TestIneligibleCases:
         caplog,
     ):
         # arrange
-        valid_case_data[BlaiseFields] = str(service.wave_number)
+        valid_case_data[BlaiseFields.wave] = str(service.wave_number)
         valid_case_data[BlaiseFields.field_region] = field_region
         case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_case_data, None)
 

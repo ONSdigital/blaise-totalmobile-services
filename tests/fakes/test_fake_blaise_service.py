@@ -1,6 +1,7 @@
 import pytest
 
 from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
+from enums.blaise_fields import BlaiseFields
 from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from tests.fakes.fake_blaise_service import FakeBlaiseService
 
@@ -113,18 +114,18 @@ def test_get_case_when_case_exists(service: FakeBlaiseService):
 
     case = service.get_case("LMS12345", "99999")
     assert case == {
-        "catiMana.CatiCall.RegsCalls[1].DialResult": False,
-        "hOut": 0,
-        "qDataBag.FieldCase": "None",
-        "qDataBag.FieldRegion": "None",
-        "qDataBag.TLA": "LMS",
-        "qDataBag.TelNo": "None",
-        "qDataBag.TelNo2": "None",
-        "qDataBag.Wave": "None",
-        "qRotate.RDMktnIND": "None",
-        "qRotate.RHOut": 0,
-        "qiD.Serial_Number": "99999",
-        "telNoAppt": "None",
+        BlaiseFields.call_history: False,
+        BlaiseFields.outcome_code: 0,
+        BlaiseFields.field_case: "None",
+        BlaiseFields.field_region: "None",
+        BlaiseFields.tla: "LMS",
+        BlaiseFields.telephone_number_1: "None",
+        BlaiseFields.telephone_number_2: "None",
+        BlaiseFields.wave: "None",
+        BlaiseFields.rotational_knock_to_nudge_indicator: "None",
+        BlaiseFields.rotational_outcome_code: 0,
+        BlaiseFields.case_id: "99999",
+        BlaiseFields.appointment_telephone_number: "None",
     }
 
 
