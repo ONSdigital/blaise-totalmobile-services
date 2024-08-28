@@ -1,3 +1,4 @@
+from enums.blaise_fields import BlaiseFields
 from models.create.blaise.blaiise_frs_create_case_model import BlaiseFRSCreateCaseModel
 
 
@@ -17,7 +18,7 @@ def test_create_case_description_for_interviewer_returns_divided_address_if_indi
     # Arrange
     questionnaire_name = "FRS2201"
     questionnaire_case = BlaiseFRSCreateCaseModel(
-        questionnaire_name, {"qDataBag.DivAddInd": "1"}
+        questionnaire_name, {BlaiseFields.divided_address_indicator: "1"}
     )
 
     # Act
@@ -33,10 +34,10 @@ def test_create_case_overview_for_interviewer_returns_the_expected_additional_pr
     questionnaire_case = BlaiseFRSCreateCaseModel(
         questionnaire_name,
         {
-            "qDataBag.Rand": "30",
-            "qDataBag.FieldRegion": "Region 2",
-            "qDataBag.FieldTeam": "A Team",
-            "qDataBag.PostCode": "AB01 2CD",
+            BlaiseFields.rand: "30",
+            BlaiseFields.field_region: "Region 2",
+            BlaiseFields.field_team: "A Team",
+            BlaiseFields.postcode: "AB01 2CD",
         },
     )
 

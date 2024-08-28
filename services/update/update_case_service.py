@@ -6,12 +6,12 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireCaseError,
     QuestionnaireDoesNotExistError,
 )
+from enums.questionnaire_case_outcome_codes import QuestionnaireOutcomeCodes
 from models.update.blaise_update_case_model import BlaiseUpdateCase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 from services.blaise_service import RealBlaiseService
-from services.update.questionnaire_case_outcome_codes import QuestionnaireOutcomeCodes
 
 
 class UpdateCaseService:

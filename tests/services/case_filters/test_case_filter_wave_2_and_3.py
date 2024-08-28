@@ -3,6 +3,7 @@ from typing import Dict
 
 import pytest
 
+from enums.blaise_fields import BlaiseFields
 from models.common.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from services.create.questionnaires.eligibility.case_filters.case_filter_base import (
@@ -19,16 +20,16 @@ from services.create.questionnaires.eligibility.case_filters.case_filter_wave_3 
 @pytest.fixture()
 def valid_case_data_without_telephone_numbers() -> Dict[str, str]:
     return {
-        "qiD.Serial_Number": "90001",
-        "qDataBag.Wave": "1",
-        "qDataBag.FieldCase": "Y",
-        "hOut": "310",
-        "qRotate.RHOut": "0",
-        "qDataBag.TelNo": "",
-        "qDataBag.TelNo2": "",
-        "telNoAppt": "",
-        "qDataBag.FieldRegion": "Region 1",
-        "qRotate.RDMktnIND": "",
+        BlaiseFields.case_id: "90001",
+        BlaiseFields.wave: "1",
+        BlaiseFields.field_case: "Y",
+        BlaiseFields.outcome_code: "310",
+        BlaiseFields.rotational_outcome_code: "0",
+        BlaiseFields.telephone_number_1: "",
+        BlaiseFields.telephone_number_2: "",
+        BlaiseFields.appointment_telephone_number: "",
+        BlaiseFields.field_region: "Region 1",
+        BlaiseFields.rotational_knock_to_nudge_indicator: "",
     }
 
 
@@ -72,11 +73,11 @@ class TestEligibleCasesWithoutTelephoneNumbers:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
@@ -96,11 +97,11 @@ class TestEligibleCasesWithoutTelephoneNumbers:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
@@ -120,11 +121,11 @@ class TestEligibleCasesWithoutTelephoneNumbers:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
@@ -159,13 +160,15 @@ class TestEligibleCasesWithoutTelephoneNumbers:
     ):
         # arrange
 
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
-        valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
-            rotational_outcome_code
+        valid_case_data_without_telephone_numbers[BlaiseFields.outcome_code] = str(
+            outcome_code
         )
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.rotational_outcome_code
+        ] = str(rotational_outcome_code)
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -186,13 +189,15 @@ class TestEligibleCasesWithATelephoneNumber:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
-        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.telephone_number_2
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -211,13 +216,15 @@ class TestEligibleCasesWithATelephoneNumber:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
-        valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.telephone_number_2
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -236,13 +243,15 @@ class TestEligibleCasesWithATelephoneNumber:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
-        valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.appointment_telephone_number
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -275,14 +284,18 @@ class TestEligibleCasesWithATelephoneNumber:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
-        valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
-            rotational_outcome_code
+        valid_case_data_without_telephone_numbers[BlaiseFields.outcome_code] = str(
+            outcome_code
         )
-        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.rotational_outcome_code
+        ] = str(rotational_outcome_code)
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.telephone_number_1
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -315,14 +328,18 @@ class TestEligibleCasesWithATelephoneNumber:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
-        valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
-            rotational_outcome_code
+        valid_case_data_without_telephone_numbers[BlaiseFields.outcome_code] = str(
+            outcome_code
         )
-        valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.rotational_outcome_code
+        ] = str(rotational_outcome_code)
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.telephone_number_2
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -355,14 +372,18 @@ class TestEligibleCasesWithATelephoneNumber:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
-        valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
-            rotational_outcome_code
+        valid_case_data_without_telephone_numbers[BlaiseFields.outcome_code] = str(
+            outcome_code
         )
-        valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.rotational_outcome_code
+        ] = str(rotational_outcome_code)
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.appointment_telephone_number
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -383,7 +404,7 @@ class TestCaseIsInCorrectWave:
         wave_number,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = wave_number
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = wave_number
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -404,11 +425,11 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
@@ -429,11 +450,11 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         caplog,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
@@ -456,11 +477,11 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
@@ -481,11 +502,11 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         caplog,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
@@ -508,11 +529,11 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
@@ -533,11 +554,11 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         caplog,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
@@ -564,13 +585,15 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
-        valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
-            rotational_outcome_code
+        valid_case_data_without_telephone_numbers[BlaiseFields.outcome_code] = str(
+            outcome_code
         )
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.rotational_outcome_code
+        ] = str(rotational_outcome_code)
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -593,10 +616,12 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         caplog,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
+        valid_case_data_without_telephone_numbers[BlaiseFields.outcome_code] = str(
+            outcome_code
+        )
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -622,12 +647,12 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         caplog,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
-            rotational_outcome_code
-        )
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.rotational_outcome_code
+        ] = str(rotational_outcome_code)
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -649,10 +674,10 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
+        valid_case_data_without_telephone_numbers[BlaiseFields.field_case] = field_case
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -672,10 +697,10 @@ class TestIneligibleCasesWithoutTelephoneNumbers:
         caplog,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
+        valid_case_data_without_telephone_numbers[BlaiseFields.field_case] = field_case
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -699,13 +724,15 @@ class TestIneligibleCasesWithATelephoneNumber:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
-        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.telephone_number_1
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -725,13 +752,15 @@ class TestIneligibleCasesWithATelephoneNumber:
         caplog,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
-        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.telephone_number_1
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -753,13 +782,15 @@ class TestIneligibleCasesWithATelephoneNumber:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
-        valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.telephone_number_2
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -779,13 +810,15 @@ class TestIneligibleCasesWithATelephoneNumber:
         caplog,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
-        valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.telephone_number_2
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -807,13 +840,15 @@ class TestIneligibleCasesWithATelephoneNumber:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
-        valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.appointment_telephone_number
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -833,13 +868,15 @@ class TestIneligibleCasesWithATelephoneNumber:
         caplog,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[
-            "qRotate.RDMktnIND"
+            BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
-        valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.appointment_telephone_number
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -865,14 +902,18 @@ class TestIneligibleCasesWithATelephoneNumber:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
-        valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
-            rotational_outcome_code
+        valid_case_data_without_telephone_numbers[BlaiseFields.outcome_code] = str(
+            outcome_code
         )
-        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.rotational_outcome_code
+        ] = str(rotational_outcome_code)
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.telephone_number_1
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -895,11 +936,15 @@ class TestIneligibleCasesWithATelephoneNumber:
         caplog,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["hOut"] = str(outcome_code)
-        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.outcome_code] = str(
+            outcome_code
+        )
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.telephone_number_1
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -925,13 +970,15 @@ class TestIneligibleCasesWithATelephoneNumber:
         caplog,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["qRotate.RHOut"] = str(
-            rotational_outcome_code
-        )
-        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.rotational_outcome_code
+        ] = str(rotational_outcome_code)
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.telephone_number_1
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -953,11 +1000,13 @@ class TestIneligibleCasesWithATelephoneNumber:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
-        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.field_case] = field_case
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.telephone_number_1
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -977,11 +1026,13 @@ class TestIneligibleCasesWithATelephoneNumber:
         caplog,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
-        valid_case_data_without_telephone_numbers["qDataBag.TelNo"] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.field_case] = field_case
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.telephone_number_1
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -1003,11 +1054,13 @@ class TestIneligibleCasesWithATelephoneNumber:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
-        valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.field_case] = field_case
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.telephone_number_2
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -1027,11 +1080,13 @@ class TestIneligibleCasesWithATelephoneNumber:
         caplog,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
-        valid_case_data_without_telephone_numbers["qDataBag.TelNo2"] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.field_case] = field_case
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.telephone_number_2
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -1053,11 +1108,13 @@ class TestIneligibleCasesWithATelephoneNumber:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
-        valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.field_case] = field_case
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.appointment_telephone_number
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -1077,11 +1134,13 @@ class TestIneligibleCasesWithATelephoneNumber:
         caplog,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["qDataBag.FieldCase"] = field_case
-        valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.field_case] = field_case
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.appointment_telephone_number
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -1103,11 +1162,15 @@ class TestIneligibleCasesWithATelephoneNumber:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["qDataBag.FieldRegion"] = field_region
-        valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.field_region
+        ] = field_region
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.appointment_telephone_number
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -1127,11 +1190,15 @@ class TestIneligibleCasesWithATelephoneNumber:
         caplog,
     ):
         # arrange
-        valid_case_data_without_telephone_numbers["qDataBag.Wave"] = str(
+        valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers["qDataBag.FieldRegion"] = field_region
-        valid_case_data_without_telephone_numbers["telNoAppt"] = "07656775679"
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.field_region
+        ] = field_region
+        valid_case_data_without_telephone_numbers[
+            BlaiseFields.appointment_telephone_number
+        ] = "07656775679"
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )

@@ -1,6 +1,7 @@
 import logging
 from typing import List, Sequence
 
+from enums.blaise_fields import BlaiseFields
 from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from models.create.blaise.questionnaire_uac_model import QuestionnaireUacModel
 from services.blaise_service import RealBlaiseService
@@ -61,7 +62,7 @@ class LMSQuestionnaireService(QuestionnaireServiceBase):
                     None
                     if questionnaire_uac_model is None
                     else questionnaire_uac_model.get_uac_chunks(
-                        case_data["qiD.Serial_Number"]
+                        case_data[BlaiseFields.case_id]
                     )
                 ),
             )

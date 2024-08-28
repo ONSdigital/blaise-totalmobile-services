@@ -1,5 +1,6 @@
 import pytest
 
+from enums.blaise_fields import BlaiseFields
 from models.update.blaise_update_case_model import BlaiseUpdateCase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
@@ -22,13 +23,13 @@ def test_populated_update_case_model_has_the_correct_properties(
     # arrange
     questionnaire_name = "LMS2101_TLR"
     case_data = {
-        "qiD.Serial_Number": case_id,
-        "hOut": str(outcome_code),
-        "catiMana.CatiCall.RegsCalls[1].DialResult": "1" if has_call_history else "",
+        BlaiseFields.case_id: case_id,
+        BlaiseFields.outcome_code: str(outcome_code),
+        BlaiseFields.call_history: "1" if has_call_history else "",
     }
 
     # act
-    result = BlaiseUpdateCase(questionnaire_name, case_data)
+    result = BlaiseUpdateCase(questionnaire_name, case_data)  # type: ignore
 
     # assert
     assert result.questionnaire_name == questionnaire_name
@@ -46,7 +47,7 @@ def test_get_knock_to_nudge_indicator_flag_field_returns_expected_dictionary():
     result = blaise_case.get_knock_to_nudge_indicator_flag_field()
 
     # assert
-    assert result == {"DMktnIND": "1"}
+    assert result == {BlaiseFields.knock_to_nudge_indicator: "1"}
 
 
 def test_get_outcome_code_fields_returns_an_expected_dictionary():
@@ -67,8 +68,8 @@ def test_get_outcome_code_fields_returns_an_expected_dictionary():
 
     # assert
     assert result == {
-        "hOut": "300",
-        "qhAdmin.HOut": "300",
+        BlaiseFields.outcome_code: "300",
+        BlaiseFields.admin_outcome_code: "300",
     }
 
 
@@ -90,9 +91,9 @@ def test_get_contact_details_fields_returns_an_expected_dictionary():
 
     # assert
     assert result == {
-        "dMktnName": "Joe Bloggs",
-        "qDataBag.TelNo": "01234567890",
-        "qDataBag.TelNo2": "07123123123",
+        BlaiseFields.knock_to_nudge_contact_name: "Joe Bloggs",
+        BlaiseFields.telephone_number_1: "01234567890",
+        BlaiseFields.telephone_number_2: "07123123123",
     }
 
 
@@ -117,8 +118,8 @@ def test_get_contact_details_fields_returns_an_expected_dictionary_if_contact_na
 
     # assert
     assert result == {
-        "qDataBag.TelNo": "01234567890",
-        "qDataBag.TelNo2": "07123123123",
+        BlaiseFields.telephone_number_1: "01234567890",
+        BlaiseFields.telephone_number_2: "07123123123",
     }
 
 
@@ -143,8 +144,8 @@ def test_get_contact_details_fields_returns_an_expected_dictionary_if_home_numbe
 
     # assert
     assert result == {
-        "dMktnName": "Joe Bloggs",
-        "qDataBag.TelNo2": "07123123123",
+        BlaiseFields.knock_to_nudge_contact_name: "Joe Bloggs",
+        BlaiseFields.telephone_number_2: "07123123123",
     }
 
 
@@ -169,8 +170,8 @@ def test_get_contact_details_fields_returns_an_expected_dictionary_if_mobile_num
 
     # assert
     assert result == {
-        "dMktnName": "Joe Bloggs",
-        "qDataBag.TelNo": "01234567890",
+        BlaiseFields.knock_to_nudge_contact_name: "Joe Bloggs",
+        BlaiseFields.telephone_number_1: "01234567890",
     }
 
 

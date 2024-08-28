@@ -2,6 +2,8 @@ from abc import abstractmethod
 from datetime import datetime
 from typing import Dict, List, Optional
 
+from enums.blaise_fields import BlaiseFields
+
 
 class BlaiseCaseModel:
     def __init__(self, questionnaire_name: str, case_data: Dict[str, str]):
@@ -22,34 +24,36 @@ class BlaiseCaseModel:
 
     @property
     def case_id(self) -> Optional[str]:
-        return self._case_data.get("qiD.Serial_Number")
+        return self._case_data.get(BlaiseFields.case_id)
 
     @property
     def outcome_code(self) -> int:
-        return self.convert_string_to_integer(self._case_data.get("hOut", "0"))
-
-    @property
-    def rotational_outcome_code(self) -> int:
-        return self.convert_string_to_integer(self._case_data.get("qRotate.RHOut", "0"))
-
-    @property
-    def has_call_history(self) -> bool:
-        return self.string_to_bool(
-            self._case_data.get("catiMana.CatiCall.RegsCalls[1].DialResult")
+        return self.convert_string_to_integer(
+            self._case_data.get(BlaiseFields.outcome_code, "0")
         )
 
     @property
+    def rotational_outcome_code(self) -> int:
+        return self.convert_string_to_integer(
+            self._case_data.get(BlaiseFields.rotational_outcome_code, "0")
+        )
+
+    @property
+    def has_call_history(self) -> bool:
+        return self.string_to_bool(self._case_data.get(BlaiseFields.call_history))
+
+    @property
     def priority(self) -> Optional[str]:
-        return str(self._case_data.get("qDataBag.priority"))
+        return str(self._case_data.get(BlaiseFields.priority))
 
     @property
     def wave(self) -> Optional[int]:
-        wave = str(self._case_data.get("qDataBag.Wave"))
+        wave = str(self._case_data.get(BlaiseFields.wave))
         return int(wave) if wave != "" else None
 
     @property
     def wave_com_dte(self) -> Optional[datetime]:
-        wave_com_dte_str = self._case_data.get("qDataBag.WaveComDTE", "")
+        wave_com_dte_str = self._case_data.get(BlaiseFields.wave_com_dte, "")
         return (
             datetime.strptime(wave_com_dte_str, "%d-%m-%Y")
             if wave_com_dte_str != ""
@@ -58,73 +62,73 @@ class BlaiseCaseModel:
 
     @property
     def address_line_1(self) -> Optional[str]:
-        return self._case_data.get("qDataBag.Prem1")
+        return self._case_data.get(BlaiseFields.address_line_1)
 
     @property
     def address_line_2(self) -> Optional[str]:
-        return self._case_data.get("qDataBag.Prem2")
+        return self._case_data.get(BlaiseFields.address_line_2)
 
     @property
     def address_line_3(self) -> Optional[str]:
-        return self._case_data.get("qDataBag.Prem3")
+        return self._case_data.get(BlaiseFields.address_line_3)
 
     @property
     def county(self) -> Optional[str]:
-        return self._case_data.get("qDataBag.District")
+        return self._case_data.get(BlaiseFields.county)
 
     @property
     def town(self) -> Optional[str]:
-        return self._case_data.get("qDataBag.PostTown")
+        return self._case_data.get(BlaiseFields.town)
 
     @property
     def postcode(self) -> Optional[str]:
-        return self._case_data.get("qDataBag.PostCode")
+        return self._case_data.get(BlaiseFields.postcode)
 
     @property
     def reference(self) -> Optional[str]:
-        return self._case_data.get("qDataBag.UPRN", "")
+        return self._case_data.get(BlaiseFields.reference, "")
 
     @property
     def latitude(self) -> Optional[str]:
-        return self._case_data.get("qDataBag.UPRN_Latitude")
+        return self._case_data.get(BlaiseFields.latitude)
 
     @property
     def longitude(self) -> Optional[str]:
-        return self._case_data.get("qDataBag.UPRN_Longitude")
+        return self._case_data.get(BlaiseFields.longitude)
 
     @property
     def telephone_number_1(self) -> Optional[str]:
-        return self._case_data.get("qDataBag.TelNo")
+        return self._case_data.get(BlaiseFields.telephone_number_1)
 
     @property
     def telephone_number_2(self) -> Optional[str]:
-        return self._case_data.get("qDataBag.TelNo2")
+        return self._case_data.get(BlaiseFields.telephone_number_2)
 
     @property
     def appointment_telephone_number(self) -> Optional[str]:
-        return self._case_data.get("telNoAppt")
+        return self._case_data.get(BlaiseFields.appointment_telephone_number)
 
     @property
     def field_case(self) -> Optional[str]:
-        return self._case_data.get("qDataBag.FieldCase")
+        return self._case_data.get(BlaiseFields.field_case)
 
     @property
     def field_region(self) -> Optional[str]:
-        return self._case_data.get("qDataBag.FieldRegion")
+        return self._case_data.get(BlaiseFields.field_region)
 
     @property
     def field_team(self) -> Optional[str]:
-        return self._case_data.get("qDataBag.FieldTeam")
+        return self._case_data.get(BlaiseFields.field_team)
 
     @property
     def rotational_knock_to_nudge_indicator(self) -> Optional[str]:
         return self.convert_indicator_to_y_n_or_empty(
-            self._case_data.get("qRotate.RDMktnIND")
+            self._case_data.get(BlaiseFields.rotational_knock_to_nudge_indicator)
         )
 
     @property
     def data_model_name(self) -> Optional[str]:
-        return self._case_data.get("dataModelName")
+        return self._case_data.get(BlaiseFields.data_model_name)
 
     @staticmethod
     @abstractmethod

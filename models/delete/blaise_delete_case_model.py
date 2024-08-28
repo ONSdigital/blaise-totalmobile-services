@@ -1,5 +1,6 @@
 from typing import Dict, List
 
+from enums.blaise_fields import BlaiseFields
 from models.common.blaise.blaise_case_model import BlaiseCaseModel
 
 
@@ -9,7 +10,4 @@ class BlaiseDeleteCase(BlaiseCaseModel):
 
     @staticmethod
     def required_fields() -> List:
-        return [
-            "qiD.Serial_Number",
-            "hOut",
-        ]
+        return [BlaiseFields.case_id, BlaiseFields.outcome_code]

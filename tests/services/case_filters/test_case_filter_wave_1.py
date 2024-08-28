@@ -3,6 +3,7 @@ from typing import Dict
 
 import pytest
 
+from enums.blaise_fields import BlaiseFields
 from models.common.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from services.create.questionnaires.eligibility.case_filters.case_filter_wave_1 import (
@@ -18,14 +19,14 @@ def service() -> CaseFilterWave1:
 @pytest.fixture()
 def valid_wave_1_case_data() -> Dict[str, str]:
     return {
-        "qiD.Serial_Number": "90001",
-        "qDataBag.Wave": "1",
-        "qDataBag.FieldCase": "Y",
-        "hOut": "310",
-        "qDataBag.TelNo": "",
-        "qDataBag.TelNo2": "",
-        "telNoAppt": "",
-        "qDataBag.FieldRegion": "Region 1",
+        BlaiseFields.case_id: "90001",
+        BlaiseFields.wave: "1",
+        BlaiseFields.field_case: "Y",
+        BlaiseFields.outcome_code: "310",
+        BlaiseFields.telephone_number_1: "",
+        BlaiseFields.telephone_number_2: "",
+        BlaiseFields.appointment_telephone_number: "",
+        BlaiseFields.field_region: "Region 1",
     }
 
 
@@ -43,7 +44,7 @@ def test_case_is_eligible_returns_true_only_where_criteria_for_wave_1_is_met(
     service: CaseFilterWave1,
 ):
     # arrange
-    valid_wave_1_case_data["hOut"] = outcome_code
+    valid_wave_1_case_data[BlaiseFields.outcome_code] = outcome_code
     case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_wave_1_case_data, None)
 
     # act
@@ -58,7 +59,7 @@ def test_case_is_eligible_returns_false_if_the_case_is_not_wave_1(
     service: CaseFilterWave1,
 ):
     # arrange
-    valid_wave_1_case_data["qDataBag.Wave"] = "2"
+    valid_wave_1_case_data[BlaiseFields.wave] = "2"
     case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_wave_1_case_data, None)
 
     # act
@@ -73,7 +74,7 @@ def test_case_is_eligible_returns_false_if_telephone_number_1_has_a_value(
     service: CaseFilterWave1,
 ):
     # arrange
-    valid_wave_1_case_data["qDataBag.TelNo"] = "07656775679"
+    valid_wave_1_case_data[BlaiseFields.telephone_number_1] = "07656775679"
     case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_wave_1_case_data, None)
 
     # act
@@ -87,7 +88,7 @@ def test_case_is_eligible_logs_a_message_if_telephone_number_1_has_a_value(
     valid_wave_1_case_data, service: CaseFilterWave1, caplog
 ):
     # arrange
-    valid_wave_1_case_data["qDataBag.TelNo"] = "07656775679"
+    valid_wave_1_case_data[BlaiseFields.telephone_number_1] = "07656775679"
     case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_wave_1_case_data, None)
 
     # act && assert
@@ -105,7 +106,7 @@ def test_case_is_eligible_returns_false_if_telephone_number_2_has_a_value(
     service: CaseFilterWave1,
 ):
     # arrange
-    valid_wave_1_case_data["qDataBag.TelNo2"] = "07656775679"
+    valid_wave_1_case_data[BlaiseFields.telephone_number_2] = "07656775679"
     case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_wave_1_case_data, None)
 
     # act
@@ -119,7 +120,7 @@ def test_case_is_eligible_logs_a_message_if_telephone_number_2_has_a_value(
     valid_wave_1_case_data, service: CaseFilterWave1, caplog
 ):
     # arrange
-    valid_wave_1_case_data["qDataBag.TelNo2"] = "07656775679"
+    valid_wave_1_case_data[BlaiseFields.telephone_number_2] = "07656775679"
     case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_wave_1_case_data, None)
 
     # act && assert
@@ -137,7 +138,7 @@ def test_case_is_eligible_returns_false_if_appointment_telephone_number_has_a_va
     service: CaseFilterWave1,
 ):
     # arrange
-    valid_wave_1_case_data["telNoAppt"] = "07656775679"
+    valid_wave_1_case_data[BlaiseFields.appointment_telephone_number] = "07656775679"
     case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_wave_1_case_data, None)
 
     # act
@@ -151,7 +152,7 @@ def test_case_is_eligible_logs_a_message_if_appointment_telephone_number_has_a_v
     valid_wave_1_case_data, service: CaseFilterWave1, caplog
 ):
     # arrange
-    valid_wave_1_case_data["telNoAppt"] = "07656775679"
+    valid_wave_1_case_data[BlaiseFields.appointment_telephone_number] = "07656775679"
     case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_wave_1_case_data, None)
 
     # act && assert
@@ -171,7 +172,7 @@ def test_case_is_eligible_returns_false_if_outcome_code_is_not_in_acceptable_ran
     service: CaseFilterWave1,
 ):
     # arrange
-    valid_wave_1_case_data["hOut"] = test_input
+    valid_wave_1_case_data[BlaiseFields.outcome_code] = test_input
     case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_wave_1_case_data, None)
 
     # act
@@ -186,7 +187,7 @@ def test_case_is_eligible_logs_a_message_if_outcome_code_is_not_in_acceptable_ra
     test_input, valid_wave_1_case_data, service: CaseFilterWave1, caplog
 ):
     # arrange
-    valid_wave_1_case_data["hOut"] = test_input
+    valid_wave_1_case_data[BlaiseFields.outcome_code] = test_input
     case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_wave_1_case_data, None)
 
     valid_outcome_codes = service.valid_outcome_codes
@@ -208,7 +209,7 @@ def test_case_is_eligible_returns_false_if_field_case_is_not_set_to_y(
     service: CaseFilterWave1,
 ):
     # arrange
-    valid_wave_1_case_data["qDataBag.FieldCase"] = test_input
+    valid_wave_1_case_data[BlaiseFields.field_case] = test_input
     case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_wave_1_case_data, None)
 
     # act
@@ -223,7 +224,7 @@ def test_case_is_eligible_logs_a_message_if_field_case_is_set_to_n(
     test_input, valid_wave_1_case_data, service: CaseFilterWave1, caplog
 ):
     # arrange
-    valid_wave_1_case_data["qDataBag.FieldCase"] = test_input
+    valid_wave_1_case_data[BlaiseFields.field_case] = test_input
     case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_wave_1_case_data, None)
 
     # act && assert
@@ -243,7 +244,7 @@ def test_case_is_eligible_returns_false_if_field_region_is_not_in_range(
     service: CaseFilterWave1,
 ):
     # arrange
-    valid_wave_1_case_data["qDataBag.FieldRegion"] = test_input
+    valid_wave_1_case_data[BlaiseFields.field_region] = test_input
     case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_wave_1_case_data, None)
 
     # act
@@ -258,7 +259,7 @@ def test_case_is_eligible_logs_a_message_if_field_region_is_not_in_range(
     test_input, valid_wave_1_case_data, service: CaseFilterWave1, caplog
 ):
     # arrange
-    valid_wave_1_case_data["qDataBag.FieldRegion"] = test_input
+    valid_wave_1_case_data[BlaiseFields.field_region] = test_input
     case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_wave_1_case_data, None)
 
     value_range = TotalmobileWorldModel.get_available_regions()

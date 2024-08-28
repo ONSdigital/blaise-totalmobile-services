@@ -1,3 +1,4 @@
+from enums.blaise_fields import BlaiseFields
 from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from models.create.blaise.questionnaire_uac_model import UacChunks
 from tests.helpers.blaise_case_model_helper import BlaiseCaseModelHelper
@@ -10,10 +11,10 @@ def test_create_case_description_for_interviewer_returns_a_correctly_formatted_d
     questionnaire_case = BlaiseLMSCreateCaseModel(
         questionnaire_name,
         {
-            "qiD.Serial_Number": "12345",
-            "dataModelName": "LMS2201_AA1",
-            "qDataBag.WaveComDTE": "31-01-2022",
-            "qDataBag.Wave": "4",
+            BlaiseFields.case_id: "12345",
+            BlaiseFields.data_model_name: "LMS2201_AA1",
+            BlaiseFields.wave_com_dte: "31-01-2022",
+            BlaiseFields.wave: "4",
         },
         uac_chunks,
     )
@@ -38,10 +39,10 @@ def test_create_case_description_for_interviewer_returns_a_correctly_formatted_d
     questionnaire_case = BlaiseLMSCreateCaseModel(
         questionnaire_name,
         {
-            "qiD.Serial_Number": "12345",
-            "dataModelName": "LMS2201_AA1",
-            "qDataBag.WaveComDTE": "31-01-2022",
-            "qDataBag.Wave": "4",
+            BlaiseFields.case_id: "12345",
+            BlaiseFields.data_model_name: "LMS2201_AA1",
+            BlaiseFields.wave_com_dte: "31-01-2022",
+            BlaiseFields.wave: "4",
         },
         uac_chunks,
     )

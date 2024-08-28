@@ -1,5 +1,6 @@
 from typing import Dict, List, Optional
 
+from enums.blaise_fields import BlaiseFields
 from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
 from models.create.blaise.questionnaire_uac_model import UacChunks
 
@@ -42,29 +43,29 @@ class BlaiseLMSCreateCaseModel(BlaiseCreateCaseModel):
     @staticmethod
     def required_fields() -> List:
         return [
-            "qiD.Serial_Number",
-            "dataModelName",
-            "qDataBag.TLA",
-            "qDataBag.Wave",
-            "qDataBag.Prem1",
-            "qDataBag.Prem2",
-            "qDataBag.Prem3",
-            "qDataBag.District",
-            "qDataBag.PostTown",
-            "qDataBag.PostCode",
-            "qDataBag.TelNo",
-            "qDataBag.TelNo2",
-            "telNoAppt",
-            "hOut",
-            "qDataBag.UPRN",
-            "qDataBag.UPRN_Latitude",
-            "qDataBag.UPRN_Longitude",
-            "qDataBag.Priority",
-            "qDataBag.FieldCase",
-            "qDataBag.FieldRegion",
-            "qDataBag.FieldTeam",
-            "qDataBag.WaveComDTE",
-            "catiMana.CatiCall.RegsCalls[1].DialResult",
-            "qRotate.RDMktnIND",
-            "qRotate.RHOut",
+            BlaiseFields.case_id,
+            BlaiseFields.data_model_name,
+            BlaiseFields.tla,
+            BlaiseFields.wave,
+            BlaiseFields.address_line_1,
+            BlaiseFields.address_line_2,
+            BlaiseFields.address_line_3,
+            BlaiseFields.county,
+            BlaiseFields.town,
+            BlaiseFields.postcode,
+            BlaiseFields.telephone_number_1,
+            BlaiseFields.telephone_number_2,
+            BlaiseFields.appointment_telephone_number,
+            BlaiseFields.outcome_code,
+            BlaiseFields.reference,
+            BlaiseFields.latitude,
+            BlaiseFields.longitude,
+            BlaiseFields.priority,
+            BlaiseFields.field_case,
+            BlaiseFields.field_region,
+            BlaiseFields.field_team,
+            BlaiseFields.wave_com_dte,
+            BlaiseFields.call_history,
+            BlaiseFields.rotational_knock_to_nudge_indicator,
+            BlaiseFields.rotational_outcome_code,
         ]

@@ -10,6 +10,7 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireCaseError,
 )
 from appconfig import Config
+from enums.blaise_fields import BlaiseFields
 from services.blaise_service import RealBlaiseService
 from tests.helpers import config_helper
 
@@ -27,9 +28,9 @@ def blaise_service(config) -> RealBlaiseService:
 @pytest.fixture()
 def required_fields() -> List:
     return [
-        "qiD.Serial_Number",
-        "dataModelName",
-        "qDataBag.TLA",
+        BlaiseFields.case_id,
+        BlaiseFields.data_model_name,
+        BlaiseFields.tla,
     ]
 
 
@@ -60,13 +61,25 @@ def test_get_cases_returns_the_expected_case_data(
         "questionnaireId": "12345-12345-12345-12345-12345",
         "reportingData": [
             {
-                "qiD.Serial_Number": "10010",
-                "hOut": "110",
-                "qDataBag.WaveComDTE": "31-01-2023",
+                BlaiseFields.case_id: "10010",
+                BlaiseFields.outcome_code: "110",
+                BlaiseFields.wave_com_dte: "31-01-2023",
             },
-            {"qiD.Serial_Number": "10020", "hOut": "210", "qDataBag.WaveComDTE": ""},
-            {"qiD.Serial_Number": "10030", "hOut": "310", "qDataBag.WaveComDTE": ""},
-            {"qiD.Serial_Number": "10040", "hOut": "310", "qDataBag.WaveComDTE": ""},
+            {
+                BlaiseFields.case_id: "10020",
+                BlaiseFields.outcome_code: "210",
+                BlaiseFields.wave_com_dte: "",
+            },
+            {
+                BlaiseFields.case_id: "10030",
+                BlaiseFields.outcome_code: "310",
+                BlaiseFields.wave_com_dte: "",
+            },
+            {
+                BlaiseFields.case_id: "10040",
+                BlaiseFields.outcome_code: "310",
+                BlaiseFields.wave_com_dte: "",
+            },
         ],
     }
 
@@ -96,9 +109,9 @@ def test_get_case_calls_the_correct_services(
     _mock_rest_api_client2.return_value = {
         "caseId": "10010",
         "fieldData": {
-            "qiD.Serial_Number": "10010",
-            "hOut": "110",
-            "qDataBag.WaveComDTE": "31-01-2023",
+            BlaiseFields.case_id: "10010",
+            BlaiseFields.outcome_code: "110",
+            BlaiseFields.wave_com_dte: "31-01-2023",
         },
     }
 
@@ -125,9 +138,9 @@ def test_get_case_returns_the_expected_case_data(
     case_data = {
         "caseId": "2000000001",
         "fieldData": {
-            "qiD.Serial_Number": "10010",
-            "hOut": "110",
-            "qDataBag.WaveComDTE": "31-01-2023",
+            BlaiseFields.case_id: "10010",
+            BlaiseFields.outcome_code: "110",
+            BlaiseFields.wave_com_dte: "31-01-2023",
         },
     }
     _mock_rest_api_client2.return_value = case_data
@@ -251,10 +264,10 @@ def test_update_case_calls_the_rest_api_client_with_the_correct_parameters(
     questionnaire_name = "LMS2101_AA1"
     case_id = "900001"
     data_fields = [
-        {"hOut": "110"},
-        {"dMktnName": "John Smith"},
-        {"qDataBag.TelNo": "01234 567890"},
-        {"qDataBag.TelNo2": "07734 567890"},
+        {BlaiseFields.outcome_code: "110"},
+        {BlaiseFields.knock_to_nudge_contact_name: "John Smith"},
+        {BlaiseFields.telephone_number_1: "01234 567890"},
+        {BlaiseFields.telephone_number_2: "07734 567890"},
     ]
 
     # act

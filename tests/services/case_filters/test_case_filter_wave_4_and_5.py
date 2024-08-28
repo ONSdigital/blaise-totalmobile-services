@@ -3,6 +3,7 @@ from typing import Dict
 
 import pytest
 
+from enums.blaise_fields import BlaiseFields
 from models.common.totalmobile.totalmobile_world_model import TotalmobileWorldModel
 from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from services.create.questionnaires.eligibility.case_filters.case_filter_base import (
@@ -19,14 +20,14 @@ from services.create.questionnaires.eligibility.case_filters.case_filter_wave_5 
 @pytest.fixture()
 def valid_case_data() -> Dict[str, str]:
     return {
-        "qiD.Serial_Number": "90001",
-        "qDataBag.Wave": "1",
-        "qDataBag.FieldCase": "Y",
-        "hOut": "0",
-        "qDataBag.TelNo": "",
-        "qDataBag.TelNo2": "",
-        "telNoAppt": "",
-        "qDataBag.FieldRegion": "Region 1",
+        BlaiseFields.case_id: "90001",
+        BlaiseFields.wave: "1",
+        BlaiseFields.field_case: "Y",
+        BlaiseFields.outcome_code: "0",
+        BlaiseFields.telephone_number_1: "",
+        BlaiseFields.telephone_number_2: "",
+        BlaiseFields.appointment_telephone_number: "",
+        BlaiseFields.field_region: "Region 1",
     }
 
 
@@ -64,7 +65,7 @@ class TestEligibleCases:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data["qDataBag.Wave"] = str(service.wave_number)
+        valid_case_data[BlaiseFields.wave] = str(service.wave_number)
         case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_case_data, None)
 
         # act
@@ -83,8 +84,8 @@ class TestIneligibleCases:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data["qDataBag.Wave"] = str(service.wave_number)
-        valid_case_data["hOut"] = outcome_code
+        valid_case_data[BlaiseFields.wave] = str(service.wave_number)
+        valid_case_data[BlaiseFields.outcome_code] = outcome_code
         case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_case_data, None)
 
         # act
@@ -102,8 +103,8 @@ class TestIneligibleCases:
         caplog,
     ):
         # arrange
-        valid_case_data["qDataBag.Wave"] = str(service.wave_number)
-        valid_case_data["hOut"] = outcome_code
+        valid_case_data[BlaiseFields.wave] = str(service.wave_number)
+        valid_case_data[BlaiseFields.outcome_code] = outcome_code
         case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_case_data, None)
 
         # act && assert
@@ -121,7 +122,7 @@ class TestIneligibleCases:
     ):
         # arrange
 
-        valid_case_data["qDataBag.Wave"] = wave_number
+        valid_case_data[BlaiseFields.wave] = wave_number
         case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_case_data, None)
         # act
         result = service.case_is_eligible(case)
@@ -137,8 +138,8 @@ class TestIneligibleCases:
         service: CaseFilterBase,
     ):
         # arrange
-        valid_case_data["qDataBag.Wave"] = str(service.wave_number)
-        valid_case_data["qDataBag.FieldRegion"] = field_region
+        valid_case_data[BlaiseFields.wave] = str(service.wave_number)
+        valid_case_data[BlaiseFields.field_region] = field_region
         case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_case_data, None)
 
         # act
@@ -156,8 +157,8 @@ class TestIneligibleCases:
         caplog,
     ):
         # arrange
-        valid_case_data["qDataBag.Wave"] = str(service.wave_number)
-        valid_case_data["qDataBag.FieldRegion"] = field_region
+        valid_case_data[BlaiseFields] = str(service.wave_number)
+        valid_case_data[BlaiseFields.field_region] = field_region
         case = BlaiseLMSCreateCaseModel("LMS2101_AA1", valid_case_data, None)
 
         value_range = TotalmobileWorldModel.get_available_regions()

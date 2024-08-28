@@ -1,5 +1,6 @@
 import pytest
 
+from enums.blaise_fields import BlaiseFields
 from models.delete.blaise_delete_case_model import BlaiseDeleteCase
 
 
@@ -17,12 +18,12 @@ def test_populated_delete_case_model_has_the_correct_properties(
     # arrange
     questionnaire_name = "LMS2101_TLR"
     case_data = {
-        "qiD.Serial_Number": case_id,
-        "hOut": str(outcome_code),
+        BlaiseFields.case_id: case_id,
+        BlaiseFields.outcome_code: str(outcome_code),
     }
 
     # act
-    result = BlaiseDeleteCase(questionnaire_name, case_data)
+    result = BlaiseDeleteCase(questionnaire_name, case_data)  # type: ignore
 
     # assert
     assert result.case_id == case_id

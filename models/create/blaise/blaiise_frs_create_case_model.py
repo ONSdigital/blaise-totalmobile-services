@@ -1,5 +1,6 @@
 from typing import Dict, List, Optional
 
+from enums.blaise_fields import BlaiseFields
 from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
 
 
@@ -9,11 +10,11 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
 
     @property
     def divided_address_indicator(self) -> Optional[str]:
-        return self.case_data.get("qDataBag.DivAddInd")
+        return self.case_data.get(BlaiseFields.divided_address_indicator)
 
     @property
     def rand(self) -> Optional[str]:
-        return self.case_data.get("qDataBag.Rand")
+        return self.case_data.get(BlaiseFields.rand)
 
     def create_case_overview_for_interviewer(self) -> dict[str, str]:
         return {
@@ -34,22 +35,22 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
     @staticmethod
     def required_fields() -> List:
         return [
-            "qiD.Serial_Number",
-            "dataModelName",
-            "qDataBag.TLA",
-            "qDataBag.Prem1",
-            "qDataBag.Prem2",
-            "qDataBag.Prem3",
-            "qDataBag.District",
-            "qDataBag.PostTown",
-            "qDataBag.PostCode",
-            "qDataBag.UPRN",
-            "qDataBag.UPRN_Latitude",
-            "qDataBag.UPRN_Longitude",
-            "qDataBag.Priority",
-            "qDataBag.FieldCase",
-            "qDataBag.FieldRegion",
-            "qDataBag.FieldTeam",
-            "qDataBag.DivAddInd",
-            "qDataBag.Rand",
+            BlaiseFields.case_id,
+            BlaiseFields.data_model_name,
+            BlaiseFields.tla,
+            BlaiseFields.address_line_1,
+            BlaiseFields.address_line_2,
+            BlaiseFields.address_line_3,
+            BlaiseFields.county,
+            BlaiseFields.town,
+            BlaiseFields.postcode,
+            BlaiseFields.reference,
+            BlaiseFields.latitude,
+            BlaiseFields.longitude,
+            BlaiseFields.priority,
+            BlaiseFields.field_case,
+            BlaiseFields.field_region,
+            BlaiseFields.field_team,
+            BlaiseFields.divided_address_indicator,
+            BlaiseFields.rand,
         ]
