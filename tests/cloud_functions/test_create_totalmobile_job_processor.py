@@ -9,7 +9,6 @@ from client.errors import BadRequest
 from cloud_functions.create_totalmobile_jobs_processor import (
     create_totalmobile_jobs_processor,
 )
-from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJob
 from services.totalmobile_service import RealTotalmobileService
 
 

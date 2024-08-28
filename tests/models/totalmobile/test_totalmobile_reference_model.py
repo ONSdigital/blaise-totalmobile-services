@@ -3,7 +3,9 @@ import logging
 import pytest
 
 from app.exceptions.custom_exceptions import BadReferenceError, MissingReferenceError
-from models.totalmobile.totalmobile_reference_model import TotalmobileReferenceModel
+from models.common.totalmobile.totalmobile_reference_model import (
+    TotalmobileReferenceModel,
+)
 from tests.helpers import incoming_request_helper
 
 

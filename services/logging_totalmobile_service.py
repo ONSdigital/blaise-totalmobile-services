@@ -1,14 +1,19 @@
 import logging
+from typing import List, Sequence
 
 import requests
 
 from client.optimise import GetJobsResponse
-from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
-from models.totalmobile.totalmobile_get_jobs_response_model import (
+from models.common.totalmobile.totalmobile_world_model import TotalmobileWorldModel
+from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
+from models.create.totalmobile.totalmobile_create_job_model import (
+    TotalmobileCreateJobModel,
+    TotalmobileCreateJobModelRequestJson,
+)
+from models.delete.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
 )
-from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from services.totalmobile_service import RecallJobError, TotalmobileService
+from services.totalmobile_service import TotalmobileService
 
 
 class LoggingTotalmobileService:
@@ -61,3 +66,15 @@ class LoggingTotalmobileService:
             f"Found {model.total_number_of_incomplete_jobs()} incomplete jobs in totalmobile for world {world_id}"
         )
         return model
+
+    def map_totalmobile_create_job_models(
+        self, questionnaire_name: str, cases: Sequence[BlaiseCreateCaseModel]
+    ) -> List[TotalmobileCreateJobModel]:
+        return self._service.map_totalmobile_create_job_models(
+            questionnaire_name, cases
+        )
+
+    def map_totalmobile_create_job_from_json(
+        self, request_json: TotalmobileCreateJobModelRequestJson
+    ):
+        return self._service.map_totalmobile_create_job_from_json(request_json)

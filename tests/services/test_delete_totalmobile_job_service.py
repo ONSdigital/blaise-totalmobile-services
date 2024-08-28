@@ -2,8 +2,8 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from models.totalmobile.totalmobile_get_jobs_response_model import Job
-from services.delete_totalmobile_job_service import DeleteTotalmobileJobService
+from models.delete.totalmobile_get_jobs_response_model import Job
+from services.delete.delete_totalmobile_job_service import DeleteTotalmobileJobService
 from services.totalmobile_service import (
     DeleteJobError,
     RecallJobError,

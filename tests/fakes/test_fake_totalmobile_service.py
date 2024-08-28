@@ -1,7 +1,10 @@
 import pytest
 
-from models.totalmobile.totalmobile_get_jobs_response_model import Job
-from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
+from models.common.totalmobile.totalmobile_world_model import (
+    TotalmobileWorldModel,
+    World,
+)
+from models.delete.totalmobile_get_jobs_response_model import Job
 from services.totalmobile_service import DeleteJobError
 from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
 

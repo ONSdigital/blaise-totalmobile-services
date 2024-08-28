@@ -1,4 +1,7 @@
-from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
+from models.common.totalmobile.totalmobile_world_model import (
+    TotalmobileWorldModel,
+    World,
+)
 
 
 def test_import_worlds_returns_a_populated_model_for_known_regions():

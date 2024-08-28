@@ -1,7 +1,7 @@
 from typing import Dict
 
 from client.bus import Uac
-from models.blaise.questionnaire_uac_model import QuestionnaireUacModel
+from models.create.blaise.questionnaire_uac_model import QuestionnaireUacModel
 
 
 def test_import_case_data_returns_a_populated_model():

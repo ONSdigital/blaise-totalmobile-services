@@ -5,14 +5,7 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireCaseDoesNotExistError,
     QuestionnaireCaseError,
 )
-from models.blaise.blaise_case_information_model import (
-    Address,
-    AddressCoordinates,
-    AddressDetails,
-    BlaiseCaseInformationModel,
-    ContactDetails,
-)
-from tests.helpers import get_blaise_case_model_helper
+from enums.blaise_fields import BlaiseFields
 
 
 def nested_dict() -> defaultdict:
@@ -48,53 +41,36 @@ class FakeBlaiseService:
     ) -> None:
         self._assert_questionnaire_exists(questionnaire)
 
-        self._questionnaires[questionnaire][case_id] = BlaiseCaseInformationModel(
-            questionnaire_name=questionnaire,
-            tla=questionnaire[0:3],
-            case_id=case_id,
-            data_model_name=None,
-            wave=wave,
-            address_details=AddressDetails(
-                reference="",
-                address=Address(
-                    address_line_1=None,
-                    address_line_2=None,
-                    address_line_3=None,
-                    county=None,
-                    town=None,
-                    postcode=None,
-                    coordinates=AddressCoordinates(latitude=None, longitude=None),
-                ),
-            ),
-            contact_details=ContactDetails(
-                telephone_number_1=telephone_number_1,
-                telephone_number_2=telephone_number_2,
-                appointment_telephone_number=appointment_telephone_number,
-            ),
-            outcome_code=outcome_code,
-            priority=None,
-            field_case=field_case,
-            field_region=field_region,
-            field_team=None,
-            wave_com_dte=None,
-            rotational_knock_to_nudge_indicator=rotational_knock_to_nudge_indicator,
-            rotational_outcome_code=rotational_outcome_code,
-            has_call_history=False,
-        )
+        self._questionnaires[questionnaire][case_id] = {
+            BlaiseFields.case_id: f"{case_id}",
+            BlaiseFields.tla: f"{questionnaire[0:3]}",
+            BlaiseFields.wave: f"{wave}",
+            BlaiseFields.outcome_code: outcome_code,
+            BlaiseFields.field_case: f"{field_case}",
+            BlaiseFields.telephone_number_1: f"{telephone_number_1}",
+            BlaiseFields.telephone_number_2: f"{telephone_number_2}",
+            BlaiseFields.appointment_telephone_number: f"{appointment_telephone_number}",
+            BlaiseFields.field_region: f"{field_region}",
+            BlaiseFields.rotational_knock_to_nudge_indicator: f"{rotational_knock_to_nudge_indicator}",
+            BlaiseFields.rotational_outcome_code: rotational_outcome_code,
+            BlaiseFields.call_history: False,
+        }
 
     def update_outcome_code_of_case_in_questionnaire(
         self, questionnaire_name: str, case_id: str, outcome_code: str
     ) -> None:
         self._assert_case_exists(questionnaire_name, case_id)
-        self._questionnaires[questionnaire_name][case_id].outcome_code = int(
-            outcome_code
-        )
+        self._questionnaires[questionnaire_name][case_id][
+            BlaiseFields.outcome_code
+        ] = int(outcome_code)
 
     def set_case_has_call_history(
         self, has_case_history: bool, questionnaire: str, case_id: str
     ):
         self._assert_case_exists(questionnaire, case_id)
-        self._questionnaires[questionnaire][case_id].has_call_history = has_case_history
+        self._questionnaires[questionnaire][case_id][BlaiseFields.call_history] = (
+            "1" if has_case_history else None
+        )
         pass
 
     def case_has_been_updated(self, questionnaire_name: str, case_id: str) -> bool:
@@ -116,7 +92,9 @@ class FakeBlaiseService:
     def required_fields_from_blaise(self) -> List[str]:
         raise NotImplementedError()
 
-    def get_cases(self, questionnaire_name: str) -> List[BlaiseCaseInformationModel]:
+    def get_cases(
+        self, questionnaire_name: str, required_fields: List[str]
+    ) -> List[Dict[str, str]]:
         if "get_cases" in self._errors_when_method_is_called:
             raise Exception("get_case has errored")
 
@@ -124,33 +102,16 @@ class FakeBlaiseService:
         self._get_cases_call_count[questionnaire_name] += 1
         cases = self._questionnaires[questionnaire_name]
 
-        return [
-            get_blaise_case_model_helper.get_populated_case_model(
-                case_id=case.case_id,
-                outcome_code=case.outcome_code,
-                wave=case.wave,
-                field_case=case.field_case,
-                telephone_number_1=case.contact_details.telephone_number_1,
-                telephone_number_2=case.contact_details.telephone_number_2,
-                appointment_telephone_number=case.contact_details.appointment_telephone_number,
-                field_region=case.field_region,
-                rotational_knock_to_nudge_indicator=case.rotational_knock_to_nudge_indicator,
-                rotational_outcome_code=case.rotational_outcome_code,
-            )
-            for case in cases.values()
-        ]
+        return cases.values()
 
     def get_cases_call_count(self, questionnaire_name: str) -> int:
         return self._get_cases_call_count[questionnaire_name]
 
-    def get_case(
-        self, questionnaire_name: str, case_id: str
-    ) -> BlaiseCaseInformationModel:
+    def get_case(self, questionnaire_name: str, case_id: str) -> Dict[str, str]:
         if "get_case" in self._errors_when_method_is_called:
             raise QuestionnaireCaseError("get_case has errored")
 
         self._assert_case_exists(questionnaire_name, case_id)
-
         return self._questionnaires[questionnaire_name][case_id]
 
     def questionnaire_exists(self, questionnaire_name: str) -> bool:

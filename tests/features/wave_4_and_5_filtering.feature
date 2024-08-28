@@ -1,4 +1,6 @@
 Feature: Filter wave 4 and 5 cases
+  Background:
+    Given the survey type is "LMS"
 
   Scenario Outline: Eligible wave 4 and 5 LMS cases without telephone numbers are sent to Totalmobile
     Given there is a <questionnaire_name> with a totalmobile release date of today

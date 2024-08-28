@@ -1,14 +1,27 @@
 from collections import defaultdict
-from typing import Dict, Optional
+from typing import Dict, List, Optional, Sequence
 
 import requests
 
 from client.optimise import GetJobResponse, GetJobsResponse
-from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
-from models.totalmobile.totalmobile_get_jobs_response_model import (
+from models.common.totalmobile.totalmobile_world_model import (
+    TotalmobileWorldModel,
+    World,
+)
+from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
+from models.create.totalmobile.totalmobile_create_job_model import (
+    TotalmobileCreateJobModel,
+    TotalmobileCreateJobModelRequestJson,
+)
+from models.delete.totalmobile_get_jobs_response_model import (
     TotalmobileGetJobsResponseModel,
 )
-from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
+from services.create.mappers.totalmobile_create_job_mapper_service import (
+    TotalmobileCreateJobMapperService,
+)
+from services.create.mappers.totalmobile_payload_mapper_service import (
+    TotalmobilePayloadMapperService,
+)
 from services.totalmobile_service import DeleteJobError
 
 
@@ -128,3 +141,18 @@ class FakeTotalmobileService:
 
     def get_jobs(self, world_id: str) -> GetJobsResponse:
         raise NotImplementedError("Currently not implemented in this mock")
+
+    def map_totalmobile_create_job_models(
+        self, questionnaire_name: str, cases: Sequence[BlaiseCreateCaseModel]
+    ) -> List[TotalmobileCreateJobModel]:
+        world_model = self.get_world_model()
+        mapper = TotalmobileCreateJobMapperService(TotalmobilePayloadMapperService())
+        return mapper.map_totalmobile_create_job_models(
+            questionnaire_name, cases, world_model
+        )
+
+    def map_totalmobile_create_job_from_json(
+        self, request_json: TotalmobileCreateJobModelRequestJson
+    ):
+        mapper = TotalmobileCreateJobMapperService(TotalmobilePayloadMapperService())
+        return mapper.map_totalmobile_create_job_model_from_json(request_json)
