@@ -1,13 +1,8 @@
 import pytest
 
 from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
-from models.blaise.blaise_case_information_model import (
-    Address,
-    AddressCoordinates,
-    AddressDetails,
-    BlaiseCaseInformationModel,
-    ContactDetails,
-)
+from enums.blaise_fields import BlaiseFields
+from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from tests.fakes.fake_blaise_service import FakeBlaiseService
 
 
@@ -59,7 +54,8 @@ def test_update_outcome_code_of_case_in_questionnaire(service: FakeBlaiseService
     service.add_questionnaire("LMS12345")
     service.add_case_to_questionnaire("LMS12345", "11111")
     service.update_outcome_code_of_case_in_questionnaire("LMS12345", "11111", "310")
-    assert service.get_case("LMS12345", "11111").outcome_code == 310
+    case = service.get_case("LMS12345", "11111")
+    assert case["hOut"] == 310
 
 
 def test_set_case_has_call_history_when_questionnaire_does_not_exist(
@@ -87,8 +83,12 @@ def test_set_case_has_call_history(service: FakeBlaiseService):
     service.add_case_to_questionnaire("LMS12345", "22222")
     service.set_case_has_call_history(True, "LMS12345", "11111")
     service.set_case_has_call_history(False, "LMS12345", "22222")
-    assert service.get_case("LMS12345", "11111").has_call_history
-    assert not service.get_case("LMS12345", "22222").has_call_history
+    assert service.get_case("LMS12345", "11111")[
+        "catiMana.CatiCall.RegsCalls[1].DialResult"
+    ]
+    assert not service.get_case("LMS12345", "22222")[
+        "catiMana.CatiCall.RegsCalls[1].DialResult"
+    ]
 
 
 def test_get_case_when_questionnaire_does_not_exist(service: FakeBlaiseService):
@@ -113,39 +113,20 @@ def test_get_case_when_case_exists(service: FakeBlaiseService):
     service.add_case_to_questionnaire("LMS12345", "99999")
 
     case = service.get_case("LMS12345", "99999")
-    assert case == BlaiseCaseInformationModel(
-        questionnaire_name="LMS12345",
-        tla="LMS",
-        case_id="99999",
-        data_model_name=None,
-        wave=None,
-        address_details=AddressDetails(
-            reference="",
-            address=Address(
-                address_line_1=None,
-                address_line_2=None,
-                address_line_3=None,
-                county=None,
-                town=None,
-                postcode=None,
-                coordinates=AddressCoordinates(latitude=None, longitude=None),
-            ),
-        ),
-        contact_details=ContactDetails(
-            telephone_number_1=None,
-            telephone_number_2=None,
-            appointment_telephone_number=None,
-        ),
-        outcome_code=0,
-        priority=None,
-        field_case=None,
-        field_region=None,
-        field_team=None,
-        wave_com_dte=None,
-        rotational_knock_to_nudge_indicator=None,
-        rotational_outcome_code=0,
-        has_call_history=False,
-    )
+    assert case == {
+        BlaiseFields.call_history: False,
+        BlaiseFields.outcome_code: 0,
+        BlaiseFields.field_case: "None",
+        BlaiseFields.field_region: "None",
+        BlaiseFields.tla: "LMS",
+        BlaiseFields.telephone_number_1: "None",
+        BlaiseFields.telephone_number_2: "None",
+        BlaiseFields.wave: "None",
+        BlaiseFields.rotational_knock_to_nudge_indicator: "None",
+        BlaiseFields.rotational_outcome_code: 0,
+        BlaiseFields.case_id: "99999",
+        BlaiseFields.appointment_telephone_number: "None",
+    }
 
 
 def test_case_has_been_updated_when_update_case_has_not_been_called(
@@ -209,11 +190,12 @@ def test_get_cases_called_count(service: FakeBlaiseService):
     service.add_questionnaire("LMS12345")
     service.add_questionnaire("LMS56789")
     service.add_questionnaire("LMS22468")
+    required_fields = BlaiseLMSCreateCaseModel.required_fields()
 
     # act
-    service.get_cases("LMS12345")
-    service.get_cases("LMS12345")
-    service.get_cases("LMS56789")
+    service.get_cases("LMS12345", required_fields)
+    service.get_cases("LMS12345", required_fields)
+    service.get_cases("LMS56789", required_fields)
 
     # assert
     assert service.get_cases_call_count("LMS12345") == 2

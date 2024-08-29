@@ -4,7 +4,7 @@ We integrate with Totalmobile for field workforce management. We send case detai
 
 This project contains several services for sending data to and receiving data from Totalmobile.
 
-### Services
+### Services 
 
 - Cloud Function (create_totalmobile_jobs_trigger) to check if a Totalmobile release date has been set for a questionnaire in [DQS](https://github.com/ONSdigital/blaise-deploy-questionnaire-service). If a questionnaire has a Totalmobile release date of today, it will get all cases for that questionnaire, apply business logic to filter out cases, then send the remaining case details to a Cloud Tasks queue.
 
@@ -131,6 +131,16 @@ Run check-types tests:
 poetry run mypy .
 ```
 
+Run black refactoring:
+```shell
+poetry run black .
+```
+
+Run isort refactoring:
+```shell
+poetry run isort .
+```
+
 ### Poetry Problems
 
 #### Dependencies (like the blaise-restapi) not updating properly after running ```poetry update blaise-restapi``` ???
@@ -151,3 +161,5 @@ This worked for me:
 * Add it, commit it, push it, raise a PR and get it deployed
 * In this repository create a new branch and execute ```poetry update blaise-restapi``` to update the dependencies (if there are issues, follow the above instructions)
 * Add it, commit it, push it, raise a PR (you will see the version for blaise-restapi has been bumped in poetry.lock) and get it deployed
+
+

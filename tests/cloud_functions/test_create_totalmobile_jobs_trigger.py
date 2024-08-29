@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 from cloud_functions.create_totalmobile_jobs_trigger import (
     create_totalmobile_jobs_trigger,
 )
-from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
+from services.create.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 
 
 def test_create_totalmobile_jobs_completed_in_blaise_returns_value_from_service():

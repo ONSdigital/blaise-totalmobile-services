@@ -1,4 +1,4 @@
-from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
+from services.create.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 
 
 def create_totalmobile_jobs_trigger(

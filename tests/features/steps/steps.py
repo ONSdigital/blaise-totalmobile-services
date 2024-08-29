@@ -9,9 +9,52 @@ from behave import given, then, when
 
 import cloud_functions.delete_totalmobile_jobs_completed_in_blaise
 import cloud_functions.delete_totalmobile_jobs_past_field_period
-from services.create_totalmobile_jobs_service import CreateTotalmobileJobsService
+from enums.blaise_fields import BlaiseFields
+from services.create.create_totalmobile_jobs_service import CreateTotalmobileJobsService
+from services.create.questionnaires.eligibility.case_filters.case_filter_wave_1 import (
+    CaseFilterWave1,
+)
+from services.create.questionnaires.eligibility.case_filters.case_filter_wave_2 import (
+    CaseFilterWave2,
+)
+from services.create.questionnaires.eligibility.case_filters.case_filter_wave_3 import (
+    CaseFilterWave3,
+)
+from services.create.questionnaires.eligibility.case_filters.case_filter_wave_4 import (
+    CaseFilterWave4,
+)
+from services.create.questionnaires.eligibility.case_filters.case_filter_wave_5 import (
+    CaseFilterWave5,
+)
+from services.create.questionnaires.eligibility.lms_eligible_case_service import (
+    LMSEligibleCaseService,
+)
+from services.create.questionnaires.lms_questionnaire_service import (
+    LMSQuestionnaireService,
+)
+from tests.fakes.fake_cloud_task_service import FakeCloudTaskService
 from tests.helpers import incoming_request_helper
 from tests.helpers.date_helper import get_date_as_totalmobile_formatted_string
+
+
+@given('the survey type is "{survey_type}"')
+def step_impl(context, survey_type):
+    if survey_type == "LMS":
+        context.questionnaire_service = LMSQuestionnaireService(
+            blaise_service=context.blaise_service,
+            eligible_case_service=LMSEligibleCaseService(
+                wave_filters=[
+                    CaseFilterWave1(),
+                    CaseFilterWave2(),
+                    CaseFilterWave3(),
+                    CaseFilterWave4(),
+                    CaseFilterWave5(),
+                ]
+            ),
+            datastore_service=context.datastore_service,
+            uac_service=context.uac_service,
+        )
+        context.cloud_task_service = FakeCloudTaskService()
 
 
 @given('there is a questionnaire "{questionnaire}" with case "{case_id}" in Blaise')
@@ -347,19 +390,25 @@ def step_impl(context, case_id, questionnaire_name):
     data_fields: dict = {row["field_name"]: row["value"] for row in context.table}
     outcome_code = int(data_fields["outcome_code"])
     rotational_outcome_code = (
-        0 if not data_fields.get("qRotate.RHOut") else int(data_fields["qRotate.RHOut"])
+        0
+        if not data_fields.get(BlaiseFields.rotational_outcome_code)
+        else int(data_fields[BlaiseFields.rotational_outcome_code])
     )
     context.blaise_service.add_case_to_questionnaire(
         questionnaire=questionnaire_name,
         case_id=case_id,
         outcome_code=outcome_code,
-        wave=int(data_fields["qDataBag.Wave"]),
-        field_case=data_fields["qDataBag.FieldCase"],
-        telephone_number_1=data_fields["qDataBag.TelNo"],
-        telephone_number_2=data_fields["qDataBag.TelNo2"],
-        appointment_telephone_number=data_fields["telNoAppt"],
-        field_region=data_fields["qDataBag.FieldRegion"],
-        rotational_knock_to_nudge_indicator=data_fields.get("qRotate.RDMktnIND"),
+        wave=int(data_fields[BlaiseFields.wave]),
+        field_case=data_fields[BlaiseFields.field_case],
+        telephone_number_1=data_fields[BlaiseFields.telephone_number_1],
+        telephone_number_2=data_fields[BlaiseFields.telephone_number_2],
+        appointment_telephone_number=data_fields[
+            BlaiseFields.appointment_telephone_number
+        ],
+        field_region=data_fields[BlaiseFields.field_region],
+        rotational_knock_to_nudge_indicator=data_fields.get(
+            BlaiseFields.rotational_knock_to_nudge_indicator
+        ),
         rotational_outcome_code=rotational_outcome_code,
     )
     context.case_id = case_id
@@ -370,7 +419,6 @@ def step_impl(context):
     create_totalmobile_jobs_service = CreateTotalmobileJobsService(
         totalmobile_service=context.totalmobile_service,
         questionnaire_service=context.questionnaire_service,
-        uac_service=context.uac_service,
         cloud_task_service=context.cloud_task_service,
     )
 

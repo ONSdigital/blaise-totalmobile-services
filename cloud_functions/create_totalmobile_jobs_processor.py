@@ -5,7 +5,6 @@ import flask
 
 from client.errors import BadRequest
 from cloud_functions.logging import setup_logger
-from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
 from services.totalmobile_service import TotalmobileService
 
 setup_logger()
@@ -38,7 +37,9 @@ def create_totalmobile_jobs_processor(
             "create_totalmobile_jobs_processor was not triggered by a valid request"
         )
 
-    totalmobile_job = TotalmobileCreateJobModel.import_job(request_json)
+    totalmobile_job = totalmobile_service.map_totalmobile_create_job_from_json(
+        request_json
+    )
 
     logging.info(
         f"Creating Totalmobile job for questionnaire {totalmobile_job.questionnaire} with case ID {totalmobile_job.case_id}"

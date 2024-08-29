@@ -1,4 +1,6 @@
 Feature: Update case
+  Background:
+    Given the survey type is "LMS"
 
   Scenario: Questionnaire and case is found in Blaise
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise

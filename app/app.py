@@ -5,6 +5,7 @@ from app.config import Config
 from app.endpoints import incoming
 from appconfig.config import Config as AppConfig
 from services.blaise_service import RealBlaiseService
+from services.create.uac.uac_service import UacService
 
 
 def load_config(application):
@@ -20,4 +21,5 @@ def setup_app():
     app_config = AppConfig.from_env()
     application.app_config = app_config
     application.blaise_service = RealBlaiseService(app_config)
+    application.uac_service = UacService(app_config)
     return application

@@ -2,15 +2,17 @@ from unittest.mock import Mock, call, create_autospec
 
 import pytest
 
-from models.totalmobile.totalmobile_get_jobs_response_model import (
+from models.common.totalmobile.totalmobile_world_model import (
+    TotalmobileWorldModel,
+    World,
+)
+from models.delete.totalmobile_get_jobs_response_model import (
     Job,
     TotalmobileGetJobsResponseModel,
 )
-from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
-from services.delete_totalmobile_job_service import DeleteTotalmobileJobService
-from services.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
+from services.delete.delete_totalmobile_job_service import DeleteTotalmobileJobService
+from services.delete.delete_totalmobile_jobs_service import DeleteTotalmobileJobsService
 from services.totalmobile_service import RealTotalmobileService
-from tests.helpers.get_blaise_case_model_helper import get_populated_case_model
 
 CASE_OUTCOMES_WHOSE_JOBS_SHOULD_BE_DELETED = [123, 110, 543]
 

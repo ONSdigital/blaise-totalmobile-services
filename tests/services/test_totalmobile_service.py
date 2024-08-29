@@ -1,4 +1,4 @@
-from unittest.mock import create_autospec
+from unittest.mock import Mock, create_autospec
 
 import pytest
 import requests
@@ -6,8 +6,13 @@ import requests
 from client import AuthException
 from client.messaging import MessagingClient
 from client.optimise import OptimiseClient
-from models.cloud_tasks.totalmobile_create_job_model import TotalmobileCreateJobModel
-from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
+from models.common.totalmobile.totalmobile_world_model import (
+    TotalmobileWorldModel,
+    World,
+)
+from models.create.totalmobile.totalmobile_create_job_model import (
+    TotalmobileCreateJobModel,
+)
 from services.totalmobile_service import (
     DeleteJobError,
     RealTotalmobileService,
@@ -37,8 +42,17 @@ def messaging_client_mock():
 
 
 @pytest.fixture()
-def totalmobile_service(optimise_client_mock, messaging_client_mock):
-    return RealTotalmobileService(optimise_client_mock, messaging_client_mock)
+def mock_mapper_service():
+    return Mock()
+
+
+@pytest.fixture()
+def totalmobile_service(
+    optimise_client_mock, messaging_client_mock, mock_mapper_service
+):
+    return RealTotalmobileService(
+        optimise_client_mock, messaging_client_mock, mock_mapper_service
+    )
 
 
 class TestGetWorldModel:

@@ -1,47 +1,41 @@
 from werkzeug.security import generate_password_hash
 
 from app.app import setup_app
-from services.blaise_case_outcome_service import BlaiseCaseOutcomeService
-from services.case_filters.case_filter_wave_1 import CaseFilterWave1
-from services.case_filters.case_filter_wave_2 import CaseFilterWave2
-from services.case_filters.case_filter_wave_3 import CaseFilterWave3
-from services.case_filters.case_filter_wave_4 import CaseFilterWave4
-from services.case_filters.case_filter_wave_5 import CaseFilterWave5
-from services.eligible_case_service import EligibleCaseService
-from services.questionnaire_service import QuestionnaireService
+from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
 from tests.fakes.fake_blaise_service import FakeBlaiseService
-from tests.fakes.fake_cloud_task_service import FakeCloudTaskService
 from tests.fakes.fake_datastore_service import FakeDatastoreService
 from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
 from tests.fakes.fake_uac_service import FakeUacService
 
 
-def before_scenario(context, scenario):
+def before_scenario(context, _scenario):
+    app = setup_test_app()
+    setup_context(app, context)
+
+
+def setup_test_app():
     app = setup_app()
+
     app.blaise_service = FakeBlaiseService()
+    app.uac_service = FakeUacService()
     app.totalmobile_service = FakeTotalmobileService()
-
-    context.blaise_service = app.blaise_service
-    context.totalmobile_service = app.totalmobile_service
-    context.datastore_service = FakeDatastoreService()
-    context.blaise_outcome_service = BlaiseCaseOutcomeService(context.blaise_service)
-    context.questionnaire_service = QuestionnaireService(
-        app.blaise_service,
-        EligibleCaseService(
-            wave_filters=[
-                CaseFilterWave1(),
-                CaseFilterWave2(),
-                CaseFilterWave3(),
-                CaseFilterWave4(),
-                CaseFilterWave5(),
-            ]
-        ),
-        context.datastore_service,
-    )
-
-    context.uac_service = FakeUacService()
-    context.cloud_task_service = FakeCloudTaskService()
 
     app.config["user"] = "test_username"
     app.config["password_hash"] = generate_password_hash("test_password")
+
+    return app
+
+
+def setup_context(app, context):
+    setup_test_services(app, context)
     context.test_client = app.test_client()
+    context.app = app
+
+
+def setup_test_services(app, context):
+    context.blaise_service = app.blaise_service
+    context.uac_service = app.uac_service
+    context.totalmobile_service = app.totalmobile_service
+
+    context.datastore_service = FakeDatastoreService()
+    context.blaise_outcome_service = BlaiseCaseOutcomeService(context.blaise_service)
