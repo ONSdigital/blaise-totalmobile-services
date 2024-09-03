@@ -36,7 +36,6 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
     def required_fields() -> List:
         return [
             BlaiseFields.case_id,
-            BlaiseFields.data_model_name,
             BlaiseFields.tla,
             BlaiseFields.address_line_1,
             BlaiseFields.address_line_2,
