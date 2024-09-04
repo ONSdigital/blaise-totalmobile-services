@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from models.create.blaise.blaiise_frs_create_case_model import BlaiseFRSCreateCaseModel
+from models.create.blaise.blaise_frs_create_case_model import BlaiseFRSCreateCaseModel
 from services.create.questionnaires.frs_questionnaire_service import (
     FRSQuestionnaireService,
 )

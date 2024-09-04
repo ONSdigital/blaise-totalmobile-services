@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 
-from models.create.blaise.blaiise_frs_create_case_model import BlaiseFRSCreateCaseModel
-from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
+from models.create.blaise.blaise_frs_create_case_model import BlaiseFRSCreateCaseModel
+from models.create.blaise.blaise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from models.create.blaise.questionnaire_uac_model import UacChunks
 
 
