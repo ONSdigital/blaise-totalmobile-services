@@ -1,5 +1,5 @@
 from enums.blaise_fields import BlaiseFields
-from models.create.blaise.blaiise_frs_create_case_model import BlaiseFRSCreateCaseModel
+from models.create.blaise.blaise_frs_create_case_model import BlaiseFRSCreateCaseModel
 
 
 def test_create_case_description_for_interviewer_returns_a_correctly_formatted_description():

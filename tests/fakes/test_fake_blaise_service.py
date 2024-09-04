@@ -2,7 +2,7 @@ import pytest
 
 from app.exceptions.custom_exceptions import QuestionnaireCaseDoesNotExistError
 from enums.blaise_fields import BlaiseFields
-from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
+from models.create.blaise.blaise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from tests.fakes.fake_blaise_service import FakeBlaiseService
 
 

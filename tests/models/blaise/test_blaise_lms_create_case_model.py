@@ -1,5 +1,5 @@
 from enums.blaise_fields import BlaiseFields
-from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
+from models.create.blaise.blaise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from models.create.blaise.questionnaire_uac_model import UacChunks
 from tests.helpers.blaise_case_model_helper import BlaiseCaseModelHelper
 

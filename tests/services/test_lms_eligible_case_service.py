@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
+from models.create.blaise.blaise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from services.create.questionnaires.eligibility.case_filters.case_filter_base import (
     CaseFilterBase,
 )

@@ -3,7 +3,7 @@ from abc import abstractmethod
 from typing import List
 
 from models.common.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from models.create.blaise.blaiise_lms_create_case_model import BlaiseLMSCreateCaseModel
+from models.create.blaise.blaise_lms_create_case_model import BlaiseLMSCreateCaseModel
 
 
 class CaseFilterBase:
