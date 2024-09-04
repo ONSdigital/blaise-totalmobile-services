@@ -2,7 +2,7 @@ import logging
 from typing import List
 
 from models.common.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from models.create.blaise.blaiise_frs_create_case_model import BlaiseFRSCreateCaseModel
+from models.create.blaise.blaise_frs_create_case_model import BlaiseFRSCreateCaseModel
 
 
 class FRSEligibleCaseService:

@@ -4,7 +4,7 @@ from models.common.totalmobile.totalmobile_world_model import (
     TotalmobileWorldModel,
     World,
 )
-from models.create.blaise.blaiise_frs_create_case_model import BlaiseFRSCreateCaseModel
+from models.create.blaise.blaise_frs_create_case_model import BlaiseFRSCreateCaseModel
 from models.create.totalmobile.totalmobile_create_job_model import (
     TotalmobileCreateJobModelRequestJson,
 )
