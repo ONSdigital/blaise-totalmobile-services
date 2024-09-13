@@ -1,6 +1,6 @@
 from typing import List
 
-from models.cloud_tasks.task_request_model import TaskRequestModel
+from models.common.cloud_tasks.task_request_model import TaskRequestModel
 
 
 class FakeCloudTaskService:

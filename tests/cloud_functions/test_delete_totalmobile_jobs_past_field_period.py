@@ -5,7 +5,7 @@ import pytest
 from cloud_functions.delete_totalmobile_jobs_past_field_period import (
     delete_totalmobile_jobs_past_field_period,
 )
-from services.blaise_case_outcome_service import BlaiseCaseOutcomeService
+from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
 from tests.fakes.fake_blaise_service import FakeBlaiseService
 from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
 from tests.helpers.date_helper import get_date_as_totalmobile_formatted_string

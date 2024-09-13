@@ -1,4 +1,6 @@
 Feature: Update contact details
+  Background:
+    Given the survey type is "LMS"
 
   Scenario Outline: Totalmobile sends a request with an outcome code of 300 when case has outcome code of <outcome_code>
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise

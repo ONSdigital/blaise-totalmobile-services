@@ -1,6 +1,9 @@
 from unittest.mock import create_autospec
 
-from models.totalmobile.totalmobile_world_model import TotalmobileWorldModel, World
+from models.common.totalmobile.totalmobile_world_model import (
+    TotalmobileWorldModel,
+    World,
+)
 from scripts.delete_totalmobile_jobs import (
     __get_active_world_ids,
     __map_world_id_to_job_reference,

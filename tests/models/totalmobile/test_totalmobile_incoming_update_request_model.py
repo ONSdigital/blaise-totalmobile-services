@@ -5,7 +5,7 @@ from app.exceptions.custom_exceptions import (
     InvalidTotalmobileUpdateRequestException,
     MissingReferenceError,
 )
-from models.totalmobile.totalmobile_incoming_update_request_model import (
+from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 from tests.helpers import incoming_request_helper

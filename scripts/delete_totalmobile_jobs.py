@@ -2,9 +2,7 @@ import concurrent.futures
 from itertools import repeat
 from typing import Dict, List
 
-from appconfig import Config
-from client import OptimiseClient
-from client.messaging import MessagingClient
+from factories.service_instance_factory import ServiceInstanceFactory
 from services.totalmobile_service import RealTotalmobileService
 
 
@@ -50,22 +48,11 @@ def __delete_job(
 
 
 if __name__ == "__main__":
-    config = Config.from_env()
-    optimise_client = OptimiseClient(
-        config.totalmobile_url,
-        config.totalmobile_instance,
-        config.totalmobile_client_id,
-        config.totalmobile_client_secret,
-    )
-    messaging_client = MessagingClient(
-        config.totalmobile_url,
-        config.totalmobile_instance,
-        config.totalmobile_client_id,
-        config.totalmobile_client_secret,
-    )
-    totalmobile_service = RealTotalmobileService(optimise_client, messaging_client)
+    service_instance_factory = ServiceInstanceFactory()
 
-    if "dev" in config.totalmobile_url.lower():
+    totalmobile_service = service_instance_factory.create_totalmobile_service()
+
+    if "dev" in service_instance_factory.config.totalmobile_url.lower():
         active_world_ids = __get_active_world_ids(totalmobile_service)
         list_of_world_ids_and_job_references = __map_world_id_to_job_reference(
             totalmobile_service, active_world_ids

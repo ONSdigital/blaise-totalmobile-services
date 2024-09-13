@@ -6,7 +6,7 @@ from google.cloud import tasks_v2
 from google.protobuf.duration_pb2 import Duration
 
 from appconfig import Config
-from models.cloud_tasks.task_request_model import TaskRequestModel
+from models.common.cloud_tasks.task_request_model import TaskRequestModel
 
 
 class CloudTaskService:
