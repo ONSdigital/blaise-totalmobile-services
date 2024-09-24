@@ -16,6 +16,7 @@ T = TypeVar("T", bound="TotalMobileIncomingUpdateFRSRequestModel")
 
 @dataclass
 class TotalMobileIncomingUpdateFRSRequestModel(BaseModel):
+    questionnaire_guid: str
     questionnaire_name: str
     case_id: str
     interviewer_name: str
@@ -23,13 +24,14 @@ class TotalMobileIncomingUpdateFRSRequestModel(BaseModel):
 
     @classmethod
     def import_request(cls: Type[T], incoming_request: IncomingRequest) -> T:
-        if not cls.dictionary_keys_exist(incoming_request, "Visit","Identity","User", "UserAttributes"):
+        if not (cls.dictionary_keys_exist(incoming_request, "Visit", "Identity", "User", "UserAttributes") or cls.dictionary_keys_exist(incoming_request, "Visit", "Identity", "Guid")):
             logging.error("The Totalmobile payload appears to be malformed")
             raise InvalidTotalmobileUpdateRequestException
 
         reference_model = TotalmobileReferenceFRSModel.from_request(incoming_request)
 
         total_mobile_case = cls(
+            questionnaire_guid= reference_model.questionnaire_guid,
             questionnaire_name=reference_model.questionnaire_name,
             case_id=reference_model.case_id,
             interviewer_name = reference_model.interviewer_name,

@@ -18,12 +18,14 @@ class IncomingRequest(TypedDict):
 
 
 class TotalmobileReferenceFRSModel(BaseModel):
+    questionnaire_guid: str
     questionnaire_name: str
     case_id: str
     interviewer_name: str
     interviewer_blaise_login: str
 
-    def __init__(self, questionnaire_name: str, case_id: str, interviewer_name: str, interviewer_blaise_login: str):
+    def __init__(self, questionnaire_guid, questionnaire_name: str, case_id: str, interviewer_name: str, interviewer_blaise_login: str):
+        self.questionnaire_guid = questionnaire_guid
         self.questionnaire_name = questionnaire_name
         self.case_id = case_id
         self.interviewer_name = interviewer_name
@@ -35,17 +37,20 @@ class TotalmobileReferenceFRSModel(BaseModel):
 
     @classmethod
     def from_request(cls: Type[T], request: IncomingRequest) -> T:
+        questionnaire_guid_reference = cls.get_questionnaire_guid_reference_from_incoming_request(request)
         questionnaire_case_reference = cls.get_questionnaire_case_reference_from_incoming_request(request)
         interviewer_name_reference = cls.get_interviewer_reference_from_incoming_request(request)
         interviewer_blaise_login_reference = cls.get_interviewer_login_reference_from_incoming_request(request)
-        return cls.get_model_from_reference(questionnaire_case_reference, interviewer_name_reference,interviewer_blaise_login_reference)
+        return cls.get_model_from_reference(questionnaire_guid_reference, questionnaire_case_reference, interviewer_name_reference,interviewer_blaise_login_reference)
 
     @classmethod
     def from_questionnaire_and_case_and_interviewer(
-        cls: Type[T], questionnaire_name: Optional[str], case_id: Optional[str], interviewer_name:Optional[str], interviewer_blaise_login:Optional[str]
+        cls: Type[T], questionnaire_guid: Optional[str], questionnaire_name: Optional[str], case_id: Optional[str], interviewer_name:Optional[str], interviewer_blaise_login:Optional[str]
     ) -> T:
         if (
-            questionnaire_name is None
+            questionnaire_guid is None
+            or questionnaire_guid == ""
+            or questionnaire_name is None
             or questionnaire_name == ""
             or case_id is None
             or case_id == ""
@@ -56,7 +61,7 @@ class TotalmobileReferenceFRSModel(BaseModel):
         ):
             raise MissingReferenceError()
 
-        return cls(questionnaire_name=questionnaire_name, case_id=case_id, interviewer_name=interviewer_name, interviewer_blaise_login=interviewer_blaise_login)
+        return cls(questionnaire_guid=questionnaire_guid, questionnaire_name=questionnaire_name, case_id=case_id, interviewer_name=interviewer_name, interviewer_blaise_login=interviewer_blaise_login)
 
     def create_frs_reference(self) -> str:
         return f"{self.questionnaire_name}.{self.case_id}"
@@ -92,6 +97,18 @@ class TotalmobileReferenceFRSModel(BaseModel):
         return reference
     
     @staticmethod
+    def get_questionnaire_guid_reference_from_incoming_request(incoming_request: IncomingRequest):
+        guid_reference = TotalmobileReferenceFRSModel.get_dictionary_keys_value_if_they_exist(
+            incoming_request, "Visit", "Identity", "Guid"
+        )
+
+        if guid_reference is None:
+            logging.error("Unique GUID reference is missing from the Totalmobile payload")
+            raise MissingReferenceError()
+
+        return guid_reference
+    
+    @staticmethod
     def get_interviewer_reference_from_incoming_request(incoming_request: IncomingRequest):
         reference = TotalmobileReferenceFRSModel.get_dictionary_keys_value_if_they_exist(
             incoming_request, "Visit", "Identity", "User", "Name"
@@ -123,10 +140,10 @@ class TotalmobileReferenceFRSModel(BaseModel):
         return login_value
 
     @staticmethod
-    def get_model_from_reference(questionnaire_reference: str, interviewer_name_reference: str, interviewer_login_reference : str):
-        questionnaire_case_request_fields = TotalmobileReferenceFRSModel.get_fields_from_reference(questionnaire_reference)
+    def get_model_from_reference(questionnaire_guid, questionnaire_case_reference: str, interviewer_name_reference: str, interviewer_login_reference : str):
+        questionnaire_case_request_fields = TotalmobileReferenceFRSModel.get_fields_from_reference(questionnaire_case_reference)
         questionnaire_name = questionnaire_case_request_fields[0]
         case_id = questionnaire_case_request_fields[1]
         return TotalmobileReferenceFRSModel(
-            questionnaire_name=questionnaire_name, case_id=case_id, interviewer_name=interviewer_name_reference,interviewer_blaise_login=interviewer_login_reference
+            questionnaire_guid=questionnaire_guid, questionnaire_name=questionnaire_name, case_id=case_id, interviewer_name=interviewer_name_reference,interviewer_blaise_login=interviewer_login_reference
         )
