@@ -12,8 +12,8 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireDoesNotExistError,
 )
 from app.handlers.totalmobile_incoming_handler import (
-    complete_visit_request_handler,
     submit_form_result_request_handler,
+    create_visit_request_handler,
     update_visit_status_request_handler,
 )
 from services.update.update_case_service import UpdateCaseService
@@ -54,11 +54,11 @@ def submit_form_result_request():
         return "Error trying to get case in Blaise", 500
 
 
-@incoming.route("/completevisitrequest", methods=["POST"])
+@incoming.route("/createvisitrequest", methods=["POST"])
 @auth.login_required
-def complete_visit_request():
-    logging.info(f"Incoming request via the 'completevisitrequest' endpoint")
-    complete_visit_request_handler(request)
+def create_visit_request():
+    logging.info(f"Incoming request via the 'createvisitrequest' endpoint")
+    create_visit_request_handler(request)
     return "ok"
 
 
