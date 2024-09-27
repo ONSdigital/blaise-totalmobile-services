@@ -24,7 +24,7 @@ class TotalMobileIncomingUpdateFRSRequestModel(BaseModel):
 
     @classmethod
     def import_request(cls: Type[T], incoming_request: IncomingRequest) -> T:
-        if not (cls.dictionary_keys_exist(incoming_request, "Visit", "Identity", "User", "UserAttributes") or cls.dictionary_keys_exist(incoming_request, "Visit", "Identity", "Guid")):
+        if not (cls.dictionary_keys_exist(incoming_request, "visit", "identity", "user", "userAttributes") or cls.dictionary_keys_exist(incoming_request, "visit", "identity", "guid")):
             logging.error("The Totalmobile payload appears to be malformed")
             raise InvalidTotalmobileUpdateRequestException
 

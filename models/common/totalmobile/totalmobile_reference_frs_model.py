@@ -87,7 +87,7 @@ class TotalmobileReferenceFRSModel(BaseModel):
     @staticmethod
     def get_questionnaire_case_reference_from_incoming_request(incoming_request: IncomingRequest):
         reference = TotalmobileReferenceFRSModel.get_dictionary_keys_value_if_they_exist(
-            incoming_request, "Visit", "Identity", "Reference"
+            incoming_request, "visit", "identity", "reference"
         )
 
         if reference is None:
@@ -99,7 +99,7 @@ class TotalmobileReferenceFRSModel(BaseModel):
     @staticmethod
     def get_questionnaire_guid_reference_from_incoming_request(incoming_request: IncomingRequest):
         guid_reference = TotalmobileReferenceFRSModel.get_dictionary_keys_value_if_they_exist(
-            incoming_request, "Visit", "Identity", "Guid"
+            incoming_request, "visit", "identity", "guid"
         )
 
         if guid_reference is None:
@@ -111,7 +111,7 @@ class TotalmobileReferenceFRSModel(BaseModel):
     @staticmethod
     def get_interviewer_reference_from_incoming_request(incoming_request: IncomingRequest):
         reference = TotalmobileReferenceFRSModel.get_dictionary_keys_value_if_they_exist(
-            incoming_request, "Visit", "Identity", "User", "Name"
+            incoming_request, "visit", "identity", "user", "name"
         )
 
         if reference is None:
@@ -123,7 +123,7 @@ class TotalmobileReferenceFRSModel(BaseModel):
     @staticmethod
     def get_interviewer_login_reference_from_incoming_request(incoming_request: IncomingRequest):
         user_attributes = TotalmobileReferenceFRSModel.get_dictionary_keys_value_if_they_exist(
-            incoming_request, "Visit", "Identity", "User", "UserAttributes"
+            incoming_request, "visit", "identity", "user", "userAttributes"
         )
 
         if user_attributes is None:
