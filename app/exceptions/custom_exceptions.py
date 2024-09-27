@@ -20,3 +20,6 @@ class BadReferenceError(Exception):
 
 class InvalidTotalmobileUpdateRequestException(Exception):
     pass
+
+class CaseCreationException(Exception):
+    pass

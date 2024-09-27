@@ -5,6 +5,7 @@ from flask import Blueprint, current_app, jsonify, request
 from app.auth import auth
 from app.exceptions.custom_exceptions import (
     BadReferenceError,
+    CaseCreationException,
     InvalidTotalmobileUpdateRequestException,
     MissingReferenceError,
     QuestionnaireCaseDoesNotExistError,
@@ -17,6 +18,7 @@ from app.handlers.totalmobile_incoming_handler import (
     update_visit_status_request_handler,
 )
 from services.update.update_case_service import UpdateCaseService
+from services.update.update_frs_case_allocation_service import UpdateFRSCaseService
 
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
 
@@ -52,14 +54,19 @@ def submit_form_result_request():
         return "Case does not exist in Blaise", 404
     except QuestionnaireCaseError:
         return "Error trying to get case in Blaise", 500
-
+    
 
 @incoming.route("/createvisitrequest", methods=["POST"])
-@auth.login_required
 def create_visit_request():
     logging.info(f"Incoming request via the 'createvisitrequest' endpoint")
-    create_visit_request_handler(request)
-    return "ok"
+    try:
+        update_frs_case_service = UpdateFRSCaseService(
+            cma_blaise_service=current_app.cma_blaise_service
+        )
+        create_visit_request_handler(request, update_frs_case_service)
+        return "ok"
+    except CaseCreationException:
+        return "Error creating case for Allocation"
 
 
 @incoming.route("/updatevisitstatusrequest", methods=["POST"])
