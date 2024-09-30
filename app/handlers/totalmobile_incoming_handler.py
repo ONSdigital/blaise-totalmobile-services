@@ -15,6 +15,7 @@ def submit_form_result_request_handler(request, update_case_service: UpdateCaseS
     update_case_service.update_case(totalmobile_case)
 
 def create_visit_request_handler(request, update_frs_case_allocation_service: UpdateFRSCaseService):
+    logging.info("printing request object: "+str(request))
     data = request.get_json()
     logging.info(str(data))
     totalmobile_frs_case = TotalMobileIncomingUpdateFRSRequestModel.import_request(data)
