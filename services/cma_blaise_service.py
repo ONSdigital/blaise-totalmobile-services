@@ -1,7 +1,7 @@
 import logging
 from typing import Any, Dict
 
-from app.exceptions.custom_exceptions import CaseCreationException, QuestionnaireCaseError, QuestionnaireDoesNotExistError
+from app.exceptions.custom_exceptions import CaseAllocationException, QuestionnaireDoesNotExistError
 import blaise_restapi
 
 from appconfig.config import Config
@@ -27,7 +27,7 @@ class CMABlaiseService:
             logging.error(error_message)
             raise QuestionnaireDoesNotExistError()
 
-    def validate_if_case_exist_in_cma_launcher(self, guid: str, questionnaire_name: str, case_id: str) -> bool:
+    def validate_if_case_exist_in_cma_launcher(self, guid: str, case_id: str) -> bool:
         
         try:
             case = self.restapi_client.get_multikey_case(
@@ -49,11 +49,8 @@ class CMABlaiseService:
                 frs_case_model.key_values,
                 frs_case_model.data_fields,
             )
-            logging.info(
-                f"Created Case for User '{frs_case_model.user}' for Questionnaire {frs_case_model.questionnaire_name}"
-            )
         except:
-            raise CaseCreationException
+            raise CaseAllocationException
         
     def update_frs_case_for_user(self, frs_case_model: FRSCaseModel):
         try:
@@ -68,4 +65,4 @@ class CMABlaiseService:
                 f"Updated Case {frs_case_model.case_id}. Successfully reallocated to '{frs_case_model.user}' for Questionnaire {frs_case_model.questionnaire_name}"
             )
         except:
-            raise CaseCreationException
+            raise CaseAllocationException

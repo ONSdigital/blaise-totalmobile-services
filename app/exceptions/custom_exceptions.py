@@ -21,10 +21,13 @@ class BadReferenceError(Exception):
 class InvalidTotalmobileUpdateRequestException(Exception):
     pass
 
-class CaseCreationException(Exception):
+class InvalidTotalmobileFRSRequestException(Exception):
     pass
 
 class CaseAllocationException(Exception):
+    pass
+
+class CaseReAllocationException(Exception):
     pass
 
 class SpecialInstructionCreationFailedException(Exception):
