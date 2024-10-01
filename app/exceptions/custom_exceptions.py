@@ -23,3 +23,9 @@ class InvalidTotalmobileUpdateRequestException(Exception):
 
 class CaseCreationException(Exception):
     pass
+
+class CaseAllocationException(Exception):
+    pass
+
+class SpecialInstructionCreationFailedException(Exception):
+    pass

@@ -4,21 +4,22 @@ from typing import Any, Dict
 from app.exceptions.custom_exceptions import (
     CaseCreationException,
     QuestionnaireDoesNotExistError,
+    SpecialInstructionCreationFailedException,
 )
 
 from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
-from models.update.totalmobile_incoming_update_frs_request_model import (
-    TotalMobileIncomingUpdateFRSRequestModel,
+from models.create.cma.totalmobile_incoming_frs_request_model import (
+    TotalMobileIncomingFRSRequestModel,
 )
 from services.cma_blaise_service import CMABlaiseService
 
 
-class UpdateFRSCaseService:
+class FRSCaseAllocationService:
     def __init__(self, cma_blaise_service: CMABlaiseService):
         self._cma_blaise_service = cma_blaise_service
 
-    def update_case(
-        self, totalmobile_request: TotalMobileIncomingUpdateFRSRequestModel
+    def create_case(
+        self, totalmobile_request: TotalMobileIncomingFRSRequestModel
     ) -> None:
         self._validate_questionnaire_exists(totalmobile_request.questionnaire_name)
 
@@ -53,7 +54,7 @@ class UpdateFRSCaseService:
 
         logging.info(f"Successfully found questionnaire {questionnaire_name} in Blaise")
 
-    def _update_frs_case_with_business_logic(self, totalmobile_request:TotalMobileIncomingUpdateFRSRequestModel, case) -> None:
+    def _update_frs_case_with_business_logic(self, totalmobile_request:TotalMobileIncomingFRSRequestModel, case) -> None:
         
         #Step-1: create a Special Instructions entry in CMA_Launcher DB for previous allocated interviewer to release the case
         self._create_new_entry_for_special_instructions(case, totalmobile_request.questionnaire_name)
@@ -70,7 +71,7 @@ class UpdateFRSCaseService:
             f"with Blaise Logins ={totalmobile_request.interviewer_blaise_login})")
         return
 
-    def _create_new_frs_case(self, frsCaseFromTotalMobileRequest: TotalMobileIncomingUpdateFRSRequestModel) -> None:
+    def _create_new_frs_case(self, frsCaseFromTotalMobileRequest: TotalMobileIncomingFRSRequestModel) -> None:
         frsCase = FRSCaseModel(user = frsCaseFromTotalMobileRequest.interviewer_blaise_login, questionnaire_name = frsCaseFromTotalMobileRequest.questionnaire_name, guid =  frsCaseFromTotalMobileRequest.questionnaire_guid, case_id = frsCaseFromTotalMobileRequest.case_id,custom_use="",location="", inPosession="")
         try:
             self._cma_blaise_service.create_frs_case_for_user(frsCase)
@@ -112,9 +113,9 @@ class UpdateFRSCaseService:
             logging.error(
                 f"Could not create a Special Instructions entry for reallocation"
             )
-            raise CaseCreationException()
+            raise SpecialInstructionCreationFailedException()
 
-    def _reallocate_existing_case_to_new_interviewer(self, old_allocated_case, new_totalmobile_allocation_request:TotalMobileIncomingUpdateFRSRequestModel):
+    def _reallocate_existing_case_to_new_interviewer(self, old_allocated_case, new_totalmobile_allocation_request:TotalMobileIncomingFRSRequestModel):
     
         frsCase = FRSCaseModel(
             user = new_totalmobile_allocation_request.interviewer_blaise_login,

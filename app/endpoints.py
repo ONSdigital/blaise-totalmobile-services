@@ -18,7 +18,7 @@ from app.handlers.totalmobile_incoming_handler import (
     update_visit_status_request_handler,
 )
 from services.update.update_case_service import UpdateCaseService
-from services.update.update_frs_case_allocation_service import UpdateFRSCaseService
+from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
 
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
 
@@ -57,13 +57,14 @@ def submit_form_result_request():
     
 
 @incoming.route("/createvisitrequest", methods=["POST"])
+@auth.login_required
 def create_visit_request():
     logging.info(f"Incoming request via the 'createvisitrequest' endpoint")
     try:
-        update_frs_case_service = UpdateFRSCaseService(
+        frs_case_allocation_service = FRSCaseAllocationService(
             cma_blaise_service=current_app.cma_blaise_service
         )
-        create_visit_request_handler(request, update_frs_case_service)
+        create_visit_request_handler(request, frs_case_allocation_service)
         return "ok"
     except CaseCreationException:
         return "Error creating case for Allocation"

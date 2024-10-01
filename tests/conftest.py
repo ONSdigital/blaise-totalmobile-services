@@ -390,120 +390,272 @@ def submit_form_result_request_sample():
 
 
 @pytest.fixture
-def complete_visit_request_sample():
+def create_visit_request_sample():
     return json.loads(
         """
     {
-      "SystemDate": "2022-03-15T11:20:04.307495+00:00",
-      "SystemDateSpecified": true,
-      "IsFullyComplete": true,
-      "Lines": [
-
-      ],
-      "Appointment": {
-        "Date": "2022-03-15T10:00:00",
-        "Slot": "",
-        "Schedule": {
-          "StartDate": "2022-03-15T10:00:00",
-          "EndDate": "2022-03-15T11:00:00"
+    "Visit": {
+        "Identity": {
+            "Guid": "3fe4dc64-d07c-ef11-9c38-7c1e52036bea",
+            "WorkType": "FRS",
+            "User": {
+                "ID": 1239,
+                "IDSpecified": true,
+                "Name": "Callum.Nicholson",
+                "DeviceID": null,
+                "UserAttributes": [
+                    {
+                        "Name": "BlaiseLogin",
+                        "Value": "cal"
+                    },
+                    {
+                        "Name": "Region",
+                        "Value": "Wales"
+                    },
+                    {
+                        "Name": "Region",
+                        "Value": "South East"
+                    },
+                    {
+                        "Name": "Skill",
+                        "Value": "FRS"
+                    }
+                ]
+            },
+            "Company": "NA",
+            "Reference": "IPS2409A.500101"
         },
-        "KeptSpecified": false,
-        "ReasonCode": null,
-        "Narrative": null
-      },
-      "Tasks": [
-        {
-          "FormIdentity": {
-            "Reference": "First Visit",
-            "Version": 0
-          },
-          "FormResultGuid": "f11-ba8",
-          "LineNo": -1,
-          "Type": 0,
-          "Description": "Property Details",
-          "Complete": true,
-          "Notes": null,
-          "Location": null,
-          "Status": 2,
-          "AdditionalProperties": [
-
-          ],
-          "DependencyGroup": null,
-          "DependencyExpression": null,
-          "LastUpdatedDateTime": "2022-03-15T11:19:39.426074+00:00",
-          "LastUpdatedDateTimeSpecified": true,
-          "Title": null
-        },
-        {
-          "FormIdentity": {
-            "Reference": "Correct Address",
-            "Version": 0
-          },
-          "FormResultGuid": "f00-ba7",
-          "LineNo": -2,
-          "Type": 0,
-          "Description": "Validate Address",
-          "Complete": true,
-          "Notes": null,
-          "Location": null,
-          "Status": 2,
-          "AdditionalProperties": [
-
-          ],
-          "DependencyGroup": null,
-          "DependencyExpression": null,
-          "LastUpdatedDateTime": "2022-03-15T11:19:46.632285+00:00",
-          "LastUpdatedDateTimeSpecified": true,
-          "Title": null
-        }
-      ],
-      "Identity": {
-        "Guid": "f00-ba7",
-        "WorkType": "SS",
-        "User": {
-          "ID": 9999,
-          "IDSpecified": true,
-          "Name": "jane.doe",
-          "DeviceID": "f00-ba7",
-          "UserAttributes": [
-            {
-              "Name": "AuthNo",
-              "Value": "1111"
+        "ClientReference": null,
+        "Description": "blah",
+        "Property": {
+            "Guid": null,
+            "Type": "JM_PROPERTY",
+            "Reference": null,
+            "ParentReference": null,
+            "Name": null,
+            "Title": null,
+            "Address": {
+                "Name": null,
+                "Lines": [
+                    "prem1",
+                    "prem2",
+                    "prem3",
+                    "district",
+                    "posttown"
+                ],
+                "HouseNo": null,
+                "PostCode": "postcode",
+                "GeoX": 51.566,
+                "GeoXSpecified": true,
+                "GeoY": -3.026,
+                "GeoYSpecified": true,
+                "URL": null
             },
-            {
-              "Name": "Region",
-              "Value": "South West"
-            },
-            {
-              "Name": "Skill",
-              "Value": "Survey"
-            },
-            {
-              "Name": "Team",
-              "Value": "South West 7"
+            "Phone": null,
+            "WorkPhone": null,
+            "MobilePhone": null,
+            "Email": null,
+            "URL": null,
+            "Assets": [],
+            "ExtendedProperties": {
+                "PreferredName": null,
+                "ID": null,
+                "IDLabel": null,
+                "DateOfBirthSpecified": false,
+                "DateOfDeathSpecified": false,
+                "Gender": null
             }
-          ]
         },
-        "Company": "NA",
-        "Reference": "SLC-12345-678-910"
-      },
-      "Date": "2022-03-15T11:20:04.307495+00:00",
-      "ProcessReference": "TELINTFULL",
-      "ReasonCode": null,
-      "ReasonDescription": null,
-      "Notes": null,
-      "FromStatus": "TELCALL",
-      "ToStatus": "INTERVIEWF",
-      "Actual": null,
-      "Action": 4,
-      "ActionSpecified": true,
-      "Metadata": [
-
-      ]
-    }
+        "Supervisor": null,
+        "Status": "NEW",
+        "StatusChangeDateSpecified": false,
+        "CreatedDate": "2024-09-27T13:59:56.8872461+01:00",
+        "CreatedDateSpecified": true,
+        "RetrievedSpecified": false,
+        "RetrievedDateSpecified": false,
+        "PrintedDateSpecified": false,
+        "ReceivedDateSpecified": false,
+        "ResponseDateSpecified": false,
+        "RequiredDate": "2025-01-01T00:00:00",
+        "RequiredDateSpecified": true,
+        "CompleteSpecified": false,
+        "CompletedDateSpecified": false,
+        "Appointment": null,
+        "Schedule": {
+            "StartDate": "2024-09-27T00:20:00",
+            "EndDate": "2024-09-27T00:35:00"
+        },
+        "Priority": null,
+        "Origin": "ResManager",
+        "SpecialInstructions": null,
+        "AdditionalProperties": [
+            {
+                "Name": "tla",
+                "Value": "FRS",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "rand",
+                "Value": "1",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "fieldRegion",
+                "Value": "Region 1",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "fieldTeam",
+                "Value": "fieldteam",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "postCode",
+                "Value": "postcode",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "HasMultiResourceRelatedJobs",
+                "Value": "False",
+                "AdditionalProperties": []
+            }
+        ],
+        "CatalogueReference": null,
+        "Lines": [],
+        "Tasks": [],
+        "HasPendingTasks": false,
+        "Actual": null,
+        "Duration": 15,
+        "DurationSpecified": true
+      }
+    }  
     """
     )
 
+@pytest.fixture
+def create_visit_request_missing_user_attributes_sample():
+    return json.loads(
+        """
+    {
+    "Visit": {
+        "Identity": {
+            "Guid": "3fe4dc64-d07c-ef11-9c38-7c1e52036bea",
+            "WorkType": "FRS",
+            "User": {
+                "ID": 1239,
+                "IDSpecified": true,
+                "Name": "Callum.Nicholson",
+                "DeviceID": null
+            },
+            "Company": "NA",
+            "Reference": "IPS2409A.500101"
+        },
+        "ClientReference": null,
+        "Description": "blah",
+        "Property": {
+            "Guid": null,
+            "Type": "JM_PROPERTY",
+            "Reference": null,
+            "ParentReference": null,
+            "Name": null,
+            "Title": null,
+            "Address": {
+                "Name": null,
+                "Lines": [
+                    "prem1",
+                    "prem2",
+                    "prem3",
+                    "district",
+                    "posttown"
+                ],
+                "HouseNo": null,
+                "PostCode": "postcode",
+                "GeoX": 51.566,
+                "GeoXSpecified": true,
+                "GeoY": -3.026,
+                "GeoYSpecified": true,
+                "URL": null
+            },
+            "Phone": null,
+            "WorkPhone": null,
+            "MobilePhone": null,
+            "Email": null,
+            "URL": null,
+            "Assets": [],
+            "ExtendedProperties": {
+                "PreferredName": null,
+                "ID": null,
+                "IDLabel": null,
+                "DateOfBirthSpecified": false,
+                "DateOfDeathSpecified": false,
+                "Gender": null
+            }
+        },
+        "Supervisor": null,
+        "Status": "NEW",
+        "StatusChangeDateSpecified": false,
+        "CreatedDate": "2024-09-27T13:59:56.8872461+01:00",
+        "CreatedDateSpecified": true,
+        "RetrievedSpecified": false,
+        "RetrievedDateSpecified": false,
+        "PrintedDateSpecified": false,
+        "ReceivedDateSpecified": false,
+        "ResponseDateSpecified": false,
+        "RequiredDate": "2025-01-01T00:00:00",
+        "RequiredDateSpecified": true,
+        "CompleteSpecified": false,
+        "CompletedDateSpecified": false,
+        "Appointment": null,
+        "Schedule": {
+            "StartDate": "2024-09-27T00:20:00",
+            "EndDate": "2024-09-27T00:35:00"
+        },
+        "Priority": null,
+        "Origin": "ResManager",
+        "SpecialInstructions": null,
+        "AdditionalProperties": [
+            {
+                "Name": "tla",
+                "Value": "FRS",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "rand",
+                "Value": "1",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "fieldRegion",
+                "Value": "Region 1",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "fieldTeam",
+                "Value": "fieldteam",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "postCode",
+                "Value": "postcode",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "HasMultiResourceRelatedJobs",
+                "Value": "False",
+                "AdditionalProperties": []
+            }
+        ],
+        "CatalogueReference": null,
+        "Lines": [],
+        "Tasks": [],
+        "HasPendingTasks": false,
+        "Actual": null,
+        "Duration": 15,
+        "DurationSpecified": true
+      }
+    }  
+    """
+  )
 
 @pytest.fixture
 def mock_worlds(mock_world):
