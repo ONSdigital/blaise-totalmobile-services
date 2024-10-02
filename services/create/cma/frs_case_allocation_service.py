@@ -133,7 +133,7 @@ class FRSCaseAllocationService:
             user = prev_interviewer,
             questionnaire_name = questionnaire_name, 
             guid =  "00000000-0000-0000-0000-000000000000", 
-            case_id = f"{guid}-{questionnaire_name}-{unique_case_id}-{prev_interviewer}-{formatted_date_time}",
+            case_id = f"{questionnaire_name}-{unique_case_id}-{prev_interviewer}-{formatted_date_time}",
             custom_use = f"{guid};{unique_case_id};",
             location = "RELEASE_SOME",
             inPosession=""
