@@ -5,7 +5,7 @@ def get_frs_case_allocation_request():
             "guid": "3ec86664-396c-ef11-9c35-6045bdd094a7",
             "WorkType": "FRS",
             "user": {
-                "ID": 365,
+                "id": "test",
                 "IDSpecified": True,
                 "name": "Test.INT.Wales1.01",
                 "DeviceID": None,
@@ -130,7 +130,7 @@ def get_frs_case_allocation_request_without_reference():
             "guid": "3ec86664-396c-ef11-9c35-6045bdd094a7",
             "WorkType": "FRS",
             "user": {
-                "ID": 365,
+                "id":"test",
                 "IDSpecified": True,
                 "name": "Test.INT.Wales1.01",
                 "DeviceID": None,
