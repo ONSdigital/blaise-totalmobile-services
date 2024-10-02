@@ -122,22 +122,22 @@ class TotalmobileReferenceFRSModel(BaseModel):
     
     @staticmethod
     def get_interviewer_login_reference_from_incoming_request(incoming_request: IncomingRequest):
-        user_attributes = TotalmobileReferenceFRSModel.get_dictionary_keys_value_if_they_exist(
-            incoming_request, "visit", "identity", "user", "userAttributes"
+        user_attribute = TotalmobileReferenceFRSModel.get_dictionary_keys_value_if_they_exist(
+            incoming_request, "visit", "identity", "user", "id"
         )
 
-        if user_attributes is None:
-            logging.error("Interviewer Attributes reference is missing from the Totalmobile payload")
+        if user_attribute is None:
+            logging.error("Interviewer Blaise Login reference is missing from the Totalmobile payload")
             raise MissingReferenceError()
 
         else:
-            login_value = None
-            for attribute in user_attributes:
-                if attribute["Name"] == "BlaiseLogin":
-                    login_value = attribute["Value"]
-                    break 
+            # login_value = None
+            # for attribute in user_attributes:
+            #     if attribute["Name"] == "BlaiseLogin":
+            #         login_value = attribute["Value"]
+            #         break 
         
-        return login_value
+            return user_attribute
 
     @staticmethod
     def get_model_from_reference(questionnaire_guid, questionnaire_case_reference: str, interviewer_name_reference: str, interviewer_login_reference : str):

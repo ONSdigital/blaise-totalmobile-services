@@ -25,7 +25,7 @@ class TotalMobileIncomingFRSRequestModel(BaseModel):
     @classmethod
     def import_request(cls: Type[T], incoming_request: IncomingRequest) -> T:
         if not (
-            cls.dictionary_keys_exist(incoming_request, "visit", "identity", "user", "userAttributes") 
+            cls.dictionary_keys_exist(incoming_request, "visit", "identity", "user", "id") 
             and cls.dictionary_keys_exist(incoming_request, "visit", "identity", "guid")
             and cls.dictionary_keys_exist(incoming_request, "visit", "identity", "reference")
             ):
