@@ -1,7 +1,7 @@
 import logging
 from typing import Any, Dict
 
-from app.exceptions.custom_exceptions import CaseAllocationException, QuestionnaireDoesNotExistError
+from app.exceptions.custom_exceptions import CaseAllocationException, CaseNotFoundException, QuestionnaireDoesNotExistError
 import blaise_restapi
 
 from appconfig.config import Config
@@ -37,7 +37,7 @@ class CMABlaiseService:
                 [guid, case_id]
             )
             return case
-        except:
+        except: 
             return False
 
     def create_frs_case_for_user(self, frs_case_model: FRSCaseModel):

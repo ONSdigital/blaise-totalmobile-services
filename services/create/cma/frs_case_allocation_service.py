@@ -1,9 +1,12 @@
 import logging
 from typing import Any, Dict
+from datetime import datetime
 
 from app.exceptions.custom_exceptions import (
     CaseAllocationException,
+    CaseNotFoundException,
     CaseReAllocationException,
+    CaseResetFailedException,
     QuestionnaireDoesNotExistError,
     SpecialInstructionCreationFailedException,
 )
@@ -12,6 +15,7 @@ from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
 from models.create.cma.totalmobile_incoming_frs_request_model import (
     TotalMobileIncomingFRSRequestModel,
 )
+from models.update.cma.totalmobile_incoming_frs_unallocation_request_model import TotalMobileIncomingFRSUnallocationRequestModel
 from services.cma_blaise_service import CMABlaiseService
 
 
@@ -48,7 +52,7 @@ class FRSCaseAllocationService:
             cma_Location = str(case["fieldData"]["cmA_Location"])
 
             #Scenario 1:
-            if(cmA_ForWhom == "" and cma_InPossession == "" and cma_Location== ""):
+            if(cmA_ForWhom == "" and cma_InPossession == "" and cma_Location== "SERVER"):
                 self._reallocate_existing_case_to_new_interviewer(case, totalmobile_request)
             #Scenario 2:
             else:
@@ -65,30 +69,44 @@ class FRSCaseAllocationService:
 
        
     def _validate_questionnaire_exists(self, questionnaire_name: str) -> None:
-        if not self._cma_blaise_service.validate_questionnaire_exists(questionnaire_name):
+        try:
+            questionnaire = self._cma_blaise_service.validate_questionnaire_exists(questionnaire_name)
+            logging.info(f"Successfully found questionnaire {questionnaire_name} in Blaise")
+            return questionnaire
+        except:
             logging.error(
                 f"Could not find questionnaire {questionnaire_name} in Blaise"
             )
             raise QuestionnaireDoesNotExistError()
 
-        logging.info(f"Successfully found questionnaire {questionnaire_name} in Blaise")
-
-    def _update_frs_case_with_business_logic(self, totalmobile_request:TotalMobileIncomingFRSRequestModel, case) -> None:
         
-        #Step-1: create a Special Instructions entry in CMA_Launcher DB for previous allocated interviewer to release the case
-        self._create_new_entry_for_special_instructions(case, totalmobile_request.questionnaire_name)
-        logging.info(
-            f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
-            f"is ready to be reallocated to {totalmobile_request.interviewer_name}, "
-            f"with Blaise Logins ={totalmobile_request.interviewer_blaise_login})")
-            
-        #Step-2: edit the already existing case that was assigned to previous allocated interviewer to the new interviewer by updating CMA_ForWhom, CMA_InPossession, CMA_Location fields
-        self._reallocate_existing_case_to_new_interviewer(case, totalmobile_request)
-        logging.info(
-            f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
-            f"successfully reallocated to {totalmobile_request.interviewer_name}, "
-            f"with Blaise Logins ={totalmobile_request.interviewer_blaise_login})")
-        return
+
+    def unallocate_case(self, totalmobile_unallocation_request:TotalMobileIncomingFRSUnallocationRequestModel) -> None:
+        
+        questionnaiare = self._validate_questionnaire_exists(totalmobile_unallocation_request.questionnaire_name)
+
+        old_case = self._cma_blaise_service.validate_if_case_exist_in_cma_launcher(
+            questionnaiare["id"],
+            totalmobile_unallocation_request.case_id
+        )
+
+        if old_case:
+
+            #Step-1: create a Special Instructions entry in CMA_Launcher DB for previous allocated interviewer to release the case
+            self._create_new_entry_for_special_instructions(old_case, totalmobile_unallocation_request.questionnaire_name)
+            logging.info(
+                f"Case {totalmobile_unallocation_request.case_id} for questionnaire {totalmobile_unallocation_request.questionnaire_name} "
+                f"is ready to be reallocated to {totalmobile_unallocation_request.interviewer_name}")
+                
+            #Step-2: edit the already existing case that was assigned to previous allocated interviewer to the new interviewer by updating CMA_ForWhom, CMA_InPossession, CMA_Location fields
+            self._reset_existing_case_to_defaults(old_case)
+            logging.info(
+                f"Case {totalmobile_unallocation_request.case_id} for questionnaire {totalmobile_unallocation_request.questionnaire_name} "
+                f"has been successfully reset to defaults and is ready for reallocation")
+        else:
+            raise CaseNotFoundException()
+        
+
 
     def _create_new_frs_case(self, frsCaseFromTotalMobileRequest: TotalMobileIncomingFRSRequestModel) -> None:
         frsCase = FRSCaseModel(user = frsCaseFromTotalMobileRequest.interviewer_blaise_login, questionnaire_name = frsCaseFromTotalMobileRequest.questionnaire_name, guid =  frsCaseFromTotalMobileRequest.questionnaire_guid, case_id = frsCaseFromTotalMobileRequest.case_id,custom_use="",location="", inPosession="")
@@ -108,25 +126,21 @@ class FRSCaseAllocationService:
         questionnaire_name = questionnaireName
         unique_case_id = case["fieldData"]["id"]
         prev_interviewer = case["fieldData"]["cmA_ForWhom"]
-
+        current_timestamp = datetime.now()
+        formatted_date_time = current_timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
         frsCase = FRSCaseModel(
             user = prev_interviewer,
             questionnaire_name = questionnaire_name, 
             guid =  "00000000-0000-0000-0000-000000000000", 
-            case_id = f"{guid}-{questionnaire_name}-{unique_case_id}-{prev_interviewer}",
-            custom_use = f"{guid};{unique_case_id}",
+            case_id = f"{guid}-{questionnaire_name}-{unique_case_id}-{prev_interviewer}-{formatted_date_time}",
+            custom_use = f"{guid};{unique_case_id};",
             location = "RELEASE_SOME",
             inPosession=""
             )
         try:
             self._cma_blaise_service.create_frs_case_for_user(frsCase)
-            logging.info(f"Successfully created Special Instructions entry for reallocation"
-        )
         except:
-            logging.error(
-                f"Could not create a Special Instructions entry for reallocation"
-            )
             raise SpecialInstructionCreationFailedException()
 
     def _reallocate_existing_case_to_new_interviewer(self, old_allocated_case, new_totalmobile_allocation_request:TotalMobileIncomingFRSRequestModel):
@@ -152,3 +166,25 @@ class FRSCaseAllocationService:
             )
             raise CaseAllocationException()
 
+    def _reset_existing_case_to_defaults(self, old_allocated_case):
+    
+        case_id = old_allocated_case["fieldData"]["id"]
+        questionnaire_name = old_allocated_case["fieldData"]["surveyDisplayName"]
+
+        frsCase = FRSCaseModel(
+            user = "",
+            questionnaire_name = questionnaire_name, 
+            guid = old_allocated_case["fieldData"]["mainSurveyID"], 
+            case_id =  case_id,
+            custom_use = "",
+            location = "SERVER",
+            inPosession= ""
+            )
+        try:
+            self._cma_blaise_service.update_frs_case_for_user(frsCase)
+            logging.info(f"Reset successful for {case_id} within Questionnaire {questionnaire_name} in CMA_Launcher")
+        except:
+            logging.error(
+                f"Reset failed. Failed in resetting case with case_id {case_id} within Questionnaire {questionnaire_name} in CMA_Launcher"
+            )
+            raise CaseResetFailedException()

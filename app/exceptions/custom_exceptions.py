@@ -32,3 +32,9 @@ class CaseReAllocationException(Exception):
 
 class SpecialInstructionCreationFailedException(Exception):
     pass
+
+class CaseNotFoundException(Exception):
+    pass
+
+class CaseResetFailedException(Exception):
+    pass

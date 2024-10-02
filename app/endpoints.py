@@ -7,12 +7,14 @@ from app.exceptions.custom_exceptions import (
     BadReferenceError,
     CaseAllocationException,
     CaseReAllocationException,
+    CaseResetFailedException,
     InvalidTotalmobileFRSRequestException,
     InvalidTotalmobileUpdateRequestException,
     MissingReferenceError,
     QuestionnaireCaseDoesNotExistError,
     QuestionnaireCaseError,
     QuestionnaireDoesNotExistError,
+    SpecialInstructionCreationFailedException,
 )
 from app.handlers.totalmobile_incoming_handler import (
     submit_form_result_request_handler,
@@ -84,10 +86,23 @@ def create_visit_request():
 @auth.login_required
 def update_visit_status_request():
     logging.info(f"Incoming request via the 'forcerecallvisitrequest' endpoint")
-    force_recall_visit_request_handler(request)
-    return "ok"
-
-
+    try:
+        frs_case_allocation_service = FRSCaseAllocationService(
+            cma_blaise_service=current_app.cma_blaise_service
+        )
+        force_recall_visit_request_handler(request, frs_case_allocation_service)
+        return "ok"
+    except (MissingReferenceError, BadReferenceError):
+        return "Missing/invalid reference in request", 400
+    except InvalidTotalmobileFRSRequestException:
+        return "Request appears to be malformed", 400
+    except QuestionnaireDoesNotExistError:
+        return "Questionnaire does not exist in Blaise", 404
+    except CaseResetFailedException:
+        return "Case resest failed for unallocation", 500
+    except SpecialInstructionCreationFailedException:
+        return "Special Instruction entry creation failed for unallocation", 500
+    
 @incoming.route("/<version>/health", methods=["GET"])
 def health_check(version):
     return jsonify({"healthy": True})

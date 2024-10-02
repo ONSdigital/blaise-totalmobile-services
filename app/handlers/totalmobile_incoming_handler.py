@@ -1,4 +1,6 @@
 import logging
+
+from models.update.cma.totalmobile_incoming_frs_unallocation_request_model import TotalMobileIncomingFRSUnallocationRequestModel
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
@@ -19,6 +21,9 @@ def create_visit_request_handler(request, frs_case_allocation_service: FRSCaseAl
     totalmobile_frs_case = TotalMobileIncomingFRSRequestModel.import_request(data)
     frs_case_allocation_service.create_case(totalmobile_frs_case)
     
-def force_recall_visit_request_handler(request):
+def force_recall_visit_request_handler(request, frs_case_allocation_service: FRSCaseAllocationService):
     data = request.get_json()
+    totalmobile_unallocation_frs_case = TotalMobileIncomingFRSUnallocationRequestModel.import_request(data)
+    logging.info(str(totalmobile_unallocation_frs_case))
+    frs_case_allocation_service.unallocate_case(totalmobile_unallocation_frs_case)
     return
