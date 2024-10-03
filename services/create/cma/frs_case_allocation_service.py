@@ -29,6 +29,10 @@ class FRSCaseAllocationService:
     ) -> None:
         self._validate_questionnaire_exists(totalmobile_request.questionnaire_name)
 
+        logging.info(f"cma server park name: {Config.from_env()}")
+        logging.info(f"cma server park name: {Config.from_env().cma_server_park}")
+        logging.info(f"cma server park name: {Config.cma_server_park}")
+
         case = self._cma_blaise_service.validate_if_case_exist_in_cma_launcher(
             totalmobile_request.questionnaire_guid,
             totalmobile_request.case_id
@@ -63,8 +67,6 @@ class FRSCaseAllocationService:
 
         else:
             self._create_new_frs_case(totalmobile_request)
-            logging.info(f"cma server park name: {Config.from_env()}")
-            logging.info(f"cma server park name: {Config.from_env().cma_server_park}")
             logging.info(
             f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
             f"has been created in CMA Launcher database and allocated to {totalmobile_request.interviewer_name}, "
@@ -74,12 +76,8 @@ class FRSCaseAllocationService:
     def _validate_questionnaire_exists(self, questionnaire_name: str) -> None:
         try:
             questionnaire = self._cma_blaise_service.validate_questionnaire_exists(questionnaire_name)
-            logging.info(f"Successfully found questionnaire {questionnaire_name} in Blaise")
             return questionnaire
         except:
-            logging.error(
-                f"Could not find questionnaire {questionnaire_name} in Blaise"
-            )
             raise QuestionnaireDoesNotExistError()
 
         

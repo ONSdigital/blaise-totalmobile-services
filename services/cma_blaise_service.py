@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, Protocol, Union
 
 from app.exceptions.custom_exceptions import CaseAllocationException, QuestionnaireDoesNotExistError
 import blaise_restapi
@@ -8,6 +8,18 @@ from appconfig import Config
 
 from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
 
+class CMA_BlaiseService(Protocol):
+    def validate_questionnaire_exists(self, questionnaire_name: str) -> Dict[str, Any]:
+        pass
+
+    def validate_if_case_exist_in_cma_launcher(self, guid: str, case_id: str) -> Union[Dict[str, Any], bool]:
+        pass
+
+    def create_frs_case_for_user(self, frs_case_model: FRSCaseModel) -> None:
+        pass
+
+    def update_frs_case_for_user(self, frs_case_model: FRSCaseModel) -> None:
+        pass
 
 class CMABlaiseService:
     def __init__(self, config: Config) -> None:
