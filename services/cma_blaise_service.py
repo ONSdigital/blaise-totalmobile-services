@@ -29,6 +29,8 @@ class CMABlaiseService:
 
     def validate_if_case_exist_in_cma_launcher(self, guid: str, case_id: str) -> bool:
         
+        logging.info(f"CMA Server park name found as: {self._config.cma_server_park}")
+        logging.info(f"Validating if case exists with id in cma launcher")
         try:
             case = self.restapi_client.get_multikey_case(
                 self._config.cma_server_park,
@@ -41,6 +43,8 @@ class CMABlaiseService:
             return False
 
     def create_frs_case_for_user(self, frs_case_model: FRSCaseModel):
+        logging.info(f"CMA Server park name found as: {self._config.cma_server_park}")
+        logging.info(f"Making call to create multikey case in cma launcher")
         try:
             self.restapi_client.create_multikey_case(
                 self._config.cma_server_park,
