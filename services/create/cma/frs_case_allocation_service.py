@@ -11,6 +11,7 @@ from app.exceptions.custom_exceptions import (
     SpecialInstructionCreationFailedException,
 )
 
+from appconfig import Config
 from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
 from models.create.cma.totalmobile_incoming_frs_request_model import (
     TotalMobileIncomingFRSRequestModel,
@@ -62,6 +63,8 @@ class FRSCaseAllocationService:
 
         else:
             self._create_new_frs_case(totalmobile_request)
+            logging.info(f"cma server park name: {Config.from_env()}")
+            logging.info(f"cma server park name: {Config.from_env().cma_server_park}")
             logging.info(
             f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
             f"has been created in CMA Launcher database and allocated to {totalmobile_request.interviewer_name}, "
