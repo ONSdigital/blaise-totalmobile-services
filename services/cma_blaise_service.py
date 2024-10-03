@@ -1,10 +1,11 @@
 import logging
 from typing import Any, Dict
 
-from app.exceptions.custom_exceptions import CaseAllocationException, CaseNotFoundException, QuestionnaireDoesNotExistError
+from app.exceptions.custom_exceptions import CaseAllocationException, QuestionnaireDoesNotExistError
 import blaise_restapi
 
-from appconfig.config import Config
+from appconfig import Config
+
 from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
 
 

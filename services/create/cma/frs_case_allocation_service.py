@@ -114,9 +114,9 @@ class FRSCaseAllocationService:
             self._cma_blaise_service.create_frs_case_for_user(frsCase)
         except:
             logging.error(
-                f"Could not create a case for {frsCaseFromTotalMobileRequest.interviewer_name} User"
+                f"Could not create a case for User {frsCaseFromTotalMobileRequest.interviewer_name} "
                 f"with Blaise Login = {frsCaseFromTotalMobileRequest.interviewer_blaise_login} within Questionnaire"
-                f"{frsCaseFromTotalMobileRequest.questionnaire_name} in Blaise, CMA_Launcher...."
+                f"{frsCaseFromTotalMobileRequest.questionnaire_name} in CMA_Launcher..."
             )
             raise CaseAllocationException()
         
