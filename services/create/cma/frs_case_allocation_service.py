@@ -29,7 +29,7 @@ class FRSCaseAllocationService:
     ) -> None:
         self._validate_questionnaire_exists(totalmobile_request.questionnaire_name)
 
-        logging.info(f"cma server park name: {Config.from_env()}")
+        logging.info(f"cma server park name,: {Config.from_env()}")
 
         case = self._cma_blaise_service.validate_if_case_exist_in_cma_launcher(
             totalmobile_request.questionnaire_guid,
