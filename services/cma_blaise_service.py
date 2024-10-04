@@ -35,9 +35,8 @@ class CMABlaiseService:
             )
             logging.info(f"Got installed questionnaire '{questionnaire_name}'")
             return questionnaire
-        except Exception as e:
-            error_message = (f"Error getting questionnaire '{questionnaire_name}': {e}")
-            logging.error(error_message)
+        except:
+            logging.error(f"Error getting questionnaire '{questionnaire_name}'")
             raise QuestionnaireDoesNotExistError()
 
     def validate_if_case_exist_in_cma_launcher(self, guid: str, case_id: str) -> bool:

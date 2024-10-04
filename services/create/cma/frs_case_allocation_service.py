@@ -27,12 +27,12 @@ class FRSCaseAllocationService:
     def create_case(
         self, totalmobile_request: TotalMobileIncomingFRSRequestModel
     ) -> None:
-        self._validate_questionnaire_exists(totalmobile_request.questionnaire_name)
+        questionnaire = self._validate_questionnaire_exists(totalmobile_request.questionnaire_name)
 
         logging.info(f"cma server park name,: {Config.from_env()}")
 
         case = self._cma_blaise_service.validate_if_case_exist_in_cma_launcher(
-            totalmobile_request.questionnaire_guid,
+            questionnaire["id"],
             totalmobile_request.case_id
         )
         
@@ -64,7 +64,7 @@ class FRSCaseAllocationService:
                 raise CaseReAllocationException()
 
         else:
-            self._create_new_frs_case(totalmobile_request)
+            self._create_new_frs_case(totalmobile_request,questionnaire["id"])
             logging.info(
             f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
             f"has been created in CMA Launcher database and allocated to {totalmobile_request.interviewer_name}, "
@@ -107,8 +107,8 @@ class FRSCaseAllocationService:
         
 
 
-    def _create_new_frs_case(self, frsCaseFromTotalMobileRequest: TotalMobileIncomingFRSRequestModel) -> None:
-        frsCase = FRSCaseModel(user = frsCaseFromTotalMobileRequest.interviewer_blaise_login, questionnaire_name = frsCaseFromTotalMobileRequest.questionnaire_name, guid =  frsCaseFromTotalMobileRequest.questionnaire_guid, case_id = frsCaseFromTotalMobileRequest.case_id,custom_use="",location="", inPosession="")
+    def _create_new_frs_case(self, frsCaseFromTotalMobileRequest: TotalMobileIncomingFRSRequestModel, questionnaire_guid: str) -> None:
+        frsCase = FRSCaseModel(user = frsCaseFromTotalMobileRequest.interviewer_blaise_login, questionnaire_name = frsCaseFromTotalMobileRequest.questionnaire_name, guid = questionnaire_guid, case_id = frsCaseFromTotalMobileRequest.case_id,custom_use="",location="", inPosession="")
         try:
             self._cma_blaise_service.create_frs_case_for_user(frsCase)
         except:
