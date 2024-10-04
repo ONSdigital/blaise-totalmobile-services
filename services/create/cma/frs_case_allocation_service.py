@@ -24,10 +24,17 @@ class FRSCaseAllocationService:
     def __init__(self, cma_blaise_service: CMABlaiseService):
         self._cma_blaise_service = cma_blaise_service
 
-    def create_case(
-        self, totalmobile_request: TotalMobileIncomingFRSRequestModel
-    ) -> None:
-        questionnaire = self._validate_questionnaire_exists(totalmobile_request.questionnaire_name)
+    def create_case(self, totalmobile_request: TotalMobileIncomingFRSRequestModel) -> None:
+        
+        try:
+            questionnaire = self._cma_blaise_service.validate_questionnaire_exists(totalmobile_request.questionnaire_name)
+        except:
+            logging.error(
+                f"Could not find questionnaire {totalmobile_request.questionnaire_name} in Blaise"
+            )
+            raise QuestionnaireDoesNotExistError()
+
+        logging.info(f"Successfully found questionnaire {totalmobile_request.questionnaire_name} in Blaise")
 
         logging.info(f"cma server park name,: {Config.from_env()}")
 

@@ -26,18 +26,11 @@ class CMABlaiseService:
         self._config = config
         self.restapi_client = blaise_restapi.Client(self._config.blaise_api_url)
 
-    def validate_questionnaire_exists(
-        self, questionnaire_name: str
-    ) -> Dict[str, Any]:
-        try:
-            questionnaire = self.restapi_client.get_questionnaire_for_server_park(
-                self._config.blaise_server_park, questionnaire_name
-            )
-            logging.info(f"Got installed questionnaire '{questionnaire_name}'")
-            return questionnaire
-        except:
-            logging.error(f"Error getting questionnaire '{questionnaire_name}'")
-            raise QuestionnaireDoesNotExistError()
+    def validate_questionnaire_exists(self, questionnaire_name: str) -> Dict[str, Any]:
+
+        return self.restapi_client.get_questionnaire_for_server_park(
+            self._config.blaise_server_park, questionnaire_name
+        )
 
     def validate_if_case_exist_in_cma_launcher(self, guid: str, case_id: str) -> bool:
         
