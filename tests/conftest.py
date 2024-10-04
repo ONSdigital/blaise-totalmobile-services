@@ -757,3 +757,53 @@ def mock_dst_only_questionnaire_from_blaise():
             "nodes": [{"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Inactive"}],
         }
     ]
+
+@pytest.fixture
+def force_recall_visit_request_payload():
+    return json.loads(
+        """
+    {
+    "reason": null,
+    "identity": {
+        "guid": null,
+        "workType": "FRS",
+        "user": {
+            "IDSpecified": false,
+            "name": "Callum.Nicholson",
+            "DeviceID": null,
+            "userAttributes": []
+        },
+        "Company": "NA",
+        "reference": "FRS2405.9002"
+    },
+    "PreserveIfNoLinesRemainingSpecified": false,
+    "Lines": [],
+    "UseSilentPushSpecified": false
+    }
+    """
+  )
+
+@pytest.fixture
+def force_recall_visit_request_payload_without_reference():
+    return json.loads(
+        """
+    {
+    "reason": null,
+    "identity": {
+        "guid": null,
+        "workType": "FRS",
+        "user": {
+            "IDSpecified": false,
+            "name": "Callum.Nicholson",
+            "DeviceID": null,
+            "userAttributes": []
+        },
+        "Company": "NA",
+        "reference": ""
+    },
+    "PreserveIfNoLinesRemainingSpecified": false,
+    "Lines": [],
+    "UseSilentPushSpecified": false
+    }
+    """
+  )

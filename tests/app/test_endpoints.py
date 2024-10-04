@@ -22,15 +22,6 @@ def test_health_check(client):
     assert_security_headers_are_present(response)
 
 
-# @mock.patch("app.endpoints.update_visit_status_request_handler")
-# def test_update_visit_status_request(mock_handler, client, test_auth_header):
-#     response = client.post("/bts/updatevisitstatusrequest", headers=test_auth_header)
-#     assert response.status_code == 200
-#     assert response.text == "ok"
-#     mock_handler.assert_called()
-#     assert_security_headers_are_present(response)
-
-
 @mock.patch("app.endpoints.submit_form_result_request_handler")
 def test_submit_form_result_request(mock_handler, client, test_auth_header):
     response = client.post("/bts/submitformresultrequest", headers=test_auth_header)
@@ -39,6 +30,10 @@ def test_submit_form_result_request(mock_handler, client, test_auth_header):
     mock_handler.assert_called()
     assert_security_headers_are_present(response)
 
+def test_submit_form_result_request_returns_401_without_auth(client, submit_form_result_request_sample):
+    
+    response = client.post("/bts/submitformresultrequest", json=submit_form_result_request_sample,)
+    assert response.status_code == 401
 
 @mock.patch("app.endpoints.create_visit_request_handler")
 def test_create_visit_request(mock_handler, client, test_auth_header, create_visit_request_sample):
@@ -47,22 +42,6 @@ def test_create_visit_request(mock_handler, client, test_auth_header, create_vis
     assert response.text == "ok"
     mock_handler.assert_called()
     assert_security_headers_are_present(response)
-
-
-# def test_update_visit_status_request_returns_401_without_auth(
-#     client, upload_visit_status_request_sample
-# ):
-#     response = client.post(
-#         "/bts/updatevisitstatusrequest",
-#         json=upload_visit_status_request_sample,
-#     )
-#     assert response.status_code == 401
-
-
-def test_submit_form_result_request_returns_401_without_auth(client, submit_form_result_request_sample):
-    
-    response = client.post("/bts/submitformresultrequest", json=submit_form_result_request_sample,)
-    assert response.status_code == 401
 
 
 def test_create_visit_request_returns_401_without_auth(client, create_visit_request_sample):
@@ -75,6 +54,34 @@ def test_create_visit_request_returns_400(client, create_visit_request_missing_u
     response = client.post(
         "/bts/createvisitrequest", 
         json=create_visit_request_missing_user_attributes_sample, 
+        headers=test_auth_header
+        )
+    assert response.status_code == 400
+    assert response.text == "Missing/invalid reference in request"
+
+
+def test_force_recall_visit_request_returns_401_without_auth(
+    client, force_recall_visit_request_payload
+):
+    response = client.post(
+        "/bts/forcerecallvisitrequest",
+        json=force_recall_visit_request_payload,
+    )
+    assert response.status_code == 401
+
+@mock.patch("app.endpoints.force_recall_visit_request_handler")
+def test_force_recall_visit_request(mock_handler, client,force_recall_visit_request_payload, test_auth_header):
+    response = client.post("/bts/forcerecallvisitrequest",json =force_recall_visit_request_payload, headers=test_auth_header)
+    assert response.status_code == 200
+    assert response.text == "ok"
+    mock_handler.assert_called()
+    assert_security_headers_are_present(response)
+
+def test_force_recall_visit_request_returns_400(client, force_recall_visit_request_payload_without_reference, test_auth_header):
+    
+    response = client.post(
+        "/bts/forcerecallvisitrequest", 
+        json=force_recall_visit_request_payload_without_reference, 
         headers=test_auth_header
         )
     assert response.status_code == 400
