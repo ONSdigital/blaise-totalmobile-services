@@ -49,16 +49,33 @@ def test_create_visit_request_returns_401_without_auth(client, create_visit_requ
     response = client.post("/bts/createvisitrequest", json=create_visit_request_sample)
     assert response.status_code == 401
 
-def test_create_visit_request_returns_400(client, create_visit_request_missing_user_attributes_sample, test_auth_header):
+def test_create_visit_request_returns_400_with_null_user_id(client, create_visit_request_sample_with_null_user_id, test_auth_header):
     
     response = client.post(
         "/bts/createvisitrequest", 
-        json=create_visit_request_missing_user_attributes_sample, 
+        json=create_visit_request_sample_with_null_user_id, 
         headers=test_auth_header
         )
     assert response.status_code == 400
     assert response.text == "Missing/invalid reference in request"
 
+def test_create_visit_request_returns_400_without_reference(client, create_visit_request_sample_without_reference, test_auth_header):
+    
+    response = client.post(
+        "/bts/createvisitrequest", 
+        json=create_visit_request_sample_without_reference, 
+        headers=test_auth_header
+        )
+    assert response.status_code == 400
+    assert response.text == "Request appears to be malformed"
+
+@mock.patch("app.endpoints.force_recall_visit_request_handler")
+def test_force_recall_visit_request(mock_handler, client,force_recall_visit_request_payload, test_auth_header):
+    response = client.post("/bts/forcerecallvisitrequest",json =force_recall_visit_request_payload, headers=test_auth_header)
+    assert response.status_code == 200
+    assert response.text == "ok"
+    mock_handler.assert_called()
+    assert_security_headers_are_present(response)
 
 def test_force_recall_visit_request_returns_401_without_auth(
     client, force_recall_visit_request_payload
@@ -69,15 +86,17 @@ def test_force_recall_visit_request_returns_401_without_auth(
     )
     assert response.status_code == 401
 
-@mock.patch("app.endpoints.force_recall_visit_request_handler")
-def test_force_recall_visit_request(mock_handler, client,force_recall_visit_request_payload, test_auth_header):
-    response = client.post("/bts/forcerecallvisitrequest",json =force_recall_visit_request_payload, headers=test_auth_header)
-    assert response.status_code == 200
-    assert response.text == "ok"
-    mock_handler.assert_called()
-    assert_security_headers_are_present(response)
+def test_force_recall_visit_request_returns_400_with_null_reference(client, force_recall_visit_request_payload_with_null_reference, test_auth_header):
+    
+    response = client.post(
+        "/bts/forcerecallvisitrequest", 
+        json=force_recall_visit_request_payload_with_null_reference, 
+        headers=test_auth_header
+        )
+    assert response.status_code == 400
+    assert response.text == "Missing/invalid reference in request"
 
-def test_force_recall_visit_request_returns_400(client, force_recall_visit_request_payload_without_reference, test_auth_header):
+def test_force_recall_visit_request_returns_400_without_reference(client, force_recall_visit_request_payload_without_reference, test_auth_header):
     
     response = client.post(
         "/bts/forcerecallvisitrequest", 
@@ -85,4 +104,4 @@ def test_force_recall_visit_request_returns_400(client, force_recall_visit_reque
         headers=test_auth_header
         )
     assert response.status_code == 400
-    assert response.text == "Missing/invalid reference in request"
+    assert response.text == "Request appears to be malformed"

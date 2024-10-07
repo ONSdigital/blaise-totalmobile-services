@@ -3,7 +3,7 @@ from unittest import mock
 
 import pytest
 
-from app.exceptions.custom_exceptions import BadReferenceError
+from app.exceptions.custom_exceptions import BadReferenceError, InvalidTotalmobileFRSRequestException
 from app.handlers.totalmobile_incoming_handler import create_visit_request_handler, force_recall_visit_request_handler, submit_form_result_request_handler
 from tests.helpers import incoming_request_helper, incoming_request_helper_for_frs_allocation, incoming_request_helper_for_frs_unallocation
 
@@ -58,7 +58,7 @@ def test_create_visit_request_handler_fails_if_reference_missing_from_payload():
     mock_update_frs_case_allocation_service = mock.Mock()
     mock_update_frs_case_allocation_service.create_case()
 
-    with pytest.raises(BadReferenceError):
+    with pytest.raises(InvalidTotalmobileFRSRequestException):
         create_visit_request_handler(mock_request, mock_update_frs_case_allocation_service)
 
 def test_force_recall_visit_request_handler():

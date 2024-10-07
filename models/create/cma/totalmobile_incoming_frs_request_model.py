@@ -4,7 +4,7 @@ import logging
 from dataclasses import dataclass
 from typing import Type, TypeVar
 
-from app.exceptions.custom_exceptions import BadReferenceError
+from app.exceptions.custom_exceptions import InvalidTotalmobileFRSRequestException
 from models.base_model import BaseModel
 from models.common.totalmobile.totalmobile_reference_frs_model import (
     IncomingRequest,
@@ -28,7 +28,7 @@ class TotalMobileIncomingFRSRequestModel(BaseModel):
             and cls.dictionary_keys_exist(incoming_request, "visit", "identity", "reference")
             ):
             logging.error("The Totalmobile payload appears to be malformed")
-            raise BadReferenceError
+            raise InvalidTotalmobileFRSRequestException
         
         reference_model = TotalmobileReferenceFRSModel.from_request(incoming_request)
 

@@ -533,22 +533,146 @@ def create_visit_request_sample():
     )
 
 @pytest.fixture
-def create_visit_request_missing_user_attributes_sample():
+def create_visit_request_sample_with_null_user_id():
     return json.loads(
         """
     {
-    "Visit": {
-        "Identity": {
+    "visit": {
+        "identity": {
             "Guid": "3fe4dc64-d07c-ef11-9c38-7c1e52036bea",
             "WorkType": "FRS",
-            "User": {
-                "ID": 1239,
+            "user": {
+                "id": null,
                 "IDSpecified": true,
                 "Name": "Callum.Nicholson",
                 "DeviceID": null
             },
             "Company": "NA",
-            "Reference": "IPS2409A.500101"
+            "reference": "IPS2409A.500101"
+        },
+        "ClientReference": null,
+        "Description": "blah",
+        "Property": {
+            "Guid": null,
+            "Type": "JM_PROPERTY",
+            "Reference": null,
+            "ParentReference": null,
+            "Name": null,
+            "Title": null,
+            "Address": {
+                "Name": null,
+                "Lines": [
+                    "prem1",
+                    "prem2",
+                    "prem3",
+                    "district",
+                    "posttown"
+                ],
+                "HouseNo": null,
+                "PostCode": "postcode",
+                "GeoX": 51.566,
+                "GeoXSpecified": true,
+                "GeoY": -3.026,
+                "GeoYSpecified": true,
+                "URL": null
+            },
+            "Phone": null,
+            "WorkPhone": null,
+            "MobilePhone": null,
+            "Email": null,
+            "URL": null,
+            "Assets": [],
+            "ExtendedProperties": {
+                "PreferredName": null,
+                "ID": null,
+                "IDLabel": null,
+                "DateOfBirthSpecified": false,
+                "DateOfDeathSpecified": false,
+                "Gender": null
+            }
+        },
+        "Supervisor": null,
+        "Status": "NEW",
+        "StatusChangeDateSpecified": false,
+        "CreatedDate": "2024-09-27T13:59:56.8872461+01:00",
+        "CreatedDateSpecified": true,
+        "RetrievedSpecified": false,
+        "RetrievedDateSpecified": false,
+        "PrintedDateSpecified": false,
+        "ReceivedDateSpecified": false,
+        "ResponseDateSpecified": false,
+        "RequiredDate": "2025-01-01T00:00:00",
+        "RequiredDateSpecified": true,
+        "CompleteSpecified": false,
+        "CompletedDateSpecified": false,
+        "Appointment": null,
+        "Schedule": {
+            "StartDate": "2024-09-27T00:20:00",
+            "EndDate": "2024-09-27T00:35:00"
+        },
+        "Priority": null,
+        "Origin": "ResManager",
+        "SpecialInstructions": null,
+        "AdditionalProperties": [
+            {
+                "Name": "tla",
+                "Value": "FRS",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "rand",
+                "Value": "1",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "fieldRegion",
+                "Value": "Region 1",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "fieldTeam",
+                "Value": "fieldteam",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "postCode",
+                "Value": "postcode",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "HasMultiResourceRelatedJobs",
+                "Value": "False",
+                "AdditionalProperties": []
+            }
+        ],
+        "CatalogueReference": null,
+        "Lines": [],
+        "Tasks": [],
+        "HasPendingTasks": false,
+        "Actual": null,
+        "Duration": 15,
+        "DurationSpecified": true
+      }
+    }  
+    """
+  )
+
+@pytest.fixture
+def create_visit_request_sample_without_reference():
+    return json.loads(
+        """
+    {
+    "visit": {
+        "identity": {
+            "Guid": "3fe4dc64-d07c-ef11-9c38-7c1e52036bea",
+            "WorkType": "FRS",
+            "user": {
+                "id": null,
+                "IDSpecified": true,
+                "Name": "Callum.Nicholson",
+                "DeviceID": null
+            },
+            "Company": "NA"
         },
         "ClientReference": null,
         "Description": "blah",
@@ -784,7 +908,7 @@ def force_recall_visit_request_payload():
   )
 
 @pytest.fixture
-def force_recall_visit_request_payload_without_reference():
+def force_recall_visit_request_payload_with_null_reference():
     return json.loads(
         """
     {
@@ -799,7 +923,31 @@ def force_recall_visit_request_payload_without_reference():
             "userAttributes": []
         },
         "Company": "NA",
-        "reference": ""
+        "reference": null
+    },
+    "PreserveIfNoLinesRemainingSpecified": false,
+    "Lines": [],
+    "UseSilentPushSpecified": false
+    }
+    """
+  )
+
+@pytest.fixture
+def force_recall_visit_request_payload_without_reference():
+    return json.loads(
+        """
+    {
+    "reason": null,
+    "identity": {
+        "guid": null,
+        "workType": "FRS",
+        "user": {
+            "IDSpecified": false,
+            "name": "Callum.Nicholson",
+            "DeviceID": null,
+            "userAttributes": []
+        },
+        "Company": "NA"
     },
     "PreserveIfNoLinesRemainingSpecified": false,
     "Lines": [],

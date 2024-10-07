@@ -112,14 +112,7 @@ class TotalmobileReferenceFRSModel(BaseModel):
         if user_attribute is None:
             logging.error("Interviewer Blaise Login reference is missing from the Totalmobile payload")
             raise MissingReferenceError()
-
         else:
-            # login_value = None
-            # for attribute in user_attributes:
-            #     if attribute["Name"] == "BlaiseLogin":
-            #         login_value = attribute["Value"]
-            #         break 
-        
             return user_attribute
 
     @staticmethod
