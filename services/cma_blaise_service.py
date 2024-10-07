@@ -1,7 +1,7 @@
 import logging
 from typing import Any, Dict, Protocol, Union
 
-from app.exceptions.custom_exceptions import CaseAllocationException, QuestionnaireDoesNotExistError
+from app.exceptions.custom_exceptions import CaseAllocationException
 import blaise_restapi
 
 from appconfig import Config
@@ -32,7 +32,7 @@ class CMABlaiseService:
             self._config.blaise_server_park, questionnaire_name
         )
 
-    def case_exists(self, guid: str, case_id: str) -> bool:
+    def case_exists(self, guid: str, case_id: str) -> Union[Dict[str, Any], bool]:
         
         logging.info(f"CMA Server park name found as: {self._config.cma_server_park}")
         logging.info(f"Validating if case exists with id in cma launcher")
