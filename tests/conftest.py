@@ -394,14 +394,14 @@ def create_visit_request_sample():
     return json.loads(
         """
     {
-    "Visit": {
-        "Identity": {
+    "visit": {
+        "identity": {
             "Guid": "3fe4dc64-d07c-ef11-9c38-7c1e52036bea",
             "WorkType": "FRS",
-            "User": {
+            "user": {
                 "ID": 1239,
                 "IDSpecified": true,
-                "Name": "Callum.Nicholson",
+                "name": "Callum.Nicholson",
                 "DeviceID": null,
                 "UserAttributes": [
                     {
@@ -533,7 +533,7 @@ def create_visit_request_sample():
     )
 
 @pytest.fixture
-def create_visit_request_sample_with_null_user_id():
+def create_visit_request_sample_without_user_blaise_logins():
     return json.loads(
         """
     {
@@ -544,7 +544,7 @@ def create_visit_request_sample_with_null_user_id():
             "user": {
                 "id": null,
                 "IDSpecified": true,
-                "Name": "Callum.Nicholson",
+                "name": null,
                 "DeviceID": null
             },
             "Company": "NA",

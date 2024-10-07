@@ -49,11 +49,11 @@ def test_create_visit_request_returns_401_without_auth(client, create_visit_requ
     response = client.post("/bts/createvisitrequest", json=create_visit_request_sample)
     assert response.status_code == 401
 
-def test_create_visit_request_returns_400_with_null_user_id(client, create_visit_request_sample_with_null_user_id, test_auth_header):
+def test_create_visit_request_returns_400_without_user_blaise_logins(client, create_visit_request_sample_without_user_blaise_logins, test_auth_header):
     
     response = client.post(
         "/bts/createvisitrequest", 
-        json=create_visit_request_sample_with_null_user_id, 
+        json=create_visit_request_sample_without_user_blaise_logins, 
         headers=test_auth_header
         )
     assert response.status_code == 400

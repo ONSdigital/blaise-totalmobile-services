@@ -9,16 +9,16 @@ from appconfig import Config
 from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
 
 class CMA_BlaiseService(Protocol):
-    def validate_questionnaire_exists(self, questionnaire_name: str) -> Dict[str, Any]:
+    def questionnaire_exists(self, questionnaire_name: str) -> Dict[str, Any]:
         pass
 
-    def validate_if_case_exist_in_cma_launcher(self, guid: str, case_id: str) -> Union[Dict[str, Any], bool]:
+    def case_exist(self, guid: str, case_id: str) -> Union[Dict[str, Any], bool]:
         pass
 
-    def create_frs_case_for_user(self, frs_case_model: FRSCaseModel) -> None:
+    def create_frs_case(self, frs_case_model: FRSCaseModel) -> None:
         pass
 
-    def update_frs_case_for_user(self, frs_case_model: FRSCaseModel) -> None:
+    def update_frs_case(self, frs_case_model: FRSCaseModel) -> None:
         pass
 
 class CMABlaiseService:
@@ -26,13 +26,13 @@ class CMABlaiseService:
         self._config = config
         self.restapi_client = blaise_restapi.Client(self._config.blaise_api_url)
 
-    def validate_questionnaire_exists(self, questionnaire_name: str) -> Dict[str, Any]:
+    def questionnaire_exists(self, questionnaire_name: str) -> Dict[str, Any]:
 
         return self.restapi_client.get_questionnaire_for_server_park(
             self._config.blaise_server_park, questionnaire_name
         )
 
-    def validate_if_case_exist_in_cma_launcher(self, guid: str, case_id: str) -> bool:
+    def case_exists(self, guid: str, case_id: str) -> bool:
         
         logging.info(f"CMA Server park name found as: {self._config.cma_server_park}")
         logging.info(f"Validating if case exists with id in cma launcher")
@@ -47,7 +47,7 @@ class CMABlaiseService:
         except: 
             return False
 
-    def create_frs_case_for_user(self, frs_case_model: FRSCaseModel):
+    def create_frs_case(self, frs_case_model: FRSCaseModel):
         logging.info(f"CMA Server park name found as: {self._config.cma_server_park}")
         logging.info(f"Making call to create multikey case in cma launcher")
         try:
@@ -61,7 +61,7 @@ class CMABlaiseService:
         except:
             raise CaseAllocationException
         
-    def update_frs_case_for_user(self, frs_case_model: FRSCaseModel):
+    def update_frs_case(self, frs_case_model: FRSCaseModel):
         try:
             self.restapi_client.patch_multikey_case_data(
                 self._config.cma_server_park,

@@ -27,7 +27,7 @@ class FRSCaseAllocationService:
     def create_case(self, totalmobile_request: TotalMobileIncomingFRSRequestModel) -> None:
         
         try:
-            questionnaire = self._cma_blaise_service.validate_questionnaire_exists(totalmobile_request.questionnaire_name)
+            questionnaire = self._cma_blaise_service.questionnaire_exists(totalmobile_request.questionnaire_name)
         except:
             logging.error(
                 f"Could not find questionnaire {totalmobile_request.questionnaire_name} in Blaise"
@@ -38,7 +38,7 @@ class FRSCaseAllocationService:
 
         logging.info(f"cma server park name,: {Config.from_env()}")
 
-        case = self._cma_blaise_service.validate_if_case_exist_in_cma_launcher(
+        case = self._cma_blaise_service.case_exists(
             questionnaire["id"],
             totalmobile_request.case_id
         )
@@ -80,7 +80,7 @@ class FRSCaseAllocationService:
        
     def _validate_questionnaire_exists(self, questionnaire_name: str) -> None:
         try:
-            questionnaire = self._cma_blaise_service.validate_questionnaire_exists(questionnaire_name)
+            questionnaire = self._cma_blaise_service.questionnaire_exists(questionnaire_name)
             return questionnaire
         except:
             raise QuestionnaireDoesNotExistError()
@@ -91,7 +91,7 @@ class FRSCaseAllocationService:
         
         questionnaiare = self._validate_questionnaire_exists(totalmobile_unallocation_request.questionnaire_name)
 
-        old_case = self._cma_blaise_service.validate_if_case_exist_in_cma_launcher(
+        old_case = self._cma_blaise_service.case_exists(
             questionnaiare["id"],
             totalmobile_unallocation_request.case_id
         )
@@ -117,7 +117,7 @@ class FRSCaseAllocationService:
     def _create_new_frs_case(self, frsCaseFromTotalMobileRequest: TotalMobileIncomingFRSRequestModel, questionnaire_guid: str) -> None:
         frsCase = FRSCaseModel(user = frsCaseFromTotalMobileRequest.interviewer_blaise_login, questionnaire_name = frsCaseFromTotalMobileRequest.questionnaire_name, guid = questionnaire_guid, case_id = frsCaseFromTotalMobileRequest.case_id,custom_use="",location="", inPosession="")
         try:
-            self._cma_blaise_service.create_frs_case_for_user(frsCase)
+            self._cma_blaise_service.create_frs_case(frsCase)
         except:
             logging.error(
                 f"Could not create a case for User {frsCaseFromTotalMobileRequest.interviewer_name} "
@@ -145,7 +145,7 @@ class FRSCaseAllocationService:
             inPosession=""
             )
         try:
-            self._cma_blaise_service.create_frs_case_for_user(frsCase)
+            self._cma_blaise_service.create_frs_case(frsCase)
         except:
             raise SpecialInstructionCreationFailedException()
 
@@ -164,7 +164,7 @@ class FRSCaseAllocationService:
             inPosession= ""
             )
         try:
-            self._cma_blaise_service.update_frs_case_for_user(frsCase)
+            self._cma_blaise_service.update_frs_case(frsCase)
             logging.info(f"Successful reallocation")
         except:
             logging.error(
@@ -187,7 +187,7 @@ class FRSCaseAllocationService:
             inPosession= ""
             )
         try:
-            self._cma_blaise_service.update_frs_case_for_user(frsCase)
+            self._cma_blaise_service.update_frs_case(frsCase)
             logging.info(f"Reset successful for {case_id} within Questionnaire {questionnaire_name} in CMA_Launcher")
         except:
             logging.error(

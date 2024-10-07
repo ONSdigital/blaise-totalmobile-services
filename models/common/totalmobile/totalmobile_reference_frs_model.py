@@ -106,7 +106,7 @@ class TotalmobileReferenceFRSModel(BaseModel):
     @staticmethod
     def get_interviewer_login_reference_from_incoming_request(incoming_request: IncomingRequest):
         user_attribute = TotalmobileReferenceFRSModel.get_dictionary_keys_value_if_they_exist(
-            incoming_request, "visit", "identity", "user", "id"
+            incoming_request, "visit", "identity", "user", "name"
         )
 
         if user_attribute is None:
