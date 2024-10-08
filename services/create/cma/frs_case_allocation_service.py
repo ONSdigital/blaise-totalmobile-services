@@ -28,11 +28,10 @@ class FRSCaseAllocationService:
         
         try:
             questionnaire = self._cma_blaise_service.questionnaire_exists(totalmobile_request.questionnaire_name)
+            logging.info(f"Successfully found questionnaire {totalmobile_request.questionnaire_name} in Blaise")
         except:
             logging.error(f"Could not find questionnaire {totalmobile_request.questionnaire_name} in Blaise")
             raise QuestionnaireDoesNotExistError()
-
-        logging.info(f"Successfully found questionnaire {totalmobile_request.questionnaire_name} in Blaise")
 
         case = self._cma_blaise_service.case_exists(
             questionnaire["id"],
@@ -61,25 +60,20 @@ class FRSCaseAllocationService:
         else:
             self._create_new_frs_case(totalmobile_request,questionnaire["id"])
             logging.info(
-            f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
+            f"Case {totalmobile_request.case_id} for Questionnaire {totalmobile_request.questionnaire_name} "
             f"has been created in CMA Launcher database and allocated to {totalmobile_request.interviewer_name}, "
             f"with Blaise Logins ={totalmobile_request.interviewer_blaise_login})")
-  
-    def _validate_questionnaire_exists(self, questionnaire_name: str) -> None:
-        try:
-            questionnaire = self._cma_blaise_service.questionnaire_exists(questionnaire_name)
-            return questionnaire
-        except:
-            raise QuestionnaireDoesNotExistError()
  
     def unallocate_case(self, totalmobile_unallocation_request:TotalMobileIncomingFRSUnallocationRequestModel) -> None:
         
-        questionnaiare = self._validate_questionnaire_exists(totalmobile_unallocation_request.questionnaire_name)
+        try:
+            questionnaire = self._cma_blaise_service.questionnaire_exists(totalmobile_unallocation_request.questionnaire_name)
+            logging.info(f"Successfully found questionnaire {totalmobile_unallocation_request.questionnaire_name} in Blaise")
+        except:
+            logging.error(f"Could not find questionnaire {totalmobile_unallocation_request.questionnaire_name} in Blaise")
+            raise QuestionnaireDoesNotExistError()
 
-        old_case = self._cma_blaise_service.case_exists(
-            questionnaiare["id"],
-            totalmobile_unallocation_request.case_id
-        )
+        old_case = self._cma_blaise_service.case_exists(questionnaire["id"],totalmobile_unallocation_request.case_id)
 
         if old_case:
             self._create_new_entry_for_special_instructions(old_case, totalmobile_unallocation_request.questionnaire_name)
