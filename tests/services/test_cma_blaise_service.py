@@ -5,9 +5,10 @@ import blaise_restapi
 import pytest
 from urllib3.exceptions import HTTPError
 
-from app.exceptions.custom_exceptions import (CaseAllocationException)
+from app.exceptions.custom_exceptions import CaseAllocationException
 
 from appconfig import Config
+from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
 from services.cma_blaise_service import CMABlaiseService
 from tests.helpers import config_helper
 
@@ -20,16 +21,6 @@ def config() -> Config:
 @pytest.fixture()
 def cma_blaise_service(config) -> CMABlaiseService:
     return CMABlaiseService(config=config)
-
-
-# @pytest.fixture()
-# def required_fields() -> List:
-#     return [
-#         "MainSurveyID",
-#         "SurveyDisplayName",
-#         "ID",
-#     ]
-
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
 def test_questionnaire_exists_calls_the_rest_api_client_with_the_correct_parameters( _mock_rest_api_client, cma_blaise_service, config):
@@ -48,7 +39,7 @@ def test_questionnaire_exists_calls_the_rest_api_client_with_the_correct_paramet
 
 
 @mock.patch.object(blaise_restapi.Client, "get_multikey_case")
-def test_case_exists_returns_the_expected_case_if_exists(_mock_rest_api_client_get_multikey_case, cma_blaise_service, config):
+def test_case_exists_returns_the_expected_case_if_exists(_mock_rest_api_client, cma_blaise_service, config):
     
     # arrange
     questionnaire_guid = "a0e2f264-14e4-4151-b12d-bb3331674624"
@@ -128,13 +119,13 @@ def test_case_exists_returns_the_expected_case_if_exists(_mock_rest_api_client_g
                 }
             }
 
-    _mock_rest_api_client_get_multikey_case.return_value = case
+    _mock_rest_api_client.return_value = case
 
     # act
     result = cma_blaise_service.case_exists(questionnaire_guid, case_id)
 
     # assert
-    _mock_rest_api_client_get_multikey_case.assert_called_with(
+    _mock_rest_api_client.assert_called_with(
         config.cma_server_park,
         "CMA_Launcher",
         ["MainSurveyID", "ID"],
@@ -144,20 +135,20 @@ def test_case_exists_returns_the_expected_case_if_exists(_mock_rest_api_client_g
     assert result == case
 
 @mock.patch.object(blaise_restapi.Client, "get_multikey_case")
-def test_case_exists_returns_false_if_case_doesnot_exist(_mock_rest_api_client_get_multikey_case, cma_blaise_service, config):
+def test_case_exists_returns_false_if_case_doesnot_exist(_mock_rest_api_client, cma_blaise_service, config):
     
     # arrange
     questionnaire_guid = "a0e2f264-14e4-4151-b12d-bb3331674624"
     case_id = "100100"
 
-    _mock_rest_api_client_get_multikey_case.side_effect = ValueError("Some error occured in blaise rest API while getting multikey case!")
+    _mock_rest_api_client.side_effect = ValueError("Some error occured in blaise rest API while getting multikey case!")
 
     # act
     result = cma_blaise_service.case_exists(questionnaire_guid, case_id)
 
     # assert
-    _mock_rest_api_client_get_multikey_case.assert_called_once()
-    _mock_rest_api_client_get_multikey_case.assert_called_with(
+    _mock_rest_api_client.assert_called_once()
+    _mock_rest_api_client.assert_called_with(
         config.cma_server_park,
         "CMA_Launcher",
         ["MainSurveyID", "ID"],
@@ -165,186 +156,50 @@ def test_case_exists_returns_false_if_case_doesnot_exist(_mock_rest_api_client_g
     )
     assert result == False
 
-# @mock.patch.object(blaise_restapi.Client, "get_case")
-# @mock.patch.object(blaise_restapi.Client, "case_exists_for_questionnaire")
-# def test_get_case_calls_the_correct_services(
-#     _mock_rest_api_client1, _mock_rest_api_client2, blaise_service
-# ):
-#     # arrange
-#     blaise_server_park = "gusty"
-#     questionnaire_name = "LMS2101_AA1"
-#     case_id = "10010"
 
-#     _mock_rest_api_client1.return_value = True
+@mock.patch.object(blaise_restapi.Client, "create_multikey_case")
+def test_create_frs_case_calls_the_rest_api_client_with_the_correct_parameters(_mock_rest_api_client, cma_blaise_service, config):
+    # arrange
+    frs_case_model = FRSCaseModel(
+                        user ="Interviewer1" , 
+                        questionnaire_name= "FRS2405A", 
+                        guid = "a0e2f264-14e4-4151-b12d-bb3331674624", 
+                        case_id= "100100", 
+                        custom_use ="", 
+                        location="", 
+                        inPosession=""
+                    )
+    # act
+    cma_blaise_service.create_frs_case(frs_case_model)
 
-#     _mock_rest_api_client2.return_value = {
-#         "caseId": "10010",
-#         "fieldData": {
-#             BlaiseFields.case_id: "10010",
-#             BlaiseFields.outcome_code: "110",
-#             BlaiseFields.wave_com_dte: "31-01-2023",
-#         },
-#     }
+    # assert
+    _mock_rest_api_client.assert_called_with(
+                        config.cma_server_park,
+                        "CMA_Launcher",
+                        frs_case_model.key_names,
+                        frs_case_model.key_values,
+                        frs_case_model.data_fields
+                    )
+    
 
-#     # act
-#     blaise_service.get_case(questionnaire_name, case_id)
+@mock.patch.object(blaise_restapi.Client, "create_multikey_case")
+def test_create_frs_case_raises_exception_if_rest_api_fails_creating_case(_mock_rest_api_client, cma_blaise_service, config):
+    # arrange
+    frs_case_model = FRSCaseModel(
+                        user ="Interviewer1" , 
+                        questionnaire_name= "FRS2405A", 
+                        guid = "a0e2f264-14e4-4151-b12d-bb3331674624", 
+                        case_id= "100100", 
+                        custom_use ="", 
+                        location="", 
+                        inPosession=""
+                    )
+    _mock_rest_api_client.side_effect = ValueError("Some error occured in blaise rest API while creating multikey case!")
+   
+    # act
+    with pytest.raises(CaseAllocationException)  as exceptionInfo:
+        cma_blaise_service.create_frs_case(frs_case_model)
 
-#     # assert
-#     _mock_rest_api_client1.assert_called_with(
-#         blaise_server_park, questionnaire_name, case_id
-#     )
+    # assert
+    assert str(exceptionInfo.value) == "Some error occured in blaise rest api while creating FRS case"
 
-
-# @mock.patch.object(blaise_restapi.Client, "get_case")
-# @mock.patch.object(blaise_restapi.Client, "case_exists_for_questionnaire")
-# def test_get_case_returns_the_expected_case_data(
-#     _mock_rest_api_client1, _mock_rest_api_client2, blaise_service
-# ):
-#     # arrange
-#     questionnaire_name = "LMS2101_AA1"
-#     case_id = "10010"
-
-#     _mock_rest_api_client1.return_value = True
-
-#     case_data = {
-#         "caseId": "2000000001",
-#         "fieldData": {
-#             BlaiseFields.case_id: "10010",
-#             BlaiseFields.outcome_code: "110",
-#             BlaiseFields.wave_com_dte: "31-01-2023",
-#         },
-#     }
-#     _mock_rest_api_client2.return_value = case_data
-
-#     # act
-#     result = blaise_service.get_case(questionnaire_name, case_id)
-
-#     # assert
-#     assert result == case_data["fieldData"]
-
-
-# @mock.patch.object(blaise_restapi.Client, "case_exists_for_questionnaire")
-# def test_get_case_throws_a_case_does_not_exist_error_if_the_case_does_not_exist(
-#     _mock_rest_api_client, blaise_service
-# ):
-#     # arrange
-#     _mock_rest_api_client.return_value = False
-
-#     questionnaire_name = "LMS2101_AA1"
-#     case_id = "9001"
-
-#     # assert
-#     with pytest.raises(QuestionnaireCaseDoesNotExistError):
-#         blaise_service.get_case(questionnaire_name, case_id)
-
-
-# @mock.patch.object(blaise_restapi.Client, "get_case")
-# @mock.patch.object(blaise_restapi.Client, "case_exists_for_questionnaire")
-# def test_get_case_throws_a_case_error_if_a_httperror_is_thrown(
-#     _mock_rest_api_client1, _mock_rest_api_client2, blaise_service
-# ):
-#     # arrange
-#     _mock_rest_api_client1.return_value = True
-
-#     _mock_rest_api_client2.side_effect = HTTPError
-
-#     questionnaire_name = "LMS2101_AA1"
-#     case_id = "9001"
-
-#     # assert
-#     with pytest.raises(QuestionnaireCaseError):
-#         blaise_service.get_case(questionnaire_name, case_id)
-
-
-# @mock.patch.object(blaise_restapi.Client, "case_exists_for_questionnaire")
-# def test_case_exists_calls_the_rest_api_client_with_the_correct_parameters(
-#     _mock_rest_api_client, blaise_service
-# ):
-#     # arrange
-#     blaise_server_park = "gusty"
-#     questionnaire_name = "LMS2101_AA1"
-#     case_id = "10010"
-
-#     # act
-#     blaise_service.case_exists(questionnaire_name, case_id)
-
-#     # assert
-#     _mock_rest_api_client.assert_called_with(
-#         blaise_server_park, questionnaire_name, case_id
-#     )
-
-
-# @pytest.mark.parametrize(
-#     "api_response, expected_response", [(False, False), (True, True)]
-# )
-# @mock.patch.object(blaise_restapi.Client, "case_exists_for_questionnaire")
-# def test_case_exists_returns_correct_response(
-#     _mock_rest_api_client, api_response, expected_response, blaise_service
-# ):
-#     # arrange
-#     questionnaire_name = "LMS2101_AA1"
-#     case_id = "10010"
-#     _mock_rest_api_client.return_value = api_response
-
-#     # act
-#     result = blaise_service.case_exists(questionnaire_name, case_id)
-
-#     # assert
-#     assert result == expected_response
-
-
-# @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
-# def test_questionnaire_exists_calls_the_rest_api_client_with_the_correct_parameters(
-#     _mock_rest_api_client, blaise_service
-# ):
-#     # arrange
-#     blaise_server_park = "gusty"
-#     questionnaire_name = "LMS2101_AA1"
-
-#     # act
-#     blaise_service.questionnaire_exists(questionnaire_name)
-
-#     # assert
-#     _mock_rest_api_client.assert_called_with(blaise_server_park, questionnaire_name)
-
-
-# @pytest.mark.parametrize(
-#     "api_response, expected_response", [(False, False), (True, True)]
-# )
-# @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
-# def test_questionnaire_exists_returns_correct_response(
-#     _mock_rest_api_client, api_response, expected_response, blaise_service
-# ):
-#     # arrange
-#     questionnaire_name = "LMS2101_AA1"
-#     _mock_rest_api_client.return_value = api_response
-
-#     # act
-#     result = blaise_service.questionnaire_exists(questionnaire_name)
-
-#     # assert
-#     assert result == expected_response
-
-
-# @mock.patch.object(blaise_restapi.Client, "patch_case_data")
-# def test_update_case_calls_the_rest_api_client_with_the_correct_parameters(
-#     _mock_rest_api_client, blaise_service
-# ):
-#     # arrange
-#     blaise_server_park = "gusty"
-#     questionnaire_name = "LMS2101_AA1"
-#     case_id = "900001"
-#     data_fields = [
-#         {BlaiseFields.outcome_code: "110"},
-#         {BlaiseFields.knock_to_nudge_contact_name: "John Smith"},
-#         {BlaiseFields.telephone_number_1: "01234 567890"},
-#         {BlaiseFields.telephone_number_2: "07734 567890"},
-#     ]
-
-#     # act
-#     blaise_service.update_case(questionnaire_name, case_id, data_fields)
-
-#     # assert
-#     _mock_rest_api_client.assert_called_with(
-#         blaise_server_park, questionnaire_name, case_id, data_fields
-#     )

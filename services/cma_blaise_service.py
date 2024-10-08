@@ -48,8 +48,6 @@ class CMABlaiseService:
             return False
 
     def create_frs_case(self, frs_case_model: FRSCaseModel):
-        logging.info(f"CMA Server park name found as: {self._config.cma_server_park}")
-        logging.info(f"Making call to create multikey case in cma launcher")
         try:
             self.restapi_client.create_multikey_case(
                 self._config.cma_server_park,
@@ -58,8 +56,10 @@ class CMABlaiseService:
                 frs_case_model.key_values,
                 frs_case_model.data_fields,
             )
-        except:
-            raise CaseAllocationException
+        except Exception as e:
+            error_message = "Some error occured in blaise rest api while creating FRS case"
+            logging.error(error_message)
+            raise CaseAllocationException(error_message)
         
     def update_frs_case(self, frs_case_model: FRSCaseModel):
         try:
