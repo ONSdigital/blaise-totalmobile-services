@@ -150,7 +150,7 @@ def test_case_exists_returns_false_if_case_doesnot_exist(_mock_rest_api_client_g
     questionnaire_guid = "a0e2f264-14e4-4151-b12d-bb3331674624"
     case_id = "100100"
 
-    _mock_rest_api_client_get_multikey_case.return_value = False
+    _mock_rest_api_client_get_multikey_case.side_effect = ValueError("Some error occured in blaise rest API while getting multikey case!")
 
     # act
     result = cma_blaise_service.case_exists(questionnaire_guid, case_id)
