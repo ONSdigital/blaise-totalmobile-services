@@ -183,7 +183,7 @@ def test_create_frs_case_calls_the_rest_api_client_with_the_correct_parameters(_
     
 
 @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
-def test_create_frs_case_raises_exception_if_rest_api_fails_creating_case(_mock_rest_api_client, cma_blaise_service, config):
+def test_create_frs_case_raises_exception_if_rest_api_fails_creating_case(_mock_rest_api_client, cma_blaise_service):
     # arrange
     frs_case_model = FRSCaseModel(
                         user ="Interviewer1" , 
@@ -203,3 +203,48 @@ def test_create_frs_case_raises_exception_if_rest_api_fails_creating_case(_mock_
     # assert
     assert str(exceptionInfo.value) == "Some error occured in blaise rest api while creating FRS case"
 
+@mock.patch.object(blaise_restapi.Client, "patch_multikey_case_data")
+def test_update_frs_case_calls_the_rest_api_client_with_the_correct_parameters(_mock_rest_api_client, cma_blaise_service, config):
+
+    # arrange
+    frs_case_model = FRSCaseModel(
+                        user ="Interviewer2" , 
+                        questionnaire_name= "FRS2405A", 
+                        guid = "a0e2f264-14e4-4151-b12d-bb3331674624", 
+                        case_id= "100100", 
+                        custom_use ="", 
+                        location="", 
+                        inPosession=""
+                    )
+    # act
+    cma_blaise_service.update_frs_case(frs_case_model)
+
+    # assert
+    _mock_rest_api_client.assert_called_with(
+                        config.cma_server_park,
+                        "CMA_Launcher",
+                        frs_case_model.key_names,
+                        frs_case_model.key_values,
+                        frs_case_model.data_fields
+                    )
+    
+@mock.patch.object(blaise_restapi.Client, "patch_multikey_case_data")
+def test_update_frs_case_raises_exception_if_rest_api_fails_updating_case(_mock_rest_api_client, cma_blaise_service):
+    # arrange
+    frs_case_model = FRSCaseModel(
+                        user ="Interviewer2" , 
+                        questionnaire_name= "FRS2405A", 
+                        guid = "a0e2f264-14e4-4151-b12d-bb3331674624", 
+                        case_id= "100100", 
+                        custom_use ="", 
+                        location="", 
+                        inPosession=""
+                    )
+    _mock_rest_api_client.side_effect = ValueError("Some error occured in blaise rest API while updating multikey case!")
+   
+    # act
+    with pytest.raises(CaseAllocationException)  as exceptionInfo:
+        cma_blaise_service.update_frs_case(frs_case_model)
+
+    # assert
+    assert str(exceptionInfo.value) == "Some error occured in blaise rest api while updating FRS case"

@@ -58,7 +58,7 @@ class CMABlaiseService:
             )
         except Exception as e:
             error_message = "Some error occured in blaise rest api while creating FRS case"
-            logging.error(error_message)
+            logging.error(f"{error_message}: Exception: {e}")
             raise CaseAllocationException(error_message)
         
     def update_frs_case(self, frs_case_model: FRSCaseModel):
@@ -71,7 +71,10 @@ class CMABlaiseService:
                 frs_case_model.data_fields,
             )
             logging.info(
-                f"Updated Case {frs_case_model.case_id}. Successfully reallocated to '{frs_case_model.user}' for Questionnaire {frs_case_model.questionnaire_name}"
+                f"Updated Case {frs_case_model.case_id}. "
+                f"Successfully reallocated to '{frs_case_model.user}' for Questionnaire {frs_case_model.questionnaire_name}"
             )
-        except:
-            raise CaseAllocationException
+        except Exception as e:
+            error_message = "Some error occured in blaise rest api while updating FRS case"
+            logging.error(f"{error_message}: Exception: {e}")
+            raise CaseAllocationException(error_message)
