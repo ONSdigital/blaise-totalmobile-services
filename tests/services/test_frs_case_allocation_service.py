@@ -93,8 +93,7 @@ class TestFRSCaseAllocationService:
         assert (
             "root",
             logging.ERROR,
-            f"Reallocation Scenario Found. Case with case_id {case_id} is already in Possession "
-            f"of {cmA_ForWhom}! Reallocation Failed."
+            f"Reallocation Scenario Found. Case with case_id {case_id} is already in Possession of {cmA_ForWhom}! Reallocation Failed."
         ) in caplog.record_tuples
 
     def test_create_case_successfully_reallocates_case_if_case_exists_and_already_reset_to_defaults(
@@ -127,3 +126,64 @@ class TestFRSCaseAllocationService:
             logging.INFO,
             f"Successfull reallocation of Case {totalmobile_request.case_id} to User: '{totalmobile_request.interviewer_blaise_login}' in Questionnaire {totalmobile_request.questionnaire_name}"
         ) in caplog.record_tuples
+
+
+    def test_unallocate_case_creates_special_instruction_entry_and_resets_case_and_returns_successfully_with_right_parameters(
+        self,
+        mock_cma_blaise_service,
+        mock_frs_questionnaire_from_blaise,
+        mock_frs_allocated_case_from_cma_launcher,
+        service: FRSCaseAllocationService,
+        caplog
+    ):
+        # arrange
+        questionnaire = mock_frs_questionnaire_from_blaise
+        case = mock_frs_allocated_case_from_cma_launcher
+        totalmobile_unallocate_request = TotalMobileIncomingFRSUnallocationRequestModel(
+                    questionnaire_name= questionnaire["name"], 
+                    case_id="100100", 
+                    interviewer_name="User2"
+                    )
+        mock_cma_blaise_service.questionnaire_exists.return_value = (questionnaire)
+        mock_cma_blaise_service.case_exists.return_value = case
+
+        # act
+        with caplog.at_level(logging.INFO):
+            service.unallocate_case(totalmobile_unallocate_request)
+
+        # assert
+        assert (
+            "root",
+            logging.INFO,
+            f"Reset successful for Case: {totalmobile_unallocate_request.case_id} within Questionnaire {totalmobile_unallocate_request.questionnaire_name} in CMA_Launcher"
+            ) in caplog.record_tuples
+        
+    def test_unallocate_case_fails_and_raise_exception_if_case_doesnot_exist(
+        self,
+        mock_cma_blaise_service,
+        mock_frs_questionnaire_from_blaise,
+        service: FRSCaseAllocationService,
+        caplog
+    ):
+        # arrange
+        questionnaire = mock_frs_questionnaire_from_blaise
+        totalmobile_unallocate_request = TotalMobileIncomingFRSUnallocationRequestModel(
+                    questionnaire_name= questionnaire["name"], 
+                    case_id="100100", 
+                    interviewer_name="User2"
+                    )
+        mock_cma_blaise_service.questionnaire_exists.return_value = (questionnaire)
+        mock_cma_blaise_service.case_exists.return_value = False
+
+        # act
+        with caplog.at_level(logging.INFO) and pytest.raises(CaseNotFoundException):
+            service.unallocate_case(totalmobile_unallocate_request)
+
+        # assert
+        assert (
+            "root",
+            logging.INFO,
+            f"Case {totalmobile_unallocate_request.case_id} within Questionnaire "
+            f"{totalmobile_unallocate_request.questionnaire_name} does not exist in CMA_Launcher. "
+            f"Unallocation failed."
+         ) in caplog.record_tuples
