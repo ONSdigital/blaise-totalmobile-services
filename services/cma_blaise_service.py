@@ -70,10 +70,6 @@ class CMABlaiseService:
                 frs_case_model.key_values,
                 frs_case_model.data_fields,
             )
-            logging.info(
-                f"Updated Case {frs_case_model.case_id}. "
-                f"Successfully reallocated to '{frs_case_model.user}' for Questionnaire {frs_case_model.questionnaire_name}"
-            )
         except Exception as e:
             error_message = "Some error occured in blaise rest api while updating FRS case"
             logging.error(f"{error_message}: Exception: {e}")

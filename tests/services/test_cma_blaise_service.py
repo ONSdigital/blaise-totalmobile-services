@@ -3,7 +3,6 @@ from unittest import mock
 
 import blaise_restapi
 import pytest
-from urllib3.exceptions import HTTPError
 
 from app.exceptions.custom_exceptions import CaseAllocationException
 

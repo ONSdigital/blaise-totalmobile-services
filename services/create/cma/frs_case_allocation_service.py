@@ -29,14 +29,10 @@ class FRSCaseAllocationService:
         try:
             questionnaire = self._cma_blaise_service.questionnaire_exists(totalmobile_request.questionnaire_name)
         except:
-            logging.error(
-                f"Could not find questionnaire {totalmobile_request.questionnaire_name} in Blaise"
-            )
+            logging.error(f"Could not find questionnaire {totalmobile_request.questionnaire_name} in Blaise")
             raise QuestionnaireDoesNotExistError()
 
         logging.info(f"Successfully found questionnaire {totalmobile_request.questionnaire_name} in Blaise")
-
-        logging.info(f"cma server park name,: {Config.from_env()}")
 
         case = self._cma_blaise_service.case_exists(
             questionnaire["id"],
@@ -61,10 +57,10 @@ class FRSCaseAllocationService:
             cma_InPossession = str(case["fieldData"]["cmA_InPossession"])
             cma_Location = str(case["fieldData"]["cmA_Location"])
 
-            #Scenario 1:
+            #Scenario 1 Logic:
             if(cmA_ForWhom == "" and cma_InPossession == "" and cma_Location== "SERVER"):
                 self._reallocate_existing_case_to_new_interviewer(case, totalmobile_request)
-            #Scenario 2:
+            #Scenario 2 Logic:
             else:
                 logging.error(f"Reallocation Scenario Found. Case with case_id {case_id} is already in Possession "
                               f"of {cmA_ForWhom}! Reallocation Failed.")
@@ -76,17 +72,14 @@ class FRSCaseAllocationService:
             f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
             f"has been created in CMA Launcher database and allocated to {totalmobile_request.interviewer_name}, "
             f"with Blaise Logins ={totalmobile_request.interviewer_blaise_login})")
-
-       
+  
     def _validate_questionnaire_exists(self, questionnaire_name: str) -> None:
         try:
             questionnaire = self._cma_blaise_service.questionnaire_exists(questionnaire_name)
             return questionnaire
         except:
             raise QuestionnaireDoesNotExistError()
-
-        
-
+ 
     def unallocate_case(self, totalmobile_unallocation_request:TotalMobileIncomingFRSUnallocationRequestModel) -> None:
         
         questionnaiare = self._validate_questionnaire_exists(totalmobile_unallocation_request.questionnaire_name)
@@ -112,8 +105,6 @@ class FRSCaseAllocationService:
         else:
             raise CaseNotFoundException()
         
-
-
     def _create_new_frs_case(self, frsCaseFromTotalMobileRequest: TotalMobileIncomingFRSRequestModel, questionnaire_guid: str) -> None:
         frsCase = FRSCaseModel(user = frsCaseFromTotalMobileRequest.interviewer_blaise_login, questionnaire_name = frsCaseFromTotalMobileRequest.questionnaire_name, guid = questionnaire_guid, case_id = frsCaseFromTotalMobileRequest.case_id,custom_use="",location="", inPosession="")
         try:
@@ -165,10 +156,12 @@ class FRSCaseAllocationService:
             )
         try:
             self._cma_blaise_service.update_frs_case(frsCase)
-            logging.info(f"Successful reallocation")
+            logging.info(
+                f"Successfull reallocation of Case {frsCase.case_id} to User: '{frsCase.user}' in Questionnaire {frsCase.questionnaire_name}"
+            )
         except:
             logging.error(
-                f"Reallocation failed. Failed in allocating case with case_id {case_id} to User: {new_Interviewer}"
+                f"Reallocation failed. Failed in allocating Case {case_id} to User: {new_Interviewer}"
             )
             raise CaseAllocationException()
 
@@ -188,9 +181,9 @@ class FRSCaseAllocationService:
             )
         try:
             self._cma_blaise_service.update_frs_case(frsCase)
-            logging.info(f"Reset successful for {case_id} within Questionnaire {questionnaire_name} in CMA_Launcher")
+            logging.info(f"Reset successful for Case: {case_id} within Questionnaire {questionnaire_name} in CMA_Launcher")
         except:
             logging.error(
-                f"Reset failed. Failed in resetting case with case_id {case_id} within Questionnaire {questionnaire_name} in CMA_Launcher"
+                f"Reset failed. Failed in resetting Case:  {case_id} within Questionnaire {questionnaire_name} in CMA_Launcher"
             )
             raise CaseResetFailedException()
