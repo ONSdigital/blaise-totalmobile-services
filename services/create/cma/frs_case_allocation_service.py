@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from typing import Any, Dict
+from typing import Dict
 
 from app.exceptions.custom_exceptions import (
     CaseAllocationException,
@@ -46,7 +46,7 @@ class FRSCaseAllocationService:
             questionnaire["id"], totalmobile_request.case_id
         )
 
-        if case:
+        if case and isinstance(case, Dict):
             logging.info(
                 f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
                 f"already exists in CMA Launcher database"

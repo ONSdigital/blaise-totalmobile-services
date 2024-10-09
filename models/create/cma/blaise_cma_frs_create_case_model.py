@@ -1,6 +1,7 @@
 import calendar
 import re
 from datetime import datetime
+from typing import Any
 
 
 class FRSCaseModel:
@@ -32,7 +33,7 @@ class FRSCaseModel:
         self.key_values = self.format_key_values()
         self.data_fields = self.format_data_fields()
 
-    def format_data_fields(self) -> dict[str, any]:
+    def format_data_fields(self) -> dict[str, Any]:
         return {
             "mainSurveyID": f"{self.guid}",
             "surveyDisplayName": f"{self.questionnaire_name}",
