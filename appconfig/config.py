@@ -29,7 +29,9 @@ class Config:
             totalmobile_instance=os.getenv("TOTALMOBILE_INSTANCE", ""),
             totalmobile_client_id=os.getenv("TOTALMOBILE_CLIENT_ID", ""),
             totalmobile_client_secret=os.getenv("TOTALMOBILE_CLIENT_SECRET", ""),
-            create_totalmobile_jobs_task_queue_id=os.getenv("CREATE_TOTALMOBILE_JOBS_TASK_QUEUE_ID", ""),
+            create_totalmobile_jobs_task_queue_id=os.getenv(
+                "CREATE_TOTALMOBILE_JOBS_TASK_QUEUE_ID", ""
+            ),
             gcloud_project=os.getenv("GCLOUD_PROJECT", ""),
             region=os.getenv("REGION", ""),
             blaise_api_url=os.getenv("BLAISE_API_URL", ""),

@@ -1,6 +1,7 @@
 from models.create.blaise.blaise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
 
+
 def test_format_data_fields_returns_a_correctly_formatted_data_fields_for_frs_case():
     # Arrange
     user = "User1"
@@ -12,7 +13,7 @@ def test_format_data_fields_returns_a_correctly_formatted_data_fields_for_frs_ca
     inPosession = ""
 
     frs_case_for_cma_launcher = FRSCaseModel(
-        user,questionnaire_name, guid, case_id, custom_use, location, inPosession
+        user, questionnaire_name, guid, case_id, custom_use, location, inPosession
     )
 
     # Act
@@ -20,12 +21,12 @@ def test_format_data_fields_returns_a_correctly_formatted_data_fields_for_frs_ca
 
     # Assert
     assert formatted_data_fields == {
-            "mainSurveyID": guid,
-            "surveyDisplayName": questionnaire_name,
-            "id": case_id,
-            "cmA_ForWhom": user,
-            "cmA_EndDate": "11-11-2024",
-            "cmA_CustomUse": "",
-            "cmA_Location": "",
-            "cmA_InPossession": ""
-        }
+        "mainSurveyID": guid,
+        "surveyDisplayName": questionnaire_name,
+        "id": case_id,
+        "cmA_ForWhom": user,
+        "cmA_EndDate": "11-11-2024",
+        "cmA_CustomUse": "",
+        "cmA_Location": "",
+        "cmA_InPossession": "",
+    }

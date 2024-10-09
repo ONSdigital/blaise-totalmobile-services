@@ -21,20 +21,26 @@ class BadReferenceError(Exception):
 class InvalidTotalmobileUpdateRequestException(Exception):
     pass
 
+
 class InvalidTotalmobileFRSRequestException(Exception):
     pass
+
 
 class CaseReAllocationException(Exception):
     pass
 
+
 class SpecialInstructionCreationFailedException(Exception):
     pass
+
 
 class CaseNotFoundException(Exception):
     pass
 
+
 class CaseResetFailedException(Exception):
     pass
+
 
 class CaseAllocationException(Exception):
     def __init__(self, message=None):

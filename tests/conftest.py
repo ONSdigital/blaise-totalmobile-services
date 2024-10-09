@@ -532,6 +532,7 @@ def create_visit_request_sample():
     """
     )
 
+
 @pytest.fixture
 def create_visit_request_sample_without_user_blaise_logins():
     return json.loads(
@@ -655,7 +656,8 @@ def create_visit_request_sample_without_user_blaise_logins():
       }
     }  
     """
-  )
+    )
+
 
 @pytest.fixture
 def create_visit_request_sample_without_reference():
@@ -779,7 +781,8 @@ def create_visit_request_sample_without_reference():
       }
     }  
     """
-  )
+    )
+
 
 @pytest.fixture
 def mock_worlds(mock_world):
@@ -882,25 +885,27 @@ def mock_dst_only_questionnaire_from_blaise():
         }
     ]
 
+
 @pytest.fixture
 def mock_frs_questionnaire_from_blaise():
-    return{
-            "name": "FRS2405A",
-            "id": "a0e2f264-14e4-4151-b12d-bb3331674624",
-            "serverParkName": "gusty",
-            "installDate": "2024-10-01T09:46:24.7460966+01:00",
-            "status": "Inactive",
-            "dataRecordCount": 0,
-            "hasData": False,
-            "nodes": [{"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Inactive"}],
+    return {
+        "name": "FRS2405A",
+        "id": "a0e2f264-14e4-4151-b12d-bb3331674624",
+        "serverParkName": "gusty",
+        "installDate": "2024-10-01T09:46:24.7460966+01:00",
+        "status": "Inactive",
+        "dataRecordCount": 0,
+        "hasData": False,
+        "nodes": [{"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Inactive"}],
     }
+
 
 @pytest.fixture
 def mock_frs_allocated_case_from_cma_launcher():
-    return{
+    return {
         "primaryKeyValues": {
             "mainSurveyID": "a0e2f264-14e4-4151-b12d-bb3331674624",
-            "id": "100100"
+            "id": "100100",
         },
         "fieldData": {
             "mainSurveyID": "a0e2f264-14e4-4151-b12d-bb3331674624",
@@ -968,16 +973,17 @@ def mock_frs_allocated_case_from_cma_launcher():
             "lastChangedCI.User": "",
             "caseNote": "",
             "lastChangedNote.When": "",
-            "lastChangedNote.User": ""
-        }
+            "lastChangedNote.User": "",
+        },
     }
+
 
 @pytest.fixture
 def mock_frs_unallocated_case_reset_to_defaults_from_cma_launcher():
-    return{
+    return {
         "primaryKeyValues": {
             "mainSurveyID": "a0e2f264-14e4-4151-b12d-bb3331674624",
-            "id": "100100"
+            "id": "100100",
         },
         "fieldData": {
             "mainSurveyID": "a0e2f264-14e4-4151-b12d-bb3331674624",
@@ -1045,9 +1051,10 @@ def mock_frs_unallocated_case_reset_to_defaults_from_cma_launcher():
             "lastChangedCI.User": "",
             "caseNote": "",
             "lastChangedNote.When": "",
-            "lastChangedNote.User": ""
-        }
+            "lastChangedNote.User": "",
+        },
     }
+
 
 @pytest.fixture
 def force_recall_visit_request_payload():
@@ -1072,7 +1079,8 @@ def force_recall_visit_request_payload():
     "UseSilentPushSpecified": false
     }
     """
-  )
+    )
+
 
 @pytest.fixture
 def force_recall_visit_request_payload_with_null_reference():
@@ -1097,7 +1105,8 @@ def force_recall_visit_request_payload_with_null_reference():
     "UseSilentPushSpecified": false
     }
     """
-  )
+    )
+
 
 @pytest.fixture
 def force_recall_visit_request_payload_without_reference():
@@ -1121,4 +1130,4 @@ def force_recall_visit_request_payload_without_reference():
     "UseSilentPushSpecified": false
     }
     """
-  )
+    )

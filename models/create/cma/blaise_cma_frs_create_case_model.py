@@ -5,7 +5,14 @@ from datetime import datetime
 
 class FRSCaseModel:
     def __init__(
-        self, user: str, questionnaire_name: str, guid: str, case_id: str, custom_use : str, location:str, inPosession:str
+        self,
+        user: str,
+        questionnaire_name: str,
+        guid: str,
+        case_id: str,
+        custom_use: str,
+        location: str,
+        inPosession: str,
     ) -> None:
         self.user = user
         self.questionnaire_name = questionnaire_name
@@ -34,7 +41,7 @@ class FRSCaseModel:
             "cmA_EndDate": f"{self.eleventh_day_of_next_month}",
             "cmA_CustomUse": f"{self.custom_use}",
             "cmA_Location": f"{self.location}",
-            "cmA_InPossession": f"{self.inPossession}"
+            "cmA_InPossession": f"{self.inPossession}",
         }
 
     def format_key_values(self) -> list[str]:
@@ -69,4 +76,4 @@ class FRSCaseModel:
 
     def calculate_eleventh_day_of_next_month(self):
         month_number = list(calendar.month_name).index(self.month)
-        return datetime(int(self.year), month_number+1, 11).strftime("%d-%m-%Y")
+        return datetime(int(self.year), month_number + 1, 11).strftime("%d-%m-%Y")

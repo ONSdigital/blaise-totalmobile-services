@@ -24,19 +24,23 @@ class TotalMobileIncomingFRSRequestModel(BaseModel):
     @classmethod
     def import_request(cls: Type[T], incoming_request: IncomingRequest) -> T:
         if not (
-            cls.dictionary_keys_exist(incoming_request, "visit", "identity", "user", "name") 
-            and cls.dictionary_keys_exist(incoming_request, "visit", "identity", "reference")
-            ):
+            cls.dictionary_keys_exist(
+                incoming_request, "visit", "identity", "user", "name"
+            )
+            and cls.dictionary_keys_exist(
+                incoming_request, "visit", "identity", "reference"
+            )
+        ):
             logging.error("The Totalmobile payload appears to be malformed")
             raise InvalidTotalmobileFRSRequestException
-        
+
         reference_model = TotalmobileReferenceFRSModel.from_request(incoming_request)
 
         total_mobile_case = cls(
             questionnaire_name=reference_model.questionnaire_name,
             case_id=reference_model.case_id,
-            interviewer_name = reference_model.interviewer_name,
-            interviewer_blaise_login = reference_model.interviewer_blaise_login,
+            interviewer_name=reference_model.interviewer_name,
+            interviewer_blaise_login=reference_model.interviewer_blaise_login,
         )
 
         return total_mobile_case

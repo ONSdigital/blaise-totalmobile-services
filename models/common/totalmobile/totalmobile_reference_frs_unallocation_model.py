@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional, Type, TypedDict, TypeVar
 
 from app.exceptions.custom_exceptions import BadReferenceError, MissingReferenceError
 from models.base_model import BaseModel
+
 T = TypeVar("T", bound="TotalmobileReferenceUnallocationFRSModel")
 
 
@@ -28,15 +29,25 @@ class TotalmobileReferenceUnallocationFRSModel(BaseModel):
 
     @classmethod
     def from_request(cls: Type[T], request: IncomingRequest) -> T:
-        questionnaire_case_reference = cls.get_questionnaire_case_reference_from_incoming_request(request)
-        interviewer_name_reference = cls.get_interviewer_reference_from_incoming_request(request)
-        return cls.get_model_from_reference( questionnaire_case_reference, interviewer_name_reference)
+        questionnaire_case_reference = (
+            cls.get_questionnaire_case_reference_from_incoming_request(request)
+        )
+        interviewer_name_reference = (
+            cls.get_interviewer_reference_from_incoming_request(request)
+        )
+        return cls.get_model_from_reference(
+            questionnaire_case_reference, interviewer_name_reference
+        )
 
     @classmethod
     def from_questionnaire_and_case_and_interviewer(
-        cls: Type[T], questionnaire_name: Optional[str], case_id: Optional[str], interviewer_name:Optional[str]
+        cls: Type[T],
+        questionnaire_name: Optional[str],
+        case_id: Optional[str],
+        interviewer_name: Optional[str],
     ) -> T:
-        if (questionnaire_name is None
+        if (
+            questionnaire_name is None
             or questionnaire_name == ""
             or case_id is None
             or case_id == ""
@@ -45,7 +56,11 @@ class TotalmobileReferenceUnallocationFRSModel(BaseModel):
         ):
             raise MissingReferenceError()
 
-        return cls(questionnaire_name=questionnaire_name, case_id=case_id, interviewer_name=interviewer_name)
+        return cls(
+            questionnaire_name=questionnaire_name,
+            case_id=case_id,
+            interviewer_name=interviewer_name,
+        )
 
     def create_frs_reference(self) -> str:
         return f"{self.questionnaire_name}.{self.case_id}"
@@ -69,7 +84,9 @@ class TotalmobileReferenceUnallocationFRSModel(BaseModel):
         return reference_fields
 
     @staticmethod
-    def get_questionnaire_case_reference_from_incoming_request(incoming_request: IncomingRequest):
+    def get_questionnaire_case_reference_from_incoming_request(
+        incoming_request: IncomingRequest,
+    ):
         reference = TotalmobileReferenceUnallocationFRSModel.get_dictionary_keys_value_if_they_exist(
             incoming_request, "identity", "reference"
         )
@@ -79,24 +96,36 @@ class TotalmobileReferenceUnallocationFRSModel(BaseModel):
             raise MissingReferenceError()
 
         return reference
-    
+
     @staticmethod
-    def get_interviewer_reference_from_incoming_request(incoming_request: IncomingRequest):
+    def get_interviewer_reference_from_incoming_request(
+        incoming_request: IncomingRequest,
+    ):
         user_attribute = TotalmobileReferenceUnallocationFRSModel.get_dictionary_keys_value_if_they_exist(
             incoming_request, "identity", "user", "name"
         )
 
         if user_attribute is None:
-            logging.error("Interviewer Name reference is missing from the Totalmobile payload")
+            logging.error(
+                "Interviewer Name reference is missing from the Totalmobile payload"
+            )
             raise MissingReferenceError()
-        
+
         return user_attribute
 
     @staticmethod
-    def get_model_from_reference(questionnaire_case_reference: str, interviewer_name_reference: str):
-        questionnaire_case_request_fields = TotalmobileReferenceUnallocationFRSModel.get_fields_from_reference(questionnaire_case_reference)
+    def get_model_from_reference(
+        questionnaire_case_reference: str, interviewer_name_reference: str
+    ):
+        questionnaire_case_request_fields = (
+            TotalmobileReferenceUnallocationFRSModel.get_fields_from_reference(
+                questionnaire_case_reference
+            )
+        )
         questionnaire_name = questionnaire_case_request_fields[0]
         case_id = questionnaire_case_request_fields[1]
         return TotalmobileReferenceUnallocationFRSModel(
-            questionnaire_name=questionnaire_name, case_id=case_id, interviewer_name=interviewer_name_reference
+            questionnaire_name=questionnaire_name,
+            case_id=case_id,
+            interviewer_name=interviewer_name_reference,
         )

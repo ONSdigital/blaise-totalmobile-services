@@ -8,6 +8,7 @@ from appconfig import Config
 
 from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
 
+
 class CMA_BlaiseService(Protocol):
     def questionnaire_exists(self, questionnaire_name: str) -> Dict[str, Any]:
         pass
@@ -21,6 +22,7 @@ class CMA_BlaiseService(Protocol):
     def update_frs_case(self, frs_case_model: FRSCaseModel) -> None:
         pass
 
+
 class CMABlaiseService:
     def __init__(self, config: Config) -> None:
         self._config = config
@@ -33,7 +35,7 @@ class CMABlaiseService:
         )
 
     def case_exists(self, guid: str, case_id: str) -> Union[Dict[str, Any], bool]:
-        
+
         logging.info(f"CMA Server park name found as: {self._config.cma_server_park}")
         logging.info(f"Validating if case exists with id in cma launcher")
         try:
@@ -41,10 +43,10 @@ class CMABlaiseService:
                 self._config.cma_server_park,
                 "CMA_Launcher",
                 ["MainSurveyID", "ID"],
-                [guid, case_id]
+                [guid, case_id],
             )
             return case
-        except: 
+        except:
             return False
 
     def create_frs_case(self, frs_case_model: FRSCaseModel):
@@ -57,10 +59,12 @@ class CMABlaiseService:
                 frs_case_model.data_fields,
             )
         except Exception as e:
-            error_message = "Some error occured in blaise rest api while creating FRS case"
+            error_message = (
+                "Some error occured in blaise rest api while creating FRS case"
+            )
             logging.error(f"{error_message}: Exception: {e}")
             raise CaseAllocationException(error_message)
-        
+
     def update_frs_case(self, frs_case_model: FRSCaseModel):
         try:
             self.restapi_client.patch_multikey_case_data(
@@ -71,6 +75,8 @@ class CMABlaiseService:
                 frs_case_model.data_fields,
             )
         except Exception as e:
-            error_message = "Some error occured in blaise rest api while updating FRS case"
+            error_message = (
+                "Some error occured in blaise rest api while updating FRS case"
+            )
             logging.error(f"{error_message}: Exception: {e}")
             raise CaseAllocationException(error_message)

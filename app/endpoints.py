@@ -58,7 +58,7 @@ def submit_form_result_request():
         return "Case does not exist in Blaise", 404
     except QuestionnaireCaseError:
         return "Error trying to get case in Blaise", 500
-    
+
 
 @incoming.route("/createvisitrequest", methods=["POST"])
 @auth.login_required
@@ -73,7 +73,7 @@ def create_visit_request():
     except (MissingReferenceError, BadReferenceError):
         return "Missing/invalid reference in request", 400
     except InvalidTotalmobileFRSRequestException:
-         return "Request appears to be malformed", 400
+        return "Request appears to be malformed", 400
     except QuestionnaireDoesNotExistError:
         return "Questionnaire does not exist in Blaise", 404
     except CaseAllocationException:
@@ -102,7 +102,8 @@ def update_visit_status_request():
         return "Case resest failed for unallocation", 500
     except SpecialInstructionCreationFailedException:
         return "Special Instruction entry creation failed for unallocation", 500
-    
+
+
 @incoming.route("/<version>/health", methods=["GET"])
 def health_check(version):
     return jsonify({"healthy": True})
