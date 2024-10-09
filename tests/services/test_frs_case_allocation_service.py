@@ -56,11 +56,36 @@ class TestFRSCaseAllocationService:
         assert (
             "root",
             logging.INFO,
-            f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
+            f"Case {totalmobile_request.case_id} for Questionnaire {totalmobile_request.questionnaire_name} "
             f"has been created in CMA Launcher database and allocated to {totalmobile_request.interviewer_name}, "
             f"with Blaise Logins ={totalmobile_request.interviewer_blaise_login})",
         ) in caplog.record_tuples
 
+    def test_create_case_raises_questionnaire_doesnot_exist_exception_if_questionnaire_doesnot_exist(
+        self,
+        mock_cma_blaise_service,
+        service: FRSCaseAllocationService,
+        caplog
+    ):
+        # arrange
+        totalmobile_request = TotalMobileIncomingFRSRequestModel(
+                    questionnaire_name= "FRS2405A", 
+                    case_id="100100", 
+                    interviewer_name="User1", 
+                    interviewer_blaise_login="User1"
+                    )
+        mock_cma_blaise_service.questionnaire_exists.side_effect = ValueError("Some error occured in blaise rest API while getting Questionnaire by name")
+
+        # act
+        with caplog.at_level(logging.ERROR) and pytest.raises(QuestionnaireDoesNotExistError)  as exceptionInfo:
+            service.create_case(totalmobile_request)
+
+        # assert
+        assert (
+            "root",
+            logging.ERROR,
+            f"Could not find Questionnaire FRS2405A in Blaise",
+        ) in caplog.record_tuples
 
     def test_create_case_fails_if_case_exists_and_already_allocated_to_some_interviewer(
         self,
@@ -127,7 +152,6 @@ class TestFRSCaseAllocationService:
             f"Successfull reallocation of Case {totalmobile_request.case_id} to User: '{totalmobile_request.interviewer_blaise_login}' in Questionnaire {totalmobile_request.questionnaire_name}"
         ) in caplog.record_tuples
 
-
     def test_unallocate_case_creates_special_instruction_entry_and_resets_case_and_returns_successfully_with_right_parameters(
         self,
         mock_cma_blaise_service,
@@ -158,6 +182,31 @@ class TestFRSCaseAllocationService:
             f"Reset successful for Case: {totalmobile_unallocate_request.case_id} within Questionnaire {totalmobile_unallocate_request.questionnaire_name} in CMA_Launcher"
             ) in caplog.record_tuples
         
+    def test_unallocate_case_raises_questionnaire_doesnot_exist_exception_if_questionnaire_doesnot_exist(
+        self,
+        mock_cma_blaise_service,
+        service: FRSCaseAllocationService,
+        caplog
+    ):
+        # arrange
+        totalmobile_unallocate_request = TotalMobileIncomingFRSUnallocationRequestModel(
+                    questionnaire_name= "FRS2410A", 
+                    case_id="100100", 
+                    interviewer_name="User2"
+                    )
+        mock_cma_blaise_service.questionnaire_exists.side_effect = ValueError("Some error occured in blaise rest API while getting Questionnaire by name")
+
+        # act
+        with caplog.at_level(logging.ERROR) and pytest.raises(QuestionnaireDoesNotExistError)  as exceptionInfo:
+            service.unallocate_case(totalmobile_unallocate_request)
+
+        # assert
+        assert (
+            "root",
+            logging.ERROR,
+            f"Could not find Questionnaire FRS2410A in Blaise",
+        ) in caplog.record_tuples
+    
     def test_unallocate_case_fails_and_raise_exception_if_case_doesnot_exist(
         self,
         mock_cma_blaise_service,

@@ -30,7 +30,7 @@ class FRSCaseAllocationService:
             questionnaire = self._cma_blaise_service.questionnaire_exists(totalmobile_request.questionnaire_name)
             logging.info(f"Successfully found questionnaire {totalmobile_request.questionnaire_name} in Blaise")
         except:
-            logging.error(f"Could not find questionnaire {totalmobile_request.questionnaire_name} in Blaise")
+            logging.error(f"Could not find Questionnaire {totalmobile_request.questionnaire_name} in Blaise")
             raise QuestionnaireDoesNotExistError()
 
         case = self._cma_blaise_service.case_exists(
@@ -70,7 +70,7 @@ class FRSCaseAllocationService:
             questionnaire = self._cma_blaise_service.questionnaire_exists(totalmobile_unallocation_request.questionnaire_name)
             logging.info(f"Successfully found questionnaire {totalmobile_unallocation_request.questionnaire_name} in Blaise")
         except:
-            logging.error(f"Could not find questionnaire {totalmobile_unallocation_request.questionnaire_name} in Blaise")
+            logging.error(f"Could not find Questionnaire {totalmobile_unallocation_request.questionnaire_name} in Blaise")
             raise QuestionnaireDoesNotExistError()
 
         old_case = self._cma_blaise_service.case_exists(questionnaire["id"],totalmobile_unallocation_request.case_id)

@@ -18,7 +18,7 @@ class FRSCaseModel:
         self.full_date = self.get_full_date()
         self.year = self.get_year()
         self.month = self.get_month()
-        self.last_day_of_month = self.calculate_last_day_of_month()
+        self.eleventh_day_of_next_month = self.calculate_eleventh_day_of_next_month()
         self.tla = self.get_tla()
 
         self.key_names = self.format_key_names()
@@ -31,12 +31,11 @@ class FRSCaseModel:
             "surveyDisplayName": f"{self.questionnaire_name}",
             "id": f"{self.case_id}",
             "cmA_ForWhom": f"{self.user}",
-            "cmA_EndDate": f"{self.last_day_of_month}",
+            "cmA_EndDate": f"{self.eleventh_day_of_next_month}",
             "cmA_CustomUse": f"{self.custom_use}",
             "cmA_Location": f"{self.location}",
             "cmA_InPossession": f"{self.inPossession}"
-
-            }
+        }
 
     def format_key_values(self) -> list[str]:
         return [self.guid, self.case_id]
@@ -68,7 +67,6 @@ class FRSCaseModel:
         match = re.match(pattern, self.questionnaire_name)
         return match.group(0)[:3] if match else None
 
-    def calculate_last_day_of_month(self):
+    def calculate_eleventh_day_of_next_month(self):
         month_number = list(calendar.month_name).index(self.month)
-        #num_days = calendar.monthrange(int(self.year), month_number)[1]
         return datetime(int(self.year), month_number+1, 11).strftime("%d-%m-%Y")
