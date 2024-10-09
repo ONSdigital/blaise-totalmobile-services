@@ -1,6 +1,6 @@
 import logging
-from typing import Any, Dict
 from datetime import datetime
+from typing import Any, Dict
 
 from app.exceptions.custom_exceptions import (
     CaseAllocationException,
@@ -10,7 +10,6 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireDoesNotExistError,
     SpecialInstructionCreationFailedException,
 )
-
 from appconfig import Config
 from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
 from models.create.cma.totalmobile_incoming_frs_request_model import (

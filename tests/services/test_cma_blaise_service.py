@@ -5,7 +5,6 @@ import blaise_restapi
 import pytest
 
 from app.exceptions.custom_exceptions import CaseAllocationException
-
 from appconfig import Config
 from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
 from services.cma_blaise_service import CMABlaiseService

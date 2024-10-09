@@ -1,11 +1,10 @@
 import logging
 from typing import Any, Dict, Protocol, Union
 
-from app.exceptions.custom_exceptions import CaseAllocationException
 import blaise_restapi
 
+from app.exceptions.custom_exceptions import CaseAllocationException
 from appconfig import Config
-
 from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
 
 

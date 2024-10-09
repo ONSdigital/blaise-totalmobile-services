@@ -3,6 +3,7 @@ from typing import List
 from unittest.mock import Mock
 
 import pytest
+
 from app.config import Config
 from app.exceptions.custom_exceptions import (
     CaseAllocationException,
@@ -12,7 +13,6 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireDoesNotExistError,
     SpecialInstructionCreationFailedException,
 )
-
 from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
 from models.create.cma.totalmobile_incoming_frs_request_model import (
     TotalMobileIncomingFRSRequestModel,

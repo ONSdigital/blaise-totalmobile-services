@@ -8,8 +8,6 @@ from app.exceptions.custom_exceptions import InvalidTotalmobileFRSRequestExcepti
 from models.base_model import BaseModel
 from models.common.totalmobile.totalmobile_reference_frs_unallocation_model import (
     IncomingRequest,
-)
-from models.common.totalmobile.totalmobile_reference_frs_unallocation_model import (
     TotalmobileReferenceUnallocationFRSModel,
 )
 

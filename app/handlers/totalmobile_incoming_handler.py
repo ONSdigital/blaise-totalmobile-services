@@ -1,16 +1,16 @@
 import logging
 
+from models.create.cma.totalmobile_incoming_frs_request_model import (
+    TotalMobileIncomingFRSRequestModel,
+)
 from models.update.cma.totalmobile_incoming_frs_unallocation_request_model import (
     TotalMobileIncomingFRSUnallocationRequestModel,
 )
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
-from models.create.cma.totalmobile_incoming_frs_request_model import (
-    TotalMobileIncomingFRSRequestModel,
-)
-from services.update.update_case_service import UpdateCaseService
 from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
+from services.update.update_case_service import UpdateCaseService
 
 
 def submit_form_result_request_handler(request, update_case_service: UpdateCaseService):

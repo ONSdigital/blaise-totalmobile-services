@@ -17,12 +17,12 @@ from app.exceptions.custom_exceptions import (
     SpecialInstructionCreationFailedException,
 )
 from app.handlers.totalmobile_incoming_handler import (
-    submit_form_result_request_handler,
     create_visit_request_handler,
     force_recall_visit_request_handler,
+    submit_form_result_request_handler,
 )
-from services.update.update_case_service import UpdateCaseService
 from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
+from services.update.update_case_service import UpdateCaseService
 
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
 
