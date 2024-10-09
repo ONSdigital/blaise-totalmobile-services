@@ -4,7 +4,6 @@ from unittest.mock import Mock
 
 import pytest
 
-from app.config import Config
 from app.exceptions.custom_exceptions import (
     CaseAllocationException,
     CaseNotFoundException,
@@ -80,7 +79,7 @@ class TestFRSCaseAllocationService:
         # act
         with caplog.at_level(logging.ERROR) and pytest.raises(
             QuestionnaireDoesNotExistError
-        ) as exceptionInfo:
+        ):
             service.create_case(totalmobile_request)
 
         # assert
@@ -88,6 +87,38 @@ class TestFRSCaseAllocationService:
             "root",
             logging.ERROR,
             f"Could not find Questionnaire FRS2405A in Blaise",
+        ) in caplog.record_tuples
+
+    def test_create_case_raises_case_allocation_exception_if_rest_api_fails_creating_new_case(
+        self, mock_cma_blaise_service, service: FRSCaseAllocationService, caplog, mock_frs_questionnaire_from_blaise,
+    ):
+        # arrange
+        questionnaire = mock_frs_questionnaire_from_blaise
+        totalmobile_request = TotalMobileIncomingFRSRequestModel(
+            questionnaire_name="FRS2405A",
+            case_id="100100",
+            interviewer_name="User1",
+            interviewer_blaise_login="User1",
+        )
+        mock_cma_blaise_service.questionnaire_exists.return_value = questionnaire
+        mock_cma_blaise_service.case_exists.return_value = False
+        mock_cma_blaise_service.create_frs_case.side_effect = ValueError(
+            "Some error occured in blaise rest API while creating new case"
+        )
+
+        # act
+        with caplog.at_level(logging.ERROR) and pytest.raises(
+            CaseAllocationException
+        ):
+            service.create_case(totalmobile_request)
+
+        # assert
+        assert (
+            "root",
+            logging.ERROR,
+            f"Could not create a case for User {totalmobile_request.interviewer_name} "
+            f"with Blaise Login = {totalmobile_request.interviewer_blaise_login} within Questionnaire"
+            f"{totalmobile_request.questionnaire_name} in CMA_Launcher...",
         ) in caplog.record_tuples
 
     def test_create_case_fails_if_case_exists_and_already_allocated_to_some_interviewer(
