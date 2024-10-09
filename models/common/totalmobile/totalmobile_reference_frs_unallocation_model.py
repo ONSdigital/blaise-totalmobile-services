@@ -27,10 +27,6 @@ class TotalmobileReferenceUnallocationFRSModel(BaseModel):
         self.interviewer_name = interviewer_name
 
     @classmethod
-    def from_reference(cls: Type[T], reference: str) -> T:
-        return cls.get_model_from_reference(reference)
-
-    @classmethod
     def from_request(cls: Type[T], request: IncomingRequest) -> T:
         questionnaire_case_reference = cls.get_questionnaire_case_reference_from_incoming_request(request)
         interviewer_name_reference = cls.get_interviewer_reference_from_incoming_request(request)
