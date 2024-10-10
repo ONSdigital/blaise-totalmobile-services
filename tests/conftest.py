@@ -905,7 +905,7 @@ def mock_frs_allocated_case_from_cma_launcher():
     return {
         "primaryKeyValues": {
             "mainSurveyID": "a0e2f264-14e4-4151-b12d-bb3331674624",
-            "id": "100100",
+            "id": "500101",
         },
         "fieldData": {
             "mainSurveyID": "a0e2f264-14e4-4151-b12d-bb3331674624",
@@ -1145,12 +1145,12 @@ def force_recall_visit_request_payload():
         "workType": "FRS",
         "user": {
             "IDSpecified": false,
-            "name": "Callum.Nicholson",
+            "name": "Interviewer1",
             "DeviceID": null,
             "userAttributes": []
         },
         "Company": "NA",
-        "reference": "FRS2405.9002"
+        "reference": "FRS2405A.9002"
     },
     "PreserveIfNoLinesRemainingSpecified": false,
     "Lines": [],

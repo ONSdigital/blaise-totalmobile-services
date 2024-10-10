@@ -3,13 +3,10 @@ import logging
 from unittest import mock
 
 import blaise_restapi
-import pytest
 
 from app.exceptions.custom_exceptions import (
     CaseAllocationException,
-    CaseReAllocationException,
-    InvalidTotalmobileFRSRequestException,
-    MissingReferenceError,
+    CaseResetFailedException,
     QuestionnaireDoesNotExistError,
 )
 from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
@@ -253,3 +250,95 @@ def test_force_recall_visit_request_returns_400_without_reference(
     )
     assert response.status_code == 400
     assert response.text == "Request appears to be malformed"
+
+
+@mock.patch("services.create.cma.frs_case_allocation_service")
+def test_force_recall_visit_request_returns_404_if_questionnaire_is_not_found(
+    service_handler,
+    client,
+    test_auth_header,
+    force_recall_visit_request_payload,
+    caplog,
+):
+    service_handler.unallocate_case.side_effect = QuestionnaireDoesNotExistError
+    # act
+    with caplog.at_level(logging.ERROR):
+        response = client.post(
+            "/bts/forcerecallvisitrequest",
+            json=force_recall_visit_request_payload,
+            headers=test_auth_header,
+        )
+
+    # assert
+    assert response.status_code == 404
+    assert response.text == "Questionnaire does not exist in Blaise"
+    assert (
+        "root",
+        logging.ERROR,
+        "Could not find Questionnaire FRS2405A in Blaise",
+    ) in caplog.record_tuples
+
+
+@mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
+@mock.patch.object(blaise_restapi.Client, "get_multikey_case")
+@mock.patch.object(blaise_restapi.Client, "patch_multikey_case_data")
+@mock.patch.object(
+    FRSCaseAllocationService, "_create_new_entry_for_special_instructions"
+)
+def test_force_recall_visit_request_returns_500_if_resetting_existing_case_to_defaults_fail(
+    mock_rest_api_update_case,
+    mock_rest_api_get_case,
+    mock_rest_api_get_questionnaire,
+    mock_frs_allocated_case_from_cma_launcher,
+    mock_frs_questionnaire_from_blaise,
+    client,
+    test_auth_header,
+    force_recall_visit_request_payload,
+    caplog,
+):
+    questionnaire = mock_frs_questionnaire_from_blaise
+    mock_rest_api_get_questionnaire.return_value = questionnaire
+    mock_rest_api_get_case.return_value = mock_frs_allocated_case_from_cma_launcher
+    mock_rest_api_update_case.side_effect = CaseResetFailedException
+
+    # act
+    with caplog.at_level(logging.ERROR):
+        response = client.post(
+            "/bts/forcerecallvisitrequest",
+            json=force_recall_visit_request_payload,
+            headers=test_auth_header,
+        )
+
+    assert response.status_code == 500
+    assert response.text == "Case resest failed for unallocation"
+
+
+@mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
+@mock.patch.object(blaise_restapi.Client, "get_multikey_case")
+@mock.patch.object(blaise_restapi.Client, "create_multikey_case")
+def test_force_recall_visit_request_returns_500_if_special_instruction_entry_creation_fails(
+    mock_rest_api_create_case,
+    mock_rest_api_get_case,
+    mock_rest_api_get_questionnaire,
+    mock_frs_allocated_case_from_cma_launcher,
+    mock_frs_questionnaire_from_blaise,
+    client,
+    test_auth_header,
+    force_recall_visit_request_payload,
+    caplog,
+):
+    questionnaire = mock_frs_questionnaire_from_blaise
+    mock_rest_api_get_questionnaire.return_value = questionnaire
+    mock_rest_api_get_case.return_value = mock_frs_allocated_case_from_cma_launcher
+    mock_rest_api_create_case.side_effect = CaseAllocationException
+
+    # act
+    with caplog.at_level(logging.ERROR):
+        response = client.post(
+            "/bts/forcerecallvisitrequest",
+            json=force_recall_visit_request_payload,
+            headers=test_auth_header,
+        )
+
+    assert response.status_code == 500
+    assert response.text == "Special Instruction entry creation failed for unallocation"
