@@ -8,9 +8,7 @@ from app.exceptions.custom_exceptions import (
     CaseAllocationException,
     CaseNotFoundException,
     CaseReAllocationException,
-    CaseResetFailedException,
     QuestionnaireDoesNotExistError,
-    SpecialInstructionCreationFailedException,
 )
 from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
 from models.create.cma.totalmobile_incoming_frs_request_model import (
@@ -106,22 +104,12 @@ class TestFRSCaseAllocationService:
         )
         mock_cma_blaise_service.questionnaire_exists.return_value = questionnaire
         mock_cma_blaise_service.case_exists.return_value = False
-        mock_cma_blaise_service.create_frs_case.side_effect = ValueError(
-            "Some error occured in blaise rest API while creating new case"
-        )
+        mock_cma_blaise_service.create_frs_case.side_effect = CaseAllocationException
 
         # act
-        with caplog.at_level(logging.ERROR) and pytest.raises(CaseAllocationException):
+        with pytest.raises(CaseAllocationException):
             service.create_case(totalmobile_request)
 
-        # assert
-        assert (
-            "root",
-            logging.ERROR,
-            f"Could not create a case for User {totalmobile_request.interviewer_name} "
-            f"with Blaise Login = {totalmobile_request.interviewer_blaise_login} within Questionnaire"
-            f"{totalmobile_request.questionnaire_name} in CMA_Launcher...",
-        ) in caplog.record_tuples
 
     def test_create_case_fails_if_case_exists_and_already_allocated_to_some_interviewer(
         self,

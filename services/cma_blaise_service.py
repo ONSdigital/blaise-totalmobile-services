@@ -57,12 +57,12 @@ class CMABlaiseService:
                 frs_case_model.key_values,
                 frs_case_model.data_fields,
             )
-        except Exception as e:
-            error_message = (
-                "Some error occured in blaise rest api while creating FRS case"
+        except:
+            logging.error(
+                f"Could not create a case for User {frs_case_model.user} "
+                f"within Questionnaire {frs_case_model.questionnaire_name} with case_id {frs_case_model.case_id} in CMA_Launcher..."
             )
-            logging.error(f"{error_message}: Exception: {e}")
-            raise CaseAllocationException(error_message)
+            raise CaseAllocationException
 
     def update_frs_case(self, frs_case_model: FRSCaseModel):
         try:
@@ -73,9 +73,8 @@ class CMABlaiseService:
                 frs_case_model.key_values,
                 frs_case_model.data_fields,
             )
-        except Exception as e:
-            error_message = (
-                "Some error occured in blaise rest api while updating FRS case"
+        except:
+            logging.error(
+                f"Reallocation failed. Failed in allocating Case {frs_case_model.case_id} to User: {frs_case_model.user}"
             )
-            logging.error(f"{error_message}: Exception: {e}")
-            raise CaseAllocationException(error_message)
+            raise CaseAllocationException

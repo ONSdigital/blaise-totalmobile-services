@@ -132,13 +132,8 @@ class FRSCaseAllocationService:
         )
         try:
             self._cma_blaise_service.create_frs_case(frsCase)
-        except:
-            logging.error(
-                f"Could not create a case for User {frsCaseFromTotalMobileRequest.interviewer_name} "
-                f"with Blaise Login = {frsCaseFromTotalMobileRequest.interviewer_blaise_login} within Questionnaire"
-                f"{frsCaseFromTotalMobileRequest.questionnaire_name} in CMA_Launcher..."
-            )
-            raise CaseAllocationException()
+        except: 
+            raise CaseAllocationException
 
     def _create_new_entry_for_special_instructions(
         self, case, questionnaireName
@@ -195,9 +190,6 @@ class FRSCaseAllocationService:
                 f"Successfull reallocation of Case {frsCase.case_id} to User: '{frsCase.user}' in Questionnaire {frsCase.questionnaire_name}"
             )
         except:
-            logging.error(
-                f"Reallocation failed. Failed in allocating Case {case_id} to User: {new_Interviewer}"
-            )
             raise CaseAllocationException()
 
     def _reset_existing_case_to_defaults(self, old_allocated_case):

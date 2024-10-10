@@ -1,3 +1,4 @@
+import logging
 from typing import List
 from unittest import mock
 
@@ -192,7 +193,7 @@ def test_create_frs_case_calls_the_rest_api_client_with_the_correct_parameters(
 
 @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
 def test_create_frs_case_raises_exception_if_rest_api_fails_creating_case(
-    _mock_rest_api_client, cma_blaise_service
+    _mock_rest_api_client, cma_blaise_service, caplog
 ):
     # arrange
     frs_case_model = FRSCaseModel(
@@ -209,14 +210,16 @@ def test_create_frs_case_raises_exception_if_rest_api_fails_creating_case(
     )
 
     # act
-    with pytest.raises(CaseAllocationException) as exceptionInfo:
+    with caplog.at_level(logging.ERROR) and pytest.raises(CaseAllocationException):
         cma_blaise_service.create_frs_case(frs_case_model)
 
     # assert
     assert (
-        str(exceptionInfo.value)
-        == "Some error occured in blaise rest api while creating FRS case"
-    )
+        "root",
+        logging.ERROR,
+        f"Could not create a case for User Interviewer1 "
+        f"within Questionnaire FRS2405A with case_id 100100 in CMA_Launcher...",
+    ) in caplog.record_tuples
 
 
 @mock.patch.object(blaise_restapi.Client, "patch_multikey_case_data")
@@ -249,7 +252,7 @@ def test_update_frs_case_calls_the_rest_api_client_with_the_correct_parameters(
 
 @mock.patch.object(blaise_restapi.Client, "patch_multikey_case_data")
 def test_update_frs_case_raises_exception_if_rest_api_fails_updating_case(
-    _mock_rest_api_client, cma_blaise_service
+    _mock_rest_api_client, cma_blaise_service, caplog
 ):
     # arrange
     frs_case_model = FRSCaseModel(
@@ -266,11 +269,12 @@ def test_update_frs_case_raises_exception_if_rest_api_fails_updating_case(
     )
 
     # act
-    with pytest.raises(CaseAllocationException) as exceptionInfo:
+    with pytest.raises(CaseAllocationException):
         cma_blaise_service.update_frs_case(frs_case_model)
 
     # assert
     assert (
-        str(exceptionInfo.value)
-        == "Some error occured in blaise rest api while updating FRS case"
-    )
+        "root",
+        logging.ERROR,
+        f"Reallocation failed. Failed in allocating Case {frs_case_model.case_id} to User: {frs_case_model.user}"
+    ) in caplog.record_tuples

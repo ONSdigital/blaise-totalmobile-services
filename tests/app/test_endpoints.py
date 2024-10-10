@@ -2,14 +2,18 @@ import json
 import logging
 from unittest import mock
 
+import blaise_restapi
 import pytest
 
 from app.exceptions.custom_exceptions import (
+    CaseAllocationException,
+    CaseReAllocationException,
     InvalidTotalmobileFRSRequestException,
     MissingReferenceError,
     QuestionnaireDoesNotExistError,
 )
 from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
+from tests.conftest import mock_frs_questionnaire_from_blaise
 
 
 def assert_security_headers_are_present(response):
@@ -82,9 +86,40 @@ def test_create_visit_request_returns_404_if_questionnaire_is_not_found(
     assert (
         "root",
         logging.ERROR,
-        f"Could not find Questionnaire FRS2409A in Blaise",
+        f"Could not find Questionnaire FRS2405A in Blaise",
     ) in caplog.record_tuples
 
+
+@mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
+@mock.patch.object(blaise_restapi.Client, "get_multikey_case")
+@mock.patch.object(blaise_restapi.Client, "create_multikey_case")
+def test_create_visit_request_returns_500_if_multikey_case_creation_fails(
+    mock_rest_api_create_case, mock_rest_api_get_case, mock_rest_api_get_questionnaire, mock_frs_questionnaire_from_blaise, client, test_auth_header, create_visit_request_sample, caplog
+):
+    questionnaire = mock_frs_questionnaire_from_blaise
+    mock_rest_api_get_questionnaire.return_value = questionnaire
+    mock_rest_api_get_case.return_value = False
+    mock_rest_api_create_case.side_effect = ValueError(
+        "Some error occured in blaise rest API while creating multikey case!"
+    )
+
+    # act
+    with caplog.at_level(logging.ERROR):
+        response = client.post(
+            "/bts/createvisitrequest",
+            json=create_visit_request_sample,
+            headers=test_auth_header,
+        )
+
+    assert response.status_code == 500
+    assert response.text == "Case allocation has failed"
+    # assert
+    assert (
+        "root",
+        logging.ERROR,
+        f"Could not create a case for User Interviewer1 "
+        f"within Questionnaire FRS2405A with case_id 500101 in CMA_Launcher...",
+    ) in caplog.record_tuples
 
 def test_create_visit_request_returns_401_without_auth(
     client, create_visit_request_sample

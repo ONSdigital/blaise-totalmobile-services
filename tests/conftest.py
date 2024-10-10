@@ -401,7 +401,7 @@ def create_visit_request_sample():
             "user": {
                 "ID": 1239,
                 "IDSpecified": true,
-                "name": "Callum.Nicholson",
+                "name": "Interviewer1",
                 "DeviceID": null,
                 "UserAttributes": [
                     {
@@ -423,7 +423,7 @@ def create_visit_request_sample():
                 ]
             },
             "Company": "NA",
-            "reference": "FRS2409A.500101"
+            "reference": "FRS2405A.500101"
         },
         "ClientReference": null,
         "Description": "blah",
