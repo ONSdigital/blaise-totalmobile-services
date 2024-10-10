@@ -90,7 +90,11 @@ class TestFRSCaseAllocationService:
         ) in caplog.record_tuples
 
     def test_create_case_raises_case_allocation_exception_if_rest_api_fails_creating_new_case(
-        self, mock_cma_blaise_service, service: FRSCaseAllocationService, caplog, mock_frs_questionnaire_from_blaise,
+        self,
+        mock_cma_blaise_service,
+        service: FRSCaseAllocationService,
+        caplog,
+        mock_frs_questionnaire_from_blaise,
     ):
         # arrange
         questionnaire = mock_frs_questionnaire_from_blaise
@@ -107,9 +111,7 @@ class TestFRSCaseAllocationService:
         )
 
         # act
-        with caplog.at_level(logging.ERROR) and pytest.raises(
-            CaseAllocationException
-        ):
+        with caplog.at_level(logging.ERROR) and pytest.raises(CaseAllocationException):
             service.create_case(totalmobile_request)
 
         # assert
