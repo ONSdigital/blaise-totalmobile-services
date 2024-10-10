@@ -5,10 +5,11 @@ Totalmobile provide a "dynamic HTTP adapter", essentially this allows us to setu
 Endpoints can be found in app/endpoints.py and are as follows:
 
 * "/ons/totalmobile-incoming/SubmitFormResultRequest"
-* "/ons/totalmobile-incoming/UpdateVisitStatusRequest"
-* "/ons/totalmobile-incoming/CompleteVisitRequest"
+* "/ons/totalmobile-incoming/CreateVisitRequest"
+* "/ons/totalmobile-incoming/ForceRecallVisitRequest"
 
-Now commonly referred to as "Update", "Submit" and "Complete".
+The first endpoint is for LMS responses.
+The other 2 endpoints (/createvisitrequest & /forcerecallvisitrequest) are for FRS Allocations and Unallocations. 
 
 These are the endpoints to which Totalmobile's event-driven processes will post JSON payloads.
 
@@ -17,8 +18,8 @@ These are the endpoints to which Totalmobile's event-driven processes will post 
 Sample payloads can be found in test/conftest.py under:
 
 * def submit_form_result_request_sample()
-* def upload_visit_status_request_sample()
-* def complete_visit_request_sample()
+* def create_visit_request_sample()
+* def force_recall_visit_request_payload()
 
 Field interviewer name has been replaced with jane.doe and some GUIDs and IDs were replaced.
 
@@ -26,8 +27,8 @@ Field interviewer name has been replaced with jane.doe and some GUIDs and IDs we
 
 The unique identifier for the endpoint payloads are as follows:
 
-* Update - ["Identity"]["Reference"]
-* Complete - ["Identity"]["Reference"]
-* Submit - ["Result"]["Association"]["Reference"]
+* SubmitFormResultRequest - ["Result"]["Association"]["Reference"]
+* CreateVisitRequest - ["Visit"]["Identity"]["Reference"]
+* ForceRecallVisitRequest - ["Identity"]["Reference"]
 
 These IDs are the job reference we set when sending data to Totalmobile and is should be constructed from the questionnaire name and case ID. This is how we will link the data back to the Blaise data.
