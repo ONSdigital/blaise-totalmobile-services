@@ -423,7 +423,7 @@ def create_visit_request_sample():
                 ]
             },
             "Company": "NA",
-            "Reference": "IPS2409A.500101"
+            "reference": "FRS2409A.500101"
         },
         "ClientReference": null,
         "Description": "blah",

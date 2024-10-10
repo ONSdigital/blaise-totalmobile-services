@@ -1,9 +1,15 @@
 import json
+import logging
 from unittest import mock
 
 import pytest
 
-from app.exceptions.custom_exceptions import MissingReferenceError
+from app.exceptions.custom_exceptions import (
+    InvalidTotalmobileFRSRequestException,
+    MissingReferenceError,
+    QuestionnaireDoesNotExistError,
+)
+from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
 
 
 def assert_security_headers_are_present(response):
@@ -55,6 +61,29 @@ def test_create_visit_request(
     assert response.text == "ok"
     mock_handler.assert_called()
     assert_security_headers_are_present(response)
+
+
+@mock.patch("services.create.cma.frs_case_allocation_service")
+def test_create_visit_request(
+    service_handler, client, test_auth_header, create_visit_request_sample, caplog
+):
+    service_handler.create_case.side_effect = QuestionnaireDoesNotExistError
+    # act
+    with caplog.at_level(logging.ERROR):
+        response = client.post(
+            "/bts/createvisitrequest",
+            json=create_visit_request_sample,
+            headers=test_auth_header,
+        )
+
+    # assert
+    assert response.status_code == 404
+    assert response.text == "Questionnaire does not exist in Blaise"
+    assert (
+        "root",
+        logging.ERROR,
+        f"Could not find Questionnaire FRS2409A in Blaise",
+    ) in caplog.record_tuples
 
 
 def test_create_visit_request_returns_401_without_auth(
