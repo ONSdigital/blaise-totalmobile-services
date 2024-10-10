@@ -64,7 +64,7 @@ def test_create_visit_request(
 
 
 @mock.patch("services.create.cma.frs_case_allocation_service")
-def test_create_visit_request(
+def test_create_visit_request_returns_404_if_questionnaire_is_not_found(
     service_handler, client, test_auth_header, create_visit_request_sample, caplog
 ):
     service_handler.create_case.side_effect = QuestionnaireDoesNotExistError
