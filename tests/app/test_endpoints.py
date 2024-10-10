@@ -129,6 +129,47 @@ def test_create_visit_request_returns_500_if_multikey_case_creation_fails(
     ) in caplog.record_tuples
 
 
+@mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
+@mock.patch.object(blaise_restapi.Client, "get_multikey_case")
+@mock.patch.object(blaise_restapi.Client, "patch_multikey_case_data")
+def test_create_visit_request_returns_500_with_case_reallocation_exception_if_multikey_case_update_fails(
+    mock_rest_api_update_case,
+    mock_rest_api_get_case,
+    mock_rest_api_get_questionnaire,
+    mock_frs_questionnaire_from_blaise,
+    mock_frs_case_already_set_to_default_from_cma_launcher,
+    client,
+    test_auth_header,
+    create_visit_request_sample,
+    caplog,
+):
+    questionnaire = mock_frs_questionnaire_from_blaise
+    mock_rest_api_get_questionnaire.return_value = questionnaire
+    mock_rest_api_get_case.return_value = (
+        mock_frs_case_already_set_to_default_from_cma_launcher
+    )
+    mock_rest_api_update_case.side_effect = ValueError(
+        "Some error occured in blaise rest API while creating multikey case!"
+    )
+
+    # act
+    with caplog.at_level(logging.ERROR):
+        response = client.post(
+            "/bts/createvisitrequest",
+            json=create_visit_request_sample,
+            headers=test_auth_header,
+        )
+
+    assert response.status_code == 500
+    assert response.text == "Case reallocation has failed"
+    # assert
+    assert (
+        "root",
+        logging.ERROR,
+        f"Reallocation failed. Failed in allocating Case 500101 to User: Interviewer1",
+    ) in caplog.record_tuples
+
+
 def test_create_visit_request_returns_401_without_auth(
     client, create_visit_request_sample
 ):

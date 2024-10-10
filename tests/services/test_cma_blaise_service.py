@@ -5,7 +5,10 @@ from unittest import mock
 import blaise_restapi
 import pytest
 
-from app.exceptions.custom_exceptions import CaseAllocationException
+from app.exceptions.custom_exceptions import (
+    CaseAllocationException,
+    CaseReAllocationException,
+)
 from appconfig import Config
 from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
 from services.cma_blaise_service import CMABlaiseService
@@ -269,7 +272,7 @@ def test_update_frs_case_raises_exception_if_rest_api_fails_updating_case(
     )
 
     # act
-    with pytest.raises(CaseAllocationException):
+    with pytest.raises(CaseReAllocationException):
         cma_blaise_service.update_frs_case(frs_case_model)
 
     # assert

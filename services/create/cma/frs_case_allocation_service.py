@@ -190,7 +190,7 @@ class FRSCaseAllocationService:
                 f"Successfull reallocation of Case {frsCase.case_id} to User: '{frsCase.user}' in Questionnaire {frsCase.questionnaire_name}"
             )
         except:
-            raise CaseAllocationException()
+            raise CaseReAllocationException()
 
     def _reset_existing_case_to_defaults(self, old_allocated_case):
 
