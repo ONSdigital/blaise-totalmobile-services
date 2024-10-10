@@ -94,7 +94,14 @@ def test_create_visit_request_returns_404_if_questionnaire_is_not_found(
 @mock.patch.object(blaise_restapi.Client, "get_multikey_case")
 @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
 def test_create_visit_request_returns_500_if_multikey_case_creation_fails(
-    mock_rest_api_create_case, mock_rest_api_get_case, mock_rest_api_get_questionnaire, mock_frs_questionnaire_from_blaise, client, test_auth_header, create_visit_request_sample, caplog
+    mock_rest_api_create_case,
+    mock_rest_api_get_case,
+    mock_rest_api_get_questionnaire,
+    mock_frs_questionnaire_from_blaise,
+    client,
+    test_auth_header,
+    create_visit_request_sample,
+    caplog,
 ):
     questionnaire = mock_frs_questionnaire_from_blaise
     mock_rest_api_get_questionnaire.return_value = questionnaire
@@ -120,6 +127,7 @@ def test_create_visit_request_returns_500_if_multikey_case_creation_fails(
         f"Could not create a case for User Interviewer1 "
         f"within Questionnaire FRS2405A with case_id 500101 in CMA_Launcher...",
     ) in caplog.record_tuples
+
 
 def test_create_visit_request_returns_401_without_auth(
     client, create_visit_request_sample

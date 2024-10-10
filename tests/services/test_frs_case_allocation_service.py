@@ -110,7 +110,6 @@ class TestFRSCaseAllocationService:
         with pytest.raises(CaseAllocationException):
             service.create_case(totalmobile_request)
 
-
     def test_create_case_fails_if_case_exists_and_already_allocated_to_some_interviewer(
         self,
         mock_cma_blaise_service,

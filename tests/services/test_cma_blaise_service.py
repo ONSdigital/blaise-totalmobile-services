@@ -276,5 +276,5 @@ def test_update_frs_case_raises_exception_if_rest_api_fails_updating_case(
     assert (
         "root",
         logging.ERROR,
-        f"Reallocation failed. Failed in allocating Case {frs_case_model.case_id} to User: {frs_case_model.user}"
+        f"Reallocation failed. Failed in allocating Case {frs_case_model.case_id} to User: {frs_case_model.user}",
     ) in caplog.record_tuples

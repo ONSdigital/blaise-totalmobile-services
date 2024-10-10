@@ -132,7 +132,7 @@ class FRSCaseAllocationService:
         )
         try:
             self._cma_blaise_service.create_frs_case(frsCase)
-        except: 
+        except:
             raise CaseAllocationException
 
     def _create_new_entry_for_special_instructions(
