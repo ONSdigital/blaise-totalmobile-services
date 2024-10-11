@@ -56,7 +56,7 @@ class TestFRSCaseAllocationService:
             logging.INFO,
             f"Case {totalmobile_request.case_id} for Questionnaire {totalmobile_request.questionnaire_name} "
             f"has been created in CMA Launcher database and allocated to {totalmobile_request.interviewer_name}, "
-            f"with Blaise Logins ={totalmobile_request.interviewer_blaise_login})",
+            f"with Blaise Logins = {totalmobile_request.interviewer_blaise_login})",
         ) in caplog.record_tuples
 
     def test_create_case_raises_questionnaire_doesnot_exist_exception_if_questionnaire_doesnot_exist(

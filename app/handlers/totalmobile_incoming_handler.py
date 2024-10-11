@@ -34,6 +34,5 @@ def force_recall_visit_request_handler(
     totalmobile_unallocation_frs_case = (
         TotalMobileIncomingFRSUnallocationRequestModel.import_request(data)
     )
-    logging.info(str(totalmobile_unallocation_frs_case))
     frs_case_allocation_service.unallocate_case(totalmobile_unallocation_frs_case)
     return
