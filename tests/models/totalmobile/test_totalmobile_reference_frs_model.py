@@ -52,6 +52,30 @@ def test_frs_model_raises_a_missing_reference_error_when_given_an_invalid_questi
         )
 
 
+def test_frs_model_returns_valid_object_if_the_request_is_valid_with_all_references(
+    caplog,
+):
+    # arrange
+    questionnaire_name = "FRS2405A"
+    case_id = "90001"
+    interviewer_name = "User1"
+    interviewer_blaise_login = "User1"
+
+    allocation_model = TotalmobileReferenceFRSModel(
+        questionnaire_name, case_id, interviewer_name, interviewer_blaise_login,
+    )
+
+    # act
+    result = allocation_model.from_questionnaire_and_case_and_interviewer(
+        questionnaire_name, case_id, interviewer_name, interviewer_blaise_login,
+    )
+
+    # assert
+    assert result.questionnaire_name == "FRS2405A"
+    assert result.interviewer_name == "User1"
+    assert result.case_id == "90001"
+    assert result.interviewer_blaise_login == "User1"
+
 def test_frs_model_questionnaire_name_and_case_id_and_interviewer_properties_are_set_correctly_when_given_a_valid_incoming_request():
     # arrange
     incoming_frs_case_allocation_request = (
@@ -98,6 +122,28 @@ def test_frs_model_raises_a_missing_reference_error_if_the_request_does_not_have
     # act & assert
     with pytest.raises(MissingReferenceError):
         TotalmobileReferenceFRSModel.from_request(incoming_frs_case_request)
+
+
+def test_frs_model_get_interviewer_login_reference_raises_a_missing_reference_error_if_the_request_does_not_have_expected_user_blaise_login_reference_element(
+    caplog,
+):
+    # arrange
+
+    incoming_frs_case_request = (
+        incoming_request_helper_for_frs_allocation.get_frs_case_allocation_request_without_user_blaise_logins()
+    )
+
+    # act & assert
+    with caplog.at_level(logging.ERROR) and pytest.raises(MissingReferenceError):
+        TotalmobileReferenceFRSModel.get_interviewer_login_reference_from_incoming_request(
+            incoming_frs_case_request
+        )
+
+    assert (
+        "root",
+        logging.ERROR,
+        "Interviewer Blaise Login reference is missing from the Totalmobile payload",
+    ) in caplog.record_tuples
 
 
 @pytest.mark.parametrize(
