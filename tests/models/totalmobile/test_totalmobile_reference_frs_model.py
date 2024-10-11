@@ -62,12 +62,18 @@ def test_frs_model_returns_valid_object_if_the_request_is_valid_with_all_referen
     interviewer_blaise_login = "User1"
 
     allocation_model = TotalmobileReferenceFRSModel(
-        questionnaire_name, case_id, interviewer_name, interviewer_blaise_login,
+        questionnaire_name,
+        case_id,
+        interviewer_name,
+        interviewer_blaise_login,
     )
 
     # act
     result = allocation_model.from_questionnaire_and_case_and_interviewer(
-        questionnaire_name, case_id, interviewer_name, interviewer_blaise_login,
+        questionnaire_name,
+        case_id,
+        interviewer_name,
+        interviewer_blaise_login,
     )
 
     # assert
@@ -75,6 +81,7 @@ def test_frs_model_returns_valid_object_if_the_request_is_valid_with_all_referen
     assert result.interviewer_name == "User1"
     assert result.case_id == "90001"
     assert result.interviewer_blaise_login == "User1"
+
 
 def test_frs_model_questionnaire_name_and_case_id_and_interviewer_properties_are_set_correctly_when_given_a_valid_incoming_request():
     # arrange
