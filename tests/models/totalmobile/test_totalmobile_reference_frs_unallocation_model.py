@@ -130,3 +130,48 @@ def test_questionnaire_name_and_case_id_properties_are_set_correctly_when_given_
     # assert
     assert reference_model.questionnaire_name == "FRS2410A"
     assert reference_model.case_id == "200200"
+
+
+def test_frs_unallocation_model_raises_a_missing_reference_error_if_the_request_does_not_have_user_reference_element(
+    caplog,
+):
+    # arrange
+
+    incoming_frs_case_unallocation_request = (
+        incoming_request_helper_for_frs_unallocation.get_frs_case_unallocation_request_without_user_reference()
+    )
+
+    # act & assert
+    with caplog.at_level(logging.ERROR) and pytest.raises(MissingReferenceError):
+        TotalmobileReferenceUnallocationFRSModel.get_interviewer_reference_from_incoming_request(
+            incoming_frs_case_unallocation_request
+        )
+
+    assert (
+        "root",
+        logging.ERROR,
+        "Interviewer Name reference is missing from the Totalmobile payload",
+    ) in caplog.record_tuples
+
+
+def test_frs_unallocation_model_returns_valid_object_if_the_request_is_valid_with_all_references(
+    caplog,
+):
+    # arrange
+    questionnaire_name = "FRS2405A"
+    case_id = "90001"
+    interviewer_name = "User1"
+
+    unallocation_model = TotalmobileReferenceUnallocationFRSModel(
+        questionnaire_name, case_id, interviewer_name
+    )
+
+    # act
+    result = unallocation_model.from_questionnaire_and_case_and_interviewer(
+        questionnaire_name, case_id, interviewer_name
+    )
+
+    # assert
+    assert result.questionnaire_name == "FRS2405A"
+    assert result.interviewer_name == "User1"
+    assert result.case_id == "90001"

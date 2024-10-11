@@ -1,12 +1,8 @@
-import logging
 from unittest import mock
 
 import pytest
 
-from app.exceptions.custom_exceptions import (
-    BadReferenceError,
-    InvalidTotalmobileFRSRequestException,
-)
+from app.exceptions.custom_exceptions import InvalidTotalmobileFRSRequestException
 from app.handlers.totalmobile_incoming_handler import (
     create_visit_request_handler,
     force_recall_visit_request_handler,

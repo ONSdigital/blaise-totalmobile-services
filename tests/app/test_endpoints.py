@@ -10,7 +10,6 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireDoesNotExistError,
 )
 from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
-from tests.conftest import mock_frs_questionnaire_from_blaise
 
 
 def assert_security_headers_are_present(response):

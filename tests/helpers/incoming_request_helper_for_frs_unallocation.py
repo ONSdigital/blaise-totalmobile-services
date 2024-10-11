@@ -58,3 +58,22 @@ def get_frs_case_unallocation_request_without_reference():
         "Lines": [],
         "UseSilentPushSpecified": False,
     }
+
+
+def get_frs_case_unallocation_request_without_user_reference():
+    return {
+        "Reason": None,
+        "identity": {
+            "guid": None,
+            "WorkType": "FRS",
+            "user": {
+                "IDSpecified": False,
+                "DeviceID": None,
+                "UserAttributes": [],
+            },
+            "Company": "NA",
+        },
+        "PreserveIfNoLinesRemainingSpecified": False,
+        "Lines": [],
+        "UseSilentPushSpecified": False,
+    }

@@ -1,4 +1,3 @@
-from models.create.blaise.blaise_lms_create_case_model import BlaiseLMSCreateCaseModel
 from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
 
 

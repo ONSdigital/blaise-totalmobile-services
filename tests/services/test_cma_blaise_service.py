@@ -1,5 +1,4 @@
 import logging
-from typing import List
 from unittest import mock
 
 import blaise_restapi

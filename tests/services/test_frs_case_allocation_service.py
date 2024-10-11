@@ -1,5 +1,4 @@
 import logging
-from typing import List
 from unittest.mock import Mock
 
 import pytest
@@ -8,9 +7,9 @@ from app.exceptions.custom_exceptions import (
     CaseAllocationException,
     CaseNotFoundException,
     CaseReAllocationException,
+    CaseResetFailedException,
     QuestionnaireDoesNotExistError,
 )
-from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel
 from models.create.cma.totalmobile_incoming_frs_request_model import (
     TotalMobileIncomingFRSRequestModel,
 )
@@ -259,4 +258,37 @@ class TestFRSCaseAllocationService:
             f"Case {totalmobile_unallocate_request.case_id} within Questionnaire "
             f"{totalmobile_unallocate_request.questionnaire_name} does not exist in CMA_Launcher. "
             f"Unallocation failed.",
+        ) in caplog.record_tuples
+
+    def test_unallocate_case_raises_reset_fail_exception_if_case_reset_fails(
+        self,
+        mock_cma_blaise_service,
+        mock_frs_questionnaire_from_blaise,
+        mock_frs_allocated_case_from_cma_launcher,
+        service: FRSCaseAllocationService,
+        caplog,
+    ):
+        # arrange
+        questionnaire = mock_frs_questionnaire_from_blaise
+        case = mock_frs_allocated_case_from_cma_launcher
+        totalmobile_unallocate_request = TotalMobileIncomingFRSUnallocationRequestModel(
+            questionnaire_name=questionnaire["name"],
+            case_id="100100",
+            interviewer_name="User2",
+        )
+        mock_cma_blaise_service.questionnaire_exists.return_value = questionnaire
+        mock_cma_blaise_service.case_exists.return_value = case
+        mock_cma_blaise_service.update_frs_case.side_effect = ValueError(
+            "Some error occured in blaise rest API while updating multikey case!"
+        )
+
+        # act
+        with caplog.at_level(logging.ERROR) and pytest.raises(CaseResetFailedException):
+            service.unallocate_case(totalmobile_unallocate_request)
+
+        # assert
+        assert (
+            "root",
+            logging.ERROR,
+            f"Reset failed. Failed in resetting Case: {totalmobile_unallocate_request.case_id} within Questionnaire {totalmobile_unallocate_request.questionnaire_name} in CMA_Launcher",
         ) in caplog.record_tuples
