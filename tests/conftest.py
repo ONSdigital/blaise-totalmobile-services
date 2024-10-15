@@ -390,117 +390,396 @@ def submit_form_result_request_sample():
 
 
 @pytest.fixture
-def complete_visit_request_sample():
+def create_visit_request_sample():
     return json.loads(
         """
     {
-      "SystemDate": "2022-03-15T11:20:04.307495+00:00",
-      "SystemDateSpecified": true,
-      "IsFullyComplete": true,
-      "Lines": [
-
-      ],
-      "Appointment": {
-        "Date": "2022-03-15T10:00:00",
-        "Slot": "",
-        "Schedule": {
-          "StartDate": "2022-03-15T10:00:00",
-          "EndDate": "2022-03-15T11:00:00"
+    "visit": {
+        "identity": {
+            "Guid": "3fe4dc64-d07c-ef11-9c38-7c1e52036bea",
+            "WorkType": "FRS",
+            "user": {
+                "ID": 1239,
+                "IDSpecified": true,
+                "name": "Interviewer1",
+                "DeviceID": null,
+                "UserAttributes": [
+                    {
+                        "Name": "BlaiseLogin",
+                        "Value": "cal"
+                    },
+                    {
+                        "Name": "Region",
+                        "Value": "Wales"
+                    },
+                    {
+                        "Name": "Region",
+                        "Value": "South East"
+                    },
+                    {
+                        "Name": "Skill",
+                        "Value": "FRS"
+                    }
+                ]
+            },
+            "Company": "NA",
+            "reference": "FRS2405A.500101"
         },
-        "KeptSpecified": false,
-        "ReasonCode": null,
-        "Narrative": null
-      },
-      "Tasks": [
-        {
-          "FormIdentity": {
-            "Reference": "First Visit",
-            "Version": 0
-          },
-          "FormResultGuid": "f11-ba8",
-          "LineNo": -1,
-          "Type": 0,
-          "Description": "Property Details",
-          "Complete": true,
-          "Notes": null,
-          "Location": null,
-          "Status": 2,
-          "AdditionalProperties": [
-
-          ],
-          "DependencyGroup": null,
-          "DependencyExpression": null,
-          "LastUpdatedDateTime": "2022-03-15T11:19:39.426074+00:00",
-          "LastUpdatedDateTimeSpecified": true,
-          "Title": null
-        },
-        {
-          "FormIdentity": {
-            "Reference": "Correct Address",
-            "Version": 0
-          },
-          "FormResultGuid": "f00-ba7",
-          "LineNo": -2,
-          "Type": 0,
-          "Description": "Validate Address",
-          "Complete": true,
-          "Notes": null,
-          "Location": null,
-          "Status": 2,
-          "AdditionalProperties": [
-
-          ],
-          "DependencyGroup": null,
-          "DependencyExpression": null,
-          "LastUpdatedDateTime": "2022-03-15T11:19:46.632285+00:00",
-          "LastUpdatedDateTimeSpecified": true,
-          "Title": null
-        }
-      ],
-      "Identity": {
-        "Guid": "f00-ba7",
-        "WorkType": "SS",
-        "User": {
-          "ID": 9999,
-          "IDSpecified": true,
-          "Name": "jane.doe",
-          "DeviceID": "f00-ba7",
-          "UserAttributes": [
-            {
-              "Name": "AuthNo",
-              "Value": "1111"
+        "ClientReference": null,
+        "Description": "blah",
+        "Property": {
+            "Guid": null,
+            "Type": "JM_PROPERTY",
+            "Reference": null,
+            "ParentReference": null,
+            "Name": null,
+            "Title": null,
+            "Address": {
+                "Name": null,
+                "Lines": [
+                    "prem1",
+                    "prem2",
+                    "prem3",
+                    "district",
+                    "posttown"
+                ],
+                "HouseNo": null,
+                "PostCode": "postcode",
+                "GeoX": 51.566,
+                "GeoXSpecified": true,
+                "GeoY": -3.026,
+                "GeoYSpecified": true,
+                "URL": null
             },
-            {
-              "Name": "Region",
-              "Value": "South West"
-            },
-            {
-              "Name": "Skill",
-              "Value": "Survey"
-            },
-            {
-              "Name": "Team",
-              "Value": "South West 7"
+            "Phone": null,
+            "WorkPhone": null,
+            "MobilePhone": null,
+            "Email": null,
+            "URL": null,
+            "Assets": [],
+            "ExtendedProperties": {
+                "PreferredName": null,
+                "ID": null,
+                "IDLabel": null,
+                "DateOfBirthSpecified": false,
+                "DateOfDeathSpecified": false,
+                "Gender": null
             }
-          ]
         },
-        "Company": "NA",
-        "Reference": "SLC-12345-678-910"
-      },
-      "Date": "2022-03-15T11:20:04.307495+00:00",
-      "ProcessReference": "TELINTFULL",
-      "ReasonCode": null,
-      "ReasonDescription": null,
-      "Notes": null,
-      "FromStatus": "TELCALL",
-      "ToStatus": "INTERVIEWF",
-      "Actual": null,
-      "Action": 4,
-      "ActionSpecified": true,
-      "Metadata": [
+        "Supervisor": null,
+        "Status": "NEW",
+        "StatusChangeDateSpecified": false,
+        "CreatedDate": "2024-09-27T13:59:56.8872461+01:00",
+        "CreatedDateSpecified": true,
+        "RetrievedSpecified": false,
+        "RetrievedDateSpecified": false,
+        "PrintedDateSpecified": false,
+        "ReceivedDateSpecified": false,
+        "ResponseDateSpecified": false,
+        "RequiredDate": "2025-01-01T00:00:00",
+        "RequiredDateSpecified": true,
+        "CompleteSpecified": false,
+        "CompletedDateSpecified": false,
+        "Appointment": null,
+        "Schedule": {
+            "StartDate": "2024-09-27T00:20:00",
+            "EndDate": "2024-09-27T00:35:00"
+        },
+        "Priority": null,
+        "Origin": "ResManager",
+        "SpecialInstructions": null,
+        "AdditionalProperties": [
+            {
+                "Name": "tla",
+                "Value": "FRS",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "rand",
+                "Value": "1",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "fieldRegion",
+                "Value": "Region 1",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "fieldTeam",
+                "Value": "fieldteam",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "postCode",
+                "Value": "postcode",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "HasMultiResourceRelatedJobs",
+                "Value": "False",
+                "AdditionalProperties": []
+            }
+        ],
+        "CatalogueReference": null,
+        "Lines": [],
+        "Tasks": [],
+        "HasPendingTasks": false,
+        "Actual": null,
+        "Duration": 15,
+        "DurationSpecified": true
+      }
+    }  
+    """
+    )
 
-      ]
-    }
+
+@pytest.fixture
+def create_visit_request_sample_without_user_blaise_logins():
+    return json.loads(
+        """
+    {
+    "visit": {
+        "identity": {
+            "Guid": "3fe4dc64-d07c-ef11-9c38-7c1e52036bea",
+            "WorkType": "FRS",
+            "user": {
+                "id": null,
+                "IDSpecified": true,
+                "name": null,
+                "DeviceID": null
+            },
+            "Company": "NA",
+            "reference": "IPS2409A.500101"
+        },
+        "ClientReference": null,
+        "Description": "blah",
+        "Property": {
+            "Guid": null,
+            "Type": "JM_PROPERTY",
+            "Reference": null,
+            "ParentReference": null,
+            "Name": null,
+            "Title": null,
+            "Address": {
+                "Name": null,
+                "Lines": [
+                    "prem1",
+                    "prem2",
+                    "prem3",
+                    "district",
+                    "posttown"
+                ],
+                "HouseNo": null,
+                "PostCode": "postcode",
+                "GeoX": 51.566,
+                "GeoXSpecified": true,
+                "GeoY": -3.026,
+                "GeoYSpecified": true,
+                "URL": null
+            },
+            "Phone": null,
+            "WorkPhone": null,
+            "MobilePhone": null,
+            "Email": null,
+            "URL": null,
+            "Assets": [],
+            "ExtendedProperties": {
+                "PreferredName": null,
+                "ID": null,
+                "IDLabel": null,
+                "DateOfBirthSpecified": false,
+                "DateOfDeathSpecified": false,
+                "Gender": null
+            }
+        },
+        "Supervisor": null,
+        "Status": "NEW",
+        "StatusChangeDateSpecified": false,
+        "CreatedDate": "2024-09-27T13:59:56.8872461+01:00",
+        "CreatedDateSpecified": true,
+        "RetrievedSpecified": false,
+        "RetrievedDateSpecified": false,
+        "PrintedDateSpecified": false,
+        "ReceivedDateSpecified": false,
+        "ResponseDateSpecified": false,
+        "RequiredDate": "2025-01-01T00:00:00",
+        "RequiredDateSpecified": true,
+        "CompleteSpecified": false,
+        "CompletedDateSpecified": false,
+        "Appointment": null,
+        "Schedule": {
+            "StartDate": "2024-09-27T00:20:00",
+            "EndDate": "2024-09-27T00:35:00"
+        },
+        "Priority": null,
+        "Origin": "ResManager",
+        "SpecialInstructions": null,
+        "AdditionalProperties": [
+            {
+                "Name": "tla",
+                "Value": "FRS",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "rand",
+                "Value": "1",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "fieldRegion",
+                "Value": "Region 1",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "fieldTeam",
+                "Value": "fieldteam",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "postCode",
+                "Value": "postcode",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "HasMultiResourceRelatedJobs",
+                "Value": "False",
+                "AdditionalProperties": []
+            }
+        ],
+        "CatalogueReference": null,
+        "Lines": [],
+        "Tasks": [],
+        "HasPendingTasks": false,
+        "Actual": null,
+        "Duration": 15,
+        "DurationSpecified": true
+      }
+    }  
+    """
+    )
+
+
+@pytest.fixture
+def create_visit_request_sample_without_reference():
+    return json.loads(
+        """
+    {
+    "visit": {
+        "identity": {
+            "Guid": "3fe4dc64-d07c-ef11-9c38-7c1e52036bea",
+            "WorkType": "FRS",
+            "user": {
+                "id": null,
+                "IDSpecified": true,
+                "Name": "Callum.Nicholson",
+                "DeviceID": null
+            },
+            "Company": "NA"
+        },
+        "ClientReference": null,
+        "Description": "blah",
+        "Property": {
+            "Guid": null,
+            "Type": "JM_PROPERTY",
+            "Reference": null,
+            "ParentReference": null,
+            "Name": null,
+            "Title": null,
+            "Address": {
+                "Name": null,
+                "Lines": [
+                    "prem1",
+                    "prem2",
+                    "prem3",
+                    "district",
+                    "posttown"
+                ],
+                "HouseNo": null,
+                "PostCode": "postcode",
+                "GeoX": 51.566,
+                "GeoXSpecified": true,
+                "GeoY": -3.026,
+                "GeoYSpecified": true,
+                "URL": null
+            },
+            "Phone": null,
+            "WorkPhone": null,
+            "MobilePhone": null,
+            "Email": null,
+            "URL": null,
+            "Assets": [],
+            "ExtendedProperties": {
+                "PreferredName": null,
+                "ID": null,
+                "IDLabel": null,
+                "DateOfBirthSpecified": false,
+                "DateOfDeathSpecified": false,
+                "Gender": null
+            }
+        },
+        "Supervisor": null,
+        "Status": "NEW",
+        "StatusChangeDateSpecified": false,
+        "CreatedDate": "2024-09-27T13:59:56.8872461+01:00",
+        "CreatedDateSpecified": true,
+        "RetrievedSpecified": false,
+        "RetrievedDateSpecified": false,
+        "PrintedDateSpecified": false,
+        "ReceivedDateSpecified": false,
+        "ResponseDateSpecified": false,
+        "RequiredDate": "2025-01-01T00:00:00",
+        "RequiredDateSpecified": true,
+        "CompleteSpecified": false,
+        "CompletedDateSpecified": false,
+        "Appointment": null,
+        "Schedule": {
+            "StartDate": "2024-09-27T00:20:00",
+            "EndDate": "2024-09-27T00:35:00"
+        },
+        "Priority": null,
+        "Origin": "ResManager",
+        "SpecialInstructions": null,
+        "AdditionalProperties": [
+            {
+                "Name": "tla",
+                "Value": "FRS",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "rand",
+                "Value": "1",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "fieldRegion",
+                "Value": "Region 1",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "fieldTeam",
+                "Value": "fieldteam",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "postCode",
+                "Value": "postcode",
+                "AdditionalProperties": []
+            },
+            {
+                "Name": "HasMultiResourceRelatedJobs",
+                "Value": "False",
+                "AdditionalProperties": []
+            }
+        ],
+        "CatalogueReference": null,
+        "Lines": [],
+        "Tasks": [],
+        "HasPendingTasks": false,
+        "Actual": null,
+        "Duration": 15,
+        "DurationSpecified": true
+      }
+    }  
     """
     )
 
@@ -605,3 +884,328 @@ def mock_dst_only_questionnaire_from_blaise():
             "nodes": [{"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Inactive"}],
         }
     ]
+
+
+@pytest.fixture
+def mock_frs_questionnaire_from_blaise():
+    return {
+        "name": "FRS2405A",
+        "id": "a0e2f264-14e4-4151-b12d-bb3331674624",
+        "serverParkName": "gusty",
+        "installDate": "2024-10-01T09:46:24.7460966+01:00",
+        "status": "Inactive",
+        "dataRecordCount": 0,
+        "hasData": False,
+        "nodes": [{"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Inactive"}],
+    }
+
+
+@pytest.fixture
+def mock_frs_allocated_case_from_cma_launcher():
+    return {
+        "primaryKeyValues": {
+            "mainSurveyID": "a0e2f264-14e4-4151-b12d-bb3331674624",
+            "id": "500101",
+        },
+        "fieldData": {
+            "mainSurveyID": "a0e2f264-14e4-4151-b12d-bb3331674624",
+            "surveyDisplayName": "FRS2405A",
+            "id": "100100",
+            "cmA_Supervisor": "",
+            "cmA_ForWhom": "User1",
+            "cmA_InPossession": "User1",
+            "cmA_Location": "CLIENT",
+            "cmA_Status": "",
+            "cmA_CaseClosed": "",
+            "cmA_HappeningsStr": "",
+            "cmA_HappeningsLbl": "",
+            "cmA_HappeningsCod": "",
+            "cmA_AllowSpawning": "",
+            "cmA_IsDonorCase": "",
+            "cmA_GroupType": "",
+            "cmA_GroupID": "a0e2f264-14e4-4151-b12d-bb3331674624Case1",
+            "cmA_GroupSort": "",
+            "cmA_GroupStatus": "",
+            "cmA_GroupSummary": "",
+            "cmA_SpawnCount": "",
+            "cmA_StartDate": "",
+            "cmA_EndDate": "11-11-2024",
+            "cmA_CmdLineForEdit": "",
+            "cmA_PreLoadForEdit": "",
+            "cmA_Process.CreatedDT": "",
+            "cmA_Process.LastChangedDT": "",
+            "cmA_Process.GeoLocation": "",
+            "cmA_Process.FirstDownloaded.When": "20241007 09:58:40",
+            "cmA_Process.FirstDownloaded.User": "User1",
+            "cmA_Process.FirstUploaded.When": "",
+            "cmA_Process.FirstUploaded.User": "",
+            "cmA_Process.LastDownloaded.When": "20241007 09:58:40",
+            "cmA_Process.LastDownloaded.User": "User1",
+            "cmA_Process.LastUploaded.When": "",
+            "cmA_Process.LastUploaded.User": "",
+            "cmA_Process.LastAttempt.When": "",
+            "cmA_Process.LastAttempt.User": "",
+            "cmA_Process.FirstInterviewTime.When": "",
+            "cmA_Process.FirstInterviewTime.User": "",
+            "cmA_Process.LastInterviewTime.When": "",
+            "cmA_Process.LastInterviewTime.User": "",
+            "cmA_Process.LastInterviewEndTime": "",
+            "cmA_Process.TotalInterviewTimeUsed": "",
+            "cmA_Appointment.AppDate": "",
+            "cmA_Appointment.AppTime": "",
+            "cmA_Appointment.WhenMade.When": "",
+            "cmA_Appointment.WhenMade.User": "",
+            "cmA_TimeZone": "",
+            "cmA_Data.SurveyUploadFailed": "",
+            "cmA_Data.Survey": "",
+            "cmA_Data.AttemptsCount": "",
+            "cmA_Data.Attempts": "",
+            "cmA_AttemptsRoute": "",
+            "cmA_AttemptsGUID": "",
+            "cmA_ContactImage": "",
+            "cmA_GeoLocation": "",
+            "cmA_ContactInfoGUID": "",
+            "cmA_ContactData": "",
+            "cmA_DetailsTemplate": "",
+            "cmA_CustomUse": "",
+            "contactInfoShort": "",
+            "lastChangedCI.When": "",
+            "lastChangedCI.User": "",
+            "caseNote": "",
+            "lastChangedNote.When": "",
+            "lastChangedNote.User": "",
+        },
+    }
+
+
+@pytest.fixture
+def mock_frs_case_already_set_to_default_from_cma_launcher():
+    return {
+        "primaryKeyValues": {
+            "mainSurveyID": "a0e2f264-14e4-4151-b12d-bb3331674624",
+            "id": "500101",
+        },
+        "fieldData": {
+            "mainSurveyID": "a0e2f264-14e4-4151-b12d-bb3331674624",
+            "surveyDisplayName": "FRS2405A",
+            "id": "500101",
+            "cmA_Supervisor": "",
+            "cmA_ForWhom": "",
+            "cmA_InPossession": "",
+            "cmA_Location": "SERVER",
+            "cmA_Status": "",
+            "cmA_CaseClosed": "",
+            "cmA_HappeningsStr": "",
+            "cmA_HappeningsLbl": "",
+            "cmA_HappeningsCod": "",
+            "cmA_AllowSpawning": "",
+            "cmA_IsDonorCase": "",
+            "cmA_GroupType": "",
+            "cmA_GroupID": "a0e2f264-14e4-4151-b12d-bb3331674624Case1",
+            "cmA_GroupSort": "",
+            "cmA_GroupStatus": "",
+            "cmA_GroupSummary": "",
+            "cmA_SpawnCount": "",
+            "cmA_StartDate": "",
+            "cmA_EndDate": "11-11-2024",
+            "cmA_CmdLineForEdit": "",
+            "cmA_PreLoadForEdit": "",
+            "cmA_Process.CreatedDT": "",
+            "cmA_Process.LastChangedDT": "",
+            "cmA_Process.GeoLocation": "",
+            "cmA_Process.FirstDownloaded.When": "20241007 09:58:40",
+            "cmA_Process.FirstDownloaded.User": "User1",
+            "cmA_Process.FirstUploaded.When": "",
+            "cmA_Process.FirstUploaded.User": "",
+            "cmA_Process.LastDownloaded.When": "20241007 09:58:40",
+            "cmA_Process.LastDownloaded.User": "User1",
+            "cmA_Process.LastUploaded.When": "",
+            "cmA_Process.LastUploaded.User": "",
+            "cmA_Process.LastAttempt.When": "",
+            "cmA_Process.LastAttempt.User": "",
+            "cmA_Process.FirstInterviewTime.When": "",
+            "cmA_Process.FirstInterviewTime.User": "",
+            "cmA_Process.LastInterviewTime.When": "",
+            "cmA_Process.LastInterviewTime.User": "",
+            "cmA_Process.LastInterviewEndTime": "",
+            "cmA_Process.TotalInterviewTimeUsed": "",
+            "cmA_Appointment.AppDate": "",
+            "cmA_Appointment.AppTime": "",
+            "cmA_Appointment.WhenMade.When": "",
+            "cmA_Appointment.WhenMade.User": "",
+            "cmA_TimeZone": "",
+            "cmA_Data.SurveyUploadFailed": "",
+            "cmA_Data.Survey": "",
+            "cmA_Data.AttemptsCount": "",
+            "cmA_Data.Attempts": "",
+            "cmA_AttemptsRoute": "",
+            "cmA_AttemptsGUID": "",
+            "cmA_ContactImage": "",
+            "cmA_GeoLocation": "",
+            "cmA_ContactInfoGUID": "",
+            "cmA_ContactData": "",
+            "cmA_DetailsTemplate": "",
+            "cmA_CustomUse": "",
+            "contactInfoShort": "",
+            "lastChangedCI.When": "",
+            "lastChangedCI.User": "",
+            "caseNote": "",
+            "lastChangedNote.When": "",
+            "lastChangedNote.User": "",
+        },
+    }
+
+
+@pytest.fixture
+def mock_frs_unallocated_case_reset_to_defaults_from_cma_launcher():
+    return {
+        "primaryKeyValues": {
+            "mainSurveyID": "a0e2f264-14e4-4151-b12d-bb3331674624",
+            "id": "100100",
+        },
+        "fieldData": {
+            "mainSurveyID": "a0e2f264-14e4-4151-b12d-bb3331674624",
+            "surveyDisplayName": "FRS2405A",
+            "id": "100100",
+            "cmA_Supervisor": "",
+            "cmA_ForWhom": "",
+            "cmA_InPossession": "",
+            "cmA_Location": "SERVER",
+            "cmA_Status": "",
+            "cmA_CaseClosed": "",
+            "cmA_HappeningsStr": "",
+            "cmA_HappeningsLbl": "",
+            "cmA_HappeningsCod": "",
+            "cmA_AllowSpawning": "",
+            "cmA_IsDonorCase": "",
+            "cmA_GroupType": "",
+            "cmA_GroupID": "a0e2f264-14e4-4151-b12d-bb3331674624Case1",
+            "cmA_GroupSort": "",
+            "cmA_GroupStatus": "",
+            "cmA_GroupSummary": "",
+            "cmA_SpawnCount": "",
+            "cmA_StartDate": "",
+            "cmA_EndDate": "11-11-2024",
+            "cmA_CmdLineForEdit": "",
+            "cmA_PreLoadForEdit": "",
+            "cmA_Process.CreatedDT": "",
+            "cmA_Process.LastChangedDT": "",
+            "cmA_Process.GeoLocation": "",
+            "cmA_Process.FirstDownloaded.When": "20241007 09:58:40",
+            "cmA_Process.FirstDownloaded.User": "User1",
+            "cmA_Process.FirstUploaded.When": "",
+            "cmA_Process.FirstUploaded.User": "",
+            "cmA_Process.LastDownloaded.When": "20241007 09:58:40",
+            "cmA_Process.LastDownloaded.User": "User1",
+            "cmA_Process.LastUploaded.When": "",
+            "cmA_Process.LastUploaded.User": "",
+            "cmA_Process.LastAttempt.When": "",
+            "cmA_Process.LastAttempt.User": "",
+            "cmA_Process.FirstInterviewTime.When": "",
+            "cmA_Process.FirstInterviewTime.User": "",
+            "cmA_Process.LastInterviewTime.When": "",
+            "cmA_Process.LastInterviewTime.User": "",
+            "cmA_Process.LastInterviewEndTime": "",
+            "cmA_Process.TotalInterviewTimeUsed": "",
+            "cmA_Appointment.AppDate": "",
+            "cmA_Appointment.AppTime": "",
+            "cmA_Appointment.WhenMade.When": "",
+            "cmA_Appointment.WhenMade.User": "",
+            "cmA_TimeZone": "",
+            "cmA_Data.SurveyUploadFailed": "",
+            "cmA_Data.Survey": "",
+            "cmA_Data.AttemptsCount": "",
+            "cmA_Data.Attempts": "",
+            "cmA_AttemptsRoute": "",
+            "cmA_AttemptsGUID": "",
+            "cmA_ContactImage": "",
+            "cmA_GeoLocation": "",
+            "cmA_ContactInfoGUID": "",
+            "cmA_ContactData": "",
+            "cmA_DetailsTemplate": "",
+            "cmA_CustomUse": "",
+            "contactInfoShort": "",
+            "lastChangedCI.When": "",
+            "lastChangedCI.User": "",
+            "caseNote": "",
+            "lastChangedNote.When": "",
+            "lastChangedNote.User": "",
+        },
+    }
+
+
+@pytest.fixture
+def force_recall_visit_request_payload():
+    return json.loads(
+        """
+    {
+    "reason": null,
+    "identity": {
+        "guid": null,
+        "workType": "FRS",
+        "user": {
+            "IDSpecified": false,
+            "name": "Interviewer1",
+            "DeviceID": null,
+            "userAttributes": []
+        },
+        "Company": "NA",
+        "reference": "FRS2405A.9002"
+    },
+    "PreserveIfNoLinesRemainingSpecified": false,
+    "Lines": [],
+    "UseSilentPushSpecified": false
+    }
+    """
+    )
+
+
+@pytest.fixture
+def force_recall_visit_request_payload_with_null_reference():
+    return json.loads(
+        """
+    {
+    "reason": null,
+    "identity": {
+        "guid": null,
+        "workType": "FRS",
+        "user": {
+            "IDSpecified": false,
+            "name": "Callum.Nicholson",
+            "DeviceID": null,
+            "userAttributes": []
+        },
+        "Company": "NA",
+        "reference": null
+    },
+    "PreserveIfNoLinesRemainingSpecified": false,
+    "Lines": [],
+    "UseSilentPushSpecified": false
+    }
+    """
+    )
+
+
+@pytest.fixture
+def force_recall_visit_request_payload_without_reference():
+    return json.loads(
+        """
+    {
+    "reason": null,
+    "identity": {
+        "guid": null,
+        "workType": "FRS",
+        "user": {
+            "IDSpecified": false,
+            "name": "Callum.Nicholson",
+            "DeviceID": null,
+            "userAttributes": []
+        },
+        "Company": "NA"
+    },
+    "PreserveIfNoLinesRemainingSpecified": false,
+    "Lines": [],
+    "UseSilentPushSpecified": false
+    }
+    """
+    )
