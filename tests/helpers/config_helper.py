@@ -12,6 +12,7 @@ def get_default_config():
         region="region",
         blaise_api_url="blaise_api_url",
         blaise_server_park="gusty",
+        cma_server_park="cma",
         cloud_function_sa="cloud_function_sa",
         bus_api_url="bus_api_url",
         bus_client_id="bus_client_id",
