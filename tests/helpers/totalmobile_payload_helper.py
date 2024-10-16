@@ -82,7 +82,7 @@ def frs_totalmobile_payload_helper(
             {"name": "postCode", "value": case.postcode},
         ],
         "attributes": [],
-        "contact": {"name": None},
+        "contact": {"name": case.postcode},
         "description": (
             "Warning Divided Address" if case.divided_address_indicator == "1" else ""
         ),
