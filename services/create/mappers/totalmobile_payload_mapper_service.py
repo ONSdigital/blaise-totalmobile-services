@@ -30,7 +30,7 @@ class TotalmobilePayloadMapperService:
                 )
             ),
             description=self.get_job_description(questionnaire_case),
-            origin="",
+            origin="ONS",
             duration=15,
             workType=questionnaire_name[0:3],
             skills=[Skill(identity=Reference(reference=questionnaire_name[0:3]))],
@@ -67,7 +67,6 @@ class TotalmobilePayloadMapperService:
         questionnaire_case: BlaiseCreateCaseModel,
         payload_model: TotalMobileOutgoingCreateJobPayloadModel,
     ) -> TotalMobileOutgoingCreateJobPayloadModel:
-        payload_model.origin = "ONS"
         payload_model.dueDate.end = questionnaire_case.wave_com_dte
         payload_model.attributes = [
             AdditionalProperty(name="Region", value=questionnaire_case.field_region),
