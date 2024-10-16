@@ -66,8 +66,10 @@ class TestTotalmobileFRSPayloadMapping:
         # contact name per BLAIS5-4479
         assert result.contact.name == "cf99rsd"
 
+        # origin per BLAIS5-4474
+        assert result.origin == "ONS"
+
         # misc
-        assert result.origin == ""  # TODO are these mandatory fields?
         assert result.dueDate.end is None  # TODO are these mandatory fields?
 
         assert result.attributes == []
