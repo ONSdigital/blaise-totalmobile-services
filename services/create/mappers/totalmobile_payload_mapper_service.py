@@ -69,7 +69,6 @@ class TotalmobilePayloadMapperService:
     ) -> TotalMobileOutgoingCreateJobPayloadModel:
         payload_model.origin = "ONS"
         payload_model.dueDate.end = questionnaire_case.wave_com_dte
-        # payload_model.contact.name = questionnaire_case.postcode
         payload_model.attributes = [
             AdditionalProperty(name="Region", value=questionnaire_case.field_region),
             AdditionalProperty(name="Team", value=questionnaire_case.field_team),
