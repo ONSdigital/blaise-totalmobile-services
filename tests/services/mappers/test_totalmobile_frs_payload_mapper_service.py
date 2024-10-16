@@ -63,9 +63,12 @@ class TestTotalmobileFRSPayloadMapping:
         assert result.location.addressDetail.coordinates.latitude == "10020202"
         assert result.location.addressDetail.coordinates.longitude == "34949494"
 
+        # contact name per BLAIS5-4479
+        assert result.contact.name == "cf99rsd"
+
+        # misc
         assert result.origin == ""  # TODO are these mandatory fields?
         assert result.dueDate.end is None  # TODO are these mandatory fields?
-        assert result.contact.name is None  # TODO are these mandatory fields?
 
         assert result.attributes == []
 
