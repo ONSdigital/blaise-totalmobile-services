@@ -147,7 +147,6 @@ class TestTotalmobileFRSCreateJobMapping:
         )
         assert result.payload["description"] == ""
 
-
     def test_map_totalmobile_create_job_model_from_json_maps_the_correct_model(
         self, service: TotalmobileCreateJobMapperService
     ):
