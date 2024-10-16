@@ -104,7 +104,7 @@ def frs_totalmobile_payload_helper(
             },
             "reference": case.reference,
         },
-        "origin": "",
+        "origin": "ONS",
         "skills": [{"identity": {"reference": case.tla}}],
         "workType": case.tla,
     }
