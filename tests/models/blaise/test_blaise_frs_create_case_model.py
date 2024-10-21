@@ -25,7 +25,35 @@ def test_create_case_description_for_interviewer_returns_divided_address_if_indi
     description = questionnaire_case.create_case_description_for_interviewer()
 
     # Assert
-    assert description == "Warning Divided Address"
+    assert description == f"Warning - Divided Address\nStart date: 01-01-2022"
+
+
+def test_create_case_description_for_interviewer_returns_divided_address_if_indicator_is_0():
+    # Arrange
+    questionnaire_name = "FRS2201"
+    questionnaire_case = BlaiseFRSCreateCaseModel(
+        questionnaire_name, {BlaiseFields.divided_address_indicator: "0"}
+    )
+
+    # Act
+    description = questionnaire_case.create_case_description_for_interviewer()
+
+    # Assert
+    assert description == f"Start date: 01-01-2022"
+
+
+def test_create_case_description_for_interviewer_returns_divided_address_if_indicator_is_not_1_or_0():
+    # Arrange
+    questionnaire_name = "FRS2201"
+    questionnaire_case = BlaiseFRSCreateCaseModel(
+        questionnaire_name, {BlaiseFields.divided_address_indicator: "foo"}
+    )
+
+    # Act
+    description = questionnaire_case.create_case_description_for_interviewer()
+
+    # Assert
+    assert description == ""
 
 
 def test_create_case_overview_for_interviewer_returns_the_expected_additional_properties():
