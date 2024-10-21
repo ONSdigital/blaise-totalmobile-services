@@ -64,7 +64,7 @@ class FRSCaseModel:
         if match:
             return "20" + match.group(2)
 
-    def get_month(self):
+    def get_month_name(self):
         pattern = r"([A-Za-z]+)(\d{2})(\d{2})"
         match = re.match(pattern, self.questionnaire_name)
         if match:

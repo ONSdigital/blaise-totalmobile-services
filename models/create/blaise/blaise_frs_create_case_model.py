@@ -1,3 +1,5 @@
+import re
+from datetime import datetime
 from typing import Dict, List, Optional
 
 from enums.blaise_fields import BlaiseFields
@@ -16,6 +18,17 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
     def rand(self) -> Optional[str]:
         return self.case_data.get(BlaiseFields.rand)
 
+    def get_year(self):
+        pattern = r"([A-Za-z]+)(\d{2})(\d{2})"
+        match = re.match(pattern, self.questionnaire_name)
+        if match:
+            return "20" + match.group(2)
+
+    def get_month(self):
+        pattern = r"([A-Za-z]+)(\d{2})(\d{2})"
+        match = re.match(pattern, self.questionnaire_name)
+        return match.group(3)
+
     def create_case_overview_for_interviewer(self) -> dict[str, str]:
         return {
             "tla": f"{self.tla}",
@@ -28,8 +41,16 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
     def create_case_description_for_interviewer(
         self,
     ) -> str:
+        questionnaire_month = self.get_month()
+        questionnaire_year = self.get_year()
+        start_date = f"Start date: 01-{questionnaire_month}-{questionnaire_year}"
+
         if self.divided_address_indicator == "1":
-            return "Warning Divided Address"
+            return f"Warning - Divided Address\n{start_date}"
+
+        if self.divided_address_indicator == "0":
+            return start_date
+
         return ""
 
     @staticmethod
