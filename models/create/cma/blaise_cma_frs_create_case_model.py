@@ -25,7 +25,7 @@ class FRSCaseModel:
 
         self.full_date = self.get_full_date()
         self.year = self.get_year()
-        self.month = self.get_month()
+        self.month = self.get_month_name()
         self.eleventh_day_of_next_month = self.calculate_eleventh_day_of_next_month()
         self.tla = self.get_tla()
 
