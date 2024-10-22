@@ -16,7 +16,17 @@ def test_format_data_fields_returns_a_correctly_formatted_data_fields_for_frs_ca
     postcode = "NP10 8XG"
 
     frs_case_for_cma_launcher = FRSCaseModel(
-        user, questionnaire_name, guid, case_id, custom_use, location, inPosession, prem1, prem2, town, postcode
+        user,
+        questionnaire_name,
+        guid,
+        case_id,
+        custom_use,
+        location,
+        inPosession,
+        prem1,
+        prem2,
+        town,
+        postcode,
     )
 
     # Act

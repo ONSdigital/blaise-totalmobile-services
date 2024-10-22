@@ -52,8 +52,8 @@ class TotalmobileReferenceFRSModel(BaseModel):
         questionnaire_case_reference = (
             cls.get_questionnaire_case_reference_from_incoming_request(request)
         )
-        contact_data_reference = (
-            cls.get_contact_data_reference_from_incoming_request(request)
+        contact_data_reference = cls.get_contact_data_reference_from_incoming_request(
+            request
         )
         interviewer_name_reference = (
             cls.get_interviewer_reference_from_incoming_request(request)
@@ -148,6 +148,7 @@ class TotalmobileReferenceFRSModel(BaseModel):
 
         return reference
 
+    @staticmethod
     def get_contact_data_reference_from_incoming_request(
         incoming_request: IncomingRequest,
     ) -> Dict[str, str]:
@@ -220,7 +221,9 @@ class TotalmobileReferenceFRSModel(BaseModel):
             case_id=case_id,
             prem1=contact_data_reference["address_lines"][0],
             prem2=contact_data_reference["address_lines"][1],
-            town=contact_data_reference["address_lines"][len(contact_data_reference["address_lines"])-1],
+            town=contact_data_reference["address_lines"][
+                len(contact_data_reference["address_lines"]) - 1
+            ],
             postcode=contact_data_reference["postcode"],
             interviewer_name=interviewer_name_reference,
             interviewer_blaise_login=interviewer_login_reference,

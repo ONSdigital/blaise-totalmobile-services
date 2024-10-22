@@ -21,7 +21,14 @@ def test_frs_model_create_reference_returns_an_expected_reference_when_given_que
     postcode = "NP10 8XG"
 
     frs_reference_model = TotalmobileReferenceFRSModel(
-        questionnaire_name, case_id, prem1, prem2, town, postcode, interviewer_name, interviewer_blaise_login
+        questionnaire_name,
+        case_id,
+        prem1,
+        prem2,
+        town,
+        postcode,
+        interviewer_name,
+        interviewer_blaise_login,
     )
 
     # act
@@ -35,13 +42,20 @@ def test_frs_model_create_reference_returns_an_expected_reference_when_given_que
     "questionnaire_name, case_id, prem1, prem2, town, postcode, interviewer_name, interviewer_blaise_login",
     [
         ("", "90001", "prem1", "prem2", "town", "postcode", "User1", "User1"),
-        ("FRS2405A", "", "prem1", "prem2", "town", "postcode","User1", "User1"),
+        ("FRS2405A", "", "prem1", "prem2", "town", "postcode", "User1", "User1"),
         ("", "", "prem1", "prem2", "town", "postcode", "User1", "User1"),
-        (None, None, "prem1", "prem2", "town", "postcode","User1", "User1"),
+        (None, None, "prem1", "prem2", "town", "postcode", "User1", "User1"),
     ],
 )
 def test_frs_model_raises_a_missing_reference_error_when_given_an_invalid_questionnaire_name_and_or_case_id(
-    questionnaire_name, case_id, prem1, prem2, town, postcode, interviewer_name, interviewer_blaise_login
+    questionnaire_name,
+    case_id,
+    prem1,
+    prem2,
+    town,
+    postcode,
+    interviewer_name,
+    interviewer_blaise_login,
 ):
     # arrange
     questionnaire_name = questionnaire_name
@@ -56,7 +70,14 @@ def test_frs_model_raises_a_missing_reference_error_when_given_an_invalid_questi
     # act & assert
     with pytest.raises(MissingReferenceError):
         TotalmobileReferenceFRSModel.from_questionnaire_and_case_and_interviewer_and_contact_data(
-            questionnaire_name, case_id, prem1, prem2, town, postcode, interviewer_name, interviewer_blaise_login
+            questionnaire_name,
+            case_id,
+            prem1,
+            prem2,
+            town,
+            postcode,
+            interviewer_name,
+            interviewer_blaise_login,
         )
 
 
@@ -85,15 +106,17 @@ def test_frs_model_returns_valid_object_if_the_request_is_valid_with_all_referen
     )
 
     # act
-    result = allocation_model.from_questionnaire_and_case_and_interviewer_and_contact_data(
-        questionnaire_name,
-        case_id,
-        prem1,
-        prem2,
-        town,
-        postcode,
-        interviewer_name,
-        interviewer_blaise_login,
+    result = (
+        allocation_model.from_questionnaire_and_case_and_interviewer_and_contact_data(
+            questionnaire_name,
+            case_id,
+            prem1,
+            prem2,
+            town,
+            postcode,
+            interviewer_name,
+            interviewer_blaise_login,
+        )
     )
 
     # assert
@@ -207,7 +230,10 @@ def test_questionnaire_name_and_case_id_properties_are_set_correctly_when_given_
 
     # act
     reference_model = TotalmobileReferenceFRSModel.get_model_from_reference(
-        reference, {"address_lines": ["prem1", "prem2", "town"], "postcode": "NP10 8XG"}, "", ""
+        reference,
+        {"address_lines": ["prem1", "prem2", "town"], "postcode": "NP10 8XG"},
+        "",
+        "",
     )
 
     # assert

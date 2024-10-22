@@ -1,6 +1,6 @@
 import logging
-from datetime import datetime
 import re
+from datetime import datetime
 from typing import Dict
 
 from app.exceptions.custom_exceptions import (
@@ -37,7 +37,7 @@ class FRSCaseAllocationService:
             r"PII\.Town\t(?P<Town>.*?)\t"
             r"PII\.Postcode\t(?P<Postcode>.*?)"
         )
-        
+
         match = pattern.search(contact_data_string)
         if match:
             return match.groupdict()
@@ -227,7 +227,9 @@ class FRSCaseAllocationService:
 
         case_id = old_allocated_case["fieldData"]["id"]
         questionnaire_name = old_allocated_case["fieldData"]["surveyDisplayName"]
-        contact_data = self.parse_contact_data_pii_values(old_allocated_case["fieldData"]["cmA_ContactData"])
+        contact_data = self.parse_contact_data_pii_values(
+            old_allocated_case["fieldData"]["cmA_ContactData"]
+        )
 
         frsCase = FRSCaseModel(
             user="",
