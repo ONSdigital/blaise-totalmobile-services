@@ -21,7 +21,10 @@ class TestTotalmobileFRSPayloadMapping:
         questionnaire_name = "FRS2101"
         case_id = "90001"
         questionnaire_case = BlaiseCaseModelHelper.get_populated_frs_create_case_model(
-            questionnaire_name=questionnaire_name, case_id=case_id, divided_address="1", start_date="01-01-2021"
+            questionnaire_name=questionnaire_name,
+            case_id=case_id,
+            divided_address="1",
+            start_date="01-01-2021",
         )
 
         # act
@@ -105,7 +108,10 @@ class TestTotalmobileFRSPayloadMapping:
         questionnaire_name = "FRS2101"
         case_id = "90001"
         questionnaire_case = BlaiseCaseModelHelper.get_populated_frs_create_case_model(
-            questionnaire_name=questionnaire_name, case_id=case_id, divided_address="0", start_date="01-01-2021"
+            questionnaire_name=questionnaire_name,
+            case_id=case_id,
+            divided_address="0",
+            start_date="01-01-2021",
         )
 
         # act

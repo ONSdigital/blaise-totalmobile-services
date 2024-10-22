@@ -18,17 +18,6 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
     def rand(self) -> Optional[str]:
         return self.case_data.get(BlaiseFields.rand)
 
-    def get_year(self):
-        pattern = r"([A-Za-z]+)(\d{2})(\d{2})"
-        match = re.match(pattern, self.questionnaire_name)
-        if match:
-            return "20" + match.group(2)
-
-    def get_month(self):
-        pattern = r"([A-Za-z]+)(\d{2})(\d{2})"
-        match = re.match(pattern, self.questionnaire_name)
-        return match.group(3)
-
     def create_case_overview_for_interviewer(self) -> dict[str, str]:
         return {
             "tla": f"{self.tla}",

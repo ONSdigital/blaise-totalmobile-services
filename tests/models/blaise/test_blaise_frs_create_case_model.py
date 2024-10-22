@@ -18,7 +18,11 @@ def test_create_case_description_for_interviewer_returns_divided_address_if_indi
     # Arrange
     questionnaire_name = "FRS2201"
     questionnaire_case = BlaiseFRSCreateCaseModel(
-        questionnaire_name, {BlaiseFields.divided_address_indicator: "1", BlaiseFields.start_date: "01-01-2022"}
+        questionnaire_name,
+        {
+            BlaiseFields.divided_address_indicator: "1",
+            BlaiseFields.start_date: "01-01-2022",
+        },
     )
 
     # Act
@@ -32,7 +36,11 @@ def test_create_case_description_for_interviewer_returns_divided_address_if_indi
     # Arrange
     questionnaire_name = "FRS2201"
     questionnaire_case = BlaiseFRSCreateCaseModel(
-        questionnaire_name, {BlaiseFields.divided_address_indicator: "0",BlaiseFields.start_date: "01-01-2022"}
+        questionnaire_name,
+        {
+            BlaiseFields.divided_address_indicator: "0",
+            BlaiseFields.start_date: "01-01-2022",
+        },
     )
 
     # Act
