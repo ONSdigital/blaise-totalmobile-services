@@ -33,7 +33,13 @@ def get_frs_case_allocation_request():
                 "Title": None,
                 "address": {
                     "Name": None,
-                    "lines": ["1 WandW Street", "Caerphilly", "CF83 8QQ", "Caerphilly", "Caerphilly"],
+                    "lines": [
+                        "1 WandW Street",
+                        "Caerphilly",
+                        "CF83 8QQ",
+                        "Caerphilly",
+                        "Caerphilly",
+                    ],
                     "HouseNo": None,
                     "postcode": "CF83 8QQ",
                     "GeoX": 51.59534,
@@ -132,7 +138,13 @@ def get_frs_case_allocation_request_with_reference_from_param(reference: str):
                 "Title": None,
                 "address": {
                     "Name": None,
-                    "lines": ["1 WandW Street", "Caerphilly", "CF83 8QQ", "Caerphilly", "Caerphilly"],
+                    "lines": [
+                        "1 WandW Street",
+                        "Caerphilly",
+                        "CF83 8QQ",
+                        "Caerphilly",
+                        "Caerphilly",
+                    ],
                     "HouseNo": None,
                     "postcode": "CF83 8QQ",
                     "GeoX": 51.59534,
@@ -230,7 +242,13 @@ def get_frs_case_allocation_request_without_reference():
                 "Title": None,
                 "Address": {
                     "Name": None,
-                    "Lines": ["1 WandW Street", "Caerphilly", "CF83 8QQ", "Caerphilly", "Caerphilly"],
+                    "Lines": [
+                        "1 WandW Street",
+                        "Caerphilly",
+                        "CF83 8QQ",
+                        "Caerphilly",
+                        "Caerphilly",
+                    ],
                     "HouseNo": None,
                     "PostCode": "CF83 8QQ",
                     "GeoX": 51.59534,
