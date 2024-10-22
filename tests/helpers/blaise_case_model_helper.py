@@ -20,6 +20,7 @@ class BlaiseCaseModelHelper:
         postcode: str = "cf99rsd",
         reference: str = "reference",
         field_region: str = "Region 1",
+        start_date: str = "01-01-2024",
         divided_address: str = "",
     ) -> BlaiseFRSCreateCaseModel:
         return BlaiseFRSCreateCaseModel(
@@ -41,6 +42,7 @@ class BlaiseCaseModelHelper:
                 BlaiseFields.longitude: longitude,
                 BlaiseFields.priority: "1",
                 BlaiseFields.rand: "1",
+                BlaiseFields.start_date: start_date,
                 BlaiseFields.divided_address_indicator: divided_address,
             },
         )

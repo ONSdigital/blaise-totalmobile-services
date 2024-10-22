@@ -41,9 +41,8 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
     def create_case_description_for_interviewer(
         self,
     ) -> str:
-        questionnaire_month = self.get_month()
-        questionnaire_year = self.get_year()
-        start_date = f"Start date: 01-{questionnaire_month}-{questionnaire_year}"
+        start_date_from_case = self.case_data.get(BlaiseFields.start_date)
+        start_date = f"Start date: {start_date_from_case}"
 
         if self.divided_address_indicator == "1":
             return f"Warning - Divided Address\n{start_date}"
@@ -72,5 +71,6 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
             BlaiseFields.field_region,
             BlaiseFields.field_team,
             BlaiseFields.divided_address_indicator,
+            BlaiseFields.start_date,
             BlaiseFields.rand,
         ]
