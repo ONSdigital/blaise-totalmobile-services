@@ -1,3 +1,5 @@
+import logging
+
 from enums.blaise_fields import BlaiseFields
 from models.create.blaise.blaise_frs_create_case_model import BlaiseFRSCreateCaseModel
 
@@ -30,6 +32,50 @@ def test_create_case_description_for_interviewer_returns_divided_address_if_indi
 
     # Assert
     assert description == f"Warning - Divided Address\nStart date: 01-01-2022"
+
+
+def test_create_case_description_for_interviewer_returns_correct_message_for_start_date_in_description_if_start_date_is_not_valid():
+    # Arrange
+    questionnaire_name = "FRS2201"
+    questionnaire_case = BlaiseFRSCreateCaseModel(
+        questionnaire_name,
+        {
+            BlaiseFields.divided_address_indicator: "1",
+            BlaiseFields.start_date: "01/011/2022",
+        },
+    )
+
+    # Act
+    description = questionnaire_case.create_case_description_for_interviewer()
+
+    # Assert
+    assert description == f"Warning - Divided Address\nStart date: Not Available"
+
+
+def test_create_case_description_for_interviewer_returns_correct_message_for_start_date_in_description_if_start_date_is_not_available(
+    caplog,
+):
+    # Arrange
+    questionnaire_name = "FRS2201"
+    questionnaire_case = BlaiseFRSCreateCaseModel(
+        questionnaire_name,
+        {
+            BlaiseFields.divided_address_indicator: "1",
+            BlaiseFields.start_date: None,
+        },
+    )
+
+    # Act
+    with caplog.at_level(logging.WARNING):
+        description = questionnaire_case.create_case_description_for_interviewer()
+
+    # Assert
+    assert description == f"Warning - Divided Address\nStart date: Not Available"
+    assert (
+        "root",
+        logging.WARNING,
+        f"Invalid Start date retrieved from data in Questionnaire {questionnaire_name}",
+    ) in caplog.record_tuples
 
 
 def test_create_case_description_for_interviewer_returns_divided_address_if_indicator_is_0():

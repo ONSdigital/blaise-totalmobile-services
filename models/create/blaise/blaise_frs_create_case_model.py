@@ -1,4 +1,4 @@
-import re
+import logging
 from datetime import datetime
 from typing import Dict, List, Optional
 
@@ -31,7 +31,16 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
         self,
     ) -> str:
         start_date_from_case = self.case_data.get(BlaiseFields.start_date)
-        start_date = f"Start date: {start_date_from_case}"
+
+        # checking if valid start date
+        try:
+            datetime.strptime(start_date_from_case, "%d-%m-%Y")
+            start_date = f"Start date: {start_date_from_case}"
+        except:
+            logging.warning(
+                f"Invalid Start date retrieved from data in Questionnaire {self.questionnaire_name}"
+            )
+            start_date = f"Start date: Not Available"
 
         if self.divided_address_indicator == "1":
             return f"Warning - Divided Address\n{start_date}"
