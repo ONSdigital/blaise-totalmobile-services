@@ -40,6 +40,10 @@ class TestFRSCaseAllocationService:
         totalmobile_request = TotalMobileIncomingFRSRequestModel(
             questionnaire_name=questionnaire["name"],
             case_id="100100",
+            prem1="prem1",
+            prem2="prem2",
+            town="town",
+            postcode="NP10 8XG",
             interviewer_name="Interviewer1",
             interviewer_blaise_login="User1",
         )
@@ -66,6 +70,10 @@ class TestFRSCaseAllocationService:
         totalmobile_request = TotalMobileIncomingFRSRequestModel(
             questionnaire_name="FRS2405A",
             case_id="100100",
+            prem1="prem1",
+            prem2="prem2",
+            town="town",
+            postcode="NP10 8XG",
             interviewer_name="User1",
             interviewer_blaise_login="User1",
         )
@@ -98,6 +106,10 @@ class TestFRSCaseAllocationService:
         totalmobile_request = TotalMobileIncomingFRSRequestModel(
             questionnaire_name="FRS2405A",
             case_id="100100",
+            prem1="prem1",
+            prem2="prem2",
+            town="town",
+            postcode="NP10 8XG",
             interviewer_name="User1",
             interviewer_blaise_login="User1",
         )
@@ -123,6 +135,10 @@ class TestFRSCaseAllocationService:
         totalmobile_request = TotalMobileIncomingFRSRequestModel(
             questionnaire_name=questionnaire["name"],
             case_id="100100",
+            prem1="prem1",
+            prem2="prem2",
+            town="town",
+            postcode="NP10 8XG",
             interviewer_name="User2",
             interviewer_blaise_login="User2",
         )
@@ -159,6 +175,10 @@ class TestFRSCaseAllocationService:
         totalmobile_request = TotalMobileIncomingFRSRequestModel(
             questionnaire_name=questionnaire["name"],
             case_id="100100",
+            prem1="prem1",
+            prem2="prem2",
+            town="town",
+            postcode="NP10 8XG",
             interviewer_name="User2",
             interviewer_blaise_login="User2",
         )
