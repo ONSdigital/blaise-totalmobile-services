@@ -427,16 +427,16 @@ def create_visit_request_sample():
         },
         "ClientReference": null,
         "Description": "blah",
-        "Property": {
+        "property": {
             "Guid": null,
             "Type": "JM_PROPERTY",
             "Reference": null,
             "ParentReference": null,
             "Name": null,
             "Title": null,
-            "Address": {
+            "address": {
                 "Name": null,
-                "Lines": [
+                "lines": [
                     "prem1",
                     "prem2",
                     "prem3",
@@ -444,7 +444,7 @@ def create_visit_request_sample():
                     "posttown"
                 ],
                 "HouseNo": null,
-                "PostCode": "postcode",
+                "postcode": "postcode",
                 "GeoX": 51.566,
                 "GeoXSpecified": true,
                 "GeoY": -3.026,
@@ -1153,7 +1153,7 @@ def force_recall_visit_request_payload():
         "reference": "FRS2405A.9002"
     },
     "PreserveIfNoLinesRemainingSpecified": false,
-    "Lines": [],
+    "lines": ["prem1", "prem2", "prem3", "district", "posttown"],
     "UseSilentPushSpecified": false
     }
     """
