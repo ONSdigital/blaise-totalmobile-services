@@ -154,7 +154,7 @@ class TotalmobileReferenceFRSModel(BaseModel):
     ) -> Dict[str, str]:
         reference_keys = {
             "address_lines": ("visit", "property", "address", "lines"),
-            "postcode": ("visit", "property", "address", "postcode"),
+            "postcode": ("visit", "property", "address", "postCode"),
         }
 
         references = {
