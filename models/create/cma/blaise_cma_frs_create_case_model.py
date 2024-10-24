@@ -25,7 +25,7 @@ class FRSCaseModel:
 
         self.full_date = self.get_full_date()
         self.year = self.get_year()
-        self.month = self.get_month()
+        self.month = self.get_month_name()
         self.eleventh_day_of_next_month = self.calculate_eleventh_day_of_next_month()
         self.tla = self.get_tla()
 
@@ -64,7 +64,7 @@ class FRSCaseModel:
         if match:
             return "20" + match.group(2)
 
-    def get_month(self):
+    def get_month_name(self):
         pattern = r"([A-Za-z]+)(\d{2})(\d{2})"
         match = re.match(pattern, self.questionnaire_name)
         if match:
