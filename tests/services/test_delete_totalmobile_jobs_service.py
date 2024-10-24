@@ -432,4 +432,3 @@ def test_delete_jobs_past_field_period_deletes_frs_job_when_field_period_has_exp
             call(world_id, job2, "past field period"),
         ]
     )
-
