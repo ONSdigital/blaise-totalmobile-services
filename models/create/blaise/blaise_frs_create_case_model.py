@@ -68,6 +68,7 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
             BlaiseFields.field_case,
             BlaiseFields.field_region,
             BlaiseFields.field_team,
+            BlaiseFields.wave_com_dte,
             BlaiseFields.divided_address_indicator,
             BlaiseFields.start_date,
             BlaiseFields.rand,

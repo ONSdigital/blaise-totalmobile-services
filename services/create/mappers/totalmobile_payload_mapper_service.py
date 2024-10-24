@@ -34,7 +34,7 @@ class TotalmobilePayloadMapperService:
             duration=15,
             workType=questionnaire_name[0:3],
             skills=[Skill(identity=Reference(reference=questionnaire_name[0:3]))],
-            dueDate=DueDate(end=None),
+            dueDate=DueDate(end=questionnaire_case.wave_com_dte),
             location=AddressDetails(
                 reference=self.set_location_reference(questionnaire_case),
                 address=self.concatenate_address(questionnaire_case),
@@ -67,7 +67,6 @@ class TotalmobilePayloadMapperService:
         questionnaire_case: BlaiseCreateCaseModel,
         payload_model: TotalMobileOutgoingCreateJobPayloadModel,
     ) -> TotalMobileOutgoingCreateJobPayloadModel:
-        payload_model.dueDate.end = questionnaire_case.wave_com_dte
         payload_model.attributes = [
             AdditionalProperty(name="Region", value=questionnaire_case.field_region),
             AdditionalProperty(name="Team", value=questionnaire_case.field_team),

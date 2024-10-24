@@ -21,9 +21,9 @@ Clone the project locally:
 git clone https://github.com/ONSdigital/blaise-export-reporting-tool.git
 ```
 
-Install poetry:
+[Install poetry](https://python-poetry.org/docs/):
 ```shell
-pip install poetry
+pipx install poetry
 ```
 
 Install dependencies:
