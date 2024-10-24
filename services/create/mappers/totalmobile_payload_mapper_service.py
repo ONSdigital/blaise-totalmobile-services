@@ -67,7 +67,6 @@ class TotalmobilePayloadMapperService:
         questionnaire_case: BlaiseCreateCaseModel,
         payload_model: TotalMobileOutgoingCreateJobPayloadModel,
     ) -> TotalMobileOutgoingCreateJobPayloadModel:
-        # payload_model.dueDate.end = questionnaire_case.wave_com_dte
         payload_model.attributes = [
             AdditionalProperty(name="Region", value=questionnaire_case.field_region),
             AdditionalProperty(name="Team", value=questionnaire_case.field_team),
