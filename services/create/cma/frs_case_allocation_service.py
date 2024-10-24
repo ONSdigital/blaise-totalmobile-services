@@ -1,4 +1,5 @@
 import logging
+import re
 from datetime import datetime
 from typing import Dict
 
@@ -24,6 +25,24 @@ from services.cma_blaise_service import CMABlaiseService
 class FRSCaseAllocationService:
     def __init__(self, cma_blaise_service: CMABlaiseService):
         self._cma_blaise_service = cma_blaise_service
+
+    @staticmethod
+    def parse_contact_data_pii_values(contact_data_string: str) -> dict:
+        pattern = re.compile(
+            r"PII\.TLA\t(?P<TLA>\w+)\t"
+            r"PII\.Month\t(?P<Month>\w+)\t"
+            r"PII\.Year\t(?P<Year>\w+)\t"
+            r"PII\.Prem1\t(?P<Prem1>.*?)\t"
+            r"PII\.Prem2\t(?P<Prem2>.*?)\t"
+            r"PII\.Town\t(?P<Town>.*?)\t"
+            r"PII\.Postcode\t(?P<Postcode>.*?)"
+        )
+
+        match = pattern.search(contact_data_string)
+        if match:
+            return match.groupdict()
+        else:
+            return {}
 
     def create_case(
         self, totalmobile_request: TotalMobileIncomingFRSRequestModel
@@ -129,6 +148,10 @@ class FRSCaseAllocationService:
             custom_use="",
             location="",
             inPosession="",
+            prem1=frsCaseFromTotalMobileRequest.prem1,
+            prem2=frsCaseFromTotalMobileRequest.prem2,
+            town=frsCaseFromTotalMobileRequest.town,
+            postcode=frsCaseFromTotalMobileRequest.postcode,
         )
         try:
             self._cma_blaise_service.create_frs_case(frsCase)
@@ -154,6 +177,10 @@ class FRSCaseAllocationService:
             custom_use=f"{guid};{unique_case_id};",
             location="RELEASE_SOME",
             inPosession="",
+            prem1="",
+            prem2="",
+            town="",
+            postcode="",
         )
         try:
             self._cma_blaise_service.create_frs_case(frsCase)
@@ -183,6 +210,10 @@ class FRSCaseAllocationService:
             custom_use="",
             location="SERVER",
             inPosession="",
+            prem1=new_totalmobile_allocation_request.prem1,
+            prem2=new_totalmobile_allocation_request.prem2,
+            town=new_totalmobile_allocation_request.town,
+            postcode=new_totalmobile_allocation_request.postcode,
         )
         try:
             self._cma_blaise_service.update_frs_case(frsCase)
@@ -196,6 +227,9 @@ class FRSCaseAllocationService:
 
         case_id = old_allocated_case["fieldData"]["id"]
         questionnaire_name = old_allocated_case["fieldData"]["surveyDisplayName"]
+        contact_data = self.parse_contact_data_pii_values(
+            old_allocated_case["fieldData"]["cmA_ContactData"]
+        )
 
         frsCase = FRSCaseModel(
             user="",
@@ -205,6 +239,10 @@ class FRSCaseAllocationService:
             custom_use="",
             location="SERVER",
             inPosession="",
+            prem1=contact_data.get("Prem1"),
+            prem2=contact_data.get("Prem2"),
+            town=contact_data.get("Town"),
+            postcode=contact_data.get("Postcode"),
         )
         try:
             self._cma_blaise_service.update_frs_case(frsCase)

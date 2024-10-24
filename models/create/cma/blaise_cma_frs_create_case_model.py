@@ -14,6 +14,10 @@ class FRSCaseModel:
         custom_use: str,
         location: str,
         inPosession: str,
+        prem1: str,
+        prem2: str,
+        town: str,
+        postcode: str,
     ) -> None:
         self.user = user
         self.questionnaire_name = questionnaire_name
@@ -22,6 +26,10 @@ class FRSCaseModel:
         self.custom_use = custom_use
         self.location = location
         self.inPossession = inPosession
+        self.prem1 = prem1
+        self.prem2 = prem2
+        self.town = town
+        self.postcode = postcode
 
         self.full_date = self.get_full_date()
         self.year = self.get_year()
@@ -43,6 +51,7 @@ class FRSCaseModel:
             "cmA_CustomUse": f"{self.custom_use}",
             "cmA_Location": f"{self.location}",
             "cmA_InPossession": f"{self.inPossession}",
+            "cmA_ContactData": f"PII.TLA\tFRS\tPII.Month\t{self.get_month_name()}\tPII.Year\t{self.get_year()}\tPII.Prem1\t{self.prem1}\tPII.Prem2\t{self.prem2}\tPII.Town\t{self.town}\tPII.Postcode\t{self.postcode}",
         }
 
     def format_key_values(self) -> list[str]:

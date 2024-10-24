@@ -10,9 +10,23 @@ def test_format_data_fields_returns_a_correctly_formatted_data_fields_for_frs_ca
     custom_use = ""
     location = ""
     inPosession = ""
+    prem1 = "prem1"
+    prem2 = "prem2"
+    town = "town"
+    postcode = "NP10 8XG"
 
     frs_case_for_cma_launcher = FRSCaseModel(
-        user, questionnaire_name, guid, case_id, custom_use, location, inPosession
+        user,
+        questionnaire_name,
+        guid,
+        case_id,
+        custom_use,
+        location,
+        inPosession,
+        prem1,
+        prem2,
+        town,
+        postcode,
     )
 
     # Act
@@ -28,4 +42,5 @@ def test_format_data_fields_returns_a_correctly_formatted_data_fields_for_frs_ca
         "cmA_CustomUse": "",
         "cmA_Location": "",
         "cmA_InPossession": "",
+        "cmA_ContactData": f"PII.TLA\tFRS\tPII.Month\tOctober\tPII.Year\t2024\tPII.Prem1\tprem1\tPII.Prem2\tprem2\tPII.Town\ttown\tPII.Postcode\tNP10 8XG",
     }

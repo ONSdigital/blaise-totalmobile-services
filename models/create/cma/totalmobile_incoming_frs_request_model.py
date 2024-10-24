@@ -18,6 +18,10 @@ T = TypeVar("T", bound="TotalMobileIncomingFRSRequestModel")
 class TotalMobileIncomingFRSRequestModel(BaseModel):
     questionnaire_name: str
     case_id: str
+    prem1: str
+    prem2: str
+    town: str
+    postcode: str
     interviewer_name: str
     interviewer_blaise_login: str
 
@@ -39,6 +43,10 @@ class TotalMobileIncomingFRSRequestModel(BaseModel):
         total_mobile_case = cls(
             questionnaire_name=reference_model.questionnaire_name,
             case_id=reference_model.case_id,
+            prem1=reference_model.prem1,
+            prem2=reference_model.prem2,
+            town=reference_model.town,
+            postcode=reference_model.postcode,
             interviewer_name=reference_model.interviewer_name,
             interviewer_blaise_login=reference_model.interviewer_blaise_login,
         )

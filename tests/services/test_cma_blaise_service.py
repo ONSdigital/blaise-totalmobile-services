@@ -179,6 +179,10 @@ def test_create_frs_case_calls_the_rest_api_client_with_the_correct_parameters(
         custom_use="",
         location="",
         inPosession="",
+        prem1="prem1",
+        prem2="prem2",
+        town="town",
+        postcode="NP10 8XG",
     )
     # act
     cma_blaise_service.create_frs_case(frs_case_model)
@@ -206,6 +210,10 @@ def test_create_frs_case_raises_exception_if_rest_api_fails_creating_case(
         custom_use="",
         location="",
         inPosession="",
+        prem1="prem1",
+        prem2="prem2",
+        town="town",
+        postcode="NP10 8XG",
     )
     _mock_rest_api_client.side_effect = ValueError(
         "Some error occured in blaise rest API while creating multikey case!"
@@ -238,6 +246,10 @@ def test_update_frs_case_calls_the_rest_api_client_with_the_correct_parameters(
         custom_use="",
         location="",
         inPosession="",
+        prem1="prem1",
+        prem2="prem2",
+        town="town",
+        postcode="NP10 8XG",
     )
     # act
     cma_blaise_service.update_frs_case(frs_case_model)
@@ -265,6 +277,10 @@ def test_update_frs_case_raises_exception_if_rest_api_fails_updating_case(
         custom_use="",
         location="",
         inPosession="",
+        prem1="prem1",
+        prem2="prem2",
+        town="town",
+        postcode="NP10 8XG",
     )
     _mock_rest_api_client.side_effect = ValueError(
         "Some error occured in blaise rest API while updating multikey case!"
