@@ -1,3 +1,4 @@
+import datetime
 from typing import Dict
 
 import pytest
@@ -74,9 +75,10 @@ class TestTotalmobileFRSPayloadMapping:
         # origin per BLAIS5-4474
         assert result.origin == "ONS"
 
-        # misc
-        assert result.dueDate.end is None  # TODO are these mandatory fields?
+        # due date per BLAIS5-4348
+        assert result.dueDate.end == datetime.datetime(2024, 1, 31, 0, 0)
 
+        # misc
         assert result.attributes == []
 
         assert len(result.additionalProperties) == 5
