@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from typing import Dict
 
 import pytest
@@ -76,7 +76,7 @@ class TestTotalmobileFRSPayloadMapping:
         assert result.origin == "ONS"
 
         # due date per BLAIS5-4348
-        assert result.dueDate.end == datetime.datetime(2024, 1, 31, 0, 0)
+        assert result.dueDate.end == datetime(2024, 1, 31, 0, 0)
 
         # misc
         assert result.attributes == []
