@@ -389,3 +389,46 @@ def test_delete_jobs_past_field_period_does_not_delete_job_when_field_period_has
     # assert
     mock_totalmobile_service.recall_job.assert_not_called()
     mock_totalmobile_service.delete_job.assert_not_called()
+
+
+def test_delete_jobs_past_field_period_deletes_frs_job_when_field_period_has_expired(
+    mock_totalmobile_service,
+    mock_delete_job_service,
+    delete_totalmobile_jobs_service,
+    world_id,
+):
+    # arrange
+    job1 = Job(
+        reference="FRS2401A",
+        case_id="67890",
+        visit_complete=False,
+        past_field_period=False,
+        allocated_resource_reference=None,
+        work_type="FRS",
+    )
+    job2 = Job(
+        reference="FRS2401B",
+        case_id="12345",
+        visit_complete=False,
+        past_field_period=True,
+        allocated_resource_reference="bob.minion",
+        work_type="FRS",
+    )
+    mock_totalmobile_service.get_jobs_model.return_value = (
+        TotalmobileGetJobsResponseModel(
+            questionnaire_jobs={
+                "FRS2401A": [job1],
+                "FRS2401B": [job2],
+            }
+        )
+    )
+
+    # act
+    delete_totalmobile_jobs_service.delete_jobs_past_field_period()
+
+    # assert
+    mock_delete_job_service.delete_job.assert_has_calls(
+        [
+            call(world_id, job2, "past field period"),
+        ]
+    )
