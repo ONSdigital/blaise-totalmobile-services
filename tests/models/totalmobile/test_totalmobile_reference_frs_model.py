@@ -15,9 +15,20 @@ def test_frs_model_create_reference_returns_an_expected_reference_when_given_que
     case_id = "90001"
     interviewer_name = "User1"
     interviewer_blaise_login = "User1"
+    prem1 = "prem1"
+    prem2 = "prem2"
+    town = "town"
+    postcode = "NP10 8XG"
 
     frs_reference_model = TotalmobileReferenceFRSModel(
-        questionnaire_name, case_id, interviewer_name, interviewer_blaise_login
+        questionnaire_name,
+        case_id,
+        prem1,
+        prem2,
+        town,
+        postcode,
+        interviewer_name,
+        interviewer_blaise_login,
     )
 
     # act
@@ -28,27 +39,45 @@ def test_frs_model_create_reference_returns_an_expected_reference_when_given_que
 
 
 @pytest.mark.parametrize(
-    "questionnaire_name, case_id, interviewer_name,interviewer_blaise_login",
+    "questionnaire_name, case_id, prem1, prem2, town, postcode, interviewer_name, interviewer_blaise_login",
     [
-        ("", "90001", "User1", "User1"),
-        ("FRS2405A", "", "User1", "User1"),
-        ("", "", "User1", "User1"),
-        (None, None, "User1", "User1"),
+        ("", "90001", "prem1", "prem2", "town", "postcode", "User1", "User1"),
+        ("FRS2405A", "", "prem1", "prem2", "town", "postcode", "User1", "User1"),
+        ("", "", "prem1", "prem2", "town", "postcode", "User1", "User1"),
+        (None, None, "prem1", "prem2", "town", "postcode", "User1", "User1"),
     ],
 )
 def test_frs_model_raises_a_missing_reference_error_when_given_an_invalid_questionnaire_name_and_or_case_id(
-    questionnaire_name, case_id, interviewer_name, interviewer_blaise_login
+    questionnaire_name,
+    case_id,
+    prem1,
+    prem2,
+    town,
+    postcode,
+    interviewer_name,
+    interviewer_blaise_login,
 ):
     # arrange
     questionnaire_name = questionnaire_name
     case_id = case_id
+    prem1 = prem1
+    prem2 = prem2
+    town = town
+    postcode = postcode
     interviewer_name = interviewer_name
     interviewer_blaise_login = interviewer_blaise_login
 
     # act & assert
     with pytest.raises(MissingReferenceError):
-        TotalmobileReferenceFRSModel.from_questionnaire_and_case_and_interviewer(
-            questionnaire_name, case_id, interviewer_name, interviewer_blaise_login
+        TotalmobileReferenceFRSModel.from_questionnaire_and_case_and_interviewer_and_contact_data(
+            questionnaire_name,
+            case_id,
+            prem1,
+            prem2,
+            town,
+            postcode,
+            interviewer_name,
+            interviewer_blaise_login,
         )
 
 
@@ -58,28 +87,46 @@ def test_frs_model_returns_valid_object_if_the_request_is_valid_with_all_referen
     # arrange
     questionnaire_name = "FRS2405A"
     case_id = "90001"
+    prem1 = "prem1"
+    prem2 = "prem2"
+    town = "town"
+    postcode = "NP10 8XG"
     interviewer_name = "User1"
     interviewer_blaise_login = "User1"
 
     allocation_model = TotalmobileReferenceFRSModel(
         questionnaire_name,
         case_id,
+        prem1,
+        prem2,
+        town,
+        postcode,
         interviewer_name,
         interviewer_blaise_login,
     )
 
     # act
-    result = allocation_model.from_questionnaire_and_case_and_interviewer(
-        questionnaire_name,
-        case_id,
-        interviewer_name,
-        interviewer_blaise_login,
+    result = (
+        allocation_model.from_questionnaire_and_case_and_interviewer_and_contact_data(
+            questionnaire_name,
+            case_id,
+            prem1,
+            prem2,
+            town,
+            postcode,
+            interviewer_name,
+            interviewer_blaise_login,
+        )
     )
 
     # assert
     assert result.questionnaire_name == "FRS2405A"
     assert result.interviewer_name == "User1"
     assert result.case_id == "90001"
+    assert result.prem1 == "prem1"
+    assert result.prem2 == "prem2"
+    assert result.town == "town"
+    assert result.postcode == "NP10 8XG"
     assert result.interviewer_blaise_login == "User1"
 
 
@@ -183,7 +230,10 @@ def test_questionnaire_name_and_case_id_properties_are_set_correctly_when_given_
 
     # act
     reference_model = TotalmobileReferenceFRSModel.get_model_from_reference(
-        reference, "", ""
+        reference,
+        {"address_lines": ["prem1", "prem2", "town"], "postcode": "NP10 8XG"},
+        "",
+        "",
     )
 
     # assert

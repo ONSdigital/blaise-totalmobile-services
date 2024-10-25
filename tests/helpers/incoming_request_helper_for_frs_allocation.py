@@ -24,18 +24,24 @@ def get_frs_case_allocation_request():
             },
             "ClientReference": None,
             "Description": "UAC 3600 1234 1200 Due date 30/12/2023 Study LMS2311_PT1 Case ID11000000",
-            "Property": {
+            "property": {
                 "Guid": None,
                 "Type": "JM_PROPERTY",
                 "Reference": None,
                 "ParentReference": None,
                 "Name": "CF83 8QQ",
                 "Title": None,
-                "Address": {
+                "address": {
                     "Name": None,
-                    "Lines": ["1 WandW Street", "Caerphilly", "CF83 8QQ", "Caerphilly"],
+                    "lines": [
+                        "1 WandW Street",
+                        "Caerphilly",
+                        "CF83 8QQ",
+                        "Caerphilly",
+                        "Caerphilly",
+                    ],
                     "HouseNo": None,
-                    "PostCode": "CF83 8QQ",
+                    "postcode": "CF83 8QQ",
                     "GeoX": 51.59534,
                     "GeoXSpecified": True,
                     "GeoY": -3.15364,
@@ -123,18 +129,24 @@ def get_frs_case_allocation_request_with_reference_from_param(reference: str):
             },
             "ClientReference": None,
             "Description": "UAC 3600 1234 1200 Due date 30/12/2023 Study LMS2311_PT1 Case ID11000000",
-            "Property": {
+            "property": {
                 "Guid": None,
                 "Type": "JM_PROPERTY",
                 "Reference": None,
                 "ParentReference": None,
                 "Name": "CF83 8QQ",
                 "Title": None,
-                "Address": {
+                "address": {
                     "Name": None,
-                    "Lines": ["1 WandW Street", "Caerphilly", "CF83 8QQ", "Caerphilly"],
+                    "lines": [
+                        "1 WandW Street",
+                        "Caerphilly",
+                        "CF83 8QQ",
+                        "Caerphilly",
+                        "Caerphilly",
+                    ],
                     "HouseNo": None,
-                    "PostCode": "CF83 8QQ",
+                    "postcode": "CF83 8QQ",
                     "GeoX": 51.59534,
                     "GeoXSpecified": True,
                     "GeoY": -3.15364,
@@ -230,7 +242,13 @@ def get_frs_case_allocation_request_without_reference():
                 "Title": None,
                 "Address": {
                     "Name": None,
-                    "Lines": ["1 WandW Street", "Caerphilly", "CF83 8QQ", "Caerphilly"],
+                    "Lines": [
+                        "1 WandW Street",
+                        "Caerphilly",
+                        "CF83 8QQ",
+                        "Caerphilly",
+                        "Caerphilly",
+                    ],
                     "HouseNo": None,
                     "PostCode": "CF83 8QQ",
                     "GeoX": 51.59534,
