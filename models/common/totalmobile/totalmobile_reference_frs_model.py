@@ -216,15 +216,19 @@ class TotalmobileReferenceFRSModel(BaseModel):
         )
         questionnaire_name = questionnaire_case_request_fields[0]
         case_id = questionnaire_case_request_fields[1]
+        prem1 = contact_data_reference["address_lines"][0]
+        prem2 = contact_data_reference["address_lines"][1]
+        town = contact_data_reference["address_lines"][
+            len(contact_data_reference["address_lines"]) - 1
+        ]
+        postcode = contact_data_reference["postcode"]
         return TotalmobileReferenceFRSModel(
             questionnaire_name=questionnaire_name,
             case_id=case_id,
-            prem1=contact_data_reference["address_lines"][0],
-            prem2=contact_data_reference["address_lines"][1],
-            town=contact_data_reference["address_lines"][
-                len(contact_data_reference["address_lines"]) - 1
-            ],
-            postcode=contact_data_reference["postcode"],
+            prem1=prem1,
+            prem2=prem2,
+            town=town,
+            postcode=postcode,
             interviewer_name=interviewer_name_reference,
             interviewer_blaise_login=interviewer_login_reference,
         )
