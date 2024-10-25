@@ -70,7 +70,7 @@ def frs_totalmobile_payload_helper(
     questionnaire_name: str, case: BlaiseFRSCreateCaseModel
 ) -> Dict[str, object]:
     due_date = (
-        case.wave_com_dte.strftime("%d/%m/%Y") if case.wave_com_dte is not None else ""
+        case.wave_com_dte.strftime("%Y-%m-%d") if case.wave_com_dte is not None else ""
     )
 
     payload_dictionary = {
