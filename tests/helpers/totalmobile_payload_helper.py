@@ -70,7 +70,7 @@ def frs_totalmobile_payload_helper(
     questionnaire_name: str, case: BlaiseFRSCreateCaseModel
 ) -> Dict[str, object]:
     due_date = (
-        case.wave_com_dte.strftime("%d/%m/%Y") if case.wave_com_dte is not None else ""
+        case.wave_com_dte.strftime("%Y-%m-%d") if case.wave_com_dte is not None else ""
     )
 
     payload_dictionary = {
@@ -82,7 +82,7 @@ def frs_totalmobile_payload_helper(
             {"name": "postCode", "value": case.postcode},
         ],
         "attributes": [],
-        "contact": {"name": None},
+        "contact": {"name": case.postcode},
         "description": (
             "Warning Divided Address" if case.divided_address_indicator == "1" else ""
         ),
@@ -104,7 +104,7 @@ def frs_totalmobile_payload_helper(
             },
             "reference": case.reference,
         },
-        "origin": "",
+        "origin": "ONS",
         "skills": [{"identity": {"reference": case.tla}}],
         "workType": case.tla,
     }

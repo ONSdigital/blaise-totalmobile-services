@@ -1,3 +1,5 @@
+import logging
+from datetime import datetime
 from typing import Dict, List, Optional
 
 from enums.blaise_fields import BlaiseFields
@@ -28,8 +30,24 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
     def create_case_description_for_interviewer(
         self,
     ) -> str:
+        start_date_from_case = self.case_data.get(BlaiseFields.start_date)
+
+        # checking if valid start date
+        try:
+            datetime.strptime(start_date_from_case, "%d-%m-%Y")
+            start_date = f"Start date: {start_date_from_case}"
+        except:
+            logging.warning(
+                f"Invalid Start date retrieved from data in Questionnaire {self.questionnaire_name}"
+            )
+            start_date = f"Start date: Not Available"
+
         if self.divided_address_indicator == "1":
-            return "Warning Divided Address"
+            return f"Warning - Divided Address\n{start_date}"
+
+        if self.divided_address_indicator == "0":
+            return start_date
+
         return ""
 
     @staticmethod
@@ -50,6 +68,8 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
             BlaiseFields.field_case,
             BlaiseFields.field_region,
             BlaiseFields.field_team,
+            BlaiseFields.wave_com_dte,
             BlaiseFields.divided_address_indicator,
+            BlaiseFields.start_date,
             BlaiseFields.rand,
         ]

@@ -21,9 +21,9 @@ Clone the project locally:
 git clone https://github.com/ONSdigital/blaise-export-reporting-tool.git
 ```
 
-Install poetry:
+[Install poetry](https://python-poetry.org/docs/):
 ```shell
-pip install poetry
+pipx install poetry
 ```
 
 Install dependencies:
@@ -70,6 +70,7 @@ Create an .env file in the root of the project and add the following environment
 | REGION | The GCP region the application will be deployed to. | europe-west2                                                                                           |
 | BLAISE_API_URL | The RESTful API URL the application will use to get and update questionnaire data. | http://localhost:90                                                                                    |
 | BLAISE_SERVER_PARK | The Blaise Server Park name we will be getting the Blaise data from. | gusty                                                                                                  |
+| CMA_SERVER_PARK | The CMA Server Park name we will be getting the CMA Launcher data from. | cma                                                                                                  |
 | CREATE_TOTALMOBILE_JOBS_TASK_QUEUE_ID | The Cloud Tasks queue ID for creating jobs to Totalmobile. | projects/ons-blaise-v2-dev-sandbox123/locations/europe-west2/queues/totalmobile-jobs                   |
 | TOTALMOBILE_URL | The Totalmobile instance URL. | https://ons-dev.totalmobile-cloud.com                                                                  |
 | TOTALMOBILE_INSTANCE | The Totalmobile instance type. | test                                                                                                   |
@@ -84,6 +85,7 @@ GCLOUD_PROJECT=ons-blaise-v2-dev-sandbox123
 REGION=europe-west2
 BLAISE_API_URL=http://localhost:90
 BLAISE_SERVER_PARK=gusty
+CMA_SERVER_PARK=cma
 CREATE_TOTALMOBILE_JOBS_TASK_QUEUE_ID=projects/ons-blaise-v2-dev-sandbox123/locations/europe-west2/queues/totalmobile-jobs
 TOTALMOBILE_URL=https://ons-dev.totalmobile-cloud.com
 TOTALMOBILE_INSTANCE=Test

@@ -1,4 +1,4 @@
-from typing import Dict
+from datetime import datetime
 
 import pytest
 
@@ -21,7 +21,10 @@ class TestTotalmobileFRSPayloadMapping:
         questionnaire_name = "FRS2101"
         case_id = "90001"
         questionnaire_case = BlaiseCaseModelHelper.get_populated_frs_create_case_model(
-            questionnaire_name=questionnaire_name, case_id=case_id, divided_address="1"
+            questionnaire_name=questionnaire_name,
+            case_id=case_id,
+            divided_address="1",
+            start_date="01-01-2021",
         )
 
         # act
@@ -57,16 +60,24 @@ class TestTotalmobileFRSPayloadMapping:
         assert result.location.addressDetail.postCode == "cf99rsd"
 
         # divided address description
-        assert result.description == "Warning Divided Address"
+        assert (
+            result.description == f"Warning - Divided Address\nStart date: 01-01-2021"
+        )
 
         # lat and long
         assert result.location.addressDetail.coordinates.latitude == "10020202"
         assert result.location.addressDetail.coordinates.longitude == "34949494"
 
-        assert result.origin == ""  # TODO are these mandatory fields?
-        assert result.dueDate.end is None  # TODO are these mandatory fields?
-        assert result.contact.name is None  # TODO are these mandatory fields?
+        # contact name per BLAIS5-4479
+        assert result.contact.name == "cf99rsd"
 
+        # origin per BLAIS5-4474
+        assert result.origin == "ONS"
+
+        # due date per BLAIS5-4348
+        assert result.dueDate.end == datetime(2024, 1, 31, 0, 0)
+
+        # misc
         assert result.attributes == []
 
         assert len(result.additionalProperties) == 5
@@ -89,6 +100,51 @@ class TestTotalmobileFRSPayloadMapping:
 
         # mandatory field per BLAIS5-3238 and BLAIS5-3181
         assert result.duration == 15
+
+    def test_map_totalmobile_payload_model_returns_a_payload_with_valid_description_without_warning_if_divided_address_is_zero(
+        self,
+        service: TotalmobilePayloadMapperService,
+    ):
+        # arrange
+        questionnaire_name = "FRS2101"
+        case_id = "90001"
+        questionnaire_case = BlaiseCaseModelHelper.get_populated_frs_create_case_model(
+            questionnaire_name=questionnaire_name,
+            case_id=case_id,
+            divided_address="0",
+            start_date="01-01-2021",
+        )
+
+        # act
+        result = service.map_totalmobile_payload_model(
+            questionnaire_name, questionnaire_case
+        )
+
+        # assert
+        # divided address description
+        assert result.description == f"Start date: 01-01-2021"
+
+    def test_map_totalmobile_payload_model_returns_a_payload_with_empty_description_if_divided_address_is_not_1_or_0(
+        self,
+        service: TotalmobilePayloadMapperService,
+    ):
+        # arrange
+        questionnaire_name = "FRS2101"
+        case_id = "90001"
+        questionnaire_case = BlaiseCaseModelHelper.get_populated_frs_create_case_model(
+            questionnaire_name=questionnaire_name,
+            case_id=case_id,
+            divided_address="foo",
+        )
+
+        # act
+        result = service.map_totalmobile_payload_model(
+            questionnaire_name, questionnaire_case
+        )
+
+        # assert
+        # divided address description
+        assert result.description == ""
 
     @pytest.mark.parametrize(
         "latitude, longitude",
