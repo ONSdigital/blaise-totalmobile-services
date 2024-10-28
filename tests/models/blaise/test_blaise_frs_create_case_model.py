@@ -134,3 +134,30 @@ def test_create_case_overview_for_interviewer_returns_the_expected_additional_pr
         "fieldTeam": "A Team",
         "postCode": "AB01 2CD",
     }
+
+
+def test_required_fields_returns_the_expected_fields():
+    # arrange
+
+    # act
+    required_fields = BlaiseFRSCreateCaseModel.required_fields()
+
+    # assert
+    assert required_fields == [
+        "qiD.Serial_Number",
+        "qDataBag.TLA",
+        "qDataBag.Prem1",
+        "qDataBag.Prem2",
+        "qDataBag.Prem3",
+        "qDataBag.District",
+        "qDataBag.PostTown",
+        "qDataBag.PostCode",
+        "qDataBag.UPRN_Latitude",
+        "qDataBag.UPRN_Longitude",
+        "qDataBag.FieldRegion",
+        "qDataBag.FieldTeam",
+        "qDataBag.WaveComDTE",
+        "qDataBag.DivAddInd",
+        "dDataBag.WaveStart",
+        "qDataBag.Rand",
+    ]
