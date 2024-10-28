@@ -44,9 +44,7 @@ def create_totalmobile_jobs_processor(
     logging.info(
         f"Creating Totalmobile job for questionnaire {totalmobile_job.questionnaire} with case ID {totalmobile_job.case_id}"
     )
-    logging.info(
-        f"Totalmobile Job: {totalmobile_job}"
-    )
+    logging.info(f"Totalmobile Job: {totalmobile_job}")
     try:
         status_code = totalmobile_service.create_job(totalmobile_job)
         logging.info(
