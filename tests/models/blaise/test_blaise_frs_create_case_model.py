@@ -13,7 +13,7 @@ def test_create_case_description_for_interviewer_returns_a_correctly_formatted_d
     description = questionnaire_case.create_case_description_for_interviewer()
 
     # Assert
-    assert description == ""
+    assert description == "Start date: Not Available"
 
 
 def test_create_case_description_for_interviewer_returns_divided_address_if_indicator_is_1():
@@ -107,7 +107,7 @@ def test_create_case_description_for_interviewer_returns_divided_address_if_indi
     description = questionnaire_case.create_case_description_for_interviewer()
 
     # Assert
-    assert description == ""
+    assert description == "Start date: Not Available"
 
 
 def test_create_case_overview_for_interviewer_returns_the_expected_additional_properties():

@@ -44,11 +44,8 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
 
         if self.divided_address_indicator == "1":
             return f"Warning - Divided Address\n{start_date}"
-
-        if self.divided_address_indicator == "0":
+        else:
             return start_date
-
-        return ""
 
     @staticmethod
     def required_fields() -> List:
