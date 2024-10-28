@@ -158,6 +158,6 @@ def test_required_fields_returns_the_expected_fields():
         "qDataBag.FieldTeam",
         "qDataBag.WaveComDTE",
         "qDataBag.DivAddInd",
-        "dDataBag.WaveStart",
+        "qDataBag.WaveStart",
         "qDataBag.Rand",
     ]
