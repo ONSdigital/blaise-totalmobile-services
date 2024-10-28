@@ -124,7 +124,7 @@ class TestTotalmobileFRSPayloadMapping:
         # divided address description
         assert result.description == f"Start date: 01-01-2021"
 
-    def test_map_totalmobile_payload_model_returns_a_payload_with_empty_description_if_divided_address_is_not_1_or_0(
+    def test_map_totalmobile_payload_model_returns_a_payload_with_start_date_in_description_if_divided_address_is_not_1_or_0(
         self,
         service: TotalmobilePayloadMapperService,
     ):
@@ -144,7 +144,7 @@ class TestTotalmobileFRSPayloadMapping:
 
         # assert
         # divided address description
-        assert result.description == ""
+        assert result.description == "Start date: 01-01-2024"
 
     @pytest.mark.parametrize(
         "latitude, longitude",

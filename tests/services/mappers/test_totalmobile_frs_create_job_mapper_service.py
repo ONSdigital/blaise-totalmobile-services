@@ -93,7 +93,7 @@ class TestTotalmobileFRSCreateJobMapping:
             questionnaire_name=questionnaire_name,
             case=cases[0],
         )
-        assert result[0].payload["description"] == ""
+        assert result[0].payload["description"] == "Start date: 01-01-2024"
 
         assert result[1].questionnaire == "FRS2101"
         assert result[1].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa7"
@@ -102,7 +102,7 @@ class TestTotalmobileFRSCreateJobMapping:
             questionnaire_name=questionnaire_name,
             case=cases[1],
         )
-        assert result[1].payload["description"] == ""
+        assert result[1].payload["description"] == "Start date: 01-01-2024"
 
         assert result[2].questionnaire == "FRS2101"
         assert result[2].world_id == "3fa85f64-5717-4562-b3fc-2c963f66afa9"
@@ -110,7 +110,7 @@ class TestTotalmobileFRSCreateJobMapping:
         assert result[2].payload == frs_totalmobile_payload_helper(
             questionnaire_name=questionnaire_name, case=cases[2]
         )
-        assert result[2].payload["description"] == ""
+        assert result[2].payload["description"] == "Start date: 01-01-2024"
 
     def test_map_totalmobile_job_model_maps_the_correct_model(
         self, service: TotalmobileCreateJobMapperService
@@ -145,7 +145,7 @@ class TestTotalmobileFRSCreateJobMapping:
             questionnaire_name=questionnaire_name,
             case=case,
         )
-        assert result.payload["description"] == ""
+        assert result.payload["description"] == "Start date: 01-01-2024"
 
     def test_map_totalmobile_create_job_model_from_json_maps_the_correct_model(
         self, service: TotalmobileCreateJobMapperService

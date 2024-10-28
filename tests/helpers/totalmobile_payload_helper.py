@@ -83,7 +83,7 @@ def frs_totalmobile_payload_helper(
         ],
         "attributes": [],
         "contact": {"name": case.postcode},
-        "description": getDescriptionForCase(case.start_date, case.divided_address_indicator),
+        "description": case.create_case_description_for_interviewer(),
         "dueDate": {"end": due_date},
         "duration": 15,
         "identity": {
@@ -108,10 +108,3 @@ def frs_totalmobile_payload_helper(
     }
 
     return payload_dictionary
-
-def getDescriptionForCase(start_date_from_case, divided_address_indicator):
-    start_date = f"Start date: {start_date_from_case}"
-    if(divided_address_indicator == 1):
-        return f"Warning - Divided Address\n{start_date}"
-    else:
-        return start_date
