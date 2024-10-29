@@ -37,6 +37,10 @@ def __map_world_id_to_job_reference(
 def __delete_job(
     totalmobile_service_local: RealTotalmobileService, job: Dict[str, str]
 ) -> None:
+    # Exclude deletion from the "default" world
+    if job["world_id"] == "c0ffee00-c8d0-499f-8693-8be6ad1dc6ea":
+        print(f"Skipping deletion for job id {job['job_reference']} from world {job['world_id']}")
+        return
     try:
         totalmobile_service_local.delete_job(job["world_id"], job["job_reference"], "0")
         print(f"Deleted job id {job['job_reference']} from world {job['world_id']}")
