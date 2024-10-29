@@ -1,5 +1,3 @@
-import logging  # Ensure logging is imported at the top of your file
-
 from typing import Optional
 
 from models.common.totalmobile.totalmobile_reference_model import (
@@ -111,9 +109,8 @@ class TotalmobilePayloadMapperService:
 
     @staticmethod
     def get_job_description(questionnaire_case: BlaiseCreateCaseModel) -> str:
-        description = questionnaire_case.create_case_description_for_interviewer()
-        logging.info(f"Description: '{description}'")
-        return description
+
+        return questionnaire_case.create_case_description_for_interviewer()
 
     @staticmethod
     def concatenate_address(questionnaire_case: BlaiseCreateCaseModel) -> str:
