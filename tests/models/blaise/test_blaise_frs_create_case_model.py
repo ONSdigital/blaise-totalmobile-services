@@ -152,6 +152,7 @@ def test_required_fields_returns_the_expected_fields():
         "qDataBag.District",
         "qDataBag.PostTown",
         "qDataBag.PostCode",
+        "qDataBag.UPRN",
         "qDataBag.UPRN_Latitude",
         "qDataBag.UPRN_Longitude",
         "qDataBag.FieldRegion",

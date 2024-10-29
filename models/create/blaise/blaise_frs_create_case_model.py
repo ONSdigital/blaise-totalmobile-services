@@ -59,6 +59,7 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
             BlaiseFields.county,
             BlaiseFields.town,
             BlaiseFields.postcode,
+            BlaiseFields.reference,
             BlaiseFields.latitude,
             BlaiseFields.longitude,
             BlaiseFields.field_region,
