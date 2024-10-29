@@ -1,4 +1,5 @@
-import logging
+import logging  # Ensure logging is imported at the top of your file
+
 from typing import Optional
 
 from models.common.totalmobile.totalmobile_reference_model import (
@@ -56,14 +57,9 @@ class TotalmobilePayloadMapperService:
             additionalProperties=self.get_job_additional_properties(questionnaire_case),
         )
 
-        # Conditional checks for questionnaire names
         if questionnaire_name.startswith("LMS"):
-            # Log the payload model before returning
-            logging.info(f"Payload model for LMS: {payload_model}")  # Log the payload model
             return self.map_additional_lms_properties(questionnaire_case, payload_model)
         elif questionnaire_name.startswith("FRS"):
-            # Log the payload model before returning
-            logging.info(f"Payload model for FRS: {payload_model}")  # Log the payload model
             return payload_model
 
         raise Exception
