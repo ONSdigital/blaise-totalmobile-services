@@ -83,9 +83,7 @@ def frs_totalmobile_payload_helper(
         ],
         "attributes": [],
         "contact": {"name": case.postcode},
-        "description": (
-            "Warning Divided Address" if case.divided_address_indicator == "1" else ""
-        ),
+        "description": case.create_case_description_for_interviewer(),
         "dueDate": {"end": due_date},
         "duration": 15,
         "identity": {

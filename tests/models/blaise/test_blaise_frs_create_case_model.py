@@ -13,7 +13,7 @@ def test_create_case_description_for_interviewer_returns_a_correctly_formatted_d
     description = questionnaire_case.create_case_description_for_interviewer()
 
     # Assert
-    assert description == ""
+    assert description == "Start date: Not Available"
 
 
 def test_create_case_description_for_interviewer_returns_divided_address_if_indicator_is_1():
@@ -107,7 +107,7 @@ def test_create_case_description_for_interviewer_returns_divided_address_if_indi
     description = questionnaire_case.create_case_description_for_interviewer()
 
     # Assert
-    assert description == ""
+    assert description == "Start date: Not Available"
 
 
 def test_create_case_overview_for_interviewer_returns_the_expected_additional_properties():
@@ -134,3 +134,30 @@ def test_create_case_overview_for_interviewer_returns_the_expected_additional_pr
         "fieldTeam": "A Team",
         "postCode": "AB01 2CD",
     }
+
+
+def test_required_fields_returns_the_expected_fields():
+    # arrange
+
+    # act
+    required_fields = BlaiseFRSCreateCaseModel.required_fields()
+
+    # assert
+    assert required_fields == [
+        "qiD.Serial_Number",
+        "qDataBag.TLA",
+        "qDataBag.Prem1",
+        "qDataBag.Prem2",
+        "qDataBag.Prem3",
+        "qDataBag.District",
+        "qDataBag.PostTown",
+        "qDataBag.PostCode",
+        "qDataBag.UPRN_Latitude",
+        "qDataBag.UPRN_Longitude",
+        "qDataBag.FieldRegion",
+        "qDataBag.FieldTeam",
+        "qDataBag.WaveComDTE",
+        "qDataBag.DivAddInd",
+        "qDataBag.WaveStart",
+        "qDataBag.Rand",
+    ]

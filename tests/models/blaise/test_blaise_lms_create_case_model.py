@@ -79,3 +79,39 @@ def test_ccreate_case_description_for_interviewer_returns_a_correctly_formatted_
     assert description == (
         "UAC: \n" "Due Date: \n" "Study: LMS2201_AA1\n" "Case ID: 1234\n" "Wave: "
     )
+
+
+def test_required_fields_returns_the_expected_fields():
+    # arrange
+
+    # act
+    required_fields = BlaiseLMSCreateCaseModel.required_fields()
+
+    # assert
+    assert required_fields == [
+        "qiD.Serial_Number",
+        "dataModelName",
+        "qDataBag.TLA",
+        "qDataBag.Wave",
+        "qDataBag.Prem1",
+        "qDataBag.Prem2",
+        "qDataBag.Prem3",
+        "qDataBag.District",
+        "qDataBag.PostTown",
+        "qDataBag.PostCode",
+        "qDataBag.TelNo",
+        "qDataBag.TelNo2",
+        "telNoAppt",
+        "hOut",
+        "qDataBag.UPRN",
+        "qDataBag.UPRN_Latitude",
+        "qDataBag.UPRN_Longitude",
+        "qDataBag.priority",
+        "qDataBag.FieldCase",
+        "qDataBag.FieldRegion",
+        "qDataBag.FieldTeam",
+        "qDataBag.WaveComDTE",
+        "catiMana.CatiCall.RegsCalls[1].DialResult",
+        "qRotate.RDMktnIND",
+        "qRotate.RHOut",
+    ]

@@ -12,7 +12,7 @@ class BlaiseFields(str, Enum):
     knock_to_nudge_contact_name = "dMktnName"
     priority = "qDataBag.priority"
     wave = "qDataBag.Wave"
-    start_date = "dDataBag.WaveStart"
+    start_date = "qDataBag.WaveStart"
     wave_com_dte = "qDataBag.WaveComDTE"
     address_line_1 = "qDataBag.Prem1"
     address_line_2 = "qDataBag.Prem2"
