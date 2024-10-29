@@ -35,7 +35,7 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
         self,
     ) -> str:
         try:
-            datetime.strptime(self.start_date, "%d-%m-%Y")
+            datetime.strptime(f"{self.start_date}", "%d-%m-%Y")
             start_date = self.start_date
         except:
             logging.warning(
