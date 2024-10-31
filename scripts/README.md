@@ -1,31 +1,49 @@
-# Useful Scripts to Help Developer Productivity
+# Scripts
 
-These scripts can be run directly from Python. However, to run them you may need to do a bit of setup.
+These scripts are to support developers with various tasks when working with the Totalmobile API. They can be run directly using Python but some setup is required.
 
-Download a service account JSON key:
+## Setup
+
+Download a GCP service account JSON key:
 ```
 gcloud iam service-accounts keys create keys.json --iam-account ons-blaise-v2-dev-sandbox123@appspot.gserviceaccount.com
 ```
 
-Temporary set your local GOOGLE_APPLICATION_CREDENTIALS environment variable to this JSON file:
-```
-Unix: export GOOGLE_APPLICATION_CREDENTIALS=keys.json
-Windows: set GOOGLE_APPLICATION_CREDENTIALS=keys.json
+Set temporary environment variables for GCP authenticating using this JSON key and connection details for the Totalmobile API:
+
+Unix
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=keys.json
+export TOTALMOBILE_URL=blah
+export TOTALMOBILE_CLIENT_ID=blah
+export TOTALMOBILE_CLIENT_SECRET=blah
+export TOTALMOBILE_INSTANCE=blah
 ```
 
-Temporary set any local environment variables the script requires:
+Windows
+```cmd
+set GOOGLE_APPLICATION_CREDENTIALS=keys.json
+set TOTALMOBILE_URL=blah
+set TOTALMOBILE_CLIENT_ID=blah
+set TOTALMOBILE_CLIENT_SECRET=blah
+set TOTALMOBILE_INSTANCE=blah
 ```
-Unix: export TOTALMOBILE_URL=blah
-Windows: set TOTALMOBILE_URL=blah
-```
+
+Replace placeholder values accordingly.
 
 Install dependencies:
 ```shell
 poetry install
 ```
 
-Ensure your Python path is set to the root of the repository:
-```shell
-Unix: PYTHONPATH=. poetry run python scripts/my_funky_script.sh
-Windows: set PYTHONPATH=. & poetry run python scripts\my_funky_script.sh
+Set Python path and run desired script:
+
+Unix
+```bash
+PYTHONPATH=. poetry run python scripts/my_funky_script.sh
+```
+
+Windows
+```cmd
+set PYTHONPATH=. & poetry run python scripts\my_funky_script.sh
 ```

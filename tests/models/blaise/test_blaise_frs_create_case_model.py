@@ -120,6 +120,7 @@ def test_create_case_overview_for_interviewer_returns_the_expected_additional_pr
             BlaiseFields.field_region: "Region 2",
             BlaiseFields.field_team: "A Team",
             BlaiseFields.postcode: "AB01 2CD",
+            BlaiseFields.reference: "foo",
         },
     )
 
@@ -133,6 +134,7 @@ def test_create_case_overview_for_interviewer_returns_the_expected_additional_pr
         "fieldRegion": "Region 2",
         "fieldTeam": "A Team",
         "postCode": "AB01 2CD",
+        "reference": "foo",
     }
 
 
@@ -152,6 +154,7 @@ def test_required_fields_returns_the_expected_fields():
         "qDataBag.District",
         "qDataBag.PostTown",
         "qDataBag.PostCode",
+        "qDataBag.UPRN",
         "qDataBag.UPRN_Latitude",
         "qDataBag.UPRN_Longitude",
         "qDataBag.FieldRegion",

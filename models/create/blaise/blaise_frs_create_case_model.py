@@ -29,6 +29,7 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
             "fieldRegion": f"{self.field_region}",
             "fieldTeam": f"{self.field_team}",
             "postCode": f"{self.postcode}",
+            "reference": f"{self.reference}",
         }
 
     def create_case_description_for_interviewer(
@@ -59,6 +60,7 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
             BlaiseFields.county,
             BlaiseFields.town,
             BlaiseFields.postcode,
+            BlaiseFields.reference,
             BlaiseFields.latitude,
             BlaiseFields.longitude,
             BlaiseFields.field_region,
