@@ -25,6 +25,7 @@ class TestTotalmobileFRSPayloadMapping:
             case_id=case_id,
             divided_address="1",
             start_date="01-01-2021",
+            reference="foo",
         )
 
         # act
@@ -77,10 +78,8 @@ class TestTotalmobileFRSPayloadMapping:
         # due date per BLAIS5-4348
         assert result.dueDate.end == datetime(2024, 1, 31, 0, 0)
 
-        # misc
-        assert result.attributes == []
-
-        assert len(result.additionalProperties) == 5
+        # additional properties (reference) per BLAIS5-4503
+        assert len(result.additionalProperties) == 6
 
         assert result.additionalProperties[0].name == "tla"
         assert result.additionalProperties[0].value == "FRS"
@@ -97,6 +96,12 @@ class TestTotalmobileFRSPayloadMapping:
 
         assert result.additionalProperties[4].name == "postCode"
         assert result.additionalProperties[4].value == "cf99rsd"
+
+        assert result.additionalProperties[5].name == "reference"
+        assert result.additionalProperties[5].value == "foo"
+
+        # misc
+        assert result.attributes == []
 
         # mandatory field per BLAIS5-3238 and BLAIS5-3181
         assert result.duration == 15
