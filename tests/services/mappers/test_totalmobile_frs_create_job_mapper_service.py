@@ -25,6 +25,7 @@ class TestTotalmobileFRSCreateJobMapping:
         case_id: str,
         field_region: str,
         postcode: str,
+        reference: str = "",
     ) -> BlaiseFRSCreateCaseModel:
         case_helper = BlaiseCaseModelHelper()
         return case_helper.get_populated_frs_create_case_model(
@@ -32,6 +33,7 @@ class TestTotalmobileFRSCreateJobMapping:
             case_id=case_id,
             field_region=field_region,
             postcode=postcode,
+            reference=reference,
         )
 
     @pytest.fixture()
@@ -52,6 +54,7 @@ class TestTotalmobileFRSCreateJobMapping:
             case_id="10010",
             field_region="region1",
             postcode="AB12 3CD",
+            reference="foo",
         )
         case2 = self.get_case(
             questionnaire_name=questionnaire_name,

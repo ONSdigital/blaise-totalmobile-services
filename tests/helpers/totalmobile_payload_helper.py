@@ -80,6 +80,7 @@ def frs_totalmobile_payload_helper(
             {"name": "fieldRegion", "value": case.field_region},
             {"name": "fieldTeam", "value": case.field_team},
             {"name": "postCode", "value": case.postcode},
+            {"name": "reference", "value": case.reference},
         ],
         "attributes": [],
         "contact": {"name": case.postcode},
