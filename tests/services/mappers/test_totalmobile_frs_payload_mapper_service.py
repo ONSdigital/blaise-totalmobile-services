@@ -34,51 +34,39 @@ class TestTotalmobileFRSPayloadMapping:
         )
 
         # assert
-
-        # tla
+        assert result.identity.reference == "FRS2101.90001"
+        assert (
+                result.description == f"Warning - Divided Address\nStart date: 01-01-2021"
+        )
+        assert result.origin == "ONS"
+        assert result.duration == 15
         assert result.workType == "FRS"
         assert result.skills[0].identity.reference == "FRS"
-
-        # reference
-        assert result.identity.reference == "FRS2101.90001"
-
-        # address lines
+        assert result.dueDate.end == datetime(2024, 1, 31, 0, 0)
         assert (
-            result.location.addressDetail.addressLine1
-            == "12 Blaise Street, Blaise Hill"
+                result.location.address
+                == "12 Blaise Street, Blaise Hill, Blaiseville, Newport, cf99rsd"
+        )
+        assert (
+                result.location.addressDetail.addressLine1
+                == "12 Blaise Street, Blaise Hill"
         )
         assert result.location.addressDetail.addressLine2 == "Blaiseville"
         assert result.location.addressDetail.addressLine3 == "Gwent"
         assert result.location.addressDetail.addressLine4 == "Newport"
-
-        # address
-        assert (
-            result.location.address
-            == "12 Blaise Street, Blaise Hill, Blaiseville, Newport, cf99rsd"
-        )
-
-        # postcode
         assert result.location.addressDetail.postCode == "cf99rsd"
-
-        # divided address description
-        assert (
-            result.description == f"Warning - Divided Address\nStart date: 01-01-2021"
-        )
-
-        # lat and long
         assert result.location.addressDetail.coordinates.latitude == "10020202"
         assert result.location.addressDetail.coordinates.longitude == "34949494"
-
-        # contact name per BLAIS5-4479
         assert result.contact.name == "cf99rsd"
 
-        # origin per BLAIS5-4474
-        assert result.origin == "ONS"
+        assert len(result.attributes) == 2
 
-        # due date per BLAIS5-4348
-        assert result.dueDate.end == datetime(2024, 1, 31, 0, 0)
+        assert result.attributes[0].name == "Region"
+        assert result.attributes[0].value == "Region 1"
 
-        # additional properties (reference) per BLAIS5-4503
+        assert result.attributes[1].name == "Team"
+        assert result.attributes[1].value == "B-Team"
+
         assert len(result.additionalProperties) == 6
 
         assert result.additionalProperties[0].name == "tla"
@@ -100,17 +88,6 @@ class TestTotalmobileFRSPayloadMapping:
         assert result.additionalProperties[5].name == "reference"
         assert result.additionalProperties[5].value == "foo"
 
-        # Region and Team attributes per BLAIS5-4529
-        assert len(result.attributes) == 2
-
-        assert result.attributes[0].name == "Region"
-        assert result.attributes[0].value == "Region 1"
-
-        assert result.attributes[1].name == "Team"
-        assert result.attributes[1].value == "B-Team"
-
-        # mandatory field per BLAIS5-3238 and BLAIS5-3181
-        assert result.duration == 15
 
     def test_map_totalmobile_payload_model_returns_a_payload_with_valid_description_without_warning_if_divided_address_is_zero(
         self,
