@@ -100,8 +100,14 @@ class TestTotalmobileFRSPayloadMapping:
         assert result.additionalProperties[5].name == "reference"
         assert result.additionalProperties[5].value == "foo"
 
-        # misc
-        assert result.attributes == []
+        # Region and Team attributes per BLAIS5-4529
+        assert len(result.attributes) == 2
+
+        assert result.attributes[0].name == "Region"
+        assert result.attributes[0].value == "Region 1"
+
+        assert result.attributes[1].name == "Team"
+        assert result.attributes[1].value == "B-Team"
 
         # mandatory field per BLAIS5-3238 and BLAIS5-3181
         assert result.duration == 15
