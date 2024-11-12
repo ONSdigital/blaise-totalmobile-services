@@ -52,7 +52,9 @@ class TotalmobilePayloadMapperService:
             ),
             contact=ContactDetails(name=questionnaire_case.postcode),
             attributes=[
-                AdditionalProperty(name="Region", value=questionnaire_case.field_region),
+                AdditionalProperty(
+                    name="Region", value=questionnaire_case.field_region
+                ),
                 AdditionalProperty(name="Team", value=questionnaire_case.field_team),
             ],
             additionalProperties=self.get_job_additional_properties(questionnaire_case),
