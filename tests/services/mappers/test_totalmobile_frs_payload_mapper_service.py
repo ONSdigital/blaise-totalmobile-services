@@ -36,7 +36,7 @@ class TestTotalmobileFRSPayloadMapping:
         # assert
         assert result.identity.reference == "FRS2101.90001"
         assert (
-                result.description == f"Warning - Divided Address\nStart date: 01-01-2021"
+            result.description == f"Warning - Divided Address\nStart date: 01-01-2021"
         )
         assert result.origin == "ONS"
         assert result.duration == 15
@@ -44,12 +44,12 @@ class TestTotalmobileFRSPayloadMapping:
         assert result.skills[0].identity.reference == "FRS"
         assert result.dueDate.end == datetime(2024, 1, 31, 0, 0)
         assert (
-                result.location.address
-                == "12 Blaise Street, Blaise Hill, Blaiseville, Newport, cf99rsd"
+            result.location.address
+            == "12 Blaise Street, Blaise Hill, Blaiseville, Newport, cf99rsd"
         )
         assert (
-                result.location.addressDetail.addressLine1
-                == "12 Blaise Street, Blaise Hill"
+            result.location.addressDetail.addressLine1
+            == "12 Blaise Street, Blaise Hill"
         )
         assert result.location.addressDetail.addressLine2 == "Blaiseville"
         assert result.location.addressDetail.addressLine3 == "Gwent"
@@ -87,7 +87,6 @@ class TestTotalmobileFRSPayloadMapping:
 
         assert result.additionalProperties[5].name == "reference"
         assert result.additionalProperties[5].value == "foo"
-
 
     def test_map_totalmobile_payload_model_returns_a_payload_with_valid_description_without_warning_if_divided_address_is_zero(
         self,
