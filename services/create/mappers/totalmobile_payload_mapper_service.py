@@ -51,7 +51,12 @@ class TotalmobilePayloadMapperService:
                 ),
             ),
             contact=ContactDetails(name=questionnaire_case.postcode),
-            attributes=[],
+            attributes=[
+                AdditionalProperty(
+                    name="Region", value=questionnaire_case.field_region
+                ),
+                AdditionalProperty(name="Team", value=questionnaire_case.field_team),
+            ],
             additionalProperties=self.get_job_additional_properties(questionnaire_case),
         )
 
@@ -62,16 +67,11 @@ class TotalmobilePayloadMapperService:
 
         raise Exception
 
+    @staticmethod
     def map_additional_lms_properties(
-        self,
         questionnaire_case: BlaiseCreateCaseModel,
         payload_model: TotalMobileOutgoingCreateJobPayloadModel,
     ) -> TotalMobileOutgoingCreateJobPayloadModel:
-        payload_model.attributes = [
-            AdditionalProperty(name="Region", value=questionnaire_case.field_region),
-            AdditionalProperty(name="Team", value=questionnaire_case.field_team),
-        ]
-
         if questionnaire_case.uac_chunks is not None:
             payload_model.additionalProperties.extend(
                 [
