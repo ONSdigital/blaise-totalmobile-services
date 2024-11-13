@@ -82,7 +82,10 @@ def frs_totalmobile_payload_helper(
             {"name": "postCode", "value": case.postcode},
             {"name": "reference", "value": case.reference},
         ],
-        "attributes": [],
+        "attributes": [
+            {"name": "Region", "value": case.field_region},
+            {"name": "Team", "value": case.field_team},
+        ],
         "contact": {"name": case.postcode},
         "description": case.create_case_description_for_interviewer(),
         "dueDate": {"end": due_date},
