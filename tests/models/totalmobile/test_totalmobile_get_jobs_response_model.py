@@ -274,12 +274,18 @@ def test_field_period_has_expired_returns_false_when_due_date_not_provided():
     # assert
     assert result is False
 
-def test_field_period_has_expired_returns_false_when_provided_due_date_is_invalid(caplog):
+
+def test_field_period_has_expired_raises_valueError_when_provided_due_date_is_invalid(
+    caplog,
+):
     # act & assert
     with pytest.raises(ValueError):
-        TotalmobileGetJobsResponseModel.field_period_has_expired("2023-99-99T12:00:00", "LMS")
+        TotalmobileGetJobsResponseModel.field_period_has_expired(
+            "2023-99-99T12:00:00", "LMS"
+        )
 
     assert "Could not parse due date: 2023-99-99T12:00:00" in caplog.messages
+
 
 def test_total_number_of_incomplete_jobs_returns_expected_number():
     # arrange
