@@ -11,7 +11,7 @@ from models.common.totalmobile.totalmobile_reference_model import (
 
 T = TypeVar("T", bound="TotalmobileGetJobsResponseModel")
 
-SURVEY_DUE_DATE_EXPIRY_DAY_OFFSETS: Dict[str, int] = {
+DUE_DATE_OFFSETS: Dict[str, int] = {
     "DEFAULT": 0,
     "LMS": -3,
 }
@@ -108,9 +108,9 @@ class TotalmobileGetJobsResponseModel:
         except ValueError:
             return False
 
-        expiry_day_offset = expiry_day_offset = SURVEY_DUE_DATE_EXPIRY_DAY_OFFSETS.get(
-            survey_type, SURVEY_DUE_DATE_EXPIRY_DAY_OFFSETS["DEFAULT"]
+        days_offset = days_offset = DUE_DATE_OFFSETS.get(
+            survey_type, DUE_DATE_OFFSETS["DEFAULT"]
         )
-        expiry_date = due_date + timedelta(days=expiry_day_offset)
+        expiry_date = due_date + timedelta(days=days_offset)
 
         return datetime.now() > expiry_date
