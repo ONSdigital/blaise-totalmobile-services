@@ -12,9 +12,10 @@ from models.common.totalmobile.totalmobile_reference_model import (
 T = TypeVar("T", bound="TotalmobileGetJobsResponseModel")
 
 SURVEY_DUE_DATE_EXPIRY_OFFSETS: Dict[str, int] = {
-    "DEFAULT": 0, 
-    "LMS": -3, 
+    "DEFAULT": 0,
+    "LMS": -3,
 }
+
 
 @dataclass
 class Job:
@@ -96,7 +97,9 @@ class TotalmobileGetJobsResponseModel:
         return total
 
     @staticmethod
-    def field_period_has_expired(due_date_string: Optional[str], survey_type: str) -> bool:
+    def field_period_has_expired(
+        due_date_string: Optional[str], survey_type: str
+    ) -> bool:
         if due_date_string is None:
             return False
 
@@ -105,7 +108,9 @@ class TotalmobileGetJobsResponseModel:
         except ValueError:
             return False
 
-        expiry_offset = expiry_offset = SURVEY_DUE_DATE_EXPIRY_OFFSETS.get(survey_type, SURVEY_DUE_DATE_EXPIRY_OFFSETS["DEFAULT"])
+        expiry_offset = expiry_offset = SURVEY_DUE_DATE_EXPIRY_OFFSETS.get(
+            survey_type, SURVEY_DUE_DATE_EXPIRY_OFFSETS["DEFAULT"]
+        )
         expiry_date = due_date + timedelta(days=expiry_offset)
 
         return datetime.now() > expiry_date

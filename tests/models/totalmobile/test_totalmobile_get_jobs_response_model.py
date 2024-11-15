@@ -166,7 +166,9 @@ def test_field_period_has_expired_returns_false_when_due_date_is_more_than_3_day
     due_date_str = get_date_as_totalmobile_formatted_string(days)
 
     # act
-    result = TotalmobileGetJobsResponseModel.field_period_has_expired(due_date_str, "LMS")
+    result = TotalmobileGetJobsResponseModel.field_period_has_expired(
+        due_date_str, "LMS"
+    )
 
     # assert
     assert result is False
@@ -180,7 +182,9 @@ def test_field_period_has_expired_returns_true_when_due_date_is_less_than_3_days
     due_date_str = get_date_as_totalmobile_formatted_string(days)
 
     # act
-    result = TotalmobileGetJobsResponseModel.field_period_has_expired(due_date_str, "LMS")
+    result = TotalmobileGetJobsResponseModel.field_period_has_expired(
+        due_date_str, "LMS"
+    )
 
     # assert
     assert result is True
@@ -191,10 +195,13 @@ def test_field_period_has_expired_returns_true_when_due_date_is_3_days_in_the_fu
     due_date_str = get_date_as_totalmobile_formatted_string(3)
 
     # act
-    result = TotalmobileGetJobsResponseModel.field_period_has_expired(due_date_str, "LMS")
+    result = TotalmobileGetJobsResponseModel.field_period_has_expired(
+        due_date_str, "LMS"
+    )
 
     # assert
     assert result is True
+
 
 def test_field_period_has_expired_returns_true_when_due_date_is_3_days_23_hours_59_mins_59_secs_in_the_future_for_lms():
     # arrange
@@ -205,20 +212,26 @@ def test_field_period_has_expired_returns_true_when_due_date_is_3_days_23_hours_
     due_date_str = format_date_as_totalmobile_formatted_string(due_date)
 
     # act
-    result = TotalmobileGetJobsResponseModel.field_period_has_expired(due_date_str, "LMS")
+    result = TotalmobileGetJobsResponseModel.field_period_has_expired(
+        due_date_str, "LMS"
+    )
 
     # assert
     assert result is True
+
 
 def test_field_period_has_expired_returns_true_when_due_date_is_today_for_non_lms_surveys():
     # arrange
     due_date_str = get_date_as_totalmobile_formatted_string(0)
 
     # act
-    result = TotalmobileGetJobsResponseModel.field_period_has_expired(due_date_str, "FRS")
+    result = TotalmobileGetJobsResponseModel.field_period_has_expired(
+        due_date_str, "FRS"
+    )
 
     # assert
     assert result is True
+
 
 def test_field_period_has_expired_returns_true_when_due_date_is_1_day_in_the_past_for_non_lms_surveys():
     # arrange
@@ -229,10 +242,13 @@ def test_field_period_has_expired_returns_true_when_due_date_is_1_day_in_the_pas
     due_date_str = format_date_as_totalmobile_formatted_string(due_date)
 
     # act
-    result = TotalmobileGetJobsResponseModel.field_period_has_expired(due_date_str, "FRS")
+    result = TotalmobileGetJobsResponseModel.field_period_has_expired(
+        due_date_str, "FRS"
+    )
 
     # assert
     assert result is True
+
 
 def test_field_period_has_expired_returns_true_when_due_date_is_1_day_in_the_future_for_non_lms_surveys():
     # arrange
@@ -243,10 +259,13 @@ def test_field_period_has_expired_returns_true_when_due_date_is_1_day_in_the_fut
     due_date_str = format_date_as_totalmobile_formatted_string(due_date)
 
     # act
-    result = TotalmobileGetJobsResponseModel.field_period_has_expired(due_date_str, "FRS")
+    result = TotalmobileGetJobsResponseModel.field_period_has_expired(
+        due_date_str, "FRS"
+    )
 
     # assert
     assert result is False
+
 
 def test_field_period_has_expired_returns_false_when_due_date_not_provided():
     # act
