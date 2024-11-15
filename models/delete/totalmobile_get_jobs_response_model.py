@@ -1,3 +1,4 @@
+import logging
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -106,7 +107,8 @@ class TotalmobileGetJobsResponseModel:
         try:
             due_date = datetime.strptime(due_date_string, "%Y-%m-%dT%H:%M:%S")
         except ValueError:
-            return False
+            logging.error(f"Could not parse due date: {due_date_string}")
+            raise ValueError
 
         days_offset = days_offset = DUE_DATE_OFFSETS.get(
             survey_type, DUE_DATE_OFFSETS["DEFAULT"]
