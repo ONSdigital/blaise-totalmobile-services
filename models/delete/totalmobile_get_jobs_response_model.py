@@ -1,6 +1,6 @@
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Type, TypeVar
 
 from app.exceptions.custom_exceptions import BadReferenceError
@@ -11,6 +11,10 @@ from models.common.totalmobile.totalmobile_reference_model import (
 
 T = TypeVar("T", bound="TotalmobileGetJobsResponseModel")
 
+SURVEY_DUE_DATE_EXPIRY_OFFSETS: Dict[str, int] = {
+    "DEFAULT": 0, 
+    "LMS": -3, 
+}
 
 @dataclass
 class Job:
@@ -40,7 +44,7 @@ class TotalmobileGetJobsResponseModel:
             )
             work_type = job["workType"]
 
-            past_field_period = cls.field_period_has_expired(due_date)
+            past_field_period = cls.field_period_has_expired(due_date, work_type)
 
             try:
                 reference_model = TotalmobileReferenceModel.from_reference(
@@ -92,12 +96,16 @@ class TotalmobileGetJobsResponseModel:
         return total
 
     @staticmethod
-    def field_period_has_expired(due_date_string: Optional[str]) -> bool:
+    def field_period_has_expired(due_date_string: Optional[str], survey_type: str) -> bool:
         if due_date_string is None:
             return False
 
-        due_date = datetime.strptime(due_date_string, "%Y-%m-%dT00:00:00")
+        try:
+            due_date = datetime.strptime(due_date_string, "%Y-%m-%dT%H:%M:%S")
+        except ValueError:
+            return False
 
-        days = (due_date.date() - datetime.today().date()).days
+        expiry_offset = expiry_offset = SURVEY_DUE_DATE_EXPIRY_OFFSETS.get(survey_type, SURVEY_DUE_DATE_EXPIRY_OFFSETS["DEFAULT"])
+        expiry_date = due_date + timedelta(days=expiry_offset)
 
-        return days <= 3
+        return datetime.now() > expiry_date
