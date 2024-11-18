@@ -275,6 +275,19 @@ def test_field_period_has_expired_returns_false_when_due_date_not_provided():
     assert result is False
 
 
+def test_field_period_has_expired_returns_true_even_when_survey_type_is_lowercase():
+    # arrange
+    due_date_str = get_date_as_totalmobile_formatted_string(0)
+
+    # act
+    result = TotalmobileGetJobsResponseModel.field_period_has_expired(
+        due_date_str, "frs"
+    )
+
+    # assert
+    assert result is True
+
+
 def test_field_period_has_expired_raises_valueError_when_provided_due_date_is_invalid(
     caplog,
 ):

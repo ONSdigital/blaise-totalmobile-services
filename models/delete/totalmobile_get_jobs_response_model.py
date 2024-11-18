@@ -111,7 +111,7 @@ class TotalmobileGetJobsResponseModel:
             raise ValueError
 
         days_offset = days_offset = DUE_DATE_OFFSETS.get(
-            survey_type, DUE_DATE_OFFSETS["DEFAULT"]
+            survey_type.upper(), DUE_DATE_OFFSETS["DEFAULT"]
         )
         expiry_date = due_date + timedelta(days=days_offset)
 
