@@ -24,6 +24,7 @@ def lms_totalmobile_payload_helper(
         "attributes": [
             {"name": "Region", "value": case.field_region},
             {"name": "Team", "value": case.field_team},
+            {"name": "LAUA", "value": case.local_auth},
         ],
         "contact": {"name": case.postcode},
         "description": f'UAC: {uac_chunks.formatted_chunks() if uac_chunks is not None else ""}\n'
@@ -32,9 +33,11 @@ def lms_totalmobile_payload_helper(
         f"Case ID: {case.case_id}\n"
         f"Wave: {case.wave}",
         "dueDate": {
-            "end": case.wave_com_dte.strftime("%Y-%m-%d")
-            if case.wave_com_dte is not None
-            else ""
+            "end": (
+                case.wave_com_dte.strftime("%Y-%m-%d")
+                if case.wave_com_dte is not None
+                else ""
+            )
         },
         "duration": 15,
         "identity": {
@@ -85,6 +88,7 @@ def frs_totalmobile_payload_helper(
         "attributes": [
             {"name": "Region", "value": case.field_region},
             {"name": "Team", "value": case.field_team},
+            {"name": "LAUA", "value": case.local_auth},
         ],
         "contact": {"name": case.postcode},
         "description": case.create_case_description_for_interviewer(),

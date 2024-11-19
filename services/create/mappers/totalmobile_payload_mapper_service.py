@@ -56,6 +56,7 @@ class TotalmobilePayloadMapperService:
                     name="Region", value=questionnaire_case.field_region
                 ),
                 AdditionalProperty(name="Team", value=questionnaire_case.field_team),
+                AdditionalProperty(name="LAUA", value=questionnaire_case.local_auth),
             ],
             additionalProperties=self.get_job_additional_properties(questionnaire_case),
         )

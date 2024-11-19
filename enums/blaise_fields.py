@@ -33,3 +33,4 @@ class BlaiseFields(str, Enum):
     divided_address_indicator = "qDataBag.DivAddInd"
     rand = "qDataBag.Rand"
     tla = "qDataBag.TLA"
+    local_auth = "qDataBag.LocalAuth"

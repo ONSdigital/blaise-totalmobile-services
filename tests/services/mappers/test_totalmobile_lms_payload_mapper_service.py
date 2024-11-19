@@ -57,13 +57,16 @@ class TestTotalmobileLMSPayloadMapping:
         assert result.location.addressDetail.coordinates.longitude == "34949494"
         assert result.contact.name == "cf99rsd"
 
-        assert len(result.attributes) == 2
+        assert len(result.attributes) == 3
 
         assert result.attributes[0].name == "Region"
         assert result.attributes[0].value == "Region 1"
 
         assert result.attributes[1].name == "Team"
         assert result.attributes[1].value == "B-Team"
+
+        assert result.attributes[2].name == "LAUA"
+        assert result.attributes[2].value == "Loco"
 
         assert len(result.additionalProperties) == 10
 

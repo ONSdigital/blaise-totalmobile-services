@@ -40,6 +40,7 @@ def test_to_payload_returns_a_correctly_formatted_payload():
         attributes=[
             AdditionalProperty(name="Region", value="Gwent"),
             AdditionalProperty(name="Team", value="B-Team"),
+            AdditionalProperty(name="LAUA", value="Loco"),
         ],
         additionalProperties=[
             AdditionalProperty(name="surveyName", value="LM2007"),
@@ -97,6 +98,7 @@ def test_to_payload_returns_a_correctly_formatted_payload():
         "attributes": [
             {"name": "Region", "value": "Gwent"},
             {"name": "Team", "value": "B-Team"},
+            {'name': 'LAUA', 'value': 'Loco'},
         ],
         "additionalProperties": [
             {"name": "surveyName", "value": "LM2007"},

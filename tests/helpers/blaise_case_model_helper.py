@@ -46,6 +46,7 @@ class BlaiseCaseModelHelper:
                 BlaiseFields.start_date: start_date,
                 BlaiseFields.divided_address_indicator: divided_address,
                 BlaiseFields.wave_com_dte: wave_com_dte,
+                BlaiseFields.local_auth: "Loco",
             },
         )
 
@@ -93,6 +94,7 @@ class BlaiseCaseModelHelper:
                 BlaiseFields.longitude: longitude,
                 BlaiseFields.priority: "1",
                 BlaiseFields.wave_com_dte: wave_com_dte,
+                BlaiseFields.local_auth: "Loco",
             },
             uac_chunks=uac_chunks,
         )
