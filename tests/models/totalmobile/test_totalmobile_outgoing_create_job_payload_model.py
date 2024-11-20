@@ -98,7 +98,7 @@ def test_to_payload_returns_a_correctly_formatted_payload():
         "attributes": [
             {"name": "Region", "value": "Gwent"},
             {"name": "Team", "value": "B-Team"},
-            {'name': 'LAUA', 'value': 'Loco'},
+            {"name": "LAUA", "value": "Loco"},
         ],
         "additionalProperties": [
             {"name": "surveyName", "value": "LM2007"},
