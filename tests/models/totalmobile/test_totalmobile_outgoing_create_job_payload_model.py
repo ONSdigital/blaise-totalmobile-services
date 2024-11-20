@@ -40,7 +40,6 @@ def test_to_payload_returns_a_correctly_formatted_payload():
         attributes=[
             AdditionalProperty(name="Region", value="Gwent"),
             AdditionalProperty(name="Team", value="B-Team"),
-            AdditionalProperty(name="LAUA", value="Loco"),
         ],
         additionalProperties=[
             AdditionalProperty(name="surveyName", value="LM2007"),
@@ -49,6 +48,7 @@ def test_to_payload_returns_a_correctly_formatted_payload():
             AdditionalProperty(name="priority", value="1"),
             AdditionalProperty(name="fieldRegion", value="Gwent"),
             AdditionalProperty(name="fieldTeam", value="B-Team"),
+            AdditionalProperty(name="LAUA", value="Loco"),
             AdditionalProperty(name="uac1", value="3456"),
             AdditionalProperty(name="uac2", value="3453"),
             AdditionalProperty(name="uac3", value="4546"),
@@ -98,7 +98,6 @@ def test_to_payload_returns_a_correctly_formatted_payload():
         "attributes": [
             {"name": "Region", "value": "Gwent"},
             {"name": "Team", "value": "B-Team"},
-            {"name": "LAUA", "value": "Loco"},
         ],
         "additionalProperties": [
             {"name": "surveyName", "value": "LM2007"},
@@ -107,6 +106,7 @@ def test_to_payload_returns_a_correctly_formatted_payload():
             {"name": "priority", "value": "1"},
             {"name": "fieldRegion", "value": "Gwent"},
             {"name": "fieldTeam", "value": "B-Team"},
+            {"name": "LAUA", "value": "Loco"},
             {"name": "uac1", "value": "3456"},
             {"name": "uac2", "value": "3453"},
             {"name": "uac3", "value": "4546"},
@@ -149,6 +149,7 @@ def test_to_payload_returns_a_correctly_formatted_payload_when_four_uac_chunks_p
             AdditionalProperty(name="priority", value="1"),
             AdditionalProperty(name="fieldRegion", value="Gwent"),
             AdditionalProperty(name="fieldTeam", value="B-Team"),
+            AdditionalProperty(name="LAUA", value="Loco"),
             AdditionalProperty(name="uac1", value="1234"),
             AdditionalProperty(name="uac2", value="4567"),
             AdditionalProperty(name="uac3", value="7890"),
@@ -207,6 +208,7 @@ def test_to_payload_returns_a_correctly_formatted_payload_when_four_uac_chunks_p
             {"name": "priority", "value": "1"},
             {"name": "fieldRegion", "value": "Gwent"},
             {"name": "fieldTeam", "value": "B-Team"},
+            {"name": "LAUA", "value": "Loco"},
             {"name": "uac1", "value": "1234"},
             {"name": "uac2", "value": "4567"},
             {"name": "uac3", "value": "7890"},

@@ -30,6 +30,7 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
             "fieldTeam": f"{self.field_team}",
             "postCode": f"{self.postcode}",
             "reference": f"{self.reference}",
+            "LAUA": f"{self.LAUA}",
         }
 
     def create_case_description_for_interviewer(

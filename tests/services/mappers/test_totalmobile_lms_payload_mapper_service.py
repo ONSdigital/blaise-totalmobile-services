@@ -57,7 +57,7 @@ class TestTotalmobileLMSPayloadMapping:
         assert result.location.addressDetail.coordinates.longitude == "34949494"
         assert result.contact.name == "cf99rsd"
 
-        assert len(result.attributes) == 3
+        assert len(result.attributes) == 2
 
         assert result.attributes[0].name == "Region"
         assert result.attributes[0].value == "Region 1"
@@ -65,10 +65,7 @@ class TestTotalmobileLMSPayloadMapping:
         assert result.attributes[1].name == "Team"
         assert result.attributes[1].value == "B-Team"
 
-        assert result.attributes[2].name == "LAUA"
-        assert result.attributes[2].value == "Loco"
-
-        assert len(result.additionalProperties) == 10
+        assert len(result.additionalProperties) == 11
 
         assert result.additionalProperties[0].name == "surveyName"
         assert result.additionalProperties[0].value == "LM2007"
@@ -91,14 +88,17 @@ class TestTotalmobileLMSPayloadMapping:
         assert result.additionalProperties[6].name == "postCode"
         assert result.additionalProperties[6].value == "cf99rsd"
 
-        assert result.additionalProperties[7].name == "uac1"
-        assert result.additionalProperties[7].value == "3456"
+        assert result.additionalProperties[7].name == "LAUA"
+        assert result.additionalProperties[7].value == "Loco"
 
-        assert result.additionalProperties[8].name == "uac2"
-        assert result.additionalProperties[8].value == "3453"
+        assert result.additionalProperties[8].name == "uac1"
+        assert result.additionalProperties[8].value == "3456"
 
-        assert result.additionalProperties[9].name == "uac3"
-        assert result.additionalProperties[9].value == "4546"
+        assert result.additionalProperties[9].name == "uac2"
+        assert result.additionalProperties[9].value == "3453"
+
+        assert result.additionalProperties[10].name == "uac3"
+        assert result.additionalProperties[10].value == "4546"
 
     def test_map_totalmobile_payload_model_returns_a_model_with_no_uac_additional_properties_if_no_uacs_are_set_for_an_lms_case(
         self, service: TotalmobilePayloadMapperService

@@ -23,6 +23,7 @@ class BlaiseLMSCreateCaseModel(BlaiseCreateCaseModel):
             "fieldRegion": f"{self.field_region}",
             "fieldTeam": f"{self.field_team}",
             "postCode": f"{self.postcode}",
+            "LAUA": f"{self.LAUA}",
         }
 
     def create_case_description_for_interviewer(self) -> str:

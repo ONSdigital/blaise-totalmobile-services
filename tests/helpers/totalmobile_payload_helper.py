@@ -20,11 +20,11 @@ def lms_totalmobile_payload_helper(
             {"name": "fieldRegion", "value": case.field_region},
             {"name": "fieldTeam", "value": case.field_team},
             {"name": "postCode", "value": case.postcode},
+            {"name": "LAUA", "value": case.LAUA},
         ],
         "attributes": [
             {"name": "Region", "value": case.field_region},
             {"name": "Team", "value": case.field_team},
-            {"name": "LAUA", "value": case.local_auth},
         ],
         "contact": {"name": case.postcode},
         "description": f'UAC: {uac_chunks.formatted_chunks() if uac_chunks is not None else ""}\n'
@@ -84,11 +84,11 @@ def frs_totalmobile_payload_helper(
             {"name": "fieldTeam", "value": case.field_team},
             {"name": "postCode", "value": case.postcode},
             {"name": "reference", "value": case.reference},
+            {"name": "LAUA", "value": case.LAUA},
         ],
         "attributes": [
             {"name": "Region", "value": case.field_region},
             {"name": "Team", "value": case.field_team},
-            {"name": "LAUA", "value": case.local_auth},
         ],
         "contact": {"name": case.postcode},
         "description": case.create_case_description_for_interviewer(),
