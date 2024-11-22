@@ -121,7 +121,7 @@ def test_create_case_overview_for_interviewer_returns_the_expected_additional_pr
             BlaiseFields.field_team: "A Team",
             BlaiseFields.postcode: "AB01 2CD",
             BlaiseFields.reference: "foo",
-            BlaiseFields.LAUA: "Loco",
+            BlaiseFields.local_auth: "Loco",
         },
     )
 
@@ -136,7 +136,7 @@ def test_create_case_overview_for_interviewer_returns_the_expected_additional_pr
         "fieldTeam": "A Team",
         "postCode": "AB01 2CD",
         "reference": "foo",
-        "LAUA": "Loco",
+        "localAuth": "Loco",
     }
 
 
@@ -165,4 +165,5 @@ def test_required_fields_returns_the_expected_fields():
         "qDataBag.DivAddInd",
         "qDataBag.WaveStart",
         "qDataBag.Rand",
+        "qDataBag.LAUA",
     ]

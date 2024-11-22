@@ -20,7 +20,7 @@ def lms_totalmobile_payload_helper(
             {"name": "fieldRegion", "value": case.field_region},
             {"name": "fieldTeam", "value": case.field_team},
             {"name": "postCode", "value": case.postcode},
-            {"name": "LAUA", "value": case.LAUA},
+            {"name": "localAuth", "value": case.local_auth},
         ],
         "attributes": [
             {"name": "Region", "value": case.field_region},
@@ -84,7 +84,7 @@ def frs_totalmobile_payload_helper(
             {"name": "fieldTeam", "value": case.field_team},
             {"name": "postCode", "value": case.postcode},
             {"name": "reference", "value": case.reference},
-            {"name": "LAUA", "value": case.LAUA},
+            {"name": "localAuth", "value": case.local_auth},
         ],
         "attributes": [
             {"name": "Region", "value": case.field_region},

@@ -23,6 +23,8 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
         return self.case_data.get(BlaiseFields.rand)
 
     def create_case_overview_for_interviewer(self) -> dict[str, str]:
+        # TODO: Remove after testing
+        logging.info(f"localAuth being sent back as >{self.local_auth}<")
         return {
             "tla": f"{self.tla}",
             "rand": f"{self.rand}",
@@ -30,7 +32,7 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
             "fieldTeam": f"{self.field_team}",
             "postCode": f"{self.postcode}",
             "reference": f"{self.reference}",
-            "LAUA": f"{self.LAUA}",
+            "localAuth": f"{self.local_auth}",
         }
 
     def create_case_description_for_interviewer(
@@ -70,4 +72,5 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
             BlaiseFields.divided_address_indicator,
             BlaiseFields.start_date,
             BlaiseFields.rand,
+            BlaiseFields.local_auth,
         ]

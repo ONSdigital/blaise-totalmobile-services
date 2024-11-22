@@ -88,7 +88,7 @@ class TestTotalmobileLMSPayloadMapping:
         assert result.additionalProperties[6].name == "postCode"
         assert result.additionalProperties[6].value == "cf99rsd"
 
-        assert result.additionalProperties[7].name == "LAUA"
+        assert result.additionalProperties[7].name == "localAuth"
         assert result.additionalProperties[7].value == "Loco"
 
         assert result.additionalProperties[8].name == "uac1"

@@ -131,8 +131,8 @@ class BlaiseCaseModel:
         return self._case_data.get(BlaiseFields.data_model_name)
 
     @property
-    def LAUA(self) -> Optional[str]:
-        return self._case_data.get(BlaiseFields.LAUA)
+    def local_auth(self) -> Optional[str]:
+        return self._case_data.get(BlaiseFields.local_auth)
 
     @staticmethod
     @abstractmethod

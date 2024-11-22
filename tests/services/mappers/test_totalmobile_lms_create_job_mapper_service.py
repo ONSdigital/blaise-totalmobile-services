@@ -150,7 +150,7 @@ class TestTotalmobileLMSCreateJobMapping:
             field_region="region1",
             outcome_code="110",
             postcode="AB12 3CD",
-            LAUA="Loco",
+            local_auth="Loco",
             uac_chunks=questionnaire_uac_model.get_uac_chunks("10010"),
         )
 
@@ -192,7 +192,7 @@ class TestTotalmobileLMSCreateJobMapping:
             field_region="region1",
             outcome_code="110",
             postcode="AB12 3CD",
-            LAUA="Loco",
+            local_auth="Loco",
             uac_chunks=questionnaire_uac_model.get_uac_chunks("10010"),
         )
 
