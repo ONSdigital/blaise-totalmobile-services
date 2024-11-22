@@ -72,5 +72,4 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
             BlaiseFields.divided_address_indicator,
             BlaiseFields.start_date,
             BlaiseFields.rand,
-            BlaiseFields.local_auth,
         ]

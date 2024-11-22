@@ -165,5 +165,4 @@ def test_required_fields_returns_the_expected_fields():
         "qDataBag.DivAddInd",
         "qDataBag.WaveStart",
         "qDataBag.Rand",
-        "qDataBag.LAUA",
     ]
