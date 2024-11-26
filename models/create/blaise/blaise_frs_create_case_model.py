@@ -23,8 +23,6 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
         return self.case_data.get(BlaiseFields.rand)
 
     def create_case_overview_for_interviewer(self) -> dict[str, str]:
-        # TODO: Remove after testing
-        logging.info(f"localAuth being sent back as >{self.local_auth}<")
         return {
             "tla": f"{self.tla}",
             "rand": f"{self.rand}",

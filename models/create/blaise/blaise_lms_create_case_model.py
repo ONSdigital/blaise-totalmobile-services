@@ -69,4 +69,5 @@ class BlaiseLMSCreateCaseModel(BlaiseCreateCaseModel):
             BlaiseFields.call_history,
             BlaiseFields.rotational_knock_to_nudge_indicator,
             BlaiseFields.rotational_outcome_code,
+            BlaiseFields.local_auth,
         ]
