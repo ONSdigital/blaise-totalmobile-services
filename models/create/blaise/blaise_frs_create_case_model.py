@@ -30,6 +30,7 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
             "fieldTeam": f"{self.field_team}",
             "postCode": f"{self.postcode}",
             "reference": f"{self.reference}",
+            "localAuth": f"{self.local_auth}",
         }
 
     def create_case_description_for_interviewer(
@@ -69,4 +70,5 @@ class BlaiseFRSCreateCaseModel(BlaiseCreateCaseModel):
             BlaiseFields.divided_address_indicator,
             BlaiseFields.start_date,
             BlaiseFields.rand,
+            BlaiseFields.local_auth,
         ]
