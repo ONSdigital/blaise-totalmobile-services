@@ -23,6 +23,7 @@ class BlaiseLMSCreateCaseModel(BlaiseCreateCaseModel):
             "fieldRegion": f"{self.field_region}",
             "fieldTeam": f"{self.field_team}",
             "postCode": f"{self.postcode}",
+            "localAuth": f"{self.local_auth}",
         }
 
     def create_case_description_for_interviewer(self) -> str:
@@ -68,4 +69,5 @@ class BlaiseLMSCreateCaseModel(BlaiseCreateCaseModel):
             BlaiseFields.call_history,
             BlaiseFields.rotational_knock_to_nudge_indicator,
             BlaiseFields.rotational_outcome_code,
+            BlaiseFields.local_auth,
         ]

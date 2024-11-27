@@ -20,6 +20,7 @@ def lms_totalmobile_payload_helper(
             {"name": "fieldRegion", "value": case.field_region},
             {"name": "fieldTeam", "value": case.field_team},
             {"name": "postCode", "value": case.postcode},
+            {"name": "localAuth", "value": case.local_auth},
         ],
         "attributes": [
             {"name": "Region", "value": case.field_region},
@@ -32,9 +33,11 @@ def lms_totalmobile_payload_helper(
         f"Case ID: {case.case_id}\n"
         f"Wave: {case.wave}",
         "dueDate": {
-            "end": case.wave_com_dte.strftime("%Y-%m-%d")
-            if case.wave_com_dte is not None
-            else ""
+            "end": (
+                case.wave_com_dte.strftime("%Y-%m-%d")
+                if case.wave_com_dte is not None
+                else ""
+            )
         },
         "duration": 15,
         "identity": {
@@ -81,6 +84,7 @@ def frs_totalmobile_payload_helper(
             {"name": "fieldTeam", "value": case.field_team},
             {"name": "postCode", "value": case.postcode},
             {"name": "reference", "value": case.reference},
+            {"name": "localAuth", "value": case.local_auth},
         ],
         "attributes": [
             {"name": "Region", "value": case.field_region},

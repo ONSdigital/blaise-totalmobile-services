@@ -114,4 +114,5 @@ def test_required_fields_returns_the_expected_fields():
         "catiMana.CatiCall.RegsCalls[1].DialResult",
         "qRotate.RDMktnIND",
         "qRotate.RHOut",
+        "qDataBag.LAUA",
     ]

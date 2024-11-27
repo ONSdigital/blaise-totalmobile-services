@@ -67,7 +67,7 @@ class TestTotalmobileFRSPayloadMapping:
         assert result.attributes[1].name == "Team"
         assert result.attributes[1].value == "B-Team"
 
-        assert len(result.additionalProperties) == 6
+        assert len(result.additionalProperties) == 7
 
         assert result.additionalProperties[0].name == "tla"
         assert result.additionalProperties[0].value == "FRS"
@@ -87,6 +87,9 @@ class TestTotalmobileFRSPayloadMapping:
 
         assert result.additionalProperties[5].name == "reference"
         assert result.additionalProperties[5].value == "foo"
+
+        assert result.additionalProperties[6].name == "localAuth"
+        assert result.additionalProperties[6].value == "Loco"
 
     def test_map_totalmobile_payload_model_returns_a_payload_with_valid_description_without_warning_if_divided_address_is_zero(
         self,

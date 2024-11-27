@@ -46,6 +46,7 @@ class BlaiseCaseModelHelper:
                 BlaiseFields.start_date: start_date,
                 BlaiseFields.divided_address_indicator: divided_address,
                 BlaiseFields.wave_com_dte: wave_com_dte,
+                BlaiseFields.local_auth: "Loco",
             },
         )
 
@@ -60,6 +61,7 @@ class BlaiseCaseModelHelper:
         address_line3: str = "Blaiseville",
         town: str = "Newport",
         postcode: str = "cf99rsd",
+        local_auth: str = "Loco",
         reference: str = "reference",
         field_region: str = "Region 1",
         outcome_code: str = "301",
@@ -88,6 +90,7 @@ class BlaiseCaseModelHelper:
                 BlaiseFields.county: "Gwent",
                 BlaiseFields.town: town,
                 BlaiseFields.postcode: postcode,
+                BlaiseFields.local_auth: local_auth,
                 BlaiseFields.reference: reference,
                 BlaiseFields.latitude: latitude,
                 BlaiseFields.longitude: longitude,
