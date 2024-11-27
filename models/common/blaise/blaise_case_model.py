@@ -130,6 +130,10 @@ class BlaiseCaseModel:
     def data_model_name(self) -> Optional[str]:
         return self._case_data.get(BlaiseFields.data_model_name)
 
+    @property
+    def local_auth(self) -> Optional[str]:
+        return self._case_data.get(BlaiseFields.local_auth)
+
     @staticmethod
     @abstractmethod
     def required_fields() -> List:
