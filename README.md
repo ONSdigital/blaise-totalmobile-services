@@ -101,6 +101,8 @@ Run the Flask application:
 poetry run python main.py
 ```
 
+WOAH A CHANGE!
+
 You should now be able to call the Flask application endpoints via localhost:5011. See the [app readme](app/README.md) for more details.
 
 Run the "create_totalmobile_jobs_trigger" Cloud Function:
