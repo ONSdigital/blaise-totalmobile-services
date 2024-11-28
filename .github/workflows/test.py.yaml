@@ -35,7 +35,7 @@ jobs:
         run: poetry run python -m behave tests/features
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python-version: [ 3.9 ]
@@ -55,7 +55,7 @@ jobs:
         run: poetry run isort --check .
 
   check-types:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python-version: [ 3.9 ]
