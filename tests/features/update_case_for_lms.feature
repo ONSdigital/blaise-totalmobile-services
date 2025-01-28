@@ -1,4 +1,4 @@
-Feature: Update case
+Feature: Update case for LMS
   Background:
     Given the survey type is "LMS"
 
