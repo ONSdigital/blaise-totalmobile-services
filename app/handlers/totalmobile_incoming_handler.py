@@ -13,6 +13,7 @@ from services.create.cma.frs_case_allocation_service import FRSCaseAllocationSer
 from services.update.update_case_service import UpdateCaseService
 
 
+# TODO - refactor the handler to handle LMS/FRS UpdateCaseService.
 def submit_form_result_request_handler(request, update_case_service: UpdateCaseService):
     data = request.get_json()
     totalmobile_case = TotalMobileIncomingUpdateRequestModel.import_request(data)
