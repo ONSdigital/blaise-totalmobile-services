@@ -12,7 +12,7 @@ Feature: Update case for FRS
 #    Then the case "12345" for questionnaire "FRS2401" has been updated with
 #      | field_name | value          |
 #      | hOut       | <outcome_code> |
-#    And "Outcome code updated (Questionnaire=FRS2401, Case Id=12345, Blaise hOut=<outcome_code>)" is logged as an information message
+#    And "Outcome code updated (Questionnaire=FRS2401, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=<outcome_code>)" is logged as an information message
 #    And a "200 OK" response is sent back to Totalmobile
     Examples: Blaise outcome code is 0
       | blaise_outcome_code | outcome_code |
