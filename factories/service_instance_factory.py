@@ -104,7 +104,8 @@ class ServiceInstanceFactory:
             datastore_service=self.create_datastore_service(),
         )
 
-    def create_totalmobile_mapper_service(self) -> TotalmobileCreateJobMapperService:
+    @staticmethod
+    def create_totalmobile_mapper_service() -> TotalmobileCreateJobMapperService:
         return TotalmobileCreateJobMapperService(TotalmobilePayloadMapperService())
 
     def create_totalmobile_service(self) -> RealTotalmobileService:
