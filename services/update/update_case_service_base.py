@@ -1,11 +1,15 @@
 import logging
-
 from abc import abstractmethod
 
-from app.exceptions.custom_exceptions import QuestionnaireDoesNotExistError, QuestionnaireCaseDoesNotExistError, \
-    QuestionnaireCaseError
+from app.exceptions.custom_exceptions import (
+    QuestionnaireCaseDoesNotExistError,
+    QuestionnaireCaseError,
+    QuestionnaireDoesNotExistError,
+)
 from models.update.blaise_update_case_model import BlaiseUpdateCase
-from models.update.totalmobile_incoming_update_request_model import TotalMobileIncomingUpdateRequestModel
+from models.update.totalmobile_incoming_update_request_model import (
+    TotalMobileIncomingUpdateRequestModel,
+)
 from services.blaise_service import RealBlaiseService
 
 
@@ -14,7 +18,9 @@ class UpdateCaseServiceBase:
         self._blaise_service = blaise_service
 
     @abstractmethod
-    def update_case(self, totalmobile_request: TotalMobileIncomingUpdateRequestModel) -> None:
+    def update_case(
+        self, totalmobile_request: TotalMobileIncomingUpdateRequestModel
+    ) -> None:
         pass
 
     def validate_questionnaire_exists(self, questionnaire_name: str) -> None:
@@ -48,4 +54,3 @@ class UpdateCaseServiceBase:
             f"Successfully found case {case_id} for questionnaire {questionnaire_name} in Blaise"
         )
         return BlaiseUpdateCase(questionnaire_name, case)
-

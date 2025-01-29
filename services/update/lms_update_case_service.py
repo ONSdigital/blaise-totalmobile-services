@@ -38,14 +38,14 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
             return
 
         if totalmobile_request.outcome_code in (
-                LMSQuestionnaireOutcomeCodes.REFUSAL_HARD_460.value,
-                LMSQuestionnaireOutcomeCodes.REFUSAL_SOFT_461.value,
-                LMSQuestionnaireOutcomeCodes.INELIGIBLE_NO_TRACE_OF_ADDRESS_510.value,
-                LMSQuestionnaireOutcomeCodes.INELIGIBLE_VACANT_540.value,
-                LMSQuestionnaireOutcomeCodes.INELIGIBLE_NON_RESIDENTIAL_551.value,
-                LMSQuestionnaireOutcomeCodes.INELIGIBLE_INSTITUTION_560.value,
-                LMSQuestionnaireOutcomeCodes.INELIGIBLE_SECOND_OR_HOLIDAY_HOME_580.value,
-                LMSQuestionnaireOutcomeCodes.WRONG_ADDRESS_640.value,
+            LMSQuestionnaireOutcomeCodes.REFUSAL_HARD_460.value,
+            LMSQuestionnaireOutcomeCodes.REFUSAL_SOFT_461.value,
+            LMSQuestionnaireOutcomeCodes.INELIGIBLE_NO_TRACE_OF_ADDRESS_510.value,
+            LMSQuestionnaireOutcomeCodes.INELIGIBLE_VACANT_540.value,
+            LMSQuestionnaireOutcomeCodes.INELIGIBLE_NON_RESIDENTIAL_551.value,
+            LMSQuestionnaireOutcomeCodes.INELIGIBLE_INSTITUTION_560.value,
+            LMSQuestionnaireOutcomeCodes.INELIGIBLE_SECOND_OR_HOLIDAY_HOME_580.value,
+            LMSQuestionnaireOutcomeCodes.WRONG_ADDRESS_640.value,
         ):
 
             self._update_case_outcome_code(totalmobile_request, blaise_case)
