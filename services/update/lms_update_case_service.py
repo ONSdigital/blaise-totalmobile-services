@@ -12,10 +12,12 @@ from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 from services.blaise_service import RealBlaiseService
+from services.update.update_case_service_base import UpdateCaseServiceBase
 
 
-class UpdateCaseService:
+class LMSUpdateCaseService(UpdateCaseServiceBase):
     def __init__(self, blaise_service: RealBlaiseService):
+        super().__init__(blaise_service)
         self._blaise_service = blaise_service
 
     def update_case(

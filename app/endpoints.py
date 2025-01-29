@@ -22,7 +22,7 @@ from app.handlers.totalmobile_incoming_handler import (
     submit_form_result_request_handler,
 )
 from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
-from services.update.update_case_service import UpdateCaseService
+from services.update.lms_update_case_service import LMSUpdateCaseService
 
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
 
@@ -43,7 +43,7 @@ def add_header(response):
 def submit_form_result_request():
     logging.info(f"Incoming request via the 'submitformresultrequest' endpoint")
     try:
-        update_case_service = UpdateCaseService(
+        update_case_service = LMSUpdateCaseService(
             blaise_service=current_app.blaise_service
         )
         submit_form_result_request_handler(request, update_case_service)
