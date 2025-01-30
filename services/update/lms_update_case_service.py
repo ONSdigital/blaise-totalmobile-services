@@ -67,7 +67,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
         blaise_case: BlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> bool:
-        if (
+        return (
             totalmobile_request.outcome_code
             == LMSQuestionnaireOutcomeCodes.APPOINTMENT_300.value
             and blaise_case.outcome_code
@@ -76,9 +76,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
                 LMSQuestionnaireOutcomeCodes.NON_CONTACT_310.value,
                 LMSQuestionnaireOutcomeCodes.PHONE_NO_REMOVED_BY_TO_320.value,
             )
-        ):
-            return True
-        return False
+        )
 
     def _update_case_contact_information(
         self,
