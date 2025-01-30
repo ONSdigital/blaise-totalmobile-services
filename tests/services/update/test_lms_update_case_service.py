@@ -2,6 +2,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from enums.blaise_fields import BlaiseFields
 from models.update.blaise_update_case_model import BlaiseUpdateCase
 from services.update.lms_update_case_service import LMSUpdateCaseService
 from tests.helpers.totalmobile_incoming_update_request_helper import lms_totalmobile_incoming_update_request_helper
@@ -27,21 +28,21 @@ def mock_blaise_case():
 
 @patch.object(LMSUpdateCaseService, "validate_questionnaire_exists")
 @patch.object(LMSUpdateCaseService, "get_existing_blaise_case")
-@patch.object(LMSUpdateCaseService, "_should_update_case_contact_information", return_value=False)
-@patch.object(LMSUpdateCaseService, "_should_update_case_outcome_code", return_value=False)
-@patch.object(LMSUpdateCaseService, "_log_no_update")
 def test_update_case_calls_validate_questionnaire_exists_once_with_correct_parameters(
-        _mock_log_no_update,            # patch
-        _mock_should_update_outcome,    # patch
-        _mock_should_update_contact,    # patch
-        mock_get_existing_blaise_case,  # patch
-        mock_validate,                  # patch
-        mock_case_update_service,       # fixture
+        mock_get_existing_blaise_case,
+        mock_validate,
+        mock_case_update_service,
 ):
     # arrange
     questionnaire_name = "LMS2101_AA1"
-    mock_totalmobile_request = lms_totalmobile_incoming_update_request_helper(questionnaire_name)
-    mock_get_existing_blaise_case.return_value = BlaiseUpdateCase(questionnaire_name, {})
+    case_id = "90001"
+    case_data = {
+        BlaiseFields.case_id: case_id,
+        BlaiseFields.outcome_code: 0,
+        BlaiseFields.call_history: False,
+    }
+    mock_get_existing_blaise_case.return_value = BlaiseUpdateCase(questionnaire_name, case_data)
+    mock_totalmobile_request = lms_totalmobile_incoming_update_request_helper(questionnaire_name, case_id)
 
     # act
     mock_case_update_service.update_case(mock_totalmobile_request)
