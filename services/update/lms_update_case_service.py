@@ -145,8 +145,8 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
 
     @staticmethod
     def _log_contact_information_updated(
-            blaise_case: BlaiseUpdateCase,
-            totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+        blaise_case: BlaiseUpdateCase,
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> None:
         logging.info(
             f"Contact information updated (Questionnaire={totalmobile_request.questionnaire_name}, "
@@ -156,8 +156,8 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
 
     @staticmethod
     def _log_outcome_code_and_call_history_updated(
-            blaise_case: BlaiseUpdateCase,
-            totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+        blaise_case: BlaiseUpdateCase,
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> None:
         logging.info(
             f"Outcome code and call history updated (Questionnaire={totalmobile_request.questionnaire_name}, "
@@ -167,7 +167,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
 
     @staticmethod
     def _log_attempting_to_update_case(
-            totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> None:
         logging.info(
             f"Attempting to update case {totalmobile_request.case_id} in questionnaire {totalmobile_request.questionnaire_name} in Blaise"
@@ -175,8 +175,8 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
 
     @staticmethod
     def _log_no_contact_information(
-            blaise_case: BlaiseUpdateCase,
-            totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+        blaise_case: BlaiseUpdateCase,
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> None:
         logging.info(
             f"Contact information has not been updated as no contact information was provided (Questionnaire={totalmobile_request.questionnaire_name}, "
@@ -186,13 +186,11 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
 
     @staticmethod
     def _log_no_update(
-            blaise_case: BlaiseUpdateCase,
-            totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+        blaise_case: BlaiseUpdateCase,
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> None:
         logging.info(
             f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
             f"has not been updated in Blaise (Blaise hOut={blaise_case.outcome_code}, "
             f"TM hOut={totalmobile_request.outcome_code})"
         )
-
-
