@@ -18,14 +18,6 @@ def mock_case_update_service(mock_blaise_service):
     return LMSUpdateCaseService(mock_blaise_service)
 
 
-@pytest.fixture()
-def mock_blaise_case():
-    blaise_case = Mock(spec=BlaiseUpdateCase)
-    blaise_case.outcome_code = 0
-    blaise_case.case_id = "90001"
-    return blaise_case
-
-
 @patch.object(LMSUpdateCaseService, "validate_questionnaire_exists")
 @patch.object(LMSUpdateCaseService, "get_existing_blaise_case")
 def test_update_case_calls_validate_questionnaire_exists_once_with_correct_parameters(
