@@ -34,6 +34,13 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
             self._update_case_outcome_code(totalmobile_request, blaise_case)
             return
 
+        self._log_no_update(blaise_case, totalmobile_request)
+
+    @staticmethod
+    def _log_no_update(
+        blaise_case: BlaiseUpdateCase,
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+    ):
         logging.info(
             f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
             f"has not been updated in Blaise (Blaise hOut={blaise_case.outcome_code}, "
