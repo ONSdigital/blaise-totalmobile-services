@@ -1,9 +1,10 @@
-from models.update.totalmobile_incoming_update_request_model import TotalMobileIncomingUpdateRequestModel
+from models.update.totalmobile_incoming_update_request_model import (
+    TotalMobileIncomingUpdateRequestModel,
+)
 
 
 def lms_totalmobile_incoming_update_request_helper(
-        questionnaire_name="LMS2101_AA1",
-        case_id="90001"
+    questionnaire_name="LMS2101_AA1", case_id="90001"
 ) -> TotalMobileIncomingUpdateRequestModel:
     return TotalMobileIncomingUpdateRequestModel(
         questionnaire_name=questionnaire_name,
