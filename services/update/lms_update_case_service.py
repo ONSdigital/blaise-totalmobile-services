@@ -141,9 +141,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
         blaise_case: BlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> Dict[str, str]:
-        fields_to_update: Dict[str, str] = {}
-        contact_fields = blaise_case.get_contact_details_fields(totalmobile_request)
-        fields_to_update.update(contact_fields)
+        fields_to_update = blaise_case.get_contact_details_fields(totalmobile_request)
         fields_to_update.update(blaise_case.get_knock_to_nudge_indicator_flag_field())
         return fields_to_update
 
