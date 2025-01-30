@@ -89,9 +89,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
 
         fields_to_update = self._get_updated_fields(blaise_case, totalmobile_request)
 
-        logging.info(
-            f"Attempting to update case {totalmobile_request.case_id} in questionnaire {totalmobile_request.questionnaire_name} in Blaise"
-        )
+        self._log_attempting_to_update_case(totalmobile_request)
 
         self._blaise_service.update_case(
             totalmobile_request.questionnaire_name,
@@ -99,10 +97,20 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
             fields_to_update,
         )
 
+        self._log_contact_information_updated(blaise_case, totalmobile_request)
+
+    @staticmethod
+    def _log_contact_information_updated(blaise_case, totalmobile_request):
         logging.info(
             f"Contact information updated (Questionnaire={totalmobile_request.questionnaire_name}, "
             f"Case Id={totalmobile_request.case_id}, Blaise hOut={blaise_case.outcome_code}, "
             f"TM hOut={totalmobile_request.outcome_code})"
+        )
+
+    @staticmethod
+    def _log_attempting_to_update_case(totalmobile_request):
+        logging.info(
+            f"Attempting to update case {totalmobile_request.case_id} in questionnaire {totalmobile_request.questionnaire_name} in Blaise"
         )
 
     @staticmethod
