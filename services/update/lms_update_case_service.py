@@ -143,9 +143,10 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
         blaise_case: BlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> Dict[str, str]:
-        fields_to_update = blaise_case.get_contact_details_fields(totalmobile_request)
-        fields_to_update.update(blaise_case.get_knock_to_nudge_indicator_flag_field())
-        return fields_to_update
+        return {
+            **blaise_case.get_contact_details_fields(totalmobile_request),
+            **blaise_case.get_knock_to_nudge_indicator_flag_field(),
+        }
 
     def _update_case_outcome_code(
         self,
@@ -183,12 +184,13 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
         blaise_case: BlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> Dict[str, str]:
-        fields_to_update = {}
-        fields_to_update.update(
-            blaise_case.get_outcome_code_fields(totalmobile_request)
-        )
-        fields_to_update.update(blaise_case.get_knock_to_nudge_indicator_flag_field())
-        fields_to_update.update(blaise_case.get_call_history_record_field(1))
-        if not blaise_case.has_call_history:
-            fields_to_update.update(blaise_case.get_call_history_record_field(5))
-        return fields_to_update
+        return {
+            **blaise_case.get_outcome_code_fields(totalmobile_request),
+            **blaise_case.get_knock_to_nudge_indicator_flag_field(),
+            **blaise_case.get_call_history_record_field(1),
+            **(
+                blaise_case.get_call_history_record_field(5)
+                if not blaise_case.has_call_history
+                else {}
+            ),
+        }
