@@ -153,16 +153,9 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
         blaise_case: BlaiseUpdateCase,
     ) -> None:
 
-        fields_to_update = {}
-
-        fields_to_update.update(
-            blaise_case.get_outcome_code_fields(totalmobile_request)
+        fields_to_update = self._get_fields_to_update_case_outcome_code(
+            blaise_case, totalmobile_request
         )
-        fields_to_update.update(blaise_case.get_knock_to_nudge_indicator_flag_field())
-        fields_to_update.update(blaise_case.get_call_history_record_field(1))
-
-        if not blaise_case.has_call_history:
-            fields_to_update.update(blaise_case.get_call_history_record_field(5))
 
         self._blaise_service.update_case(
             totalmobile_request.questionnaire_name,
@@ -170,8 +163,32 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
             fields_to_update,
         )
 
+        self._log_outcome_code_and_call_history_updated(
+            blaise_case, totalmobile_request
+        )
+
+    @staticmethod
+    def _log_outcome_code_and_call_history_updated(
+        blaise_case: BlaiseUpdateCase,
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+    ) -> None:
         logging.info(
             f"Outcome code and call history updated (Questionnaire={totalmobile_request.questionnaire_name}, "
             f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
             f"TM hOut={totalmobile_request.outcome_code})"
         )
+
+    @staticmethod
+    def _get_fields_to_update_case_outcome_code(
+        blaise_case: BlaiseUpdateCase,
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+    ) -> Dict[str, str]:
+        fields_to_update = {}
+        fields_to_update.update(
+            blaise_case.get_outcome_code_fields(totalmobile_request)
+        )
+        fields_to_update.update(blaise_case.get_knock_to_nudge_indicator_flag_field())
+        fields_to_update.update(blaise_case.get_call_history_record_field(1))
+        if not blaise_case.has_call_history:
+            fields_to_update.update(blaise_case.get_call_history_record_field(5))
+        return fields_to_update
