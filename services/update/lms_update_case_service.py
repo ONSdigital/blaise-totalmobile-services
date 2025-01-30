@@ -87,7 +87,9 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
             self._log_no_contact_information(blaise_case, totalmobile_request)
             return
 
-        fields_to_update = self._get_updated_fields(blaise_case, totalmobile_request)
+        fields_to_update = self._get_fields_to_update_case_contact_information(
+            blaise_case, totalmobile_request
+        )
 
         self._log_attempting_to_update_case(totalmobile_request)
 
@@ -137,7 +139,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
         )
 
     @staticmethod
-    def _get_updated_fields(
+    def _get_fields_to_update_case_contact_information(
         blaise_case: BlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> Dict[str, str]:
