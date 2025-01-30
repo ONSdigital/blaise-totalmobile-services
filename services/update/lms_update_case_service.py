@@ -36,15 +36,47 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
 
         self._log_no_update(blaise_case, totalmobile_request)
 
-    @staticmethod
-    def _log_no_update(
-        blaise_case: BlaiseUpdateCase,
+    def _update_case_contact_information(
+        self,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+        blaise_case: BlaiseUpdateCase,
     ) -> None:
-        logging.info(
-            f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
-            f"has not been updated in Blaise (Blaise hOut={blaise_case.outcome_code}, "
-            f"TM hOut={totalmobile_request.outcome_code})"
+        if not self._has_contact_details(blaise_case, totalmobile_request):
+            self._log_no_contact_information(blaise_case, totalmobile_request)
+            return
+
+        fields_to_update = self._get_fields_to_update_case_contact_information(
+            blaise_case, totalmobile_request
+        )
+
+        self._log_attempting_to_update_case(totalmobile_request)
+
+        self._blaise_service.update_case(
+            totalmobile_request.questionnaire_name,
+            totalmobile_request.case_id,
+            fields_to_update,
+        )
+
+        self._log_contact_information_updated(blaise_case, totalmobile_request)
+
+    def _update_case_outcome_code(
+        self,
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+        blaise_case: BlaiseUpdateCase,
+    ) -> None:
+
+        fields_to_update = self._get_fields_to_update_case_outcome_code(
+            blaise_case, totalmobile_request
+        )
+
+        self._blaise_service.update_case(
+            totalmobile_request.questionnaire_name,
+            totalmobile_request.case_id,
+            fields_to_update,
+        )
+
+        self._log_outcome_code_and_call_history_updated(
+            blaise_case, totalmobile_request
         )
 
     @staticmethod
@@ -78,65 +110,12 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
             )
         )
 
-    def _update_case_contact_information(
-        self,
-        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-        blaise_case: BlaiseUpdateCase,
-    ) -> None:
-        if not self._has_contact_details(blaise_case, totalmobile_request):
-            self._log_no_contact_information(blaise_case, totalmobile_request)
-            return
-
-        fields_to_update = self._get_fields_to_update_case_contact_information(
-            blaise_case, totalmobile_request
-        )
-
-        self._log_attempting_to_update_case(totalmobile_request)
-
-        self._blaise_service.update_case(
-            totalmobile_request.questionnaire_name,
-            totalmobile_request.case_id,
-            fields_to_update,
-        )
-
-        self._log_contact_information_updated(blaise_case, totalmobile_request)
-
-    @staticmethod
-    def _log_contact_information_updated(
-        blaise_case: BlaiseUpdateCase,
-        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-    ) -> None:
-        logging.info(
-            f"Contact information updated (Questionnaire={totalmobile_request.questionnaire_name}, "
-            f"Case Id={totalmobile_request.case_id}, Blaise hOut={blaise_case.outcome_code}, "
-            f"TM hOut={totalmobile_request.outcome_code})"
-        )
-
-    @staticmethod
-    def _log_attempting_to_update_case(
-        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-    ) -> None:
-        logging.info(
-            f"Attempting to update case {totalmobile_request.case_id} in questionnaire {totalmobile_request.questionnaire_name} in Blaise"
-        )
-
     @staticmethod
     def _has_contact_details(
         blaise_case: BlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> bool:
         return len(blaise_case.get_contact_details_fields(totalmobile_request)) != 0
-
-    @staticmethod
-    def _log_no_contact_information(
-        blaise_case: BlaiseUpdateCase,
-        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-    ) -> None:
-        logging.info(
-            f"Contact information has not been updated as no contact information was provided (Questionnaire={totalmobile_request.questionnaire_name}, "
-            f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
-            f"TM hOut={totalmobile_request.outcome_code})"
-        )
 
     @staticmethod
     def _get_fields_to_update_case_contact_information(
@@ -147,37 +126,6 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
             **blaise_case.get_contact_details_fields(totalmobile_request),
             **blaise_case.get_knock_to_nudge_indicator_flag_field(),
         }
-
-    def _update_case_outcome_code(
-        self,
-        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-        blaise_case: BlaiseUpdateCase,
-    ) -> None:
-
-        fields_to_update = self._get_fields_to_update_case_outcome_code(
-            blaise_case, totalmobile_request
-        )
-
-        self._blaise_service.update_case(
-            totalmobile_request.questionnaire_name,
-            totalmobile_request.case_id,
-            fields_to_update,
-        )
-
-        self._log_outcome_code_and_call_history_updated(
-            blaise_case, totalmobile_request
-        )
-
-    @staticmethod
-    def _log_outcome_code_and_call_history_updated(
-        blaise_case: BlaiseUpdateCase,
-        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-    ) -> None:
-        logging.info(
-            f"Outcome code and call history updated (Questionnaire={totalmobile_request.questionnaire_name}, "
-            f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
-            f"TM hOut={totalmobile_request.outcome_code})"
-        )
 
     @staticmethod
     def _get_fields_to_update_case_outcome_code(
@@ -194,3 +142,57 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
                 else {}
             ),
         }
+
+    @staticmethod
+    def _log_contact_information_updated(
+            blaise_case: BlaiseUpdateCase,
+            totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+    ) -> None:
+        logging.info(
+            f"Contact information updated (Questionnaire={totalmobile_request.questionnaire_name}, "
+            f"Case Id={totalmobile_request.case_id}, Blaise hOut={blaise_case.outcome_code}, "
+            f"TM hOut={totalmobile_request.outcome_code})"
+        )
+
+    @staticmethod
+    def _log_outcome_code_and_call_history_updated(
+            blaise_case: BlaiseUpdateCase,
+            totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+    ) -> None:
+        logging.info(
+            f"Outcome code and call history updated (Questionnaire={totalmobile_request.questionnaire_name}, "
+            f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
+            f"TM hOut={totalmobile_request.outcome_code})"
+        )
+
+    @staticmethod
+    def _log_attempting_to_update_case(
+            totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+    ) -> None:
+        logging.info(
+            f"Attempting to update case {totalmobile_request.case_id} in questionnaire {totalmobile_request.questionnaire_name} in Blaise"
+        )
+
+    @staticmethod
+    def _log_no_contact_information(
+            blaise_case: BlaiseUpdateCase,
+            totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+    ) -> None:
+        logging.info(
+            f"Contact information has not been updated as no contact information was provided (Questionnaire={totalmobile_request.questionnaire_name}, "
+            f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
+            f"TM hOut={totalmobile_request.outcome_code})"
+        )
+
+    @staticmethod
+    def _log_no_update(
+            blaise_case: BlaiseUpdateCase,
+            totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+    ) -> None:
+        logging.info(
+            f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
+            f"has not been updated in Blaise (Blaise hOut={blaise_case.outcome_code}, "
+            f"TM hOut={totalmobile_request.outcome_code})"
+        )
+
+
