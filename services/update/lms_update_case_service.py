@@ -83,19 +83,11 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
         blaise_case: BlaiseUpdateCase,
     ) -> None:
-        fields_to_update: Dict[str, str] = {}
-        contact_fields = blaise_case.get_contact_details_fields(totalmobile_request)
-
-        if len(contact_fields) == 0:
-            logging.info(
-                f"Contact information has not been updated as no contact information was provided (Questionnaire={totalmobile_request.questionnaire_name}, "
-                f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
-                f"TM hOut={totalmobile_request.outcome_code})"
-            )
+        if not self._has_contact_details(blaise_case, totalmobile_request):
+            self._log_no_contact_information(blaise_case, totalmobile_request)
             return
 
-        fields_to_update.update(contact_fields)
-        fields_to_update.update(blaise_case.get_knock_to_nudge_indicator_flag_field())
+        fields_to_update = self._get_updated_fields(blaise_case, totalmobile_request)
 
         logging.info(
             f"Attempting to update case {totalmobile_request.case_id} in questionnaire {totalmobile_request.questionnaire_name} in Blaise"
@@ -112,6 +104,29 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
             f"Case Id={totalmobile_request.case_id}, Blaise hOut={blaise_case.outcome_code}, "
             f"TM hOut={totalmobile_request.outcome_code})"
         )
+
+    @staticmethod
+    def _has_contact_details(
+        blaise_case: BlaiseUpdateCase,
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+    ) -> bool:
+        return len(blaise_case.get_contact_details_fields(totalmobile_request)) != 0
+
+    @staticmethod
+    def _log_no_contact_information(blaise_case, totalmobile_request):
+        logging.info(
+            f"Contact information has not been updated as no contact information was provided (Questionnaire={totalmobile_request.questionnaire_name}, "
+            f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
+            f"TM hOut={totalmobile_request.outcome_code})"
+        )
+
+    @staticmethod
+    def _get_updated_fields(blaise_case, totalmobile_request):
+        fields_to_update: Dict[str, str] = {}
+        contact_fields = blaise_case.get_contact_details_fields(totalmobile_request)
+        fields_to_update.update(contact_fields)
+        fields_to_update.update(blaise_case.get_knock_to_nudge_indicator_flag_field())
+        return fields_to_update
 
     def _update_case_outcome_code(
         self,
