@@ -24,6 +24,36 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
             totalmobile_request.questionnaire_name, totalmobile_request.case_id
         )
 
+        if self._should_update_case_contact_information(
+            blaise_case, totalmobile_request
+        ):
+            self._update_case_contact_information(totalmobile_request, blaise_case)
+            return
+
+        if self._should_update_case_outcome_code(totalmobile_request):
+            self._update_case_outcome_code(totalmobile_request, blaise_case)
+            return
+
+        logging.info(
+            f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
+            f"has not been updated in Blaise (Blaise hOut={blaise_case.outcome_code}, "
+            f"TM hOut={totalmobile_request.outcome_code})"
+        )
+
+    def _should_update_case_outcome_code(self, totalmobile_request):
+        return totalmobile_request.outcome_code in (
+            LMSQuestionnaireOutcomeCodes.REFUSAL_HARD_460.value,
+            LMSQuestionnaireOutcomeCodes.REFUSAL_SOFT_461.value,
+            LMSQuestionnaireOutcomeCodes.INELIGIBLE_NO_TRACE_OF_ADDRESS_510.value,
+            LMSQuestionnaireOutcomeCodes.INELIGIBLE_VACANT_540.value,
+            LMSQuestionnaireOutcomeCodes.INELIGIBLE_NON_RESIDENTIAL_551.value,
+            LMSQuestionnaireOutcomeCodes.INELIGIBLE_INSTITUTION_560.value,
+            LMSQuestionnaireOutcomeCodes.INELIGIBLE_SECOND_OR_HOLIDAY_HOME_580.value,
+            LMSQuestionnaireOutcomeCodes.WRONG_ADDRESS_640.value,
+        )
+
+    @staticmethod
+    def _should_update_case_contact_information(blaise_case, totalmobile_request):
         if (
             totalmobile_request.outcome_code
             == LMSQuestionnaireOutcomeCodes.APPOINTMENT_300.value
@@ -34,28 +64,8 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
                 LMSQuestionnaireOutcomeCodes.PHONE_NO_REMOVED_BY_TO_320.value,
             )
         ):
-            self._update_case_contact_information(totalmobile_request, blaise_case)
-            return
-
-        if totalmobile_request.outcome_code in (
-            LMSQuestionnaireOutcomeCodes.REFUSAL_HARD_460.value,
-            LMSQuestionnaireOutcomeCodes.REFUSAL_SOFT_461.value,
-            LMSQuestionnaireOutcomeCodes.INELIGIBLE_NO_TRACE_OF_ADDRESS_510.value,
-            LMSQuestionnaireOutcomeCodes.INELIGIBLE_VACANT_540.value,
-            LMSQuestionnaireOutcomeCodes.INELIGIBLE_NON_RESIDENTIAL_551.value,
-            LMSQuestionnaireOutcomeCodes.INELIGIBLE_INSTITUTION_560.value,
-            LMSQuestionnaireOutcomeCodes.INELIGIBLE_SECOND_OR_HOLIDAY_HOME_580.value,
-            LMSQuestionnaireOutcomeCodes.WRONG_ADDRESS_640.value,
-        ):
-
-            self._update_case_outcome_code(totalmobile_request, blaise_case)
-            return
-
-        logging.info(
-            f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
-            f"has not been updated in Blaise (Blaise hOut={blaise_case.outcome_code}, "
-            f"TM hOut={totalmobile_request.outcome_code})"
-        )
+            return True
+        return False
 
     def _update_case_contact_information(
         self,
