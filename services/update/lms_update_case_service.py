@@ -40,7 +40,10 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
             f"TM hOut={totalmobile_request.outcome_code})"
         )
 
-    def _should_update_case_outcome_code(self, totalmobile_request):
+    @staticmethod
+    def _should_update_case_outcome_code(
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+    ) -> bool:
         return totalmobile_request.outcome_code in (
             LMSQuestionnaireOutcomeCodes.REFUSAL_HARD_460.value,
             LMSQuestionnaireOutcomeCodes.REFUSAL_SOFT_461.value,
@@ -53,7 +56,10 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
         )
 
     @staticmethod
-    def _should_update_case_contact_information(blaise_case, totalmobile_request):
+    def _should_update_case_contact_information(
+        blaise_case: BlaiseUpdateCase,
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+    ) -> bool:
         if (
             totalmobile_request.outcome_code
             == LMSQuestionnaireOutcomeCodes.APPOINTMENT_300.value
