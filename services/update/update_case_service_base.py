@@ -1,9 +1,7 @@
 import logging
 from abc import abstractmethod
 
-from app.exceptions.custom_exceptions import (
-    QuestionnaireDoesNotExistError,
-)
+from app.exceptions.custom_exceptions import QuestionnaireDoesNotExistError
 from models.update.blaise_update_case_model_base import BlaiseUpdateCase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
