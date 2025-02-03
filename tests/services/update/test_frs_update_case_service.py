@@ -86,7 +86,7 @@ def test_update_case_calls_should_update_case_outcome_code_once_with_correct_par
 
     # assert
     mock_case_update_service._should_update_case_outcome_code.assert_called_once_with(
-        mock_totalmobile_request
+        mock_blaise_case, mock_totalmobile_request
     )
 
 
