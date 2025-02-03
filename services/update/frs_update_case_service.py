@@ -48,9 +48,7 @@ class FRSUpdateCaseService(UpdateCaseServiceBase):
             fields_to_update,
         )
 
-        self._log_outcome_code_updated(
-            blaise_case, totalmobile_request
-        )
+        self._log_outcome_code_updated(blaise_case, totalmobile_request)
 
     @staticmethod
     def _should_update_case_outcome_code(
