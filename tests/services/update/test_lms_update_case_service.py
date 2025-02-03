@@ -213,5 +213,6 @@ def test_update_case_calls_log_no_update_once_with_correct_parameters(
 
     # assert
     mock_case_update_service._log_no_update.assert_called_once_with(
-        mock_blaise_case, mock_totalmobile_request,
+        mock_blaise_case,
+        mock_totalmobile_request,
     )
