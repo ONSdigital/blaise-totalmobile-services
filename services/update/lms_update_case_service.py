@@ -69,6 +69,8 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
             blaise_case, totalmobile_request
         )
 
+        self._log_attempting_to_update_case(totalmobile_request)
+
         self._blaise_service.update_case(
             totalmobile_request.questionnaire_name,
             totalmobile_request.case_id,
