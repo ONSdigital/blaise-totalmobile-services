@@ -32,9 +32,8 @@ class FRSUpdateCaseService(UpdateCaseServiceBase):
             self._update_case_outcome_code(totalmobile_request, blaise_case)
             return
 
-        # TODO
-        # if self._should_update_refusal_reason():
-        #     pass
+        if self._should_update_refusal_reason(blaise_case, totalmobile_request):
+            self._update_case_refusal_reason(totalmobile_request, blaise_case)
 
         self._log_no_update(blaise_case, totalmobile_request)
 
@@ -185,7 +184,6 @@ class FRSUpdateCaseService(UpdateCaseServiceBase):
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
         blaise_case: FRSBlaiseUpdateCase,
     ) -> None:
-
         fields_to_update = self._get_fields_to_update_refusal_reason(
             blaise_case, totalmobile_request
         )
@@ -207,5 +205,5 @@ class FRSUpdateCaseService(UpdateCaseServiceBase):
     ) -> Dict[str, str]:
         return {
             **blaise_case.get_outcome_code_fields(totalmobile_request),
-            # TODO: **blaise_case.get_refusal_reason_fields(totalmobile_request)
+            **blaise_case.get_refusal_reason_fields(totalmobile_request),
         }
