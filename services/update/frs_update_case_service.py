@@ -32,6 +32,10 @@ class FRSUpdateCaseService(UpdateCaseServiceBase):
             self._update_case_outcome_code(totalmobile_request, blaise_case)
             return
 
+        # TODO
+        # if self._should_update_refusal_reason():
+        #     pass
+
         self._log_no_update(blaise_case, totalmobile_request)
 
     def _update_case_outcome_code(
@@ -145,7 +149,6 @@ class FRSUpdateCaseService(UpdateCaseServiceBase):
         )
         return FRSBlaiseUpdateCase(questionnaire_name, case)
 
-
     @staticmethod
     def _log_no_update(
         blaise_case: FRSBlaiseUpdateCase,
@@ -156,3 +159,53 @@ class FRSUpdateCaseService(UpdateCaseServiceBase):
             f"has not been updated in Blaise (Blaise hOut={blaise_case.outcome_code}, "
             f"TM hOut={totalmobile_request.outcome_code})"
         )
+
+    @staticmethod
+    def _should_update_refusal_reason(
+        blaise_case: FRSBlaiseUpdateCase,
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+    ) -> bool:
+        return totalmobile_request.outcome_code in (
+            FRSQuestionnaireOutcomeCodes.HQ_OFFICE_REFUSAL_GENERAL_410.value,
+            FRSQuestionnaireOutcomeCodes.MULTI_INFORMATION_REFUSED_NO_OF_HOUSEHOLDS_AT_ADDRESS_420.value,
+            FRSQuestionnaireOutcomeCodes.REFUSAL_AT_INTRODUCTION_BEFORE_INTERVIEW_BY_ADULT_HOUSEHOLD_MEMBER_431.value,
+            FRSQuestionnaireOutcomeCodes.REFUSAL_AT_INTRODUCTION_BEFORE_INTERVIEW_BY_PROXY_432.value,
+            FRSQuestionnaireOutcomeCodes.REFUSAL_DURING_INTERVIEW_HRP_BU_MEMBER_REFUSED_TO_COMPLETE_INTERVIEW_441.value,
+            FRSQuestionnaireOutcomeCodes.REFUSAL_DURING_INTERVIEW_12_PLUS_DKS_OR_REFUSALS_IN_HHLD_SECTION_HRP_BU_442.value,
+            FRSQuestionnaireOutcomeCodes.BROKEN_APPOINTMENT_NO_RE_CONTACT_450.value,
+        ) and blaise_case.outcome_code in (
+            FRSQuestionnaireOutcomeCodes.NOT_STARTED_0.value,
+            FRSQuestionnaireOutcomeCodes.NO_CONTACT_WITH_ANYONE_AT_ADDRESS_310.value,
+            FRSQuestionnaireOutcomeCodes.CONTACT_MADE_AT_ADDRESS_NO_CONTACT_WITH_SAMPLED_HOUSEHOLD_MULTI_320.value,
+            FRSQuestionnaireOutcomeCodes.CONTACT_WITH_SAMPLED_HOUSEHOLD_NO_CONTACT_WITH_RESPONSIBLE_RESIDENT_330.value,
+        )
+
+    def _update_case_refusal_reason(
+        self,
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+        blaise_case: FRSBlaiseUpdateCase,
+    ) -> None:
+
+        fields_to_update = self._get_fields_to_update_refusal_reason(
+            blaise_case, totalmobile_request
+        )
+
+        self._log_attempting_to_update_case(totalmobile_request)
+
+        self._blaise_service.update_case(
+            totalmobile_request.questionnaire_name,
+            totalmobile_request.case_id,
+            fields_to_update,
+        )
+
+        self._log_outcome_code_updated(blaise_case, totalmobile_request)
+
+    @staticmethod
+    def _get_fields_to_update_refusal_reason(
+        blaise_case: FRSBlaiseUpdateCase,
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+    ) -> Dict[str, str]:
+        return {
+            **blaise_case.get_outcome_code_fields(totalmobile_request),
+            # TODO: **blaise_case.get_refusal_reason_fields(totalmobile_request)
+        }
