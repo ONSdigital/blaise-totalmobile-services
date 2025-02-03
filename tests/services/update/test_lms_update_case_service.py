@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from enums.blaise_fields import BlaiseFields
-from models.update.blaise_update_case_model import BlaiseUpdateCase
+from models.update.lms_blaise_update_case_model import LMSBlaiseUpdateCase
 from services.update.lms_update_case_service import LMSUpdateCaseService
 from tests.helpers.totalmobile_incoming_update_request_helper import (
     lms_totalmobile_incoming_update_request_helper,
@@ -35,7 +35,7 @@ def test_update_case_calls_validate_questionnaire_exists_once_with_correct_param
         BlaiseFields.outcome_code: 0,
         BlaiseFields.call_history: False,
     }
-    mock_get_existing_blaise_case.return_value = BlaiseUpdateCase(
+    mock_get_existing_blaise_case.return_value = LMSBlaiseUpdateCase(
         questionnaire_name, case_data
     )
     mock_totalmobile_request = lms_totalmobile_incoming_update_request_helper(
@@ -79,7 +79,7 @@ def test_update_case_calls_should_update_case_contact_information_once_with_corr
         BlaiseFields.outcome_code: 0,
         BlaiseFields.call_history: False,
     }
-    mock_blaise_case = BlaiseUpdateCase(questionnaire_name, case_data)
+    mock_blaise_case = LMSBlaiseUpdateCase(questionnaire_name, case_data)
     mock_get_existing_blaise_case.return_value = mock_blaise_case
 
     # act
@@ -108,7 +108,7 @@ def test_update_case_calls_update_case_contact_information_once_with_correct_par
         BlaiseFields.outcome_code: 0,
         BlaiseFields.call_history: False,
     }
-    mock_blaise_case = BlaiseUpdateCase(questionnaire_name, case_data)
+    mock_blaise_case = LMSBlaiseUpdateCase(questionnaire_name, case_data)
     mock_get_existing_blaise_case.return_value = mock_blaise_case
     mock_should_update_case_contact_information.return_value = True
 
@@ -138,7 +138,7 @@ def test_update_case_calls_should_update_case_outcome_code_once_with_correct_par
         BlaiseFields.outcome_code: 0,
         BlaiseFields.call_history: False,
     }
-    mock_blaise_case = BlaiseUpdateCase(questionnaire_name, case_data)
+    mock_blaise_case = LMSBlaiseUpdateCase(questionnaire_name, case_data)
     mock_get_existing_blaise_case.return_value = mock_blaise_case
     mock_should_update_case_contact_information.return_value = False
 
@@ -170,7 +170,7 @@ def test_update_case_calls_update_case_outcome_code_once_with_correct_parameters
         BlaiseFields.outcome_code: 0,
         BlaiseFields.call_history: False,
     }
-    mock_blaise_case = BlaiseUpdateCase(questionnaire_name, case_data)
+    mock_blaise_case = LMSBlaiseUpdateCase(questionnaire_name, case_data)
     mock_get_existing_blaise_case.return_value = mock_blaise_case
     mock_should_update_case_contact_information.return_value = False
     mock_should_update_case_outcome_code.return_value = True
@@ -203,7 +203,7 @@ def test_update_case_calls_log_no_update_once_with_correct_parameters(
         BlaiseFields.outcome_code: 0,
         BlaiseFields.call_history: False,
     }
-    mock_blaise_case = BlaiseUpdateCase(questionnaire_name, case_data)
+    mock_blaise_case = LMSBlaiseUpdateCase(questionnaire_name, case_data)
     mock_get_existing_blaise_case.return_value = mock_blaise_case
     mock_should_update_case_contact_information.return_value = False
     mock_should_update_case_outcome_code.return_value = False

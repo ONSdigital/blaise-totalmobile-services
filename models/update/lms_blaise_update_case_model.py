@@ -1,13 +1,13 @@
 from typing import Dict, List
 
 from enums.blaise_fields import BlaiseFields
-from models.common.blaise.blaise_case_model import BlaiseCaseModel
+from models.update.blaise_update_case_model_base import BlaiseUpdateCase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 
 
-class BlaiseUpdateCase(BlaiseCaseModel):
+class LMSBlaiseUpdateCase(BlaiseUpdateCase):
     def __init__(self, questionnaire_name: str, case_data: Dict[str, str]):  # type: ignore
         super().__init__(questionnaire_name, case_data)
 
@@ -48,8 +48,8 @@ class BlaiseUpdateCase(BlaiseCaseModel):
 
         return fields
 
-    @staticmethod
     def get_outcome_code_fields(
+        self,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ):
         return {
@@ -70,8 +70,7 @@ class BlaiseUpdateCase(BlaiseCaseModel):
             f"catiMana.CatiCall.RegsCalls[{record_number}].DialResult": "5",
         }
 
-    @staticmethod
-    def required_fields() -> List:
+    def required_fields(self) -> List:
         return [
             BlaiseFields.case_id,
             BlaiseFields.outcome_code,

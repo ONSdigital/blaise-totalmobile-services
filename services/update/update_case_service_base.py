@@ -2,11 +2,9 @@ import logging
 from abc import abstractmethod
 
 from app.exceptions.custom_exceptions import (
-    QuestionnaireCaseDoesNotExistError,
-    QuestionnaireCaseError,
     QuestionnaireDoesNotExistError,
 )
-from models.update.blaise_update_case_model import BlaiseUpdateCase
+from models.update.blaise_update_case_model_base import BlaiseUpdateCase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
@@ -32,25 +30,10 @@ class UpdateCaseServiceBase:
 
         logging.info(f"Successfully found questionnaire {questionnaire_name} in Blaise")
 
+    @abstractmethod
     def get_existing_blaise_case(
         self,
         questionnaire_name: str,
         case_id: str,
     ) -> BlaiseUpdateCase:
-        try:
-            case = self._blaise_service.get_case(questionnaire_name, case_id)
-        except QuestionnaireCaseDoesNotExistError as err:
-            logging.error(
-                f"Could not find case {case_id} for questionnaire {questionnaire_name} in Blaise"
-            )
-            raise err
-        except QuestionnaireCaseError as err:
-            logging.error(
-                f"There was an error retrieving case {case_id} for questionnaire {questionnaire_name} in Blaise"
-            )
-            raise err
-
-        logging.info(
-            f"Successfully found case {case_id} for questionnaire {questionnaire_name} in Blaise"
-        )
-        return BlaiseUpdateCase(questionnaire_name, case)
+        pass

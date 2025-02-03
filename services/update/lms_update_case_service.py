@@ -1,8 +1,12 @@
 import logging
 from typing import Dict
 
+from app.exceptions.custom_exceptions import (
+    QuestionnaireCaseDoesNotExistError,
+    QuestionnaireCaseError,
+)
 from enums.questionnaire_case_outcome_codes import LMSQuestionnaireOutcomeCodes
-from models.update.blaise_update_case_model import BlaiseUpdateCase
+from models.update.lms_blaise_update_case_model import LMSBlaiseUpdateCase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
@@ -39,7 +43,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
     def _update_case_contact_information(
         self,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: LMSBlaiseUpdateCase,
     ) -> None:
         if not self._has_contact_details(blaise_case, totalmobile_request):
             self._log_no_contact_information(blaise_case, totalmobile_request)
@@ -62,7 +66,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
     def _update_case_outcome_code(
         self,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: LMSBlaiseUpdateCase,
     ) -> None:
 
         fields_to_update = self._get_fields_to_update_case_outcome_code(
@@ -98,7 +102,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
 
     @staticmethod
     def _should_update_case_contact_information(
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: LMSBlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> bool:
         return (
@@ -114,14 +118,14 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
 
     @staticmethod
     def _has_contact_details(
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: LMSBlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> bool:
         return len(blaise_case.get_contact_details_fields(totalmobile_request)) != 0
 
     @staticmethod
     def _get_fields_to_update_case_contact_information(
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: LMSBlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> Dict[str, str]:
         return {
@@ -131,7 +135,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
 
     @staticmethod
     def _get_fields_to_update_case_outcome_code(
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: LMSBlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> Dict[str, str]:
         return {
@@ -147,7 +151,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
 
     @staticmethod
     def _log_contact_information_updated(
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: LMSBlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> None:
         logging.info(
@@ -158,7 +162,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
 
     @staticmethod
     def _log_outcome_code_and_call_history_updated(
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: LMSBlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> None:
         logging.info(
@@ -177,7 +181,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
 
     @staticmethod
     def _log_no_contact_information(
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: LMSBlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> None:
         logging.info(
@@ -188,7 +192,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
 
     @staticmethod
     def _log_no_update(
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: LMSBlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> None:
         logging.info(
@@ -196,3 +200,26 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
             f"has not been updated in Blaise (Blaise hOut={blaise_case.outcome_code}, "
             f"TM hOut={totalmobile_request.outcome_code})"
         )
+
+    def get_existing_blaise_case(
+        self,
+        questionnaire_name: str,
+        case_id: str,
+    ) -> LMSBlaiseUpdateCase:
+        try:
+            case = self._blaise_service.get_case(questionnaire_name, case_id)
+        except QuestionnaireCaseDoesNotExistError as err:
+            logging.error(
+                f"Could not find case {case_id} for questionnaire {questionnaire_name} in Blaise"
+            )
+            raise err
+        except QuestionnaireCaseError as err:
+            logging.error(
+                f"There was an error retrieving case {case_id} for questionnaire {questionnaire_name} in Blaise"
+            )
+            raise err
+
+        logging.info(
+            f"Successfully found case {case_id} for questionnaire {questionnaire_name} in Blaise"
+        )
+        return LMSBlaiseUpdateCase(questionnaire_name, case)

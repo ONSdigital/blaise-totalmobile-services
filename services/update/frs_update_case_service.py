@@ -1,8 +1,12 @@
 import logging
 from typing import Dict
 
+from app.exceptions.custom_exceptions import (
+    QuestionnaireCaseDoesNotExistError,
+    QuestionnaireCaseError,
+)
 from enums.questionnaire_case_outcome_codes import FRSQuestionnaireOutcomeCodes
-from models.update.blaise_update_case_model import BlaiseUpdateCase
+from models.update.frs_blaise_update_case_model import FRSBlaiseUpdateCase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
@@ -33,7 +37,7 @@ class FRSUpdateCaseService(UpdateCaseServiceBase):
     def _update_case_outcome_code(
         self,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: FRSBlaiseUpdateCase,
     ) -> None:
 
         fields_to_update = self._get_fields_to_update_case_outcome_code(
@@ -52,7 +56,7 @@ class FRSUpdateCaseService(UpdateCaseServiceBase):
 
     @staticmethod
     def _should_update_case_outcome_code(
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: FRSBlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> bool:
         return totalmobile_request.outcome_code in (
@@ -94,14 +98,14 @@ class FRSUpdateCaseService(UpdateCaseServiceBase):
 
     @staticmethod
     def _get_fields_to_update_case_outcome_code(
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: FRSBlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> Dict[str, str]:
         return {**blaise_case.get_outcome_code_fields(totalmobile_request)}
 
     @staticmethod
     def _log_outcome_code_updated(
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: FRSBlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> None:
         logging.info(
@@ -118,9 +122,33 @@ class FRSUpdateCaseService(UpdateCaseServiceBase):
             f"Attempting to update case {totalmobile_request.case_id} in questionnaire {totalmobile_request.questionnaire_name} in Blaise"
         )
 
+    def get_existing_blaise_case(
+        self,
+        questionnaire_name: str,
+        case_id: str,
+    ) -> FRSBlaiseUpdateCase:
+        try:
+            case = self._blaise_service.get_case(questionnaire_name, case_id)
+        except QuestionnaireCaseDoesNotExistError as err:
+            logging.error(
+                f"Could not find case {case_id} for questionnaire {questionnaire_name} in Blaise"
+            )
+            raise err
+        except QuestionnaireCaseError as err:
+            logging.error(
+                f"There was an error retrieving case {case_id} for questionnaire {questionnaire_name} in Blaise"
+            )
+            raise err
+
+        logging.info(
+            f"Successfully found case {case_id} for questionnaire {questionnaire_name} in Blaise"
+        )
+        return FRSBlaiseUpdateCase(questionnaire_name, case)
+
+
     @staticmethod
     def _log_no_update(
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: FRSBlaiseUpdateCase,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ) -> None:
         logging.info(
