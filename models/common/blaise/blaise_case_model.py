@@ -5,6 +5,7 @@ from typing import Dict, List, Optional
 from enums.blaise_fields import BlaiseFields
 
 
+# TODO: This is LMS specific :@
 class BlaiseCaseModel:
     def __init__(self, questionnaire_name: str, case_data: Dict[str, str]):
         self._questionnaire_name = questionnaire_name

@@ -10,9 +10,15 @@ from tests.helpers.totalmobile_incoming_update_request_helper import (
 )
 
 
+# TODO: This needs refactoring
 @pytest.fixture()
 def mock_blaise_service():
-    return Mock()
+    mock_blaise_service = Mock()
+    mock_blaise_service.get_case.return_value = {
+        BlaiseFields.case_id: "90002",
+        BlaiseFields.outcome_code: str(0),
+    }
+    return mock_blaise_service
 
 
 @pytest.fixture()
@@ -378,3 +384,18 @@ def test_get_fields_to_update_case_outcome_code_returns_expected_fields(
 
     # assert
     assert result == {"hOut": str(totalmobile_outcome_code)}
+
+
+# TODO: This needs refactoring
+def test_get_existing_blaise_case_returns_expected_frs_instance(mock_case_update_service, mock_blaise_service):
+    # arrange
+    mock_questionnaire_name = "FRS2102"
+    mock_case_id = "90002"
+
+    # act
+    result = mock_case_update_service.get_existing_blaise_case(mock_questionnaire_name, mock_case_id)
+
+    # assert
+    assert result.questionnaire_name == mock_questionnaire_name
+    assert result.case_id == mock_case_id
+    assert isinstance(result, FRSBlaiseUpdateCase)
