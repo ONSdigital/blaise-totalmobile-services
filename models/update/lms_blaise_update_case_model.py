@@ -2,7 +2,6 @@ from typing import Dict, List
 
 from enums.blaise_fields import BlaiseFields
 from models.common.blaise.blaise_case_model import BlaiseCaseModel
-from models.update.blaise_update_case_model_base import BlaiseUpdateCase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
