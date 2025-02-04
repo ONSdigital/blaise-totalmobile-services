@@ -28,10 +28,3 @@ class UpdateCaseServiceBase:
 
         logging.info(f"Successfully found questionnaire {questionnaire_name} in Blaise")
 
-    @abstractmethod
-    def get_existing_blaise_case(
-        self,
-        questionnaire_name: str,
-        case_id: str,
-    ) -> BlaiseUpdateCase:  # TODO: eeek
-        pass
