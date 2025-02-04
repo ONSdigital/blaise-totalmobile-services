@@ -1,18 +1,19 @@
 from typing import Dict, List
 
 from enums.blaise_fields import BlaiseFields
+from models.common.blaise.blaise_case_model import BlaiseCaseModel
 from models.update.blaise_update_case_model_base import BlaiseUpdateCase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 
 
-class FRSBlaiseUpdateCase(BlaiseUpdateCase):
+class FRSBlaiseUpdateCase(BlaiseCaseModel):
     def __init__(self, questionnaire_name: str, case_data: Dict[str, str]):  # type: ignore
         super().__init__(questionnaire_name, case_data)
 
+    @staticmethod
     def get_outcome_code_fields(
-        self,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ):
         return {
