@@ -26,4 +26,3 @@ class UpdateCaseServiceBase:
             raise QuestionnaireDoesNotExistError()
 
         logging.info(f"Successfully found questionnaire {questionnaire_name} in Blaise")
-

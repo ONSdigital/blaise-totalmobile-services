@@ -387,13 +387,17 @@ def test_get_fields_to_update_case_outcome_code_returns_expected_fields(
 
 
 # TODO: This needs refactoring
-def test_get_existing_blaise_case_returns_expected_frs_instance(mock_case_update_service, mock_blaise_service):
+def test_get_existing_blaise_case_returns_expected_frs_instance(
+    mock_case_update_service, mock_blaise_service
+):
     # arrange
     mock_questionnaire_name = "FRS2102"
     mock_case_id = "90002"
 
     # act
-    result = mock_case_update_service.get_existing_blaise_case(mock_questionnaire_name, mock_case_id)
+    result = mock_case_update_service.get_existing_blaise_case(
+        mock_questionnaire_name, mock_case_id
+    )
 
     # assert
     assert result.questionnaire_name == mock_questionnaire_name
