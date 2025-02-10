@@ -5,7 +5,7 @@ import requests
 
 from client.optimise import GetJobsResponse
 from models.common.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
+from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModelBase
 from models.create.totalmobile.totalmobile_create_job_model import (
     TotalmobileCreateJobModel,
     TotalmobileCreateJobModelRequestJson,
@@ -68,7 +68,7 @@ class LoggingTotalmobileService:
         return model
 
     def map_totalmobile_create_job_models(
-        self, questionnaire_name: str, cases: Sequence[BlaiseCreateCaseModel]
+        self, questionnaire_name: str, cases: Sequence[BlaiseCreateCaseModelBase]
     ) -> List[TotalmobileCreateJobModel]:
         return self._service.map_totalmobile_create_job_models(
             questionnaire_name, cases

@@ -7,7 +7,7 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireDoesNotExistError,
 )
 from enums.questionnaire_case_outcome_codes import QuestionnaireOutcomeCodes
-from models.update.blaise_update_case_model import BlaiseUpdateCase
+from models.update.blaise_update_case_model import BlaiseUpdateCaseBase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
@@ -63,7 +63,7 @@ class UpdateCaseService:
     def _update_case_contact_information(
         self,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: BlaiseUpdateCaseBase,
     ) -> None:
         fields_to_update: Dict[str, str] = {}
         contact_fields = blaise_case.get_contact_details_fields(totalmobile_request)
@@ -98,7 +98,7 @@ class UpdateCaseService:
     def _update_case_outcome_code(
         self,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-        blaise_case: BlaiseUpdateCase,
+        blaise_case: BlaiseUpdateCaseBase,
     ) -> None:
 
         fields_to_update = {}
@@ -137,7 +137,7 @@ class UpdateCaseService:
         self,
         questionnaire_name: str,
         case_id: str,
-    ) -> BlaiseUpdateCase:
+    ) -> BlaiseUpdateCaseBase:
         try:
             case = self._blaise_service.get_case(questionnaire_name, case_id)
         except QuestionnaireCaseDoesNotExistError as err:
@@ -154,4 +154,4 @@ class UpdateCaseService:
         logging.info(
             f"Successfully found case {case_id} for questionnaire {questionnaire_name} in Blaise"
         )
-        return BlaiseUpdateCase(questionnaire_name, case)
+        return BlaiseUpdateCaseBase(questionnaire_name, case)

@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 
 from enums.blaise_fields import BlaiseFields
-from models.common.blaise.blaise_case_model import BlaiseCaseModel
+from models.common.blaise.lms_blaise_case_model import LMSBlaiseCaseModel
 
 
 class TestBlaiseCaseModel:
@@ -37,14 +37,14 @@ class TestBlaiseCaseModel:
             BlaiseFields.local_auth: "Loco",
         }
 
-    class MockLMSBlaiseCaseModel(BlaiseCaseModel):
+    class MockLMSBlaiseCaseModelBase(LMSBlaiseCaseModel):
         @staticmethod
         def required_fields():
             return ["case_id", "outcome_code", "call_history"]
 
     @pytest.fixture
     def model(self, sample_lms_case_data):
-        return self.MockLMSBlaiseCaseModel("LMS123", sample_lms_case_data)
+        return self.MockLMSBlaiseCaseModelBase("LMS123", sample_lms_case_data)
 
     def test_questionnaire_name(self, model):
         assert model.questionnaire_name == "LMS123"
@@ -75,19 +75,19 @@ class TestBlaiseCaseModel:
 
     def test_empty_wave_com_dte_returns_none(self, sample_lms_case_data):
         sample_lms_case_data[BlaiseFields.wave_com_dte] = ""
-        model = self.MockLMSBlaiseCaseModel("LMS123", sample_lms_case_data)
+        model = self.MockLMSBlaiseCaseModelBase("LMS123", sample_lms_case_data)
         assert model.wave_com_dte is None
 
     def test_convert_indicator_to_y_n_or_empty(self):
-        assert BlaiseCaseModel.convert_indicator_to_y_n_or_empty("1") == "Y"
-        assert BlaiseCaseModel.convert_indicator_to_y_n_or_empty("0") == "N"
-        assert BlaiseCaseModel.convert_indicator_to_y_n_or_empty("") == ""
+        assert LMSBlaiseCaseModel.convert_indicator_to_y_n_or_empty("1") == "Y"
+        assert LMSBlaiseCaseModel.convert_indicator_to_y_n_or_empty("0") == "N"
+        assert LMSBlaiseCaseModel.convert_indicator_to_y_n_or_empty("") == ""
 
     def test_convert_string_to_integer(self):
-        assert BlaiseCaseModel.convert_string_to_integer("10") == 10
-        assert BlaiseCaseModel.convert_string_to_integer("") == 0
+        assert LMSBlaiseCaseModel.convert_string_to_integer("10") == 10
+        assert LMSBlaiseCaseModel.convert_string_to_integer("") == 0
 
     def test_string_to_bool(self):
-        assert BlaiseCaseModel.string_to_bool("1") is True
-        assert BlaiseCaseModel.string_to_bool("") is False
-        assert BlaiseCaseModel.string_to_bool(None) is False
+        assert LMSBlaiseCaseModel.string_to_bool("1") is True
+        assert LMSBlaiseCaseModel.string_to_bool("") is False
+        assert LMSBlaiseCaseModel.string_to_bool(None) is False

@@ -1,11 +1,11 @@
 from typing import Dict, List, Optional
 
 from enums.blaise_fields import BlaiseFields
-from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
+from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModelBase
 from models.create.blaise.questionnaire_uac_model import UacChunks
 
 
-class BlaiseLMSCreateCaseModel(BlaiseCreateCaseModel):
+class BlaiseLMSCreateCaseModel(BlaiseCreateCaseModelBase):
     def __init__(
         self,
         questionnaire_name: str,
