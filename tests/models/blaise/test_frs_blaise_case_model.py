@@ -109,23 +109,11 @@ class TestFRSBlaiseCaseModel:
         model = self.MockFRSBlaiseCaseModelBase("FRS123", sample_frs_case_data)
         assert model.wave_com_dte is None
 
-    def test_frs_blaise_case_model_convert_indicator_to_y_n_or_empty_returns_expected_value(
-        self,
-    ):
-        assert FRSBlaiseCaseModel.convert_indicator_to_y_n_or_empty("1") == "Y"
-        assert FRSBlaiseCaseModel.convert_indicator_to_y_n_or_empty("0") == "N"
-        assert FRSBlaiseCaseModel.convert_indicator_to_y_n_or_empty("") == ""
-
     def test_frs_blaise_case_model_convert_string_to_integer_returns_expected_value(
         self,
     ):
         assert FRSBlaiseCaseModel.convert_string_to_integer("10") == 10
         assert FRSBlaiseCaseModel.convert_string_to_integer("") == 0
-
-    def test_frs_blaise_case_model_string_to_bool_returns_expected_value(self):
-        assert FRSBlaiseCaseModel.string_to_bool("1") is True
-        assert FRSBlaiseCaseModel.string_to_bool("") is False
-        assert FRSBlaiseCaseModel.string_to_bool(None) is False
 
     def test_frs_blaise_case_model_does_not_return_any_lms_properties(self, model):
         assert hasattr(model, "case_data")  # Expected FRS property

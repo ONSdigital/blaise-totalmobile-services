@@ -54,3 +54,16 @@ class LMSBlaiseCaseModel(BlaiseCaseModelBase):
     @property
     def data_model_name(self) -> Optional[str]:
         return self._case_data.get(BlaiseFields.data_model_name)
+
+    @staticmethod
+    def convert_indicator_to_y_n_or_empty(value: Optional[str]):
+        if not value or value == "":
+            return ""
+
+        return "Y" if value == "1" else "N"
+
+    @staticmethod
+    def string_to_bool(value: Optional[str]) -> bool:
+        if value == "" or value is None:
+            return False
+        return True

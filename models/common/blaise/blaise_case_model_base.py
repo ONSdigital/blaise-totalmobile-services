@@ -95,20 +95,7 @@ class BlaiseCaseModelBase:
         pass
 
     @staticmethod
-    def convert_indicator_to_y_n_or_empty(value: Optional[str]):
-        if not value or value == "":
-            return ""
-
-        return "Y" if value == "1" else "N"
-
-    @staticmethod
     def convert_string_to_integer(value: str) -> int:
         if value == "":
             return 0
         return int(value)
-
-    @staticmethod
-    def string_to_bool(value: Optional[str]) -> bool:
-        if value == "" or value is None:
-            return False
-        return True
