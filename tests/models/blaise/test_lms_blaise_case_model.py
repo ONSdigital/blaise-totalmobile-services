@@ -49,7 +49,9 @@ class TestLMSBlaiseCaseModel:
         # act
         return self.MockLMSBlaiseCaseModelBase("LMS2101_AA1", sample_lms_case_data)
 
-    def test_lms_blaise_case_model_questionnaire_name_returns_expected_value(self, model):
+    def test_lms_blaise_case_model_questionnaire_name_returns_expected_value(
+        self, model
+    ):
         assert model.questionnaire_name == "LMS2101_AA1"
 
     def test_lms_blaise_case_model_tla_returns_expected_value(self, model):
@@ -100,7 +102,9 @@ class TestLMSBlaiseCaseModel:
     def test_lms_blaise_case_model_local_auth_returns_expected_value(self, model):
         assert model.local_auth == "Loco"
 
-    def test_lms_blaise_case_model_rotational_outcome_code_returns_expected_value(self, model):
+    def test_lms_blaise_case_model_rotational_outcome_code_returns_expected_value(
+        self, model
+    ):
         assert model.rotational_outcome_code == 300
 
     def test_lms_blaise_case_model_has_call_history_returns_expected_value(self, model):
@@ -112,35 +116,49 @@ class TestLMSBlaiseCaseModel:
     def test_lms_blaise_case_model_wave_returns_expected_value(self, model):
         assert model.wave == 2
 
-    def test_lms_blaise_case_model_telephone_number_1_returns_expected_value(self, model):
+    def test_lms_blaise_case_model_telephone_number_1_returns_expected_value(
+        self, model
+    ):
         assert model.telephone_number_1 == "01234567890"
 
-    def test_lms_blaise_case_model_telephone_number_2_returns_expected_value(self, model):
+    def test_lms_blaise_case_model_telephone_number_2_returns_expected_value(
+        self, model
+    ):
         assert model.telephone_number_2 == "07878878787"
 
-    def test_lms_blaise_case_model_appointment_telephone_number_returns_expected_value(self, model):
+    def test_lms_blaise_case_model_appointment_telephone_number_returns_expected_value(
+        self, model
+    ):
         assert model.appointment_telephone_number == "09876543210"
 
     def test_lms_blaise_case_model_field_case_returns_expected_value(self, model):
         assert model.field_case == "FIELD123"
 
-    def test_lms_blaise_case_model_rotational_knock_to_nudge_indicator_returns_expected_value(self, model):
+    def test_lms_blaise_case_model_rotational_knock_to_nudge_indicator_returns_expected_value(
+        self, model
+    ):
         assert model.rotational_knock_to_nudge_indicator == "Y"
 
     def test_lms_blaise_case_model_data_model_name_returns_expected_value(self, model):
         assert model.data_model_name == "LM2007"
 
-    def test_lms_blaise_case_model_empty_wave_com_dte_returns_none_returns_expected_value(self, sample_lms_case_data):
+    def test_lms_blaise_case_model_empty_wave_com_dte_returns_none_returns_expected_value(
+        self, sample_lms_case_data
+    ):
         sample_lms_case_data[BlaiseFields.wave_com_dte] = ""
         model = self.MockLMSBlaiseCaseModelBase("LMS123", sample_lms_case_data)
         assert model.wave_com_dte is None
 
-    def test_lms_blaise_case_model_convert_indicator_to_y_n_or_empty_returns_expected_value(self):
+    def test_lms_blaise_case_model_convert_indicator_to_y_n_or_empty_returns_expected_value(
+        self,
+    ):
         assert LMSBlaiseCaseModel.convert_indicator_to_y_n_or_empty("1") == "Y"
         assert LMSBlaiseCaseModel.convert_indicator_to_y_n_or_empty("0") == "N"
         assert LMSBlaiseCaseModel.convert_indicator_to_y_n_or_empty("") == ""
 
-    def test_lms_blaise_case_model_convert_string_to_integer_returns_expected_value(self):
+    def test_lms_blaise_case_model_convert_string_to_integer_returns_expected_value(
+        self,
+    ):
         assert LMSBlaiseCaseModel.convert_string_to_integer("10") == 10
         assert LMSBlaiseCaseModel.convert_string_to_integer("") == 0
 

@@ -49,7 +49,9 @@ class TestFRSBlaiseCaseModel:
         # act
         return self.MockFRSBlaiseCaseModelBase("FRS2101", sample_frs_case_data)
 
-    def test_frs_blaise_case_model_questionnaire_name_returns_expected_value(self, model):
+    def test_frs_blaise_case_model_questionnaire_name_returns_expected_value(
+        self, model
+    ):
         assert model.questionnaire_name == "FRS2101"
 
     def test_frs_blaise_case_model_tla_returns_expected_value(self, model):
@@ -100,17 +102,23 @@ class TestFRSBlaiseCaseModel:
     def test_frs_blaise_case_model_local_auth_returns_expected_value(self, model):
         assert model.local_auth == "Loco"
 
-    def test_frs_blaise_case_model_empty_wave_com_dte_returns_none_returns_expected_value(self, sample_frs_case_data):
+    def test_frs_blaise_case_model_empty_wave_com_dte_returns_none_returns_expected_value(
+        self, sample_frs_case_data
+    ):
         sample_frs_case_data[BlaiseFields.wave_com_dte] = ""
         model = self.MockFRSBlaiseCaseModelBase("FRS123", sample_frs_case_data)
         assert model.wave_com_dte is None
 
-    def test_frs_blaise_case_model_convert_indicator_to_y_n_or_empty_returns_expected_value(self):
+    def test_frs_blaise_case_model_convert_indicator_to_y_n_or_empty_returns_expected_value(
+        self,
+    ):
         assert FRSBlaiseCaseModel.convert_indicator_to_y_n_or_empty("1") == "Y"
         assert FRSBlaiseCaseModel.convert_indicator_to_y_n_or_empty("0") == "N"
         assert FRSBlaiseCaseModel.convert_indicator_to_y_n_or_empty("") == ""
 
-    def test_frs_blaise_case_model_convert_string_to_integer_returns_expected_value(self):
+    def test_frs_blaise_case_model_convert_string_to_integer_returns_expected_value(
+        self,
+    ):
         assert FRSBlaiseCaseModel.convert_string_to_integer("10") == 10
         assert FRSBlaiseCaseModel.convert_string_to_integer("") == 0
 
@@ -120,5 +128,5 @@ class TestFRSBlaiseCaseModel:
         assert FRSBlaiseCaseModel.string_to_bool(None) is False
 
     def test_frs_blaise_case_model_does_not_return_any_lms_properties(self, model):
-        assert  hasattr(model, "case_data")             # Expected FRS property
-        assert not hasattr(model, "has_call_history")   # LMS property not expected here
+        assert hasattr(model, "case_data")  # Expected FRS property
+        assert not hasattr(model, "has_call_history")  # LMS property not expected here
