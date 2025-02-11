@@ -1,7 +1,7 @@
 import logging
 from typing import Dict
 
-from enums.questionnaire_case_outcome_codes import QuestionnaireOutcomeCodes
+from enums.questionnaire_case_outcome_codes import LMSQuestionnaireOutcomeCodes
 from models.update.blaise_update_case_model import BlaiseUpdateCaseBase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
@@ -25,26 +25,26 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
 
         if (
             totalmobile_request.outcome_code
-            == QuestionnaireOutcomeCodes.APPOINTMENT_300.value
+            == LMSQuestionnaireOutcomeCodes.APPOINTMENT_300.value
             and blaise_case.outcome_code
             in (
-                QuestionnaireOutcomeCodes.NOT_STARTED_0.value,
-                QuestionnaireOutcomeCodes.NON_CONTACT_310.value,
-                QuestionnaireOutcomeCodes.PHONE_NO_REMOVED_BY_TO_320.value,
+                LMSQuestionnaireOutcomeCodes.NOT_STARTED_0.value,
+                LMSQuestionnaireOutcomeCodes.NON_CONTACT_310.value,
+                LMSQuestionnaireOutcomeCodes.PHONE_NO_REMOVED_BY_TO_320.value,
             )
         ):
             self._update_case_contact_information(totalmobile_request, blaise_case)
             return
 
         if totalmobile_request.outcome_code in (
-            QuestionnaireOutcomeCodes.REFUSAL_HARD_460.value,
-            QuestionnaireOutcomeCodes.REFUSAL_SOFT_461.value,
-            QuestionnaireOutcomeCodes.INELIGIBLE_NO_TRACE_OF_ADDRESS_510.value,
-            QuestionnaireOutcomeCodes.INELIGIBLE_VACANT_540.value,
-            QuestionnaireOutcomeCodes.INELIGIBLE_NON_RESIDENTIAL_551.value,
-            QuestionnaireOutcomeCodes.INELIGIBLE_INSTITUTION_560.value,
-            QuestionnaireOutcomeCodes.INELIGIBLE_SECOND_OR_HOLIDAY_HOME_580.value,
-            QuestionnaireOutcomeCodes.WRONG_ADDRESS_640.value,
+            LMSQuestionnaireOutcomeCodes.REFUSAL_HARD_460.value,
+            LMSQuestionnaireOutcomeCodes.REFUSAL_SOFT_461.value,
+            LMSQuestionnaireOutcomeCodes.INELIGIBLE_NO_TRACE_OF_ADDRESS_510.value,
+            LMSQuestionnaireOutcomeCodes.INELIGIBLE_VACANT_540.value,
+            LMSQuestionnaireOutcomeCodes.INELIGIBLE_NON_RESIDENTIAL_551.value,
+            LMSQuestionnaireOutcomeCodes.INELIGIBLE_INSTITUTION_560.value,
+            LMSQuestionnaireOutcomeCodes.INELIGIBLE_SECOND_OR_HOLIDAY_HOME_580.value,
+            LMSQuestionnaireOutcomeCodes.WRONG_ADDRESS_640.value,
         ):
 
             self.update_case_outcome_code(totalmobile_request, blaise_case)

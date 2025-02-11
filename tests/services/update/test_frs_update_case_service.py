@@ -73,7 +73,7 @@ def test_frs_update_case_calls_get_existing_blaise_case_once_with_correct_parame
 
 @patch.object(FRSUpdateCaseService, "get_existing_blaise_case")
 @patch.object(FRSUpdateCaseService, "update_case_outcome_code")
-def test_frs_update_case_calls_update_case_outcome_code_once_with_correct_parameter(
+def test_frs_update_case_calls_update_case_outcome_code_once_with_correct_parameter_when_outcome_code_not_in_refusal_reason(
     mock_update_case_outcome_code,
     mock_get_existing_blaise_case,
     mock_case_update_service,
@@ -87,7 +87,7 @@ def test_frs_update_case_calls_update_case_outcome_code_once_with_correct_parame
         BlaiseFields.call_history: False,
     }
     mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
-        questionnaire_name, case_id, 460
+        questionnaire_name, case_id, 522
     )
     mock_blaise_case = BlaiseUpdateCaseBase(questionnaire_name, case_data)
     mock_get_existing_blaise_case.return_value = mock_blaise_case
@@ -97,6 +97,68 @@ def test_frs_update_case_calls_update_case_outcome_code_once_with_correct_parame
 
     # assert
     mock_update_case_outcome_code.assert_called_once_with(
+        mock_totalmobile_request, mock_blaise_case
+    )
+
+
+@patch.object(FRSUpdateCaseService, "get_existing_blaise_case")
+@patch.object(FRSUpdateCaseService, "update_case_outcome_code")
+def test_frs_update_case_calls_update_case_outcome_code_once_with_correct_parameter_when_outcome_code_in_refusal_reason(
+    mock_update_case_outcome_code,
+    mock_get_existing_blaise_case,
+    mock_case_update_service,
+):
+    # arrange
+    questionnaire_name = "FRS2102"
+    case_id = "90001"
+    case_data = {
+        BlaiseFields.case_id: case_id,
+        BlaiseFields.outcome_code: 0,
+        BlaiseFields.call_history: False,
+    }
+    mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
+        questionnaire_name, case_id, 410
+    )
+    mock_blaise_case = BlaiseUpdateCaseBase(questionnaire_name, case_data)
+    mock_get_existing_blaise_case.return_value = mock_blaise_case
+
+    # act
+    mock_case_update_service.update_case(mock_totalmobile_request)
+
+    # assert
+    mock_update_case_outcome_code.assert_called_once_with(
+        mock_totalmobile_request, mock_blaise_case
+    )
+
+
+@patch.object(FRSUpdateCaseService, "get_existing_blaise_case")
+@patch.object(FRSUpdateCaseService, "update_case_outcome_code")
+@patch.object(FRSUpdateCaseService, "update_refusal_reason")
+def test_frs_update_case_calls_update_refusal_reason_once_with_correct_parameter_when_outcome_code_in_refusal_reason(
+    mock_update_refusal_reason,
+    _mock_update_case_outcome_code,
+    mock_get_existing_blaise_case,
+    mock_case_update_service,
+):
+    # arrange
+    questionnaire_name = "FRS2102"
+    case_id = "90001"
+    case_data = {
+        BlaiseFields.case_id: case_id,
+        BlaiseFields.outcome_code: 0,
+        BlaiseFields.call_history: False,
+    }
+    mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
+        questionnaire_name, case_id, 410
+    )
+    mock_blaise_case = BlaiseUpdateCaseBase(questionnaire_name, case_data)
+    mock_get_existing_blaise_case.return_value = mock_blaise_case
+
+    # act
+    mock_case_update_service.update_case(mock_totalmobile_request)
+
+    # assert
+    mock_update_refusal_reason.assert_called_once_with(
         mock_totalmobile_request, mock_blaise_case
     )
 
