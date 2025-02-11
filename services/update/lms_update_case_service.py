@@ -1,29 +1,25 @@
 import logging
 from typing import Dict
 
-from app.exceptions.custom_exceptions import (
-    QuestionnaireCaseDoesNotExistError,
-    QuestionnaireCaseError,
-    QuestionnaireDoesNotExistError,
-)
 from enums.questionnaire_case_outcome_codes import QuestionnaireOutcomeCodes
 from models.update.blaise_update_case_model import BlaiseUpdateCaseBase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 from services.blaise_service import RealBlaiseService
+from services.update.update_case_service_base import UpdateCaseServiceBase
 
 
-class UpdateCaseService:
+class LMSUpdateCaseService(UpdateCaseServiceBase):
     def __init__(self, blaise_service: RealBlaiseService):
-        self._blaise_service = blaise_service
+        super().__init__(blaise_service)
 
     def update_case(
         self, totalmobile_request: TotalMobileIncomingUpdateRequestModel
     ) -> None:
-        self._validate_questionnaire_exists(totalmobile_request.questionnaire_name)
+        self.validate_questionnaire_exists(totalmobile_request.questionnaire_name)
 
-        blaise_case = self._get_existing_blaise_case(
+        blaise_case = self.get_existing_blaise_case(
             totalmobile_request.questionnaire_name, totalmobile_request.case_id
         )
 
@@ -51,7 +47,7 @@ class UpdateCaseService:
             QuestionnaireOutcomeCodes.WRONG_ADDRESS_640.value,
         ):
 
-            self._update_case_outcome_code(totalmobile_request, blaise_case)
+            self.update_case_outcome_code(totalmobile_request, blaise_case)
             return
 
         logging.info(
@@ -95,7 +91,7 @@ class UpdateCaseService:
             f"TM hOut={totalmobile_request.outcome_code})"
         )
 
-    def _update_case_outcome_code(
+    def update_case_outcome_code(
         self,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
         blaise_case: BlaiseUpdateCaseBase,
@@ -123,35 +119,3 @@ class UpdateCaseService:
             f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
             f"TM hOut={totalmobile_request.outcome_code})"
         )
-
-    def _validate_questionnaire_exists(self, questionnaire_name: str) -> None:
-        if not self._blaise_service.questionnaire_exists(questionnaire_name):
-            logging.error(
-                f"Could not find questionnaire {questionnaire_name} in Blaise"
-            )
-            raise QuestionnaireDoesNotExistError()
-
-        logging.info(f"Successfully found questionnaire {questionnaire_name} in Blaise")
-
-    def _get_existing_blaise_case(
-        self,
-        questionnaire_name: str,
-        case_id: str,
-    ) -> BlaiseUpdateCaseBase:
-        try:
-            case = self._blaise_service.get_case(questionnaire_name, case_id)
-        except QuestionnaireCaseDoesNotExistError as err:
-            logging.error(
-                f"Could not find case {case_id} for questionnaire {questionnaire_name} in Blaise"
-            )
-            raise err
-        except QuestionnaireCaseError as err:
-            logging.error(
-                f"There was an error retrieving case {case_id} for questionnaire {questionnaire_name} in Blaise"
-            )
-            raise err
-
-        logging.info(
-            f"Successfully found case {case_id} for questionnaire {questionnaire_name} in Blaise"
-        )
-        return BlaiseUpdateCaseBase(questionnaire_name, case)

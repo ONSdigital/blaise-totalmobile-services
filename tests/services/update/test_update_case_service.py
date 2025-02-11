@@ -5,7 +5,7 @@ import pytest
 
 from enums.blaise_fields import BlaiseFields
 from models.update.blaise_update_case_model import BlaiseUpdateCaseBase
-from services.update.update_case_service import UpdateCaseService
+from services.update.lms_update_case_service import LMSUpdateCaseService
 from tests.helpers.totalmobile_incoming_update_request_helper import (
     lms_totalmobile_incoming_update_request_helper,
 )
@@ -18,14 +18,14 @@ def mock_blaise_service():
 
 @pytest.fixture()
 def mock_case_update_service(mock_blaise_service):
-    return UpdateCaseService(mock_blaise_service)
+    return LMSUpdateCaseService(mock_blaise_service)
 
 
-@patch.object(UpdateCaseService, "_validate_questionnaire_exists")
-@patch.object(UpdateCaseService, "_get_existing_blaise_case")
+@patch.object(LMSUpdateCaseService, "validate_questionnaire_exists")
+@patch.object(LMSUpdateCaseService, "get_existing_blaise_case")
 def test_update_case_calls_validate_questionnaire_exists_once_with_correct_parameters(
-    mock_get_existing_blaise_case,
-    mock_validate,
+    mockget_existing_blaise_case,
+    mockvalidate,
     mock_case_update_service,
 ):
     # arrange
@@ -36,7 +36,7 @@ def test_update_case_calls_validate_questionnaire_exists_once_with_correct_param
         BlaiseFields.outcome_code: 0,
         BlaiseFields.call_history: False,
     }
-    mock_get_existing_blaise_case.return_value = BlaiseUpdateCaseBase(
+    mockget_existing_blaise_case.return_value = BlaiseUpdateCaseBase(
         questionnaire_name, case_data
     )
     mock_totalmobile_request = lms_totalmobile_incoming_update_request_helper(
@@ -47,14 +47,14 @@ def test_update_case_calls_validate_questionnaire_exists_once_with_correct_param
     mock_case_update_service.update_case(mock_totalmobile_request)
 
     # assert
-    mock_validate.assert_called_once_with(mock_totalmobile_request.questionnaire_name)
+    mockvalidate.assert_called_once_with(mock_totalmobile_request.questionnaire_name)
 
 
-@patch.object(UpdateCaseService, "_validate_questionnaire_exists")
-@patch.object(UpdateCaseService, "_get_existing_blaise_case")
+@patch.object(LMSUpdateCaseService, "validate_questionnaire_exists")
+@patch.object(LMSUpdateCaseService, "get_existing_blaise_case")
 def test_update_case_calls_get_existing_blaise_case_once_with_correct_parameters(
-    mock_get_existing_blaise_case,
-    _mock_validate,
+    mockget_existing_blaise_case,
+    _mockvalidate,
     mock_case_update_service,
 ):
     # arrange
@@ -66,16 +66,16 @@ def test_update_case_calls_get_existing_blaise_case_once_with_correct_parameters
     mock_case_update_service.update_case(mock_totalmobile_request)
 
     # assert
-    mock_get_existing_blaise_case.assert_called_once_with(
+    mockget_existing_blaise_case.assert_called_once_with(
         mock_totalmobile_request.questionnaire_name, mock_totalmobile_request.case_id
     )
 
 
-@patch.object(UpdateCaseService, "_get_existing_blaise_case")
-@patch.object(UpdateCaseService, "_update_case_contact_information")
+@patch.object(LMSUpdateCaseService, "get_existing_blaise_case")
+@patch.object(LMSUpdateCaseService, "_update_case_contact_information")
 def test_update_case_calls_update_case_contact_information_once_with_correct_parameter(
     mock_update_case_contact_information,
-    mock_get_existing_blaise_case,
+    mockget_existing_blaise_case,
     mock_case_update_service,
 ):
     # arrange
@@ -90,7 +90,7 @@ def test_update_case_calls_update_case_contact_information_once_with_correct_par
         questionnaire_name, case_id, 300
     )
     mock_blaise_case = BlaiseUpdateCaseBase(questionnaire_name, case_data)
-    mock_get_existing_blaise_case.return_value = mock_blaise_case
+    mockget_existing_blaise_case.return_value = mock_blaise_case
 
     # act
     mock_case_update_service.update_case(mock_totalmobile_request)
@@ -101,11 +101,11 @@ def test_update_case_calls_update_case_contact_information_once_with_correct_par
     )
 
 
-@patch.object(UpdateCaseService, "_get_existing_blaise_case")
-@patch.object(UpdateCaseService, "_update_case_outcome_code")
+@patch.object(LMSUpdateCaseService, "get_existing_blaise_case")
+@patch.object(LMSUpdateCaseService, "update_case_outcome_code")
 def test_update_case_calls_update_case_outcome_code_once_with_correct_parameter(
     mock_update_case_outcome_code,
-    mock_get_existing_blaise_case,
+    mockget_existing_blaise_case,
     mock_case_update_service,
 ):
     # arrange
@@ -120,7 +120,7 @@ def test_update_case_calls_update_case_outcome_code_once_with_correct_parameter(
         questionnaire_name, case_id, 460
     )
     mock_blaise_case = BlaiseUpdateCaseBase(questionnaire_name, case_data)
-    mock_get_existing_blaise_case.return_value = mock_blaise_case
+    mockget_existing_blaise_case.return_value = mock_blaise_case
 
     # act
     mock_case_update_service.update_case(mock_totalmobile_request)
@@ -131,10 +131,10 @@ def test_update_case_calls_update_case_outcome_code_once_with_correct_parameter(
     )
 
 
-@patch.object(UpdateCaseService, "_validate_questionnaire_exists")
-@patch.object(UpdateCaseService, "_get_existing_blaise_case")
+@patch.object(LMSUpdateCaseService, "validate_questionnaire_exists")
+@patch.object(LMSUpdateCaseService, "get_existing_blaise_case")
 def test_update_case_logs_information_when_case_has_not_been_updated(
-    mock_get_existing_blaise_case, _mock_validate, mock_case_update_service, caplog
+    mockget_existing_blaise_case, _mockvalidate, mock_case_update_service, caplog
 ):
     # arrange
     questionnaire_name = "LMS2101_AA1"
@@ -149,7 +149,7 @@ def test_update_case_logs_information_when_case_has_not_been_updated(
         questionnaire_name, case_id, 999
     )
     mock_blaise_case = BlaiseUpdateCaseBase(questionnaire_name, case_data)
-    mock_get_existing_blaise_case.return_value = mock_blaise_case
+    mockget_existing_blaise_case.return_value = mock_blaise_case
 
     # act
     with caplog.at_level(logging.INFO):
