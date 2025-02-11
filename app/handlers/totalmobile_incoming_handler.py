@@ -13,7 +13,9 @@ from services.create.cma.frs_case_allocation_service import FRSCaseAllocationSer
 from services.update.lms_update_case_service import LMSUpdateCaseService
 
 
-def submit_form_result_request_handler(request, update_case_service: LMSUpdateCaseService):
+def submit_form_result_request_handler(
+    request, update_case_service: LMSUpdateCaseService
+):
     data = request.get_json()
     totalmobile_case = TotalMobileIncomingUpdateRequestModel.import_request(data)
     update_case_service.update_case(totalmobile_case)
