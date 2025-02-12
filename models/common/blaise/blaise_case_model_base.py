@@ -18,6 +18,10 @@ class BlaiseCaseModelBase:
     def questionnaire_name(self) -> str:
         return self._questionnaire_name
 
+    @questionnaire_name.setter
+    def questionnaire_name(self, value):
+        self._questionnaire_name = value
+
     @property
     def tla(self) -> str:
         return self.questionnaire_name[0:3]
@@ -89,9 +93,8 @@ class BlaiseCaseModelBase:
     def local_auth(self) -> Optional[str]:
         return self._case_data.get(BlaiseFields.local_auth)
 
-    @staticmethod
     @abstractmethod
-    def required_fields() -> List:
+    def required_fields(self) -> List:
         pass
 
     @staticmethod
