@@ -1,7 +1,7 @@
 import pytest
 
 from enums.blaise_fields import BlaiseFields
-from models.update.blaise_update_case_model import BlaiseUpdateCaseBase
+from models.update.lms_blaise_update_case_model import LMSBlaiseUpdateCase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
@@ -29,7 +29,7 @@ def test_populated_update_case_model_has_the_correct_properties(
     }
 
     # act
-    result = BlaiseUpdateCaseBase(questionnaire_name, case_data)  # type: ignore
+    result = LMSBlaiseUpdateCase(questionnaire_name, case_data)  # type: ignore
 
     # assert
     assert result.questionnaire_name == questionnaire_name
@@ -41,7 +41,7 @@ def test_populated_update_case_model_has_the_correct_properties(
 def test_get_knock_to_nudge_indicator_flag_field_returns_expected_dictionary():
     # arrange
     questionnaire_name = "LMS2101_TLR"
-    blaise_case = BlaiseUpdateCaseBase(questionnaire_name, {})
+    blaise_case = LMSBlaiseUpdateCase(questionnaire_name, {})
 
     # act
     result = blaise_case.get_knock_to_nudge_indicator_flag_field()
@@ -53,7 +53,7 @@ def test_get_knock_to_nudge_indicator_flag_field_returns_expected_dictionary():
 def test_get_outcome_code_fields_returns_an_expected_dictionary():
     # arrange
     questionnaire_name = "LMS2101_TLR"
-    blaise_case = BlaiseUpdateCaseBase(questionnaire_name, {})
+    blaise_case = LMSBlaiseUpdateCase(questionnaire_name, {})
     totalmobile_request = TotalMobileIncomingUpdateRequestModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
@@ -76,7 +76,7 @@ def test_get_outcome_code_fields_returns_an_expected_dictionary():
 def test_get_contact_details_fields_returns_an_expected_dictionary():
     # arrange
     questionnaire_name = "LMS2101_TLR"
-    blaise_case = BlaiseUpdateCaseBase(questionnaire_name, {})
+    blaise_case = LMSBlaiseUpdateCase(questionnaire_name, {})
     totalmobile_request = TotalMobileIncomingUpdateRequestModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
@@ -103,7 +103,7 @@ def test_get_contact_details_fields_returns_an_expected_dictionary_if_contact_na
 ):
     # arrange
     questionnaire_name = "LMS2101_TLR"
-    blaise_case = BlaiseUpdateCaseBase(questionnaire_name, {})
+    blaise_case = LMSBlaiseUpdateCase(questionnaire_name, {})
     totalmobile_request = TotalMobileIncomingUpdateRequestModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
@@ -129,7 +129,7 @@ def test_get_contact_details_fields_returns_an_expected_dictionary_if_home_numbe
 ):
     # arrange
     questionnaire_name = "LMS2101_TLR"
-    blaise_case = BlaiseUpdateCaseBase(questionnaire_name, {})
+    blaise_case = LMSBlaiseUpdateCase(questionnaire_name, {})
     totalmobile_request = TotalMobileIncomingUpdateRequestModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
@@ -155,7 +155,7 @@ def test_get_contact_details_fields_returns_an_expected_dictionary_if_mobile_num
 ):
     # arrange
     questionnaire_name = "LMS2101_TLR"
-    blaise_case = BlaiseUpdateCaseBase(questionnaire_name, {})
+    blaise_case = LMSBlaiseUpdateCase(questionnaire_name, {})
     totalmobile_request = TotalMobileIncomingUpdateRequestModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
@@ -181,7 +181,7 @@ def test_get_contact_details_fields_returns_an_empty_dictionary_if_no_contact_de
 ):
     # arrange
     questionnaire_name = "LMS2101_TLR"
-    blaise_case = BlaiseUpdateCaseBase(questionnaire_name, {})
+    blaise_case = LMSBlaiseUpdateCase(questionnaire_name, {})
     totalmobile_request = TotalMobileIncomingUpdateRequestModel(
         questionnaire_name="LMS2101_AA1",
         case_id="90001",
@@ -204,7 +204,7 @@ def test_get_call_history_record_field_returns_expected_detail_if_record_number_
 ):
     # arrange
     questionnaire_name = "LMS2101_TLR"
-    blaise_case = BlaiseUpdateCaseBase(questionnaire_name, {})
+    blaise_case = LMSBlaiseUpdateCase(questionnaire_name, {})
 
     # act
     result = blaise_case.get_call_history_record_field(record_number)

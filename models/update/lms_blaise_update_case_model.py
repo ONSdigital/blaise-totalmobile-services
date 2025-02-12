@@ -7,7 +7,7 @@ from models.update.totalmobile_incoming_update_request_model import (
 )
 
 
-class BlaiseUpdateCaseBase(LMSBlaiseCaseModel):
+class LMSBlaiseUpdateCase(LMSBlaiseCaseModel):
     def __init__(self, questionnaire_name: str, case_data: Dict[str, str]):  # type: ignore
         super().__init__(questionnaire_name, case_data)
 

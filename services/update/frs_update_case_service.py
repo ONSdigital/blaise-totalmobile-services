@@ -1,7 +1,7 @@
 import logging
 
 from enums.questionnaire_case_outcome_codes import FRSQuestionnaireOutcomeCodes
-from models.update.blaise_update_case_model import BlaiseUpdateCaseBase
+from models.update.lms_blaise_update_case_model import LMSBlaiseUpdateCase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
@@ -78,7 +78,7 @@ class FRSUpdateCaseService(UpdateCaseServiceBase):
     def update_case_outcome_code(
         self,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-        blaise_case: BlaiseUpdateCaseBase,
+        blaise_case: LMSBlaiseUpdateCase,
     ) -> None:
 
         fields_to_update = {}

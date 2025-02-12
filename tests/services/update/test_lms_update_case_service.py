@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, Mock, PropertyMock, patch
 import pytest
 
 from enums.blaise_fields import BlaiseFields
-from models.update.blaise_update_case_model import BlaiseUpdateCaseBase
+from models.update.lms_blaise_update_case_model import LMSBlaiseUpdateCase
 from services.update.lms_update_case_service import LMSUpdateCaseService
 from tests.helpers.totalmobile_incoming_update_request_helper import (
     lms_totalmobile_incoming_update_request_helper,
@@ -36,7 +36,7 @@ def test_lms_update_case_calls_validate_questionnaire_exists_once_with_correct_p
         BlaiseFields.outcome_code: 0,
         BlaiseFields.call_history: False,
     }
-    mock_get_existing_blaise_case.return_value = BlaiseUpdateCaseBase(
+    mock_get_existing_blaise_case.return_value = LMSBlaiseUpdateCase(
         questionnaire_name, case_data
     )
     mock_totalmobile_request = lms_totalmobile_incoming_update_request_helper(
@@ -89,7 +89,7 @@ def test_lms_update_case_calls_update_case_contact_information_once_with_correct
     mock_totalmobile_request = lms_totalmobile_incoming_update_request_helper(
         questionnaire_name, case_id, 300
     )
-    mock_blaise_case = BlaiseUpdateCaseBase(questionnaire_name, case_data)
+    mock_blaise_case = LMSBlaiseUpdateCase(questionnaire_name, case_data)
     mock_get_existing_blaise_case.return_value = mock_blaise_case
 
     # act
@@ -119,7 +119,7 @@ def test_lms_update_case_calls_update_case_outcome_code_once_with_correct_parame
     mock_totalmobile_request = lms_totalmobile_incoming_update_request_helper(
         questionnaire_name, case_id, 460
     )
-    mock_blaise_case = BlaiseUpdateCaseBase(questionnaire_name, case_data)
+    mock_blaise_case = LMSBlaiseUpdateCase(questionnaire_name, case_data)
     mock_get_existing_blaise_case.return_value = mock_blaise_case
 
     # act
@@ -148,7 +148,7 @@ def test_lms_update_case_logs_information_when_case_has_not_been_updated(
     mock_totalmobile_request = lms_totalmobile_incoming_update_request_helper(
         questionnaire_name, case_id, 999
     )
-    mock_blaise_case = BlaiseUpdateCaseBase(questionnaire_name, case_data)
+    mock_blaise_case = LMSBlaiseUpdateCase(questionnaire_name, case_data)
     mock_get_existing_blaise_case.return_value = mock_blaise_case
 
     # act
@@ -172,7 +172,7 @@ def test_lms_update_case_contact_information_calls_get_contact_details_fields_on
     mock_totalmobile_request = lms_totalmobile_incoming_update_request_helper(
         questionnaire_name, case_id
     )
-    mock_blaise_case = MagicMock(spec=BlaiseUpdateCaseBase)
+    mock_blaise_case = MagicMock(spec=LMSBlaiseUpdateCase)
     mock_blaise_case.case_id = case_id
     mock_blaise_case.outcome_code = 0
     mock_blaise_case.get_contact_details_fields.return_value = {
@@ -201,7 +201,7 @@ def test_lms_update_case_contact_information_logs_contact_information_has_not_be
     mock_totalmobile_request = lms_totalmobile_incoming_update_request_helper(
         questionnaire_name, case_id, 999
     )
-    mock_blaise_case = MagicMock(spec=BlaiseUpdateCaseBase)
+    mock_blaise_case = MagicMock(spec=LMSBlaiseUpdateCase)
     mock_blaise_case.case_id = case_id
     mock_blaise_case.outcome_code = 0
     mock_blaise_case.get_contact_details_fields.return_value = {}
@@ -226,7 +226,7 @@ def test_lms_update_case_contact_information_calls_get_knock_to_nudge_indicator_
     # arrange
     questionnaire_name = "LMS2101_AA1"
     case_id = "90001"
-    mock_blaise_case = MagicMock(spec=BlaiseUpdateCaseBase)
+    mock_blaise_case = MagicMock(spec=LMSBlaiseUpdateCase)
     mock_blaise_case.case_id = case_id
     mock_blaise_case.outcome_code = 0
     mock_blaise_case.get_contact_details_fields.return_value = {
@@ -266,7 +266,7 @@ def test_lms_update_case_contact_information_update_case_once_with_correct_param
         questionnaire_name, case_id
     )
     mock_case_update_service._blaise_service = MagicMock()
-    mock_blaise_case = MagicMock(spec=BlaiseUpdateCaseBase)
+    mock_blaise_case = MagicMock(spec=LMSBlaiseUpdateCase)
     mock_blaise_case.case_id = case_id
     mock_blaise_case.outcome_code = 0
 
@@ -297,7 +297,7 @@ def test_lms_update_case_contact_information_logs_contact_information_updated(
     mock_totalmobile_request = lms_totalmobile_incoming_update_request_helper(
         questionnaire_name, case_id, 999
     )
-    mock_blaise_case = MagicMock(spec=BlaiseUpdateCaseBase)
+    mock_blaise_case = MagicMock(spec=LMSBlaiseUpdateCase)
     mock_blaise_case.case_id = case_id
     mock_blaise_case.outcome_code = 0
     mock_blaise_case.get_contact_details_fields.return_value = {
@@ -332,7 +332,7 @@ def test_lms_update_case_outcome_code_calls_get_outcome_code_fields_once_with_co
     mock_totalmobile_request = lms_totalmobile_incoming_update_request_helper(
         questionnaire_name, case_id
     )
-    mock_blaise_case = MagicMock(spec=BlaiseUpdateCaseBase)
+    mock_blaise_case = MagicMock(spec=LMSBlaiseUpdateCase)
     mock_blaise_case.case_id = case_id
     mock_blaise_case.outcome_code = 0
     mock_blaise_case.get_outcome_code_fields.return_value = {
@@ -361,7 +361,7 @@ def test_lms_update_case_outcome_code_calls_update_case_once_with_correct_parame
         questionnaire_name, case_id
     )
     mock_case_update_service._blaise_service = MagicMock()
-    mock_blaise_case = MagicMock(spec=BlaiseUpdateCaseBase)
+    mock_blaise_case = MagicMock(spec=LMSBlaiseUpdateCase)
     mock_blaise_case.case_id = case_id
     mock_blaise_case.outcome_code = 0
 
@@ -420,7 +420,7 @@ def test_lms_update_case_outcome_code_calls_update_case_once_with_correct_parame
         questionnaire_name, case_id
     )
     mock_case_update_service._blaise_service = MagicMock()
-    mock_blaise_case = MagicMock(spec=BlaiseUpdateCaseBase)
+    mock_blaise_case = MagicMock(spec=LMSBlaiseUpdateCase)
     mock_blaise_case.case_id = case_id
     mock_blaise_case.outcome_code = 0
 
@@ -471,7 +471,7 @@ def test_lms_update_case_outcome_logs_outcome_code_and_call_history_updated(
     mock_totalmobile_request = lms_totalmobile_incoming_update_request_helper(
         questionnaire_name, case_id, 999
     )
-    mock_blaise_case = MagicMock(spec=BlaiseUpdateCaseBase)
+    mock_blaise_case = MagicMock(spec=LMSBlaiseUpdateCase)
     mock_blaise_case.case_id = case_id
     mock_blaise_case.outcome_code = 0
 
