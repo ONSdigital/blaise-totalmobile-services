@@ -67,7 +67,7 @@ def test_required_fields_returns_expected_dictionary():
 
     # assert
     assert result == [
-            BlaiseFields.case_id,
-            BlaiseFields.outcome_code,
-            BlaiseFields.refusal_reason,
-        ]
+        BlaiseFields.case_id,
+        BlaiseFields.outcome_code,
+        BlaiseFields.refusal_reason,
+    ]

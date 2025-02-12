@@ -215,6 +215,7 @@ def test_get_call_history_record_field_returns_expected_detail_if_record_number_
         f"catiMana.CatiCall.RegsCalls[{record_number}].DialResult": "5",
     }
 
+
 def test_required_fields_returns_expected_dictionary():
     # arrange
     questionnaire_name = "LMS2101_TLR"
@@ -225,7 +226,7 @@ def test_required_fields_returns_expected_dictionary():
 
     # assert
     assert result == [
-            BlaiseFields.case_id,
-            BlaiseFields.outcome_code,
-            BlaiseFields.call_history,
-        ]
+        BlaiseFields.case_id,
+        BlaiseFields.outcome_code,
+        BlaiseFields.call_history,
+    ]
