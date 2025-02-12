@@ -15,6 +15,7 @@ from app.exceptions.custom_exceptions import (
     QuestionnaireCaseError,
     QuestionnaireDoesNotExistError,
     SpecialInstructionCreationFailedException,
+    SurveyDoesNotExistError,
 )
 from app.handlers.totalmobile_incoming_handler import (
     create_visit_request_handler,
@@ -22,7 +23,6 @@ from app.handlers.totalmobile_incoming_handler import (
     submit_form_result_request_handler,
 )
 from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
-from services.update.lms_update_case_service import LMSUpdateCaseService
 
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
 
@@ -43,10 +43,7 @@ def add_header(response):
 def submit_form_result_request():
     logging.info(f"Incoming request via the 'submitformresultrequest' endpoint")
     try:
-        update_case_service = LMSUpdateCaseService(
-            blaise_service=current_app.blaise_service
-        )
-        submit_form_result_request_handler(request, update_case_service)
+        submit_form_result_request_handler(request, current_app)
         return "ok"
     except (MissingReferenceError, BadReferenceError):
         return "Missing/invalid reference in request", 400
@@ -58,6 +55,8 @@ def submit_form_result_request():
         return "Case does not exist in Blaise", 404
     except QuestionnaireCaseError:
         return "Error trying to get case in Blaise", 500
+    except SurveyDoesNotExistError:
+        return "Survey does not exist in Blaise", 404
 
 
 @incoming.route("/createvisitrequest", methods=["POST"])

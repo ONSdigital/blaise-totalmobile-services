@@ -45,6 +45,9 @@ from services.create.uac.uac_service import UacService
 from services.create.uac.uac_service_base import UacServiceBase
 from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
 from services.totalmobile_service import RealTotalmobileService
+from services.update.frs_update_case_service import FRSUpdateCaseService
+from services.update.lms_update_case_service import LMSUpdateCaseService
+from services.update.update_case_service_base import UpdateCaseServiceBase
 
 
 class ServiceInstanceFactory:
@@ -79,6 +82,16 @@ class ServiceInstanceFactory:
     @staticmethod
     def create_eligible_frs_case_service() -> FRSEligibleCaseService:
         return FRSEligibleCaseService()
+
+    @staticmethod
+    def create_update_case_service(
+        survey_type: str, blaise_service: RealBlaiseService
+    ) -> UpdateCaseServiceBase:
+        if survey_type == "LMS":
+            return LMSUpdateCaseService(blaise_service=blaise_service)
+        if survey_type == "FRS":
+            return FRSUpdateCaseService(blaise_service=blaise_service)
+        raise Exception
 
     def create_questionnaire_service(
         self, survey_type: str
