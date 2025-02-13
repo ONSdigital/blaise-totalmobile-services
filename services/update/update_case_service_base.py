@@ -47,7 +47,7 @@ class UpdateCaseServiceBase(ABC, Generic[T]):
         self,
         questionnaire_name: str,
         case_id: str,
-    ) -> BlaiseUpdateCaseBase:
+    ) -> T:
         try:
             case = self._blaise_service.get_case(questionnaire_name, case_id)
         except QuestionnaireCaseDoesNotExistError as err:

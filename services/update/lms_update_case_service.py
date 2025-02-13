@@ -10,7 +10,7 @@ from services.blaise_service import RealBlaiseService
 from services.update.update_case_service_base import UpdateCaseServiceBase
 
 
-class LMSUpdateCaseService(UpdateCaseServiceBase):
+class LMSUpdateCaseService(UpdateCaseServiceBase[LMSBlaiseUpdateCase]):
     def __init__(self, blaise_service: RealBlaiseService):
         super().__init__(blaise_service)
 
