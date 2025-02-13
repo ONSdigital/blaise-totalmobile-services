@@ -1,4 +1,5 @@
 import logging
+from typing import Dict
 
 from enums.questionnaire_case_outcome_codes import FRSQuestionnaireOutcomeCodes
 from models.update.frs_blaise_update_case_model import FRSBlaiseUpdateCase
@@ -101,3 +102,6 @@ class FRSUpdateCaseService(UpdateCaseServiceBase):
 
     def update_refusal_reason(self, totalmobile_request, blaise_case):
         pass
+
+    def _return_survey_type_update_case_model(self, questionnaire_name, case: Dict[str, str]) -> FRSBlaiseUpdateCase:
+        return FRSBlaiseUpdateCase(questionnaire_name, case)

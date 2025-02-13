@@ -119,3 +119,6 @@ class LMSUpdateCaseService(UpdateCaseServiceBase):
             f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
             f"TM hOut={totalmobile_request.outcome_code})"
         )
+
+    def _return_survey_type_update_case_model(self, questionnaire_name, case: Dict[str, str]) -> LMSBlaiseUpdateCase:
+        return LMSBlaiseUpdateCase(questionnaire_name, case)

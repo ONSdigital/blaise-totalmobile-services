@@ -1,19 +1,22 @@
 import logging
-from abc import abstractmethod
+from abc import abstractmethod, ABC
+from typing import TypeVar, Generic, Dict
 
 from app.exceptions.custom_exceptions import (
     QuestionnaireCaseDoesNotExistError,
     QuestionnaireCaseError,
     QuestionnaireDoesNotExistError,
 )
-from models.update.lms_blaise_update_case_model import LMSBlaiseUpdateCase
+from models.update.blaise_update_case_model_base import BlaiseUpdateCaseBase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 from services.blaise_service import RealBlaiseService
 
+T = TypeVar("T", bound=BlaiseUpdateCaseBase)
 
-class UpdateCaseServiceBase:
+
+class UpdateCaseServiceBase(ABC, Generic[T]):
     def __init__(self, blaise_service: RealBlaiseService):
         self._blaise_service = blaise_service
 
@@ -27,7 +30,7 @@ class UpdateCaseServiceBase:
     def update_case_outcome_code(
         self,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-        blaise_case: LMSBlaiseUpdateCase,
+        blaise_case: BlaiseUpdateCaseBase,
     ) -> None:
         pass
 
@@ -44,7 +47,7 @@ class UpdateCaseServiceBase:
         self,
         questionnaire_name: str,
         case_id: str,
-    ) -> LMSBlaiseUpdateCase:
+    ) -> BlaiseUpdateCaseBase:
         try:
             case = self._blaise_service.get_case(questionnaire_name, case_id)
         except QuestionnaireCaseDoesNotExistError as err:
@@ -61,4 +64,8 @@ class UpdateCaseServiceBase:
         logging.info(
             f"Successfully found case {case_id} for questionnaire {questionnaire_name} in Blaise"
         )
-        return LMSBlaiseUpdateCase(questionnaire_name, case)
+        return self._return_survey_type_update_case_model(questionnaire_name, case)
+
+    @abstractmethod
+    def _return_survey_type_update_case_model(self, questionnaire_name: str, case: Dict[str, str]) -> T:
+        pass
