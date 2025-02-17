@@ -1,5 +1,5 @@
 import logging
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -14,7 +14,7 @@ from tests.helpers.totalmobile_incoming_update_request_helper import (
 
 @pytest.fixture()
 def mock_blaise_service():
-    return Mock()
+    return MagicMock ()
 
 
 @pytest.fixture()
