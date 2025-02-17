@@ -23,14 +23,8 @@ def mock_case_update_service(mock_blaise_service):
     return FRSUpdateCaseService(mock_blaise_service)
 
 
-@patch.object(FRSUpdateCaseService, "validate_questionnaire_exists")
-@patch.object(FRSUpdateCaseService, "get_existing_blaise_case")
-def test_frs_update_case_calls_validate_questionnaire_exists_once_with_correct_parameters(
-    mock_get_existing_blaise_case,
-    mock_validate,
-    mock_case_update_service,
-):
-    # arrange
+@pytest.fixture()
+def setup_data():
     questionnaire_name = "FRS2102"
     case_id = "90001"
     case_data = {
@@ -38,11 +32,20 @@ def test_frs_update_case_calls_validate_questionnaire_exists_once_with_correct_p
         BlaiseFields.outcome_code: 0,
         BlaiseFields.call_history: False,
     }
-    mock_get_existing_blaise_case.return_value = LMSBlaiseUpdateCase(
-        questionnaire_name, case_data
-    )
+    return questionnaire_name, case_id, case_data
+
+
+
+@patch.object(FRSUpdateCaseService, "validate_questionnaire_exists")
+@patch.object(FRSUpdateCaseService, "get_existing_blaise_case")
+def test_frs_update_case_calls_validate_questionnaire_exists_once_with_correct_parameters(
+    _mock_get_existing_blaise_case,
+    mock_validate,
+    mock_case_update_service,
+):
+    # arrange
     mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
-        questionnaire_name, case_id
+        "FRS2102", "90001"
     )
 
     # act
