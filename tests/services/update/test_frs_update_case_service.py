@@ -127,11 +127,9 @@ def test_frs_update_case_calls_update_case_outcome_code_once_with_correct_parame
 
 
 @patch.object(FRSUpdateCaseService, "get_existing_blaise_case")
-@patch.object(FRSUpdateCaseService, "update_case_outcome_code")
 @patch.object(FRSUpdateCaseService, "update_refusal_reason")
 def test_frs_update_case_calls_update_refusal_reason_once_with_correct_parameter_when_outcome_code_in_refusal_reason(
     mock_update_refusal_reason,
-    _mock_update_case_outcome_code,
     mock_get_existing_blaise_case,
     mock_case_update_service,
     setup_data
