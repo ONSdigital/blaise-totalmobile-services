@@ -1,5 +1,5 @@
 from unittest import mock
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -16,11 +16,15 @@ from tests.helpers import (
 )
 
 
-@patch('app.handlers.totalmobile_incoming_handler.ServiceInstanceFactory')
-def test_submit_form_result_request_handler_calls_update_case_once(mock_service_factory):
+@patch("app.handlers.totalmobile_incoming_handler.ServiceInstanceFactory")
+def test_submit_form_result_request_handler_calls_update_case_once(
+    mock_service_factory,
+):
     # arrange
     mock_service = MagicMock()
-    mock_service_factory.return_value.create_update_case_service.return_value = mock_service
+    mock_service_factory.return_value.create_update_case_service.return_value = (
+        mock_service
+    )
 
     mock_request = MagicMock()
     mock_request.get_json.return_value = (
@@ -36,6 +40,7 @@ def test_submit_form_result_request_handler_calls_update_case_once(mock_service_
     # assert
     mock_service.update_case.assert_called_once()
 
+
 def test_submit_form_result_request_handler_raises_an_exception_when_a_malformed_request_is_received():
     # arrange
     mock_request = mock.Mock()
@@ -50,9 +55,13 @@ def test_submit_form_result_request_handler_raises_an_exception_when_a_malformed
         submit_form_result_request_handler(mock_request, mock_update_case_service)
 
 
-@patch('app.handlers.totalmobile_incoming_handler.FRSCaseAllocationService')
-@patch('app.handlers.totalmobile_incoming_handler.TotalMobileIncomingFRSRequestModel.import_request')
-def test_create_visit_request_handler_calls_create_case_once(mock_import_request, mock_frs_service):
+@patch("app.handlers.totalmobile_incoming_handler.FRSCaseAllocationService")
+@patch(
+    "app.handlers.totalmobile_incoming_handler.TotalMobileIncomingFRSRequestModel.import_request"
+)
+def test_create_visit_request_handler_calls_create_case_once(
+    mock_import_request, mock_frs_service
+):
     # arrange
     mock_frs_instance = MagicMock()
     mock_frs_service.return_value = mock_frs_instance
@@ -92,24 +101,24 @@ def test_create_visit_request_handler_raises_invalid_totalmobile_frs_request_exc
         )
 
 
-@patch('app.handlers.totalmobile_incoming_handler.FRSCaseAllocationService')
-def test_force_recall_visit_request_handler_calls_unallocate_case_once(mock_frs_service):
+@patch("app.handlers.totalmobile_incoming_handler.FRSCaseAllocationService")
+def test_force_recall_visit_request_handler_calls_unallocate_case_once(
+    mock_frs_service,
+):
     # arrange
     mock_frs_instance = MagicMock()
     mock_frs_service.return_value = mock_frs_instance
 
     mock_request = MagicMock()
     mock_request.get_json.return_value = (
-            incoming_request_helper_for_frs_unallocation.get_frs_case_unallocation_request()
-        )
+        incoming_request_helper_for_frs_unallocation.get_frs_case_unallocation_request()
+    )
 
     mock_app = MagicMock()
     mock_app.cma_blaise_service = MagicMock()
 
     # act
-    force_recall_visit_request_handler(
-        mock_request, mock_app
-    )
+    force_recall_visit_request_handler(mock_request, mock_app)
 
     # assert
     mock_frs_instance.unallocate_case.assert_called_once()

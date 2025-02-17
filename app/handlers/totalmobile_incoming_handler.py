@@ -30,21 +30,17 @@ def submit_form_result_request_handler(request, current_app):
     ).update_case(totalmobile_case)
 
 
-def create_visit_request_handler(
-    request, current_app
-):
+def create_visit_request_handler(request, current_app):
     data = request.get_json()
     totalmobile_frs_case = TotalMobileIncomingFRSRequestModel.import_request(data)
 
     frs_case_allocation_service = FRSCaseAllocationService(
-            cma_blaise_service=current_app.cma_blaise_service
-        )
+        cma_blaise_service=current_app.cma_blaise_service
+    )
     frs_case_allocation_service.create_case(totalmobile_frs_case)
 
 
-def force_recall_visit_request_handler(
-    request, current_app
-):
+def force_recall_visit_request_handler(request, current_app):
     data = request.get_json()
     totalmobile_unallocation_frs_case = (
         TotalMobileIncomingFRSUnallocationRequestModel.import_request(data)
