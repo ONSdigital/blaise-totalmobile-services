@@ -1,4 +1,3 @@
-# TODO: Refactor dis
 import logging
 from unittest.mock import MagicMock, Mock, patch
 
@@ -35,6 +34,11 @@ def setup_data():
     return questionnaire_name, case_id, case_data
 
 
+@pytest.fixture()
+def mock_totalmobile_request(setup_data):
+    questionnaire_name, case_id, _ = setup_data
+    return frs_totalmobile_incoming_update_request_helper(questionnaire_name, case_id)
+
 
 @patch.object(FRSUpdateCaseService, "validate_questionnaire_exists")
 @patch.object(FRSUpdateCaseService, "get_existing_blaise_case")
@@ -42,12 +46,8 @@ def test_frs_update_case_calls_validate_questionnaire_exists_once_with_correct_p
     _mock_get_existing_blaise_case,
     mock_validate,
     mock_case_update_service,
+    mock_totalmobile_request,
 ):
-    # arrange
-    mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
-        "FRS2102", "90001"
-    )
-
     # act
     mock_case_update_service.update_case(mock_totalmobile_request)
 
@@ -61,12 +61,8 @@ def test_frs_update_case_calls_get_existing_blaise_case_once_with_correct_parame
     mock_get_existing_blaise_case,
     _mock_validate,
     mock_case_update_service,
+    mock_totalmobile_request,
 ):
-    # arrange
-    mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
-        "FRS2102", "90001"
-    )
-
     # act
     mock_case_update_service.update_case(mock_totalmobile_request)
 
@@ -82,13 +78,12 @@ def test_frs_update_case_calls_update_case_outcome_code_once_with_correct_parame
     mock_update_case_outcome_code,
     mock_get_existing_blaise_case,
     mock_case_update_service,
-        setup_data,
+    setup_data,
+    mock_totalmobile_request,
 ):
     # arrange
     questionnaire_name, case_id, case_data = setup_data
-    mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
-        questionnaire_name, case_id, 522
-    )
+    mock_totalmobile_request.outcome_code = 522
     mock_blaise_case = LMSBlaiseUpdateCase(questionnaire_name, case_data)
     mock_get_existing_blaise_case.return_value = mock_blaise_case
 
@@ -108,12 +103,11 @@ def test_frs_update_case_calls_update_case_outcome_code_once_with_correct_parame
     mock_get_existing_blaise_case,
     mock_case_update_service,
     setup_data,
+    mock_totalmobile_request,
 ):
     # arrange
     questionnaire_name, case_id, case_data = setup_data
-    mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
-        questionnaire_name, case_id, 410
-    )
+    mock_totalmobile_request.outcome_code = 410
     mock_blaise_case = FRSBlaiseUpdateCase(questionnaire_name, case_data)
     mock_get_existing_blaise_case.return_value = mock_blaise_case
 
@@ -132,13 +126,12 @@ def test_frs_update_case_calls_update_refusal_reason_once_with_correct_parameter
     mock_update_refusal_reason,
     mock_get_existing_blaise_case,
     mock_case_update_service,
-    setup_data
+    setup_data,
+    mock_totalmobile_request,
 ):
     # arrange
     questionnaire_name, case_id, case_data = setup_data
-    mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
-        questionnaire_name, case_id, 410
-    )
+    mock_totalmobile_request.outcome_code = 410
     mock_blaise_case = LMSBlaiseUpdateCase(questionnaire_name, case_data)
     mock_get_existing_blaise_case.return_value = mock_blaise_case
 
@@ -154,13 +147,16 @@ def test_frs_update_case_calls_update_refusal_reason_once_with_correct_parameter
 @patch.object(FRSUpdateCaseService, "validate_questionnaire_exists")
 @patch.object(FRSUpdateCaseService, "get_existing_blaise_case")
 def test_frs_update_case_logs_information_when_case_has_not_been_updated(
-    mock_get_existing_blaise_case, _mock_validate, mock_case_update_service, caplog, setup_data
+    mock_get_existing_blaise_case,
+    _mock_validate,
+    mock_case_update_service,
+    caplog,
+    setup_data,
+    mock_totalmobile_request,
 ):
     # arrange
     questionnaire_name, case_id, case_data = setup_data
-    mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
-        questionnaire_name, case_id, 999
-    )
+    mock_totalmobile_request.outcome_code = 999
     mock_blaise_case = LMSBlaiseUpdateCase(questionnaire_name, case_data)
     mock_get_existing_blaise_case.return_value = mock_blaise_case
 
@@ -177,14 +173,11 @@ def test_frs_update_case_logs_information_when_case_has_not_been_updated(
 
 
 def test_frs_update_case_outcome_code_calls_get_outcome_code_fields_once_with_correct_parameters(
-    mock_case_update_service, setup_data
+    mock_case_update_service, setup_data, mock_totalmobile_request
 ):
     # arrange
     questionnaire_name, case_id, _ = setup_data
     mock_blaise_case = MagicMock(spec=FRSBlaiseUpdateCase)
-    mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
-        questionnaire_name, case_id
-    )
 
     # act
     mock_case_update_service.update_case_outcome_code(
@@ -198,14 +191,12 @@ def test_frs_update_case_outcome_code_calls_get_outcome_code_fields_once_with_co
 
 
 def test_frs_update_case_outcome_code_calls_update_case_once_with_correct_parameters(
-    mock_case_update_service, setup_data
+    mock_case_update_service, setup_data, mock_totalmobile_request
 ):
     # arrange
     questionnaire_name, case_id, _ = setup_data
     outcome_code = 620
-    mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
-        questionnaire_name, case_id, outcome_code
-    )
+    mock_totalmobile_request.outcome_code = outcome_code
     mock_blaise_case = MagicMock(spec=LMSBlaiseUpdateCase)
     mock_blaise_case.get_outcome_code_fields.return_value = {
         BlaiseFields.outcome_code: outcome_code
@@ -225,13 +216,11 @@ def test_frs_update_case_outcome_code_calls_update_case_once_with_correct_parame
 
 
 def test_frs_update_case_outcome_code_logs_information_when_outcome_code_has_been_updated(
-    mock_case_update_service, setup_data, caplog
+    mock_case_update_service, setup_data, mock_totalmobile_request, caplog
 ):
     # arrange
     questionnaire_name, case_id, _ = setup_data
-    mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
-        questionnaire_name, case_id, 620
-    )
+    mock_totalmobile_request.outcome_code = 620
     mock_blaise_case = MagicMock(spec=FRSBlaiseUpdateCase)
     mock_blaise_case.case_id = case_id
     mock_blaise_case.outcome_code = 0
@@ -251,14 +240,11 @@ def test_frs_update_case_outcome_code_logs_information_when_outcome_code_has_bee
 
 
 def test_frs_update_refusal_reason_calls_get_refusal_reason_fields_once_with_correct_parameters(
-    mock_case_update_service, setup_data
+    mock_case_update_service, setup_data, mock_totalmobile_request
 ):
     # arrange
     questionnaire_name, case_id, _ = setup_data
     mock_blaise_case = MagicMock(spec=FRSBlaiseUpdateCase)
-    mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
-        questionnaire_name, case_id
-    )
 
     # act
     mock_case_update_service.update_refusal_reason(
@@ -272,15 +258,13 @@ def test_frs_update_refusal_reason_calls_get_refusal_reason_fields_once_with_cor
 
 
 def test_frs_update_refusal_reason_calls_update_case_once_with_correct_parameters(
-    mock_case_update_service, setup_data
+    mock_case_update_service, setup_data, mock_totalmobile_request
 ):
     # arrange
     questionnaire_name, case_id, _ = setup_data
-    mock_case_update_service._blaise_service = MagicMock()
     outcome_code = 410
-    mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
-        questionnaire_name, case_id, outcome_code
-    )
+    mock_totalmobile_request.outcome_code = outcome_code
+    mock_case_update_service._blaise_service = MagicMock()
     mock_blaise_case = MagicMock(spec=FRSBlaiseUpdateCase)
     mock_blaise_case.get_refusal_reason_fields.return_value = {
         BlaiseFields.outcome_code: outcome_code,
@@ -304,13 +288,11 @@ def test_frs_update_refusal_reason_calls_update_case_once_with_correct_parameter
 
 
 def test_frs_update_refusal_reason_logs_information_when_outcome_code_and_refusal_reason_have_been_updated(
-    mock_case_update_service, setup_data, caplog
+    mock_case_update_service, setup_data, mock_totalmobile_request, caplog
 ):
     # arrange
     questionnaire_name, case_id, _ = setup_data
-    mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
-        questionnaire_name, case_id, 410
-    )
+    mock_totalmobile_request.outcome_code = 410
     mock_blaise_case = MagicMock(spec=FRSBlaiseUpdateCase)
     mock_blaise_case.case_id = case_id
     mock_blaise_case.outcome_code = 0
