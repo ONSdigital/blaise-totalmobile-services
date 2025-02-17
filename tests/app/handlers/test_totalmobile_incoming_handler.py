@@ -50,20 +50,29 @@ def test_submit_form_result_request_handler_raises_an_exception_when_a_malformed
         submit_form_result_request_handler(mock_request, mock_update_case_service)
 
 
-# TODO: update dis
-def test_create_visit_request_handler():
+@patch('app.handlers.totalmobile_incoming_handler.FRSCaseAllocationService')
+@patch('app.handlers.totalmobile_incoming_handler.TotalMobileIncomingFRSRequestModel.import_request')
+def test_create_visit_request_handler(mock_import_request, mock_frs_service):
+    # arrange
+    mock_frs_instance = MagicMock()
+    mock_frs_service.return_value = mock_frs_instance
 
-    # mock_request = mock.Mock()
-    # mock_request.get_json.return_value = (
-    #     incoming_request_helper_for_frs_allocation.get_frs_case_allocation_request()
-    # )
-    # mock_update_frs_case_allocation_service = mock.Mock()
-    # mock_update_frs_case_allocation_service.create_case()
-    #
-    # create_visit_request_handler(mock_request, mock_update_frs_case_allocation_service)
-    #
-    # mock_update_frs_case_allocation_service.create_case.assert_called()
-    pass
+    mock_totalmobile_case = MagicMock()
+    mock_import_request.return_value = mock_totalmobile_case
+
+    mock_request = MagicMock()
+    mock_request.get_json.return_value = (
+        incoming_request_helper_for_frs_allocation.get_frs_case_allocation_request()
+    )
+
+    mock_app = MagicMock()
+    mock_app.cma_blaise_service = MagicMock()
+
+    # act
+    create_visit_request_handler(mock_request, mock_app)
+
+    # assert
+    mock_frs_instance.create_case.assert_called_once_with(mock_totalmobile_case)
 
 
 def test_create_visit_request_handler_fails_if_reference_missing_from_payload():
