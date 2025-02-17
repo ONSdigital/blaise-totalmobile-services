@@ -37,7 +37,7 @@ def test_submit_form_result_request_handler_is_called_once(mock_service_factory)
     mock_service.update_case.assert_called_once()
 
 def test_submit_form_result_request_handler_raises_an_exception_when_a_malformed_request_is_received():
-
+    # arrange
     mock_request = mock.Mock()
     mock_request.get_json.return_value = (
         incoming_request_helper.get_malformed_update_case_request()
@@ -45,6 +45,7 @@ def test_submit_form_result_request_handler_raises_an_exception_when_a_malformed
     mock_update_case_service = mock.Mock()
     mock_update_case_service.update_case()
 
+    # act & assert
     with pytest.raises(Exception):
         submit_form_result_request_handler(mock_request, mock_update_case_service)
 
