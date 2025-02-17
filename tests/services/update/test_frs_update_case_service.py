@@ -28,6 +28,7 @@ def mock_questionnaire_and_case_data():
     case_data = {
         BlaiseFields.case_id: case_id,
         BlaiseFields.outcome_code: 0,
+        BlaiseFields.refusal_reason: 0,
     }
     return questionnaire_name, case_id, case_data
 
