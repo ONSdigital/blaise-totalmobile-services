@@ -197,7 +197,7 @@ def test_frs_update_case_outcome_code_calls_update_case_once_with_correct_parame
     questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
     outcome_code = 620
     mock_totalmobile_request.outcome_code = outcome_code
-    mock_blaise_case = MagicMock(spec=LMSBlaiseUpdateCase)
+    mock_blaise_case = MagicMock(spec=FRSBlaiseUpdateCase)
     mock_blaise_case.get_outcome_code_fields.return_value = {
         BlaiseFields.outcome_code: outcome_code
     }
