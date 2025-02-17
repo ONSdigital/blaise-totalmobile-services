@@ -89,7 +89,7 @@ def test_frs_update_case_calls_update_case_outcome_code_once_with_correct_parame
     mock_get_existing_blaise_case,
     mock_case_update_service,
     mock_totalmobile_request,
-    mock_blaise_case_data
+    mock_blaise_case_data,
 ):
     # arrange
     mock_totalmobile_request.outcome_code = 522
@@ -111,7 +111,7 @@ def test_frs_update_case_calls_update_case_outcome_code_once_with_correct_parame
     mock_get_existing_blaise_case,
     mock_case_update_service,
     mock_totalmobile_request,
-    mock_blaise_case_data
+    mock_blaise_case_data,
 ):
     # arrange
     mock_totalmobile_request.outcome_code = 410
@@ -133,7 +133,7 @@ def test_frs_update_case_calls_update_refusal_reason_once_with_correct_parameter
     mock_get_existing_blaise_case,
     mock_case_update_service,
     mock_totalmobile_request,
-    mock_blaise_case_data
+    mock_blaise_case_data,
 ):
     # arrange
     mock_totalmobile_request.outcome_code = 410
@@ -154,9 +154,9 @@ def test_frs_update_case_logs_information_when_case_has_not_been_updated(
     mock_get_existing_blaise_case,
     _mock_validate,
     mock_case_update_service,
-    caplog,
     mock_totalmobile_request,
-    mock_blaise_case_data
+    mock_blaise_case_data,
+    caplog,
 ):
     # arrange
     mock_totalmobile_request.outcome_code = 999
@@ -175,11 +175,8 @@ def test_frs_update_case_logs_information_when_case_has_not_been_updated(
 
 
 def test_frs_update_case_outcome_code_calls_get_outcome_code_fields_once_with_correct_parameters(
-    mock_case_update_service, mock_questionnaire_and_case_data, mock_totalmobile_request, mock_blaise_case_object
+    mock_case_update_service, mock_totalmobile_request, mock_blaise_case_object
 ):
-    # arrange
-    questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
-
     # act
     mock_case_update_service.update_case_outcome_code(
         mock_totalmobile_request, mock_blaise_case_object
@@ -192,7 +189,10 @@ def test_frs_update_case_outcome_code_calls_get_outcome_code_fields_once_with_co
 
 
 def test_frs_update_case_outcome_code_calls_update_case_once_with_correct_parameters(
-    mock_case_update_service, mock_questionnaire_and_case_data, mock_totalmobile_request, mock_blaise_case_object
+    mock_case_update_service,
+    mock_questionnaire_and_case_data,
+    mock_totalmobile_request,
+    mock_blaise_case_object,
 ):
     # arrange
     questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
@@ -217,17 +217,14 @@ def test_frs_update_case_outcome_code_calls_update_case_once_with_correct_parame
 
 def test_frs_update_case_outcome_code_logs_information_when_outcome_code_has_been_updated(
     mock_case_update_service,
-    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
     mock_blaise_case_object,
     caplog,
 ):
     # arrange
-    questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
-    mock_totalmobile_request.outcome_code = 620
-
-    mock_blaise_case_object.case_id = case_id
+    mock_blaise_case_object.case_id = 90001
     mock_blaise_case_object.outcome_code = 0
+    mock_totalmobile_request.outcome_code = 620
 
     # act
     with caplog.at_level(logging.INFO):
@@ -258,7 +255,10 @@ def test_frs_update_refusal_reason_calls_get_refusal_reason_fields_once_with_cor
 
 
 def test_frs_update_refusal_reason_calls_update_case_once_with_correct_parameters(
-    mock_case_update_service, mock_questionnaire_and_case_data, mock_totalmobile_request, mock_blaise_case_object
+    mock_case_update_service,
+    mock_questionnaire_and_case_data,
+    mock_totalmobile_request,
+    mock_blaise_case_object,
 ):
     # arrange
     questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
@@ -288,15 +288,13 @@ def test_frs_update_refusal_reason_calls_update_case_once_with_correct_parameter
 
 def test_frs_update_refusal_reason_logs_information_when_outcome_code_and_refusal_reason_have_been_updated(
     mock_case_update_service,
-    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
     mock_blaise_case_object,
     caplog,
 ):
     # arrange
-    questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
     mock_totalmobile_request.outcome_code = 410
-    mock_blaise_case_object.case_id = case_id
+    mock_blaise_case_object.case_id = 90001
     mock_blaise_case_object.outcome_code = 0
 
     # act
