@@ -53,18 +53,11 @@ def mock_blaise_case_object():
 @patch.object(LMSUpdateCaseService, "validate_questionnaire_exists")
 @patch.object(LMSUpdateCaseService, "get_existing_blaise_case")
 def test_lms_update_case_calls_validate_questionnaire_exists_once_with_correct_parameters(
-    mock_get_existing_blaise_case,
+    _mock_get_existing_blaise_case,
     mock_validate,
     mock_case_update_service,
-    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
 ):
-    # arrange
-    questionnaire_name, case_id, case_data = mock_questionnaire_and_case_data
-    mock_get_existing_blaise_case.return_value = LMSBlaiseUpdateCase(
-        questionnaire_name, case_data
-    )
-
     # act
     mock_case_update_service.update_case(mock_totalmobile_request)
 
@@ -161,13 +154,11 @@ def test_lms_update_case_logs_information_when_case_has_not_been_updated(
 
 def test_lms_update_case_contact_information_calls_get_contact_details_fields_once_with_correct_parameters(
     mock_case_update_service,
-    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
     mock_blaise_case_object,
 ):
     # arrange
-    questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
-    mock_blaise_case_object.case_id = case_id
+    mock_blaise_case_object.case_id = 90001
     mock_blaise_case_object.outcome_code = 0
     mock_blaise_case_object.get_contact_details_fields.return_value = {
         BlaiseFields.knock_to_nudge_contact_name: "Joe Bloggs",
@@ -188,17 +179,14 @@ def test_lms_update_case_contact_information_calls_get_contact_details_fields_on
 
 def test_lms_update_case_contact_information_logs_contact_information_has_not_been_updated(
     mock_case_update_service,
-    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
     mock_blaise_case_object,
     caplog,
 ):
     # arrange
-    questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
     mock_totalmobile_request.outcome_code = 999
-    mock_blaise_case_object.case_id = case_id
+    mock_blaise_case_object.case_id = 90001
     mock_blaise_case_object.outcome_code = 0
-    mock_blaise_case_object.get_contact_details_fields.return_value = {}
 
     # act
     with caplog.at_level(logging.INFO):
@@ -216,21 +204,14 @@ def test_lms_update_case_contact_information_logs_contact_information_has_not_be
 
 def test_lms_update_case_contact_information_calls_get_knock_to_nudge_indicator_flag_field_once(
     mock_case_update_service,
-    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
     mock_blaise_case_object,
 ):
     # arrange
-    questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
-    mock_blaise_case_object.case_id = case_id
-    mock_blaise_case_object.outcome_code = 0
     mock_blaise_case_object.get_contact_details_fields.return_value = {
         BlaiseFields.knock_to_nudge_contact_name: "Joe Bloggs",
         BlaiseFields.telephone_number_1: "01234567890",
         BlaiseFields.telephone_number_2: "07123123123",
-    }
-    mock_blaise_case_object.get_knock_to_nudge_indicator_flag_field.return_value = {
-        BlaiseFields.knock_to_nudge_indicator: "1"
     }
 
     # act
@@ -244,29 +225,23 @@ def test_lms_update_case_contact_information_calls_get_knock_to_nudge_indicator_
 
 def test_lms_update_case_contact_information_calls_update_case_once_with_correct_parameters(
     mock_case_update_service,
-    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
     mock_blaise_case_object,
 ):
     # arrange
-    questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
+    mock_case_update_service._blaise_service = MagicMock()
     mock_contact_details = {
         BlaiseFields.knock_to_nudge_contact_name: "Joe Bloggs",
         BlaiseFields.telephone_number_1: "01234567890",
         BlaiseFields.telephone_number_2: "07123123123",
     }
-    mock_knock_to_nudge_indicator = {BlaiseFields.knock_to_nudge_indicator: "1"}
-    mock_case_update_service._blaise_service = MagicMock()
-    mock_blaise_case_object.case_id = case_id
-    mock_blaise_case_object.outcome_code = 0
-
     mock_blaise_case_object.get_contact_details_fields.return_value = (
         mock_contact_details
     )
+    mock_knock_to_nudge_indicator = {BlaiseFields.knock_to_nudge_indicator: "1"}
     mock_blaise_case_object.get_knock_to_nudge_indicator_flag_field.return_value = (
         mock_knock_to_nudge_indicator
     )
-
     expected_fields = mock_contact_details | mock_knock_to_nudge_indicator
 
     # act
@@ -276,29 +251,23 @@ def test_lms_update_case_contact_information_calls_update_case_once_with_correct
 
     # assert
     mock_case_update_service._blaise_service.update_case.assert_called_once_with(
-        questionnaire_name, case_id, expected_fields
+        "LMS2101_AA1", "90001", expected_fields
     )
 
 
 def test_lms_update_case_contact_information_logs_contact_information_updated(
     mock_case_update_service,
-    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
     mock_blaise_case_object,
     caplog,
 ):
     # arrange
-    questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
     mock_totalmobile_request.outcome_code = 999
-    mock_blaise_case_object.case_id = case_id
     mock_blaise_case_object.outcome_code = 0
     mock_blaise_case_object.get_contact_details_fields.return_value = {
         BlaiseFields.knock_to_nudge_contact_name: "Joe Bloggs",
         BlaiseFields.telephone_number_1: "01234567890",
         BlaiseFields.telephone_number_2: "07123123123",
-    }
-    mock_blaise_case_object.get_knock_to_nudge_indicator_flag_field.return_value = {
-        BlaiseFields.knock_to_nudge_indicator: "1"
     }
 
     # act
@@ -317,19 +286,9 @@ def test_lms_update_case_contact_information_logs_contact_information_updated(
 
 def test_lms_update_case_outcome_code_calls_get_outcome_code_fields_once_with_correct_parameters(
     mock_case_update_service,
-    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
     mock_blaise_case_object,
 ):
-    # arrange
-    questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
-    mock_blaise_case_object.case_id = case_id
-    mock_blaise_case_object.outcome_code = 0
-    mock_blaise_case_object.get_outcome_code_fields.return_value = {
-        BlaiseFields.outcome_code: "300",
-        BlaiseFields.admin_outcome_code: "300",
-    }
-
     # act
     mock_case_update_service.update_case_outcome_code(
         mock_totalmobile_request, mock_blaise_case_object
@@ -343,15 +302,11 @@ def test_lms_update_case_outcome_code_calls_get_outcome_code_fields_once_with_co
 
 def test_lms_update_case_outcome_code_calls_update_case_once_with_correct_parameters_without_call_history(
     mock_case_update_service,
-    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
     mock_blaise_case_object,
 ):
     # arrange
-    questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
     mock_case_update_service._blaise_service = MagicMock()
-    mock_blaise_case_object.case_id = case_id
-    mock_blaise_case_object.outcome_code = 0
 
     mock_outcome_fields = {
         BlaiseFields.outcome_code: "300",
@@ -400,15 +355,11 @@ def test_lms_update_case_outcome_code_calls_update_case_once_with_correct_parame
 
 def test_lms_update_case_outcome_code_calls_update_case_once_with_correct_parameters_with_call_history(
     mock_case_update_service,
-    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
     mock_blaise_case_object,
 ):
     # arrange
-    questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
     mock_case_update_service._blaise_service = MagicMock()
-    mock_blaise_case_object.case_id = case_id
-    mock_blaise_case_object.outcome_code = 0
 
     mock_outcome_fields = {
         BlaiseFields.outcome_code: "300",
@@ -450,16 +401,14 @@ def test_lms_update_case_outcome_code_calls_update_case_once_with_correct_parame
 
 def test_lms_update_case_outcome_logs_outcome_code_and_call_history_updated(
     mock_case_update_service,
-    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
     mock_blaise_case_object,
     caplog,
 ):
     # arrange
-    questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
-    mock_totalmobile_request.outcome_code = 999
-    mock_blaise_case_object.case_id = case_id
+    mock_blaise_case_object.case_id = 90001
     mock_blaise_case_object.outcome_code = 0
+    mock_totalmobile_request.outcome_code = 999
 
     # act
     with caplog.at_level(logging.INFO):
