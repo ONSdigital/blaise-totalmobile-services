@@ -7,7 +7,10 @@ from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 from services.blaise_service import RealBlaiseService
-from services.update.update_case_service_base import UpdateCaseServiceBase, BlaiseUpdateCaseBaseType
+from services.update.update_case_service_base import (
+    BlaiseUpdateCaseBaseType,
+    UpdateCaseServiceBase,
+)
 
 
 class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
@@ -103,7 +106,28 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
             )
 
     def update_refusal_reason(self, totalmobile_request, blaise_case):
-        pass
+        fields_to_update = {}
 
-    def _return_survey_type_update_case_model(self, questionnaire_name, case: Dict[str, str]) -> FRSBlaiseUpdateCase:
+        fields_to_update.update(
+            blaise_case.get_refusal_reason_fields(totalmobile_request)
+        )
+
+        self._blaise_service.update_case(
+            totalmobile_request.questionnaire_name,
+            totalmobile_request.case_id,
+            fields_to_update,
+        )
+
+        # TODO: Tidy this
+        if isinstance(blaise_case, FRSBlaiseUpdateCase):
+            logging.info(
+                f"Outcome code and refusal reason updated (Questionnaire={totalmobile_request.questionnaire_name}, "
+                f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
+                f"TM hOut={totalmobile_request.outcome_code})"
+            )
+
+    # TODO: Test dis
+    def _return_survey_type_update_case_model(
+        self, questionnaire_name, case: Dict[str, str]
+    ) -> FRSBlaiseUpdateCase:
         return FRSBlaiseUpdateCase(questionnaire_name, case)

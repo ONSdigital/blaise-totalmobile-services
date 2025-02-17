@@ -1,6 +1,6 @@
 import logging
-from abc import abstractmethod, ABC
-from typing import TypeVar, Generic, Dict
+from abc import ABC, abstractmethod
+from typing import Dict, Generic, TypeVar
 
 from app.exceptions.custom_exceptions import (
     QuestionnaireCaseDoesNotExistError,
@@ -13,7 +13,9 @@ from models.update.totalmobile_incoming_update_request_model import (
 )
 from services.blaise_service import RealBlaiseService
 
-BlaiseUpdateCaseBaseType = TypeVar("BlaiseUpdateCaseBaseType", bound=BlaiseUpdateCaseBase)
+BlaiseUpdateCaseBaseType = TypeVar(
+    "BlaiseUpdateCaseBaseType", bound=BlaiseUpdateCaseBase
+)
 
 
 class UpdateCaseServiceBase(ABC, Generic[BlaiseUpdateCaseBaseType]):
@@ -67,5 +69,7 @@ class UpdateCaseServiceBase(ABC, Generic[BlaiseUpdateCaseBaseType]):
         return self._return_survey_type_update_case_model(questionnaire_name, case)
 
     @abstractmethod
-    def _return_survey_type_update_case_model(self, questionnaire_name: str, case: Dict[str, str]) -> BlaiseUpdateCaseBaseType:
+    def _return_survey_type_update_case_model(
+        self, questionnaire_name: str, case: Dict[str, str]
+    ) -> BlaiseUpdateCaseBaseType:
         pass

@@ -1,3 +1,4 @@
+# TODO: Refactor dis
 import logging
 from unittest.mock import MagicMock, Mock, PropertyMock, patch
 
@@ -250,7 +251,7 @@ def test_lms_update_case_contact_information_calls_get_knock_to_nudge_indicator_
     mock_blaise_case.get_knock_to_nudge_indicator_flag_field.assert_called_once()
 
 
-def test_lms_update_case_contact_information_update_case_once_with_correct_parameters(
+def test_lms_update_case_contact_information_calls_update_case_once_with_correct_parameters(
     mock_case_update_service,
 ):
     # arrange

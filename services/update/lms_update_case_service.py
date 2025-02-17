@@ -7,7 +7,10 @@ from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 from services.blaise_service import RealBlaiseService
-from services.update.update_case_service_base import UpdateCaseServiceBase, BlaiseUpdateCaseBaseType
+from services.update.update_case_service_base import (
+    BlaiseUpdateCaseBaseType,
+    UpdateCaseServiceBase,
+)
 
 
 class LMSUpdateCaseService(UpdateCaseServiceBase[LMSBlaiseUpdateCase]):
@@ -105,7 +108,9 @@ class LMSUpdateCaseService(UpdateCaseServiceBase[LMSBlaiseUpdateCase]):
 
         # TODO: Tidy this
         if isinstance(blaise_case, LMSBlaiseUpdateCase):
-            fields_to_update.update(blaise_case.get_knock_to_nudge_indicator_flag_field())
+            fields_to_update.update(
+                blaise_case.get_knock_to_nudge_indicator_flag_field()
+            )
             fields_to_update.update(blaise_case.get_call_history_record_field(1))
             if not blaise_case.has_call_history:
                 fields_to_update.update(blaise_case.get_call_history_record_field(5))
@@ -124,5 +129,8 @@ class LMSUpdateCaseService(UpdateCaseServiceBase[LMSBlaiseUpdateCase]):
                 f"TM hOut={totalmobile_request.outcome_code})"
             )
 
-    def _return_survey_type_update_case_model(self, questionnaire_name, case: Dict[str, str]) -> LMSBlaiseUpdateCase:
+    # TODO: Test dis
+    def _return_survey_type_update_case_model(
+        self, questionnaire_name, case: Dict[str, str]
+    ) -> LMSBlaiseUpdateCase:
         return LMSBlaiseUpdateCase(questionnaire_name, case)
