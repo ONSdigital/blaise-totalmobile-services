@@ -82,15 +82,10 @@ def test_frs_update_case_calls_update_case_outcome_code_once_with_correct_parame
     mock_update_case_outcome_code,
     mock_get_existing_blaise_case,
     mock_case_update_service,
+        setup_data,
 ):
     # arrange
-    questionnaire_name = "FRS2102"
-    case_id = "90001"
-    case_data = {
-        BlaiseFields.case_id: case_id,
-        BlaiseFields.outcome_code: 0,
-        BlaiseFields.call_history: False,
-    }
+    questionnaire_name, case_id, case_data = setup_data
     mock_totalmobile_request = frs_totalmobile_incoming_update_request_helper(
         questionnaire_name, case_id, 522
     )
