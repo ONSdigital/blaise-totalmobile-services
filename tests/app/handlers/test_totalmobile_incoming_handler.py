@@ -7,7 +7,7 @@ from app.exceptions.custom_exceptions import InvalidTotalmobileFRSRequestExcepti
 from app.handlers.totalmobile_incoming_handler import (
     create_visit_request_handler,
     force_recall_visit_request_handler,
-    submit_form_result_request_handler, get_survey_type,
+    submit_form_result_request_handler,
 )
 from tests.helpers import (
     incoming_request_helper,
@@ -92,20 +92,24 @@ def test_create_visit_request_handler_raises_invalid_totalmobile_frs_request_exc
         )
 
 
-# TODO: Update dis
-def test_force_recall_visit_request_handler():
+@patch('app.handlers.totalmobile_incoming_handler.FRSCaseAllocationService')
+def test_force_recall_visit_request_handler(mock_frs_service):
+    # arrange
+    mock_frs_instance = MagicMock()
+    mock_frs_service.return_value = mock_frs_instance
 
-    # mock_request = mock.Mock()
-    #
-    # mock_request.get_json.return_value = (
-    #     incoming_request_helper_for_frs_unallocation.get_frs_case_unallocation_request()
-    # )
-    # mock_update_frs_case_allocation_service = mock.Mock()
-    # mock_update_frs_case_allocation_service.unallocate_case()
-    #
-    # force_recall_visit_request_handler(
-    #     mock_request, mock_update_frs_case_allocation_service
-    # )
-    #
-    # mock_update_frs_case_allocation_service.unallocate_case.assert_called()
-    pass
+    mock_request = MagicMock()
+    mock_request.get_json.return_value = (
+            incoming_request_helper_for_frs_unallocation.get_frs_case_unallocation_request()
+        )
+
+    mock_app = MagicMock()
+    mock_app.cma_blaise_service = MagicMock()
+
+    # act
+    force_recall_visit_request_handler(
+        mock_request, mock_app
+    )
+
+    # assert
+    mock_frs_instance.unallocate_case.assert_called_once()
