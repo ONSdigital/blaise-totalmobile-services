@@ -75,8 +75,8 @@ def test_create_visit_request_handler(mock_import_request, mock_frs_service):
     mock_frs_instance.create_case.assert_called_once_with(mock_totalmobile_case)
 
 
-def test_create_visit_request_handler_fails_if_reference_missing_from_payload():
-
+def test_create_visit_request_handler_raises_invalid_totalmobile_frs_request_exception_if_reference_missing_from_payload():
+    # arrange
     mock_request = mock.Mock()
 
     mock_request.get_json.return_value = (
@@ -85,6 +85,7 @@ def test_create_visit_request_handler_fails_if_reference_missing_from_payload():
     mock_update_frs_case_allocation_service = mock.Mock()
     mock_update_frs_case_allocation_service.create_case()
 
+    # act & assert
     with pytest.raises(InvalidTotalmobileFRSRequestException):
         create_visit_request_handler(
             mock_request, mock_update_frs_case_allocation_service
