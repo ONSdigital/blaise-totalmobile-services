@@ -64,10 +64,7 @@ def submit_form_result_request():
 def create_visit_request():
     logging.info(f"Incoming request via the 'createvisitrequest' endpoint")
     try:
-        frs_case_allocation_service = FRSCaseAllocationService(
-            cma_blaise_service=current_app.cma_blaise_service
-        )
-        create_visit_request_handler(request, frs_case_allocation_service)
+        create_visit_request_handler(request, current_app)
         return "ok"
     except (MissingReferenceError, BadReferenceError):
         return "Missing/invalid reference in request", 400
@@ -86,10 +83,7 @@ def create_visit_request():
 def update_visit_status_request():
     logging.info(f"Incoming request via the 'forcerecallvisitrequest' endpoint")
     try:
-        frs_case_allocation_service = FRSCaseAllocationService(
-            cma_blaise_service=current_app.cma_blaise_service
-        )
-        force_recall_visit_request_handler(request, frs_case_allocation_service)
+        force_recall_visit_request_handler(request, current_app)
         return "ok"
     except (MissingReferenceError, BadReferenceError):
         return "Missing/invalid reference in request", 400
