@@ -36,7 +36,7 @@ def test_submit_form_result_request_handler_is_called_once(mock_service_factory)
     # assert
     mock_service.update_case.assert_called_once()
 
-def test_submit_form_result_request_handler_blah():
+def test_submit_form_result_request_handler_raises_an_exception_when_a_malformed_request_is_received():
 
     mock_request = mock.Mock()
     mock_request.get_json.return_value = (
