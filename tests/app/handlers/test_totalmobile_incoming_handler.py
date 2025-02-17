@@ -1,4 +1,5 @@
 from unittest import mock
+from unittest.mock import patch, MagicMock
 
 import pytest
 
@@ -6,7 +7,7 @@ from app.exceptions.custom_exceptions import InvalidTotalmobileFRSRequestExcepti
 from app.handlers.totalmobile_incoming_handler import (
     create_visit_request_handler,
     force_recall_visit_request_handler,
-    submit_form_result_request_handler,
+    submit_form_result_request_handler, get_survey_type,
 )
 from tests.helpers import (
     incoming_request_helper,
@@ -15,21 +16,25 @@ from tests.helpers import (
 )
 
 
-# TODO: update dis
-def test_submit_form_result_request_handler():
+@patch('app.handlers.totalmobile_incoming_handler.ServiceInstanceFactory')
+def test_submit_form_result_request_handler_is_called_once(mock_service_factory):
+    # arrange
+    mock_service = MagicMock()
+    mock_service_factory.return_value.create_update_case_service.return_value = mock_service
 
-    # mock_request = mock.Mock()
-    # mock_request.get_json.return_value = (
-    #     incoming_request_helper.get_populated_update_case_refusal_request()
-    # )
-    # mock_update_case_service = mock.Mock()
-    # mock_update_case_service.update_case()
-    #
-    # submit_form_result_request_handler(mock_request, mock_update_case_service)
-    #
-    # mock_update_case_service.update_case.assert_called()
-    pass
+    mock_request = MagicMock()
+    mock_request.get_json.return_value = (
+        incoming_request_helper.get_populated_update_case_refusal_request()
+    )
 
+    mock_app = MagicMock()
+    mock_app.blaise_service = MagicMock()
+
+    # act
+    submit_form_result_request_handler(mock_request, mock_app)
+
+    # assert
+    mock_service.update_case.assert_called_once()
 
 def test_submit_form_result_request_handler_blah():
 
