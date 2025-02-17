@@ -14,7 +14,7 @@ from tests.helpers.totalmobile_incoming_update_request_helper import (
 
 @pytest.fixture()
 def mock_blaise_service():
-    return MagicMock ()
+    return MagicMock()
 
 
 @pytest.fixture()
@@ -78,7 +78,7 @@ def test_frs_update_case_calls_update_case_outcome_code_once_with_correct_parame
     mock_update_case_outcome_code,
     mock_get_existing_blaise_case,
     mock_case_update_service,
-        mock_questionnaire_and_case_data,
+    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
 ):
     # arrange
@@ -102,7 +102,7 @@ def test_frs_update_case_calls_update_case_outcome_code_once_with_correct_parame
     mock_update_case_outcome_code,
     mock_get_existing_blaise_case,
     mock_case_update_service,
-        mock_questionnaire_and_case_data,
+    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
 ):
     # arrange
@@ -126,7 +126,7 @@ def test_frs_update_case_calls_update_refusal_reason_once_with_correct_parameter
     mock_update_refusal_reason,
     mock_get_existing_blaise_case,
     mock_case_update_service,
-        mock_questionnaire_and_case_data,
+    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
 ):
     # arrange
@@ -151,7 +151,7 @@ def test_frs_update_case_logs_information_when_case_has_not_been_updated(
     _mock_validate,
     mock_case_update_service,
     caplog,
-        mock_questionnaire_and_case_data,
+    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
 ):
     # arrange
@@ -216,7 +216,10 @@ def test_frs_update_case_outcome_code_calls_update_case_once_with_correct_parame
 
 
 def test_frs_update_case_outcome_code_logs_information_when_outcome_code_has_been_updated(
-    mock_case_update_service, mock_questionnaire_and_case_data, mock_totalmobile_request, caplog
+    mock_case_update_service,
+    mock_questionnaire_and_case_data,
+    mock_totalmobile_request,
+    caplog,
 ):
     # arrange
     questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
@@ -288,7 +291,10 @@ def test_frs_update_refusal_reason_calls_update_case_once_with_correct_parameter
 
 
 def test_frs_update_refusal_reason_logs_information_when_outcome_code_and_refusal_reason_have_been_updated(
-    mock_case_update_service, mock_questionnaire_and_case_data, mock_totalmobile_request, caplog
+    mock_case_update_service,
+    mock_questionnaire_and_case_data,
+    mock_totalmobile_request,
+    caplog,
 ):
     # arrange
     questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
