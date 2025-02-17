@@ -5,7 +5,6 @@ import pytest
 
 from enums.blaise_fields import BlaiseFields
 from models.update.frs_blaise_update_case_model import FRSBlaiseUpdateCase
-from models.update.lms_blaise_update_case_model import LMSBlaiseUpdateCase
 from services.update.frs_update_case_service import FRSUpdateCaseService
 from tests.helpers.totalmobile_incoming_update_request_helper import (
     frs_totalmobile_incoming_update_request_helper,
@@ -84,7 +83,7 @@ def test_frs_update_case_calls_update_case_outcome_code_once_with_correct_parame
     # arrange
     questionnaire_name, case_id, case_data = mock_questionnaire_and_case_data
     mock_totalmobile_request.outcome_code = 522
-    mock_blaise_case = LMSBlaiseUpdateCase(questionnaire_name, case_data)
+    mock_blaise_case = FRSBlaiseUpdateCase(questionnaire_name, case_data)
     mock_get_existing_blaise_case.return_value = mock_blaise_case
 
     # act
@@ -132,7 +131,7 @@ def test_frs_update_case_calls_update_refusal_reason_once_with_correct_parameter
     # arrange
     questionnaire_name, case_id, case_data = mock_questionnaire_and_case_data
     mock_totalmobile_request.outcome_code = 410
-    mock_blaise_case = LMSBlaiseUpdateCase(questionnaire_name, case_data)
+    mock_blaise_case = FRSBlaiseUpdateCase(questionnaire_name, case_data)
     mock_get_existing_blaise_case.return_value = mock_blaise_case
 
     # act
@@ -157,7 +156,7 @@ def test_frs_update_case_logs_information_when_case_has_not_been_updated(
     # arrange
     questionnaire_name, case_id, case_data = mock_questionnaire_and_case_data
     mock_totalmobile_request.outcome_code = 999
-    mock_blaise_case = LMSBlaiseUpdateCase(questionnaire_name, case_data)
+    mock_blaise_case = FRSBlaiseUpdateCase(questionnaire_name, case_data)
     mock_get_existing_blaise_case.return_value = mock_blaise_case
 
     # act
