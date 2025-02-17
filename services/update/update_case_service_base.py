@@ -13,10 +13,10 @@ from models.update.totalmobile_incoming_update_request_model import (
 )
 from services.blaise_service import RealBlaiseService
 
-T = TypeVar("T", bound=BlaiseUpdateCaseBase)
+BlaiseUpdateCaseBaseType = TypeVar("BlaiseUpdateCaseBaseType", bound=BlaiseUpdateCaseBase)
 
 
-class UpdateCaseServiceBase(ABC, Generic[T]):
+class UpdateCaseServiceBase(ABC, Generic[BlaiseUpdateCaseBaseType]):
     def __init__(self, blaise_service: RealBlaiseService):
         self._blaise_service = blaise_service
 
@@ -47,7 +47,7 @@ class UpdateCaseServiceBase(ABC, Generic[T]):
         self,
         questionnaire_name: str,
         case_id: str,
-    ) -> T:
+    ) -> BlaiseUpdateCaseBaseType:
         try:
             case = self._blaise_service.get_case(questionnaire_name, case_id)
         except QuestionnaireCaseDoesNotExistError as err:
@@ -67,5 +67,5 @@ class UpdateCaseServiceBase(ABC, Generic[T]):
         return self._return_survey_type_update_case_model(questionnaire_name, case)
 
     @abstractmethod
-    def _return_survey_type_update_case_model(self, questionnaire_name: str, case: Dict[str, str]) -> T:
+    def _return_survey_type_update_case_model(self, questionnaire_name: str, case: Dict[str, str]) -> BlaiseUpdateCaseBaseType:
         pass

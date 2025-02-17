@@ -7,10 +7,10 @@ from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 from services.blaise_service import RealBlaiseService
-from services.update.update_case_service_base import UpdateCaseServiceBase
+from services.update.update_case_service_base import UpdateCaseServiceBase, BlaiseUpdateCaseBaseType
 
 
-class FRSUpdateCaseService(UpdateCaseServiceBase):
+class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
     def __init__(self, blaise_service: RealBlaiseService):
         super().__init__(blaise_service)
 
@@ -79,7 +79,7 @@ class FRSUpdateCaseService(UpdateCaseServiceBase):
     def update_case_outcome_code(
         self,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-        blaise_case: FRSBlaiseUpdateCase,
+        blaise_case: BlaiseUpdateCaseBaseType,
     ) -> None:
 
         fields_to_update = {}
@@ -94,11 +94,13 @@ class FRSUpdateCaseService(UpdateCaseServiceBase):
             fields_to_update,
         )
 
-        logging.info(
-            f"Outcome code updated (Questionnaire={totalmobile_request.questionnaire_name}, "
-            f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
-            f"TM hOut={totalmobile_request.outcome_code})"
-        )
+        # TODO: Tidy this
+        if isinstance(blaise_case, FRSBlaiseUpdateCase):
+            logging.info(
+                f"Outcome code updated (Questionnaire={totalmobile_request.questionnaire_name}, "
+                f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
+                f"TM hOut={totalmobile_request.outcome_code})"
+            )
 
     def update_refusal_reason(self, totalmobile_request, blaise_case):
         pass
