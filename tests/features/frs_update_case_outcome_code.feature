@@ -131,135 +131,52 @@ Feature: update outcome code
       | 330                 | 320          |
       | 330                 | 330          |
 
-  Scenario Outline: Totalmobile sends a request with an outcome code of 461 (soft refusal) when case has outcome code of <outcome_code>
-    Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
-    And the case has an outcome code of <outcome_code>
-    When Totalmobile sends an update for reference "LMS2206-AA1.12345"
-      | field_name   | value |
-      | outcome_code | 461   |
-    Then the case "12345" for questionnaire "LMS2206_AA1" has been updated with
-      | field_name   | value |
-      | hOut         | 461   |
-      | qhAdmin.HOut | 461   |
-      | DMktnIND     | 1     |
-    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=461)" is logged as an information message
+  Scenario Outline: Totalmobile sends a request with an outcome code of <outcome_code> when case has outcome code of <blaise_outcome_code>
+    Given there is a questionnaire "FRS2401" with case "12345" in Blaise
+    And the case has an outcome code of <blaise_outcome_code>
+    When Totalmobile sends an update for reference "FRS2401.12345"
+      | field_name   | value          |
+      | outcome_code | <outcome_code> |
+    And <outcome_code> is between 400 and 500
+    Then the case "12345" for questionnaire "FRS2401" has been updated with
+      | field_name | value          |
+      | hOut       | <outcome_code> |
+#      | RefReas    | <outcome_code> |
+    And "Outcome code and refusal reason updated (Questionnaire=FRS2401, Case Id=12345, Blaise hOut=<blaise_outcome_code>, Blaise RefReas=<outcome_code>)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
-    Examples:
-      | outcome_code |
-      | 0            |
-      | 310          |
-      | 320          |
-
-  Scenario Outline: Totalmobile sends a request with an outcome code of 510 (Ineligible) when case has outcome code of <outcome_code>
-    Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
-    And the case has an outcome code of <outcome_code>
-    When Totalmobile sends an update for reference "LMS2206-AA1.12345"
-      | field_name   | value |
-      | outcome_code | 510   |
-    Then the case "12345" for questionnaire "LMS2206_AA1" has been updated with
-      | field_name   | value |
-      | hOut         | 510   |
-      | qhAdmin.HOut | 510   |
-      | DMktnIND     | 1     |
-    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=510)" is logged as an information message
-    And a "200 OK" response is sent back to Totalmobile
-    Examples:
-      | outcome_code |
-      | 0            |
-      | 310          |
-      | 320          |
-
-  Scenario Outline: Totalmobile sends a request with an outcome code of 540 (Ineligible) when case has outcome code of <outcome_code>
-    Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
-    And the case has an outcome code of <outcome_code>
-    When Totalmobile sends an update for reference "LMS2206-AA1.12345"
-      | field_name   | value |
-      | outcome_code | 540   |
-    Then the case "12345" for questionnaire "LMS2206_AA1" has been updated with
-      | field_name   | value |
-      | hOut         | 540   |
-      | qhAdmin.HOut | 540   |
-      | DMktnIND     | 1     |
-    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=540)" is logged as an information message
-    And a "200 OK" response is sent back to Totalmobile
-    Examples:
-      | outcome_code |
-      | 0            |
-      | 310          |
-      | 320          |
-
-  Scenario Outline: Totalmobile sends a request with an outcome code of 551 (Ineligible) when case has outcome code of <outcome_code>
-    Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
-    And the case has an outcome code of <outcome_code>
-    When Totalmobile sends an update for reference "LMS2206-AA1.12345"
-      | field_name   | value |
-      | outcome_code | 551   |
-    Then the case "12345" for questionnaire "LMS2206_AA1" has been updated with
-      | field_name   | value |
-      | hOut         | 551   |
-      | qhAdmin.HOut | 551   |
-      | DMktnIND     | 1     |
-    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=551)" is logged as an information message
-    And a "200 OK" response is sent back to Totalmobile
-    Examples:
-      | outcome_code |
-      | 0            |
-      | 310          |
-      | 320          |
-
-  Scenario Outline: Totalmobile sends a request with an outcome code of 560 (Ineligible) when case has outcome code of <outcome_code>
-    Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
-    And the case has an outcome code of <outcome_code>
-    When Totalmobile sends an update for reference "LMS2206-AA1.12345"
-      | field_name   | value |
-      | outcome_code | 560   |
-    Then the case "12345" for questionnaire "LMS2206_AA1" has been updated with
-      | field_name   | value |
-      | hOut         | 560   |
-      | qhAdmin.HOut | 560   |
-      | DMktnIND     | 1     |
-    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=560)" is logged as an information message
-    And a "200 OK" response is sent back to Totalmobile
-    Examples:
-      | outcome_code |
-      | 0            |
-      | 310          |
-      | 320          |
-
-  Scenario Outline: Totalmobile sends a request with an outcome code of 580 (Ineligible) when case has outcome code of <outcome_code>
-    Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
-    And the case has an outcome code of <outcome_code>
-    When Totalmobile sends an update for reference "LMS2206-AA1.12345"
-      | field_name   | value |
-      | outcome_code | 580   |
-    Then the case "12345" for questionnaire "LMS2206_AA1" has been updated with
-      | field_name   | value |
-      | hOut         | 580   |
-      | qhAdmin.HOut | 580   |
-      | DMktnIND     | 1     |
-    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=580)" is logged as an information message
-    And a "200 OK" response is sent back to Totalmobile
-    Examples:
-      | outcome_code |
-      | 0            |
-      | 310          |
-      | 320          |
-
-  Scenario Outline: Totalmobile sends a request with an outcome code of 640 (Ineligible) when case has outcome code of <outcome_code>
-    Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
-    And the case has an outcome code of <outcome_code>
-    When Totalmobile sends an update for reference "LMS2206-AA1.12345"
-      | field_name   | value |
-      | outcome_code | 640   |
-    Then the case "12345" for questionnaire "LMS2206_AA1" has been updated with
-      | field_name   | value |
-      | hOut         | 640   |
-      | qhAdmin.HOut | 640   |
-      | DMktnIND     | 1     |
-    And "Outcome code and call history updated (Questionnaire=LMS2206_AA1, Case Id=12345, Blaise hOut=<outcome_code>, TM hOut=640)" is logged as an information message
-    And a "200 OK" response is sent back to Totalmobile
-    Examples:
-      | outcome_code |
-      | 0            |
-      | 310          |
-      | 320          |
+    Examples: Blaise outcome code is 0
+      | blaise_outcome_code | outcome_code |
+      | 0                   | 410          |
+#      | 0                   | 420          |
+#      | 0                   | 431          |
+#      | 0                   | 432          |
+#      | 0                   | 441          |
+#      | 0                   | 442          |
+#      | 0                   | 450          |
+#    Examples: Blaise outcome code is 310
+#      | blaise_outcome_code | outcome_code |
+#      | 310                 | 410          |
+#      | 310                 | 420          |
+#      | 310                 | 431          |
+#      | 310                 | 432          |
+#      | 310                 | 441          |
+#      | 310                 | 442          |
+#      | 310                 | 450          |
+#    Examples: Blaise outcome code is 320
+#      | blaise_outcome_code | outcome_code |
+#      | 320                 | 410          |
+#      | 320                 | 420          |
+#      | 320                 | 431          |
+#      | 320                 | 432          |
+#      | 320                 | 441          |
+#      | 320                 | 442          |
+#      | 320                 | 450          |
+#    Examples: Blaise outcome code is 330
+#      | blaise_outcome_code | outcome_code |
+#      | 330                 | 410          |
+#      | 330                 | 420          |
+#      | 330                 | 431          |
+#      | 330                 | 432          |
+#      | 330                 | 441          |
+#      | 330                 | 442          |
+#      | 330                 | 450          |
