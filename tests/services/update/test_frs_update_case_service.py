@@ -190,12 +190,10 @@ def test_frs_update_case_outcome_code_calls_get_outcome_code_fields_once_with_co
 
 def test_frs_update_case_outcome_code_calls_update_case_once_with_correct_parameters(
     mock_case_update_service,
-    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
     mock_blaise_case_object,
 ):
     # arrange
-    questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
     outcome_code = 620
     mock_totalmobile_request.outcome_code = outcome_code
     mock_blaise_case_object.get_outcome_code_fields.return_value = {
@@ -211,7 +209,7 @@ def test_frs_update_case_outcome_code_calls_update_case_once_with_correct_parame
 
     # assert
     mock_case_update_service._blaise_service.update_case.assert_called_once_with(
-        questionnaire_name, case_id, expected_fields
+        "FRS2102", "90001", expected_fields
     )
 
 
@@ -256,12 +254,10 @@ def test_frs_update_refusal_reason_calls_get_refusal_reason_fields_once_with_cor
 
 def test_frs_update_refusal_reason_calls_update_case_once_with_correct_parameters(
     mock_case_update_service,
-    mock_questionnaire_and_case_data,
     mock_totalmobile_request,
     mock_blaise_case_object,
 ):
     # arrange
-    questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
     outcome_code = 410
     mock_totalmobile_request.outcome_code = outcome_code
     mock_case_update_service._blaise_service = MagicMock()
@@ -282,7 +278,7 @@ def test_frs_update_refusal_reason_calls_update_case_once_with_correct_parameter
 
     # assert
     mock_case_update_service._blaise_service.update_case.assert_called_once_with(
-        questionnaire_name, case_id, expected_fields
+        "FRS2102", "90001", expected_fields
     )
 
 
