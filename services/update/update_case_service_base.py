@@ -28,14 +28,6 @@ class UpdateCaseServiceBase(ABC, Generic[BlaiseUpdateCaseBaseType]):
     ) -> None:
         pass
 
-    @abstractmethod
-    def update_case_outcome_code(
-        self,
-        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-        blaise_case: BlaiseUpdateCaseBase,
-    ) -> None:
-        pass
-
     def validate_questionnaire_exists(self, questionnaire_name: str) -> None:
         if not self._blaise_service.questionnaire_exists(questionnaire_name):
             logging.error(

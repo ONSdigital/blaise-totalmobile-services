@@ -1,6 +1,7 @@
 import logging
 from typing import Dict
 
+from enums.blaise_fields import BlaiseFields
 from enums.questionnaire_case_outcome_codes import FRSQuestionnaireOutcomeCodes
 from models.update.frs_blaise_update_case_model import FRSBlaiseUpdateCase
 from models.update.totalmobile_incoming_update_request_model import (
@@ -8,7 +9,6 @@ from models.update.totalmobile_incoming_update_request_model import (
 )
 from services.blaise_service import RealBlaiseService
 from services.update.update_case_service_base import (
-    BlaiseUpdateCaseBaseType,
     UpdateCaseServiceBase,
 )
 
@@ -58,7 +58,6 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
             FRSQuestionnaireOutcomeCodes.HOUSEHOLD_LIMIT_ON_QUOTA_REACHED_MAXIMUM_OF_4_EXTRA_HOUSEHOLDS_783.value,
             FRSQuestionnaireOutcomeCodes.OTHER_OFFICE_APPROVAL_NEEDED_790.value,
         ):
-            # TODO: Get outcome_code fields_to_update
             fields_to_update.update(
                 blaise_case.get_outcome_code_fields(totalmobile_request)
             )
@@ -72,7 +71,6 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
             FRSQuestionnaireOutcomeCodes.REFUSAL_DURING_INTERVIEW_12_PLUS_DKS_OR_REFUSALS_IN_HHLD_SECTION_HRP_BU_442.value,
             FRSQuestionnaireOutcomeCodes.BROKEN_APPOINTMENT_NO_RE_CONTACT_450.value,
         ):
-            # TODO: Get outcome_code and refusal_reason fields_to_update
             fields_to_update.update(
                 blaise_case.get_outcome_code_fields(totalmobile_request)
             )
@@ -80,37 +78,13 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
                 blaise_case.get_refusal_reason_fields(totalmobile_request)
             )
 
-        # TODO: Update per fields_to_update
-        self._blaise_service.update_case(
-            totalmobile_request.questionnaire_name,
-            totalmobile_request.case_id,
-            fields_to_update,
-        )
-
-        # TODO: if refusal_reason in fields_to_update log both tings
-        foo = fields_to_update
-        print(foo)
-        # TODO: else, log da one ting
-
-
-
-        logging.info(
-            f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
-            f"has not been updated in Blaise (Blaise hOut={blaise_case.outcome_code}, "
-            f"TM hOut={totalmobile_request.outcome_code})"
-        )
-
-    def update_case_outcome_code(
-        self,
-        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-        blaise_case: BlaiseUpdateCaseBaseType,
-    ) -> None:
-
-        fields_to_update = {}
-
-        fields_to_update.update(
-            blaise_case.get_outcome_code_fields(totalmobile_request)
-        )
+        if not fields_to_update:
+            logging.info(
+                f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
+                f"has not been updated in Blaise (Blaise hOut={blaise_case.outcome_code}, "
+                f"TM hOut={totalmobile_request.outcome_code})"
+            )
+            return
 
         self._blaise_service.update_case(
             totalmobile_request.questionnaire_name,
@@ -119,33 +93,22 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
         )
 
         # TODO: Tidy this
-        if isinstance(blaise_case, FRSBlaiseUpdateCase):
-            logging.info(
-                f"Outcome code updated (Questionnaire={totalmobile_request.questionnaire_name}, "
-                f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
-                f"TM hOut={totalmobile_request.outcome_code})"
-            )
-
-    def update_refusal_reason(self, totalmobile_request, blaise_case):
-        fields_to_update = {}
-
-        fields_to_update.update(
-            blaise_case.get_refusal_reason_fields(totalmobile_request)
-        )
-
-        self._blaise_service.update_case(
-            totalmobile_request.questionnaire_name,
-            totalmobile_request.case_id,
-            fields_to_update,
-        )
-
-        # TODO: Tidy this
-        if isinstance(blaise_case, FRSBlaiseUpdateCase):
-            logging.info(
-                f"Outcome code and refusal reason updated (Questionnaire={totalmobile_request.questionnaire_name}, "
-                f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
-                f"TM hOut={totalmobile_request.outcome_code})"
-            )
+        if BlaiseFields.refusal_reason in fields_to_update:
+            # TODO: Tidy this
+            if isinstance(blaise_case, FRSBlaiseUpdateCase):
+                logging.info(
+                    f"Outcome code and refusal reason updated (Questionnaire={totalmobile_request.questionnaire_name}, "
+                    f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, Blaise RefReas={blaise_case.refusal_reason}, "
+                    f"TM hOut={totalmobile_request.outcome_code})"
+                )
+        else:
+            # TODO: Tidy this
+            if isinstance(blaise_case, FRSBlaiseUpdateCase):
+                logging.info(
+                    f"Outcome code updated (Questionnaire={totalmobile_request.questionnaire_name}, "
+                    f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
+                    f"TM hOut={totalmobile_request.outcome_code})"
+                )
 
     # TODO: Test dis
     def _return_survey_type_update_case_model(
