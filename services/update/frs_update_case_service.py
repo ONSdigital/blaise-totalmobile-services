@@ -26,6 +26,7 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
             totalmobile_request.questionnaire_name, totalmobile_request.case_id
         )
 
+        fields_to_update = {}
         if totalmobile_request.outcome_code in (
             FRSQuestionnaireOutcomeCodes.NO_CONTACT_WITH_ANYONE_AT_ADDRESS_310.value,
             FRSQuestionnaireOutcomeCodes.CONTACT_MADE_AT_ADDRESS_NO_CONTACT_WITH_SAMPLED_HOUSEHOLD_MULTI_320.value,
@@ -57,8 +58,10 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
             FRSQuestionnaireOutcomeCodes.HOUSEHOLD_LIMIT_ON_QUOTA_REACHED_MAXIMUM_OF_4_EXTRA_HOUSEHOLDS_783.value,
             FRSQuestionnaireOutcomeCodes.OTHER_OFFICE_APPROVAL_NEEDED_790.value,
         ):
-            self.update_case_outcome_code(totalmobile_request, blaise_case)
-            return
+            # TODO: Get outcome_code fields_to_update
+            fields_to_update.update(
+                blaise_case.get_outcome_code_fields(totalmobile_request)
+            )
 
         if totalmobile_request.outcome_code in (
             FRSQuestionnaireOutcomeCodes.HQ_OFFICE_REFUSAL_GENERAL_410.value,
@@ -69,10 +72,27 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
             FRSQuestionnaireOutcomeCodes.REFUSAL_DURING_INTERVIEW_12_PLUS_DKS_OR_REFUSALS_IN_HHLD_SECTION_HRP_BU_442.value,
             FRSQuestionnaireOutcomeCodes.BROKEN_APPOINTMENT_NO_RE_CONTACT_450.value,
         ):
-            # TODO: Update dis logic. Dis ting will log 2 different tings.
-            self.update_case_outcome_code(totalmobile_request, blaise_case)
-            self.update_refusal_reason(totalmobile_request, blaise_case)
-            return
+            # TODO: Get outcome_code and refusal_reason fields_to_update
+            fields_to_update.update(
+                blaise_case.get_outcome_code_fields(totalmobile_request)
+            )
+            fields_to_update.update(
+                blaise_case.get_refusal_reason_fields(totalmobile_request)
+            )
+
+        # TODO: Update per fields_to_update
+        self._blaise_service.update_case(
+            totalmobile_request.questionnaire_name,
+            totalmobile_request.case_id,
+            fields_to_update,
+        )
+
+        # TODO: if refusal_reason in fields_to_update log both tings
+        foo = fields_to_update
+        print(foo)
+        # TODO: else, log da one ting
+
+
 
         logging.info(
             f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
