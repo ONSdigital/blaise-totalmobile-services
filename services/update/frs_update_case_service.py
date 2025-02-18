@@ -8,9 +8,7 @@ from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 from services.blaise_service import RealBlaiseService
-from services.update.update_case_service_base import (
-    UpdateCaseServiceBase,
-)
+from services.update.update_case_service_base import UpdateCaseServiceBase
 
 
 class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
