@@ -157,15 +157,6 @@ def test_lms_update_case_contact_information_calls_get_contact_details_fields_on
     mock_totalmobile_request,
     mock_blaise_case_object,
 ):
-    # arrange
-    mock_blaise_case_object.case_id = 90001
-    mock_blaise_case_object.outcome_code = 0
-    mock_blaise_case_object.get_contact_details_fields.return_value = {
-        BlaiseFields.knock_to_nudge_contact_name: "Joe Bloggs",
-        BlaiseFields.telephone_number_1: "01234567890",
-        BlaiseFields.telephone_number_2: "07123123123",
-    }
-
     # act
     mock_case_update_service._update_case_contact_information(
         mock_totalmobile_request, mock_blaise_case_object
