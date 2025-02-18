@@ -458,5 +458,5 @@ def step_impl(context, outcome_code):
 def step_impl(context, outcome_code):
     outcome_code = int(outcome_code)
     assert (
-            400 <= outcome_code <= 500
+        400 <= outcome_code <= 500
     ), f"Outcome code {outcome_code} should be between 400 and 500"
