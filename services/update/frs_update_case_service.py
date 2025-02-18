@@ -69,6 +69,7 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
             FRSQuestionnaireOutcomeCodes.REFUSAL_DURING_INTERVIEW_12_PLUS_DKS_OR_REFUSALS_IN_HHLD_SECTION_HRP_BU_442.value,
             FRSQuestionnaireOutcomeCodes.BROKEN_APPOINTMENT_NO_RE_CONTACT_450.value,
         ):
+            # TODO: Update dis logic. Dis ting will log 2 different tings.
             self.update_case_outcome_code(totalmobile_request, blaise_case)
             self.update_refusal_reason(totalmobile_request, blaise_case)
             return
