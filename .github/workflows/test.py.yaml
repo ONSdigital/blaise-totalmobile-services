@@ -21,6 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install poetry
+          pip install setuptools
           poetry install
       - name: Run pytest
         run: |
@@ -48,6 +49,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install poetry
+          pip install setuptools
           poetry install
       - name: Run black
         run: poetry run black --check .
@@ -68,6 +70,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install poetry
+          pip install setuptools
           poetry install
       - name: Run mypy
         run: poetry run mypy .
