@@ -21,11 +21,9 @@ jobs:
       - name: Install dependencies
         run: |
           pip install poetry
-          pip install setuptools
           poetry install
       - name: Run pytest
         run: |
-          pip install setuptools
           poetry run python -m pytest --cov=./
           poetry run python -m coverage xml -i
       - name: Codecov
@@ -50,7 +48,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install poetry
-          pip install setuptools
           poetry install
       - name: Run black
         run: poetry run black --check .
@@ -71,7 +68,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install poetry
-          pip install setuptools
           poetry install
       - name: Run mypy
         run: poetry run mypy .
