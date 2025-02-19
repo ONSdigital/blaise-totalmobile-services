@@ -1,9 +1,9 @@
 [tool.poetry]
-name = "blaise-totalmobile-client"
+name = "blaise-totalmobile-services"
 version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
-packages = [{ include = "blaise_totalmobile_client", from = "src" }]
+packages = [{ include = "blaise_totalmobile_services" }]
 
 [tool.poetry.dependencies]
 python = "^3.9"
