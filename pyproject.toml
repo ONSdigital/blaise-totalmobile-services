@@ -3,6 +3,7 @@ name = "blaise-totalmobile-client"
 version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
+packages = [{ include = "blaise_totalmobile_client", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.9"
