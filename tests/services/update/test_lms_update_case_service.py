@@ -413,3 +413,24 @@ def test_lms_update_case_outcome_logs_outcome_code_and_call_history_updated(
         f"Case Id=90001, Blaise hOut=0, "
         f"TM hOut=999)"
     ) in caplog.messages
+
+
+def test_frs_update_case_implements_frs_blaise_update_case_type(
+    mock_case_update_service,
+    mock_blaise_case_object,
+    mock_totalmobile_request,
+    mock_questionnaire_and_case_data,
+):
+    # arrange
+    mock_case_update_service.get_existing_blaise_case = MagicMock(
+        return_value=mock_blaise_case_object
+    )
+
+    # act
+    mock_case_update_service.update_case(mock_totalmobile_request)
+
+    # assert
+    assert isinstance(
+        mock_case_update_service.get_existing_blaise_case.return_value,
+        LMSBlaiseUpdateCase,
+    )

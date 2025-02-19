@@ -7,10 +7,7 @@ from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 from services.blaise_service import RealBlaiseService
-from services.update.update_case_service_base import (
-    BlaiseUpdateCaseBaseType,
-    UpdateCaseServiceBase,
-)
+from services.update.update_case_service_base import UpdateCaseServiceBase
 
 
 class LMSUpdateCaseService(UpdateCaseServiceBase[LMSBlaiseUpdateCase]):
@@ -97,7 +94,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase[LMSBlaiseUpdateCase]):
     def update_case_outcome_code(
         self,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-        blaise_case: BlaiseUpdateCaseBaseType,
+        blaise_case: LMSBlaiseUpdateCase,
     ) -> None:
 
         fields_to_update = {}
@@ -106,14 +103,10 @@ class LMSUpdateCaseService(UpdateCaseServiceBase[LMSBlaiseUpdateCase]):
             blaise_case.get_outcome_code_fields(totalmobile_request)
         )
 
-        # TODO: Tidy this
-        if isinstance(blaise_case, LMSBlaiseUpdateCase):
-            fields_to_update.update(
-                blaise_case.get_knock_to_nudge_indicator_flag_field()
-            )
-            fields_to_update.update(blaise_case.get_call_history_record_field(1))
-            if not blaise_case.has_call_history:
-                fields_to_update.update(blaise_case.get_call_history_record_field(5))
+        fields_to_update.update(blaise_case.get_knock_to_nudge_indicator_flag_field())
+        fields_to_update.update(blaise_case.get_call_history_record_field(1))
+        if not blaise_case.has_call_history:
+            fields_to_update.update(blaise_case.get_call_history_record_field(5))
 
         self._blaise_service.update_case(
             totalmobile_request.questionnaire_name,
@@ -121,13 +114,11 @@ class LMSUpdateCaseService(UpdateCaseServiceBase[LMSBlaiseUpdateCase]):
             fields_to_update,
         )
 
-        # TODO: Tidy this
-        if isinstance(blaise_case, LMSBlaiseUpdateCase):
-            logging.info(
-                f"Outcome code and call history updated (Questionnaire={totalmobile_request.questionnaire_name}, "
-                f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
-                f"TM hOut={totalmobile_request.outcome_code})"
-            )
+        logging.info(
+            f"Outcome code and call history updated (Questionnaire={totalmobile_request.questionnaire_name}, "
+            f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
+            f"TM hOut={totalmobile_request.outcome_code})"
+        )
 
     # TODO: Test dis
     def _return_survey_type_update_case_model(
