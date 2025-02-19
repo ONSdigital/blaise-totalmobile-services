@@ -47,7 +47,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase[LMSBlaiseUpdateCase]):
             LMSQuestionnaireOutcomeCodes.WRONG_ADDRESS_640.value,
         ):
 
-            self.update_case_outcome_code(totalmobile_request, blaise_case)
+            self._update_case_outcome_code(totalmobile_request, blaise_case)
             return
 
         logging.info(
@@ -91,7 +91,7 @@ class LMSUpdateCaseService(UpdateCaseServiceBase[LMSBlaiseUpdateCase]):
             f"TM hOut={totalmobile_request.outcome_code})"
         )
 
-    def update_case_outcome_code(
+    def _update_case_outcome_code(
         self,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
         blaise_case: LMSBlaiseUpdateCase,

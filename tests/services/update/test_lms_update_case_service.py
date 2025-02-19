@@ -105,7 +105,7 @@ def test_lms_update_case_calls_update_case_contact_information_once_with_correct
 
 
 @patch.object(LMSUpdateCaseService, "get_existing_blaise_case")
-@patch.object(LMSUpdateCaseService, "update_case_outcome_code")
+@patch.object(LMSUpdateCaseService, "_update_case_outcome_code")
 def test_lms_update_case_calls_update_case_outcome_code_once_with_correct_parameter(
     mock_update_case_outcome_code,
     mock_get_existing_blaise_case,
@@ -281,7 +281,7 @@ def test_lms_update_case_outcome_code_calls_get_outcome_code_fields_once_with_co
     mock_blaise_case_object,
 ):
     # act
-    mock_case_update_service.update_case_outcome_code(
+    mock_case_update_service._update_case_outcome_code(
         mock_totalmobile_request, mock_blaise_case_object
     )
 
@@ -332,7 +332,7 @@ def test_lms_update_case_outcome_code_calls_update_case_once_with_correct_parame
     )
 
     # act
-    mock_case_update_service.update_case_outcome_code(
+    mock_case_update_service._update_case_outcome_code(
         mock_totalmobile_request, mock_blaise_case_object
     )
 
@@ -378,7 +378,7 @@ def test_lms_update_case_outcome_code_calls_update_case_once_with_correct_parame
     )
 
     # act
-    mock_case_update_service.update_case_outcome_code(
+    mock_case_update_service._update_case_outcome_code(
         mock_totalmobile_request, mock_blaise_case_object
     )
 
@@ -403,7 +403,7 @@ def test_lms_update_case_outcome_logs_outcome_code_and_call_history_updated(
 
     # act
     with caplog.at_level(logging.INFO):
-        mock_case_update_service.update_case_outcome_code(
+        mock_case_update_service._update_case_outcome_code(
             mock_totalmobile_request, mock_blaise_case_object
         )
 
