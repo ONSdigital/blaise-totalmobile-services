@@ -104,7 +104,6 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
             f"TM hOut={totalmobile_request.outcome_code})"
         )
 
-    # TODO: Test dis
     def _return_survey_type_update_case_model(
         self, questionnaire_name, case: Dict[str, str]
     ) -> FRSBlaiseUpdateCase:
