@@ -22,7 +22,6 @@ from app.handlers.totalmobile_incoming_handler import (
     force_recall_visit_request_handler,
     submit_form_result_request_handler,
 )
-from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
 
 incoming = Blueprint("incoming", __name__, url_prefix="/bts")
 
