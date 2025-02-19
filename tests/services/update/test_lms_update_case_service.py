@@ -436,12 +436,16 @@ def test_frs_update_case_implements_frs_blaise_update_case_type(
     )
 
 
-def test_frs_return_survey_type_update_case_model_returns_the_correct_model(mock_case_update_service, mock_questionnaire_and_case_data):
+def test_frs_return_survey_type_update_case_model_returns_the_correct_model(
+    mock_case_update_service, mock_questionnaire_and_case_data
+):
     # arrange
     questionnaire_name, _, case_data = mock_questionnaire_and_case_data
 
     # act
-    result = mock_case_update_service._return_survey_type_update_case_model(questionnaire_name, case_data)
+    result = mock_case_update_service._return_survey_type_update_case_model(
+        questionnaire_name, case_data
+    )
 
     # assert
     assert isinstance(result, LMSBlaiseUpdateCase)
