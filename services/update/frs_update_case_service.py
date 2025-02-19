@@ -90,19 +90,19 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
             fields_to_update,
         )
 
-        # TODO: Tidy this
         if BlaiseFields.refusal_reason in fields_to_update:
             logging.info(
                 f"Outcome code and refusal reason updated (Questionnaire={totalmobile_request.questionnaire_name}, "
                 f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, Blaise RefReas={blaise_case.refusal_reason}, "
                 f"TM hOut={totalmobile_request.outcome_code})"
             )
-        else:
-            logging.info(
-                f"Outcome code updated (Questionnaire={totalmobile_request.questionnaire_name}, "
-                f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
-                f"TM hOut={totalmobile_request.outcome_code})"
-            )
+            return
+
+        logging.info(
+            f"Outcome code updated (Questionnaire={totalmobile_request.questionnaire_name}, "
+            f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, "
+            f"TM hOut={totalmobile_request.outcome_code})"
+        )
 
     # TODO: Test dis
     def _return_survey_type_update_case_model(
