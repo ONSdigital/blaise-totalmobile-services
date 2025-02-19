@@ -25,6 +25,7 @@ jobs:
           poetry install
       - name: Run pytest
         run: |
+          pip install setuptools
           poetry run python -m pytest --cov=./
           poetry run python -m coverage xml -i
       - name: Codecov
