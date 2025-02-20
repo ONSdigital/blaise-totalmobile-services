@@ -55,6 +55,9 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
             FRSQuestionnaireOutcomeCodes.NOT_TO_INTERVIEW_INSTRUCTS_SCOTTISH_PRE_SELECTION_SHEET_782.value,
             FRSQuestionnaireOutcomeCodes.HOUSEHOLD_LIMIT_ON_QUOTA_REACHED_MAXIMUM_OF_4_EXTRA_HOUSEHOLDS_783.value,
             FRSQuestionnaireOutcomeCodes.OTHER_OFFICE_APPROVAL_NEEDED_790.value,
+        ) and blaise_case.outcome_code not in (
+            FRSQuestionnaireOutcomeCodes.COMPLETED_110.value,
+            FRSQuestionnaireOutcomeCodes.PARTIALLY_COMPLETED_210.value,
         ):
             fields_to_update.update(
                 blaise_case.get_outcome_code_fields(totalmobile_request)
