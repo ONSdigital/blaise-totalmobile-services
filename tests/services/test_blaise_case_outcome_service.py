@@ -4,7 +4,7 @@ from unittest.mock import Mock
 import pytest
 
 from enums.blaise_fields import BlaiseFields
-from models.delete.blaise_delete_case_model import BlaiseDeleteCase
+from models.delete.blaise_delete_case_model import BlaiseDeleteCaseBase
 from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
 
 
@@ -32,7 +32,7 @@ class TestGetCaseOutcomesForLMS:
             },
         ]
         mock_blaise_service.get_cases.return_value = case_data
-        required_fields = BlaiseDeleteCase.required_fields()
+        required_fields = BlaiseDeleteCaseBase.required_fields()
 
         # act
         service.get_case_outcomes_for_questionnaire(questionnaire_name)
