@@ -46,6 +46,7 @@ def test_get_outcome_code_fields_returns_an_expected_dictionary():
         contact_name="Joe Bloggs",
         home_phone_number=None,
         mobile_phone_number=None,
+        refusal_reason=None,
     )
 
     # act

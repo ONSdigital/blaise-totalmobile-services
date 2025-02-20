@@ -22,10 +22,12 @@ class FRSBlaiseUpdateCase(BlaiseUpdateCaseBase, FRSBlaiseCaseModel):
         }
 
     @staticmethod
-    def get_refusal_reason_fields(totalmobile_request):
+    def get_refusal_reason_fields(
+        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
+    ):
         return {
             BlaiseFields.outcome_code: f"{totalmobile_request.outcome_code}",
-            BlaiseFields.refusal_reason: f"{totalmobile_request.outcome_code}",
+            BlaiseFields.refusal_reason: f"{totalmobile_request.refusal_reason}",
         }
 
     def required_fields(self) -> List:

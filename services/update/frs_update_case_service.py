@@ -55,6 +55,9 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
             FRSQuestionnaireOutcomeCodes.NOT_TO_INTERVIEW_INSTRUCTS_SCOTTISH_PRE_SELECTION_SHEET_782.value,
             FRSQuestionnaireOutcomeCodes.HOUSEHOLD_LIMIT_ON_QUOTA_REACHED_MAXIMUM_OF_4_EXTRA_HOUSEHOLDS_783.value,
             FRSQuestionnaireOutcomeCodes.OTHER_OFFICE_APPROVAL_NEEDED_790.value,
+        ) and blaise_case.outcome_code not in (
+            FRSQuestionnaireOutcomeCodes.COMPLETED_110.value,
+            FRSQuestionnaireOutcomeCodes.PARTIALLY_COMPLETED_210.value,
         ):
             fields_to_update.update(
                 blaise_case.get_outcome_code_fields(totalmobile_request)
@@ -69,9 +72,6 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
             FRSQuestionnaireOutcomeCodes.REFUSAL_DURING_INTERVIEW_12_PLUS_DKS_OR_REFUSALS_IN_HHLD_SECTION_HRP_BU_442.value,
             FRSQuestionnaireOutcomeCodes.BROKEN_APPOINTMENT_NO_RE_CONTACT_450.value,
         ):
-            fields_to_update.update(
-                blaise_case.get_outcome_code_fields(totalmobile_request)
-            )
             fields_to_update.update(
                 blaise_case.get_refusal_reason_fields(totalmobile_request)
             )
@@ -93,7 +93,7 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
         if BlaiseFields.refusal_reason in fields_to_update:
             logging.info(
                 f"Outcome code and refusal reason updated (Questionnaire={totalmobile_request.questionnaire_name}, "
-                f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, Blaise RefReas={blaise_case.refusal_reason}, "
+                f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, TM RefReas={totalmobile_request.refusal_reason}, "
                 f"TM hOut={totalmobile_request.outcome_code})"
             )
             return

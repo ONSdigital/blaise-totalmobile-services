@@ -50,6 +50,9 @@ behave = "^1.2.6"
 types-protobuf = "^3.19.22"
 types-pytest-lazy-fixture = "^0.6.3"
 
+[tool.poetry.group.dev.dependencies]
+types-setuptools = "^75.8.0.20250210"
+
 [tool.isort]
 multi_line_output = "3"
 include_trailing_comma = "True"
