@@ -1,10 +1,10 @@
 from typing import Dict, List
 
 from enums.blaise_fields import BlaiseFields
-from models.common.blaise.blaise_case_model import BlaiseCaseModel
+from models.common.blaise.lms_blaise_case_model import LMSBlaiseCaseModel
 
 
-class BlaiseDeleteCase(BlaiseCaseModel):
+class BlaiseDeleteCaseBase(LMSBlaiseCaseModel):
     def __init__(self, questionnaire_name: str, case_data: Dict[str, str]):
         super().__init__(questionnaire_name, case_data)
 

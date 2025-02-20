@@ -444,3 +444,19 @@ def step_impl(context):
     task_request_models = context.cloud_task_service.get_task_request_models()
 
     assert not task_request_models
+
+
+@when("{outcome_code} is NOT between 400 and 500")
+def step_impl(context, outcome_code):
+    outcome_code = int(outcome_code)
+    assert not (
+        400 <= outcome_code <= 500
+    ), f"Outcome code {outcome_code} should NOT be between 400 and 500"
+
+
+@when("{outcome_code} is between 400 and 500")
+def step_impl(context, outcome_code):
+    outcome_code = int(outcome_code)
+    assert (
+        400 <= outcome_code <= 500
+    ), f"Outcome code {outcome_code} should be between 400 and 500"

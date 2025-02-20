@@ -2,7 +2,7 @@ import logging
 from typing import Dict, List, Sequence
 
 from models.common.totalmobile.totalmobile_world_model import TotalmobileWorldModel
-from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
+from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModelBase
 from models.create.totalmobile.totalmobile_create_job_model import (
     TotalmobileCreateJobModel,
     TotalmobileCreateJobModelRequestJson,
@@ -22,7 +22,7 @@ class TotalmobileCreateJobMapperService:
     def map_totalmobile_create_job_models(
         self,
         questionnaire_name: str,
-        cases: Sequence[BlaiseCreateCaseModel],
+        cases: Sequence[BlaiseCreateCaseModelBase],
         world_model: TotalmobileWorldModel,
     ) -> List[TotalmobileCreateJobModel]:
 
@@ -40,7 +40,7 @@ class TotalmobileCreateJobMapperService:
     def map_totalmobile_create_job_model(
         self,
         questionnaire_name: str,
-        case: BlaiseCreateCaseModel,
+        case: BlaiseCreateCaseModelBase,
         world_model: TotalmobileWorldModel,
     ) -> TotalmobileCreateJobModel:
 
@@ -63,7 +63,7 @@ class TotalmobileCreateJobMapperService:
         )
 
     def map_totalmobile_job_payload(
-        self, questionnaire_name: str, case: BlaiseCreateCaseModel
+        self, questionnaire_name: str, case: BlaiseCreateCaseModelBase
     ) -> Dict[str, str]:
         logging.info(
             f"_map_totalmobile_job_payload for questionnaire {questionnaire_name} and case {case.case_id}"
