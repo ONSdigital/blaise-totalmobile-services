@@ -75,7 +75,7 @@ def get_populated_update_case_request_for_contact_made(
 
 
 def get_populated_update_case_refusal_request(
-    reference="LMS2101-AA1.90001", outcome_code=460
+    reference="LMS2101-AA1.90001", outcome_code=460, refusal_reason=0
 ):
     return {
         "result": {
@@ -124,10 +124,10 @@ def get_populated_update_case_refusal_request(
                             },
                         },
                         {
-                            "value": "Reason not known",
+                            "value": refusal_reason,
                             "description": "Reason not known",
                             "element": {
-                                "reference": "Outright_Refusal_Reason",
+                                "reference": "RefusalOutrightReason",
                                 "text": "Select one of the options below",
                             },
                         },

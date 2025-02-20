@@ -61,6 +61,7 @@ def test_get_outcome_code_fields_returns_an_expected_dictionary():
         contact_name="Joe Bloggs",
         home_phone_number="01234567890",
         mobile_phone_number="07123123123",
+        refusal_reason=None,
     )
 
     # act
@@ -84,6 +85,7 @@ def test_get_contact_details_fields_returns_an_expected_dictionary():
         contact_name="Joe Bloggs",
         home_phone_number="01234567890",
         mobile_phone_number="07123123123",
+        refusal_reason=None,
     )
 
     # act
@@ -111,6 +113,7 @@ def test_get_contact_details_fields_returns_an_expected_dictionary_if_contact_na
         contact_name=test_input,
         home_phone_number="01234567890",
         mobile_phone_number="07123123123",
+        refusal_reason=None,
     )
 
     # act
@@ -137,6 +140,7 @@ def test_get_contact_details_fields_returns_an_expected_dictionary_if_home_numbe
         contact_name="Joe Bloggs",
         home_phone_number=test_input,
         mobile_phone_number="07123123123",
+        refusal_reason=None,
     )
 
     # act
@@ -163,6 +167,7 @@ def test_get_contact_details_fields_returns_an_expected_dictionary_if_mobile_num
         contact_name="Joe Bloggs",
         home_phone_number="01234567890",
         mobile_phone_number=test_input,
+        refusal_reason=None,
     )
 
     # act
@@ -189,6 +194,7 @@ def test_get_contact_details_fields_returns_an_empty_dictionary_if_no_contact_de
         contact_name=test_input,
         home_phone_number=test_input,
         mobile_phone_number=test_input,
+        refusal_reason=None,
     )
 
     # act

@@ -73,9 +73,6 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
             FRSQuestionnaireOutcomeCodes.BROKEN_APPOINTMENT_NO_RE_CONTACT_450.value,
         ):
             fields_to_update.update(
-                blaise_case.get_outcome_code_fields(totalmobile_request)
-            )
-            fields_to_update.update(
                 blaise_case.get_refusal_reason_fields(totalmobile_request)
             )
 
@@ -96,7 +93,7 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
         if BlaiseFields.refusal_reason in fields_to_update:
             logging.info(
                 f"Outcome code and refusal reason updated (Questionnaire={totalmobile_request.questionnaire_name}, "
-                f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, Blaise RefReas={blaise_case.refusal_reason}, "
+                f"Case Id={blaise_case.case_id}, Blaise hOut={blaise_case.outcome_code}, TM RefReas={totalmobile_request.refusal_reason}, "
                 f"TM hOut={totalmobile_request.outcome_code})"
             )
             return

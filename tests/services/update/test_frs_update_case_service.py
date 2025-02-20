@@ -103,26 +103,6 @@ def test_frs_update_case_calls_get_outcome_code_fields_once_with_correct_paramet
 
 
 @patch.object(FRSUpdateCaseService, "get_existing_blaise_case")
-def test_frs_update_case_calls_get_outcome_code_fields_once_with_correct_parameter_when_outcome_code_in_refusal_reason(
-    mock_get_existing_blaise_case,
-    mock_case_update_service,
-    mock_totalmobile_request,
-    mock_blaise_case_object,
-):
-    # arrange
-    mock_totalmobile_request.outcome_code = 410
-    mock_get_existing_blaise_case.return_value = mock_blaise_case_object
-
-    # act
-    mock_case_update_service.update_case(mock_totalmobile_request)
-
-    # assert
-    mock_blaise_case_object.get_outcome_code_fields.assert_called_once_with(
-        mock_totalmobile_request
-    )
-
-
-@patch.object(FRSUpdateCaseService, "get_existing_blaise_case")
 def test_frs_update_case_calls_get_refusal_reason_fields_once_with_correct_parameter_when_outcome_code_in_refusal_reason(
     mock_get_existing_blaise_case,
     mock_case_update_service,
@@ -192,9 +172,6 @@ def test_frs_update_case_logs_expected_message_when_totalmobile_outcome_code_is_
         (310, {BlaiseFields.outcome_code: "310"}),
         (512, {BlaiseFields.outcome_code: "512"}),
         (620, {BlaiseFields.outcome_code: "620"}),
-        (410, {BlaiseFields.outcome_code: "410", BlaiseFields.refusal_reason: "410"}),
-        (432, {BlaiseFields.outcome_code: "432", BlaiseFields.refusal_reason: "432"}),
-        (450, {BlaiseFields.outcome_code: "450", BlaiseFields.refusal_reason: "450"}),
     ],
 )
 def test_frs_update_case_calls_blaise_service_update_case_once_with_correct_parameters(
@@ -208,6 +185,45 @@ def test_frs_update_case_calls_blaise_service_update_case_once_with_correct_para
     mock_case_update_service._blaise_service = MagicMock()
     questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
     mock_totalmobile_request.outcome_code = outcome_code
+    mock_totalmobile_request.refusal_reason = outcome_code
+
+    # act
+    mock_case_update_service.update_case(mock_totalmobile_request)
+
+    # assert
+    mock_case_update_service._blaise_service.update_case.assert_called_once_with(
+        questionnaire_name, case_id, expected_fields
+    )
+
+
+@pytest.mark.parametrize(
+    "outcome_code, refusal_reason, expected_fields",
+    [
+        (
+            410,
+            432,
+            {BlaiseFields.outcome_code: "410", BlaiseFields.refusal_reason: "432"},
+        ),
+        (
+            420,
+            450,
+            {BlaiseFields.outcome_code: "420", BlaiseFields.refusal_reason: "450"},
+        ),
+    ],
+)
+def test_frs_update_case_calls_blaise_service_update_case_once_with_correct_parameters_when_case_has_refusal(
+    mock_case_update_service,
+    mock_questionnaire_and_case_data,
+    mock_totalmobile_request,
+    outcome_code,
+    refusal_reason,
+    expected_fields,
+):
+    # arrange
+    mock_case_update_service._blaise_service = MagicMock()
+    questionnaire_name, case_id, _ = mock_questionnaire_and_case_data
+    mock_totalmobile_request.outcome_code = outcome_code
+    mock_totalmobile_request.refusal_reason = refusal_reason
 
     # act
     mock_case_update_service.update_case(mock_totalmobile_request)
@@ -231,6 +247,7 @@ def test_frs_update_case_logs_expected_message_when_outcome_code_received_was_wi
     # arrange
     outcome_code = 410
     mock_totalmobile_request.outcome_code = outcome_code
+    mock_totalmobile_request.refusal_reason = 441
     mock_get_existing_blaise_case.return_value = mock_blaise_case_object
     mock_blaise_case_object.get_refusal_reason_fields.return_value = {
         BlaiseFields.outcome_code: outcome_code,
@@ -239,7 +256,6 @@ def test_frs_update_case_logs_expected_message_when_outcome_code_received_was_wi
 
     mock_blaise_case_object.case_id = 90001
     mock_blaise_case_object.outcome_code = 0
-    mock_blaise_case_object.refusal_reason = 0
 
     # act
     with caplog.at_level(logging.INFO):
@@ -247,9 +263,8 @@ def test_frs_update_case_logs_expected_message_when_outcome_code_received_was_wi
 
     # assert
     assert (
-        f"Outcome code and refusal reason updated (Questionnaire=FRS2102, "
-        f"Case Id=90001, Blaise hOut=0, Blaise RefReas=0, "
-        f"TM hOut=410)"
+        "Outcome code and refusal reason updated (Questionnaire=FRS2102, Case "
+        "Id=90001, Blaise hOut=0, TM RefReas=441, TM hOut=410)"
     ) in caplog.messages
 
 
