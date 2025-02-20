@@ -13,6 +13,7 @@ def lms_totalmobile_incoming_update_request_helper(
         contact_name="Joe Bloggs",
         home_phone_number="01234567890",
         mobile_phone_number="07123123123",
+        refusal_reason=None,
     )
 
 
@@ -26,4 +27,5 @@ def frs_totalmobile_incoming_update_request_helper(
         contact_name="Joe Bloggs Jr",
         home_phone_number="01234567891",
         mobile_phone_number="07123123124",
+        refusal_reason=None,
     )

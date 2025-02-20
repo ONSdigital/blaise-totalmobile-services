@@ -22,6 +22,7 @@ class TotalMobileIncomingUpdateRequestModel(BaseModel):
     contact_name: Optional[str]
     home_phone_number: Optional[str]
     mobile_phone_number: Optional[str]
+    refusal_reason: Optional[str]
 
     @classmethod
     def import_request(cls: Type[T], incoming_request: IncomingRequest) -> T:
@@ -41,6 +42,7 @@ class TotalMobileIncomingUpdateRequestModel(BaseModel):
             contact_name=cls.get_contact_name(responses_dictionary),
             home_phone_number=cls.get_home_phone_number(responses_dictionary),
             mobile_phone_number=cls.get_mobile_phone_number(responses_dictionary),
+            refusal_reason=cls.get_refusal_reason(responses_dictionary),
         )
 
         return total_mobile_case
@@ -80,3 +82,11 @@ class TotalMobileIncomingUpdateRequestModel(BaseModel):
     @staticmethod
     def get_mobile_phone_number(responses_dictionary: Dict[str, Any]) -> Optional[str]:
         return responses_dictionary.get("Contact_Tel2")
+
+    @staticmethod
+    def get_refusal_reason(responses_dictionary: Dict[str, Any]) -> Optional[str]:
+        responses_dictionary_lower = {
+            k.lower(): v for k, v in responses_dictionary.items()
+        }
+        refusal_reason = responses_dictionary_lower.get("refusaloutrightreason")
+        return None if refusal_reason is None else str(refusal_reason)
