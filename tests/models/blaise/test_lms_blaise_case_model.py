@@ -40,8 +40,7 @@ class TestLMSBlaiseCaseModel:
         }
 
     class MockLMSBlaiseCaseModelBase(LMSBlaiseCaseModel):
-        @staticmethod
-        def required_fields():
+        def required_fields(self):
             # arrange
             return ["case_id", "outcome_code", "call_history"]
 

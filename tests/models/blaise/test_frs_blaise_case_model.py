@@ -40,8 +40,7 @@ class TestFRSBlaiseCaseModel:
         }
 
     class MockFRSBlaiseCaseModelBase(FRSBlaiseCaseModel):
-        @staticmethod
-        def required_fields():
+        def required_fields(self):
             # arrange
             return ["case_id", "outcome_code"]
 
