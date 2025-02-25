@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 import pytest
@@ -39,8 +40,7 @@ class TestFRSBlaiseCaseModel:
         }
 
     class MockFRSBlaiseCaseModelBase(FRSBlaiseCaseModel):
-        @staticmethod
-        def required_fields():
+        def required_fields(self):
             # arrange
             return ["case_id", "outcome_code"]
 
@@ -86,6 +86,30 @@ class TestFRSBlaiseCaseModel:
 
     def test_frs_blaise_case_model_reference_returns_expected_value(self, model):
         assert model.reference == "reference"
+
+    @pytest.mark.parametrize(
+        "empty_value",
+        [
+            None,
+            "",
+            0,
+        ],
+    )
+    def test_frs_blaise_case_model_logs_a_warning_when_uprn_is_empty(
+        self, sample_frs_case_data, empty_value, caplog
+    ):
+        # arrange
+        sample_frs_case_data[BlaiseFields.reference] = empty_value
+        model = self.MockFRSBlaiseCaseModelBase("FRS2101", sample_frs_case_data)
+
+        # act
+        with caplog.at_level(logging.WARNING):
+            _ = model.reference
+
+        # assert
+        assert (
+            "Case 10010 for questionnaire FRS2101 has no UPRN.  Users will not be able to dispatch this case in Totalmobile."
+        ) in caplog.messages
 
     def test_frs_blaise_case_model_latitude_returns_expected_value(self, model):
         assert model.latitude == "10020202"
