@@ -34,3 +34,4 @@ class BlaiseFields(str, Enum):
     rand = "qDataBag.Rand"
     tla = "qDataBag.TLA"
     local_auth = "qDataBag.LAUA"
+    refusal_reason = "qDataBag.RefReas"

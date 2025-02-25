@@ -141,6 +141,27 @@ def step_impl(context, reference):
     context.response = response
 
 
+@when('Totalmobile sends an update for reference "{reference}" with a refusal')
+def step_impl(context, reference):
+    valid_credentials = base64.b64encode(b"test_username:test_password").decode("utf-8")
+    fields = {}
+    if context.table:
+        fields = {row["field_name"]: row["value"] for row in context.table}
+        fields["outcome_code"] = int(fields["outcome_code"])
+
+    request = incoming_request_helper.get_populated_update_case_refusal_request(
+        reference=reference, **fields
+    )
+
+    response = context.test_client.post(
+        "/bts/submitformresultrequest",
+        headers={"Authorization": f"Basic {valid_credentials}"},
+        json=request,
+    )
+
+    context.response = response
+
+
 @when(
     'Totalmobile sends an update for reference "{reference}" with an outcome of 300 but no contact information'
 )
@@ -444,3 +465,19 @@ def step_impl(context):
     task_request_models = context.cloud_task_service.get_task_request_models()
 
     assert not task_request_models
+
+
+@when("{outcome_code} is NOT between 400 and 500")
+def step_impl(context, outcome_code):
+    outcome_code = int(outcome_code)
+    assert not (
+        400 <= outcome_code <= 500
+    ), f"Outcome code {outcome_code} should NOT be between 400 and 500"
+
+
+@when("{outcome_code} is between 400 and 500")
+def step_impl(context, outcome_code):
+    outcome_code = int(outcome_code)
+    assert (
+        400 <= outcome_code <= 500
+    ), f"Outcome code {outcome_code} should be between 400 and 500"

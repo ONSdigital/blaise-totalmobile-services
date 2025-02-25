@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, Optional
 
-from models.delete.blaise_delete_case_model import BlaiseDeleteCase
+from models.delete.blaise_delete_case_model import BlaiseDeleteCaseBase
 from services.blaise_service import BlaiseService
 
 
@@ -35,12 +35,12 @@ class BlaiseCaseOutcomeService:
 
         return {case.case_id: case.outcome_code for case in cases}
 
-    def _get_cases(self, questionnaire_name: str) -> list[BlaiseDeleteCase]:
+    def _get_cases(self, questionnaire_name: str) -> list[BlaiseDeleteCaseBase]:
         case_data_list = self._blaise_service.get_cases(
-            questionnaire_name, BlaiseDeleteCase.required_fields()
+            questionnaire_name, BlaiseDeleteCaseBase.required_fields()
         )
 
         return [
-            BlaiseDeleteCase(questionnaire_name, case_data)
+            BlaiseDeleteCaseBase(questionnaire_name, case_data)
             for case_data in case_data_list
         ]
