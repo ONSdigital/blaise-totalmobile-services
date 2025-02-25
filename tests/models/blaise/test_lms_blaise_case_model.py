@@ -96,7 +96,7 @@ class TestLMSBlaiseCaseModel:
         ],
     )
     def test_lms_blaise_case_model_logs_a_warning_when_uprn_is_empty(
-            self, sample_lms_case_data, empty_value, caplog
+        self, sample_lms_case_data, empty_value, caplog
     ):
         # arrange
         sample_lms_case_data[BlaiseFields.reference] = empty_value
@@ -108,8 +108,8 @@ class TestLMSBlaiseCaseModel:
 
         # assert
         assert (
-                   "Case 10010 for questionnaire LMS2101_AA1 has no UPRN.  Users will not be able to dispatch this case in Totalmobile."
-               ) in caplog.messages
+            "Case 10010 for questionnaire LMS2101_AA1 has no UPRN.  Users will not be able to dispatch this case in Totalmobile."
+        ) in caplog.messages
 
     def test_lms_blaise_case_model_latitude_returns_expected_value(self, model):
         assert model.latitude == "10020202"
