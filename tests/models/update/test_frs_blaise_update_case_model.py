@@ -55,6 +55,7 @@ def test_get_outcome_code_fields_returns_an_expected_dictionary():
     # assert
     assert result == {
         BlaiseFields.outcome_code: "300",
+        BlaiseFields.admin_outcome_code: "300",
     }
 
 

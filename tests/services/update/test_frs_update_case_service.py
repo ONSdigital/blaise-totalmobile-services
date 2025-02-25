@@ -169,9 +169,27 @@ def test_frs_update_case_logs_expected_message_when_totalmobile_outcome_code_is_
 @pytest.mark.parametrize(
     "outcome_code, expected_fields",
     [
-        (310, {BlaiseFields.outcome_code: "310"}),
-        (512, {BlaiseFields.outcome_code: "512"}),
-        (620, {BlaiseFields.outcome_code: "620"}),
+        (
+            310,
+            {
+                BlaiseFields.outcome_code: "310",
+                BlaiseFields.admin_outcome_code: "310",
+            },
+        ),
+        (
+            512,
+            {
+                BlaiseFields.outcome_code: "512",
+                BlaiseFields.admin_outcome_code: "512",
+            },
+        ),
+        (
+            620,
+            {
+                BlaiseFields.outcome_code: "620",
+                BlaiseFields.admin_outcome_code: "620",
+            },
+        ),
     ],
 )
 def test_frs_update_case_calls_blaise_service_update_case_once_with_correct_parameters(
