@@ -50,15 +50,6 @@ class LMSBlaiseUpdateCase(BlaiseUpdateCaseBase, LMSBlaiseCaseModel):
 
         return fields
 
-    def get_outcome_code_fields(
-        self,
-        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-    ):
-        return {
-            BlaiseFields.outcome_code: f"{totalmobile_request.outcome_code}",
-            BlaiseFields.admin_outcome_code: f"{totalmobile_request.outcome_code}",
-        }
-
     @staticmethod
     def get_knock_to_nudge_indicator_flag_field():
         return {
