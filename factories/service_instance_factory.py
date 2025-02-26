@@ -51,7 +51,6 @@ from services.create.uac.uac_service import UacService
 from services.create.uac.uac_service_base import UacServiceBase
 from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
 from services.totalmobile_service import RealTotalmobileService
-from services.update.frs_case_orchestrator import FRSCaseOrchestrator
 from services.update.frs_update_case_service import FRSUpdateCaseService
 from services.update.lms_update_case_service import LMSUpdateCaseService
 from services.update.update_case_service_base import UpdateCaseServiceBase
@@ -90,30 +89,14 @@ class ServiceInstanceFactory:
     def create_eligible_frs_case_service() -> FRSEligibleCaseService:
         return FRSEligibleCaseService()
 
-    # TODO: Sort this mess out!
+    @staticmethod
     def create_update_case_service(
-        self,
-        survey_type: str,
-        blaise_service: RealBlaiseService,
-        totalmobile_case: TotalMobileIncomingUpdateRequestModel,
-    ):
+        survey_type: str, blaise_service: RealBlaiseService
+    ) -> UpdateCaseServiceBase:
         if survey_type == "LMS":
-            return LMSUpdateCaseService(blaise_service=blaise_service).update_case(
-                totalmobile_case
-            )
+            return LMSUpdateCaseService(blaise_service=blaise_service)
         if survey_type == "FRS":
-            update_case_service = FRSUpdateCaseService(blaise_service=blaise_service)
-            cma_blaise_service = CMABlaiseService(self._config)
-            frs_case_allocation_service = FRSCaseAllocationService(cma_blaise_service)
-            cma_service_facade = CMAServiceFacade(
-                cma_blaise_service=cma_blaise_service,
-                frs_case_allocation_service=frs_case_allocation_service,
-            )
-            return FRSCaseOrchestrator(
-                update_case_service=update_case_service,
-                cma_service_facade=cma_service_facade,
-            )
-            # return FRSUpdateCaseService(blaise_service=blaise_service)
+            return FRSUpdateCaseService(blaise_service=blaise_service)
         raise Exception
 
     def create_questionnaire_service(
