@@ -1,6 +1,7 @@
 from abc import abstractmethod
 from typing import Dict, List
 
+from enums.blaise_fields import BlaiseFields
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
@@ -19,12 +20,14 @@ class BlaiseUpdateCaseBase:
     def questionnaire_name(self, value):
         self._questionnaire_name = value
 
-    @abstractmethod
+    @staticmethod
     def get_outcome_code_fields(
-        self,
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
     ):
-        pass
+        return {
+            BlaiseFields.outcome_code: f"{totalmobile_request.outcome_code}",
+            BlaiseFields.admin_outcome_code: f"{totalmobile_request.outcome_code}",
+        }
 
     @abstractmethod
     def required_fields(self) -> List:
