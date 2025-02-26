@@ -13,14 +13,6 @@ class FRSBlaiseUpdateCase(BlaiseUpdateCaseBase, FRSBlaiseCaseModel):
         BlaiseUpdateCaseBase.__init__(self, questionnaire_name, case_data)
         FRSBlaiseCaseModel.__init__(self, questionnaire_name, case_data)
 
-    def get_outcome_code_fields(
-        self,
-        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-    ):
-        return {
-            BlaiseFields.outcome_code: f"{totalmobile_request.outcome_code}",
-        }
-
     @staticmethod
     def get_refusal_reason_fields(
         totalmobile_request: TotalMobileIncomingUpdateRequestModel,
