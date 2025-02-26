@@ -1,15 +1,17 @@
 from typing import Dict, List
 
 from enums.blaise_fields import BlaiseFields
-from models.common.blaise.blaise_case_model import BlaiseCaseModel
+from models.common.blaise.lms_blaise_case_model import LMSBlaiseCaseModel
+from models.update.blaise_update_case_model_base import BlaiseUpdateCaseBase
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 
 
-class BlaiseUpdateCase(BlaiseCaseModel):
+class LMSBlaiseUpdateCase(BlaiseUpdateCaseBase, LMSBlaiseCaseModel):
     def __init__(self, questionnaire_name: str, case_data: Dict[str, str]):  # type: ignore
-        super().__init__(questionnaire_name, case_data)
+        BlaiseUpdateCaseBase.__init__(self, questionnaire_name, case_data)
+        LMSBlaiseCaseModel.__init__(self, questionnaire_name, case_data)
 
     @staticmethod
     def get_contact_details_fields(
@@ -49,15 +51,6 @@ class BlaiseUpdateCase(BlaiseCaseModel):
         return fields
 
     @staticmethod
-    def get_outcome_code_fields(
-        totalmobile_request: TotalMobileIncomingUpdateRequestModel,
-    ):
-        return {
-            BlaiseFields.outcome_code: f"{totalmobile_request.outcome_code}",
-            BlaiseFields.admin_outcome_code: f"{totalmobile_request.outcome_code}",
-        }
-
-    @staticmethod
     def get_knock_to_nudge_indicator_flag_field():
         return {
             BlaiseFields.knock_to_nudge_indicator: "1"
@@ -70,8 +63,7 @@ class BlaiseUpdateCase(BlaiseCaseModel):
             f"catiMana.CatiCall.RegsCalls[{record_number}].DialResult": "5",
         }
 
-    @staticmethod
-    def required_fields() -> List:
+    def required_fields(self) -> List:
         return [
             BlaiseFields.case_id,
             BlaiseFields.outcome_code,

@@ -1,11 +1,11 @@
 from abc import abstractmethod
 from typing import Dict, Optional
 
-from models.common.blaise.blaise_case_model import BlaiseCaseModel
+from models.common.blaise.lms_blaise_case_model import LMSBlaiseCaseModel
 from models.create.blaise.questionnaire_uac_model import UacChunks
 
 
-class BlaiseCreateCaseModel(BlaiseCaseModel):
+class BlaiseCreateCaseModelBase(LMSBlaiseCaseModel):
     def __init__(
         self,
         questionnaire_name: str,

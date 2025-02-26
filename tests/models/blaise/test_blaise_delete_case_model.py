@@ -1,7 +1,7 @@
 import pytest
 
 from enums.blaise_fields import BlaiseFields
-from models.delete.blaise_delete_case_model import BlaiseDeleteCase
+from models.delete.blaise_delete_case_model import BlaiseDeleteCaseBase
 
 
 @pytest.mark.parametrize(
@@ -23,7 +23,7 @@ def test_populated_delete_case_model_has_the_correct_properties(
     }
 
     # act
-    result = BlaiseDeleteCase(questionnaire_name, case_data)  # type: ignore
+    result = BlaiseDeleteCaseBase(questionnaire_name, case_data)  # type: ignore
 
     # assert
     assert result.case_id == case_id

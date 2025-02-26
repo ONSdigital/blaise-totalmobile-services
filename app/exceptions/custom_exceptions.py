@@ -44,3 +44,7 @@ class CaseResetFailedException(Exception):
 
 class CaseAllocationException(Exception):
     pass
+
+
+class SurveyDoesNotExistError(Exception):
+    pass

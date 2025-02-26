@@ -3,7 +3,7 @@ from typing import Optional
 from models.common.totalmobile.totalmobile_reference_model import (
     TotalmobileReferenceModel,
 )
-from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModel
+from models.create.blaise.blaise_create_case_model import BlaiseCreateCaseModelBase
 from models.create.totalmobile.totalmobile_outgoing_create_job_payload_model import (
     AdditionalProperty,
     Address,
@@ -21,7 +21,7 @@ class TotalmobilePayloadMapperService:
     def map_totalmobile_payload_model(
         self,
         questionnaire_name: str,
-        questionnaire_case: BlaiseCreateCaseModel,
+        questionnaire_case: BlaiseCreateCaseModelBase,
     ) -> TotalMobileOutgoingCreateJobPayloadModel:
         payload_model = TotalMobileOutgoingCreateJobPayloadModel(
             identity=Reference(
@@ -69,7 +69,7 @@ class TotalmobilePayloadMapperService:
 
     @staticmethod
     def map_additional_lms_properties(
-        questionnaire_case: BlaiseCreateCaseModel,
+        questionnaire_case: BlaiseCreateCaseModelBase,
         payload_model: TotalMobileOutgoingCreateJobPayloadModel,
     ) -> TotalMobileOutgoingCreateJobPayloadModel:
         if questionnaire_case.uac_chunks is not None:
@@ -98,7 +98,7 @@ class TotalmobilePayloadMapperService:
 
     @staticmethod
     def get_job_additional_properties(
-        questionnaire_case: BlaiseCreateCaseModel,
+        questionnaire_case: BlaiseCreateCaseModelBase,
     ) -> list[AdditionalProperty]:
         case_overview = questionnaire_case.create_case_overview_for_interviewer()
         additional_properties = [
@@ -108,12 +108,12 @@ class TotalmobilePayloadMapperService:
         return additional_properties
 
     @staticmethod
-    def get_job_description(questionnaire_case: BlaiseCreateCaseModel) -> str:
+    def get_job_description(questionnaire_case: BlaiseCreateCaseModelBase) -> str:
 
         return questionnaire_case.create_case_description_for_interviewer()
 
     @staticmethod
-    def concatenate_address(questionnaire_case: BlaiseCreateCaseModel) -> str:
+    def concatenate_address(questionnaire_case: BlaiseCreateCaseModelBase) -> str:
         fields = [
             questionnaire_case.address_line_1,
             questionnaire_case.address_line_2,
@@ -128,7 +128,7 @@ class TotalmobilePayloadMapperService:
 
     @staticmethod
     def concatenate_address_line1(
-        questionnaire_case: BlaiseCreateCaseModel,
+        questionnaire_case: BlaiseCreateCaseModelBase,
     ) -> str:
         fields = [
             questionnaire_case.address_line_1,
@@ -158,7 +158,7 @@ class TotalmobilePayloadMapperService:
         )
 
     @staticmethod
-    def set_location_reference(questionnaire_case: BlaiseCreateCaseModel):
+    def set_location_reference(questionnaire_case: BlaiseCreateCaseModelBase):
         return (
             "" if questionnaire_case.reference is None else questionnaire_case.reference
         )
