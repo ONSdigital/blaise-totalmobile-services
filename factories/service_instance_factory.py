@@ -83,7 +83,7 @@ class ServiceInstanceFactory:
     def create_eligible_frs_case_service() -> FRSEligibleCaseService:
         return FRSEligibleCaseService()
 
-    @staticmethod
+    # TODO: Sort this mess out!
     def create_update_case_service(
         survey_type: str, blaise_service: RealBlaiseService
     ) -> UpdateCaseServiceBase:

@@ -17,7 +17,7 @@ class CMAServiceFacade:
                 f"Questionnaire {questionnaire_name} does not exist in CMA."
             )
 
-        cma_guid = "1234"  # TODO: This should be dynamically retrieved
+        cma_guid = "1234"  # TODO: This should be dynamically retrieved but I can't remember what it is or where we get it from, but I remember it's weird!
         cma_case = self.cma_blaise_service.case_exists(cma_guid, case_id)
 
         if cma_case:

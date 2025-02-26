@@ -26,12 +26,6 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
 
         fields_to_update = {}
 
-        # TODO: For instances where an Outcome Code triggers the removal of the case from a workload
-        #  (e.g. as it was marked as Completed) - it can also be removed from CMA as well as Blaise
-        # if totalmonile_request.outcome_code in (e.g completed):
-        # Remove from CMA
-        # check with Martyn, what happens with Blaise?
-
         if totalmobile_request.outcome_code in (
             FRSQuestionnaireOutcomeCodes.outcome_update_set()
         ) and blaise_case.outcome_code not in (
@@ -44,8 +38,6 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
         if totalmobile_request.outcome_code in (
             FRSQuestionnaireOutcomeCodes.refusal_reason_set()
         ):
-            # TODO: Remove from CMA
-
             fields_to_update.update(
                 blaise_case.get_refusal_reason_fields(totalmobile_request)
             )
