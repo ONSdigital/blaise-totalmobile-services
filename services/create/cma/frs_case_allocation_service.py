@@ -122,7 +122,7 @@ class FRSCaseAllocationService:
         )
 
         if old_case:
-            self._create_new_entry_for_special_instructions(
+            self.create_new_entry_for_special_instructions(
                 old_case, totalmobile_unallocation_request.questionnaire_name
             )
             self._reset_existing_case_to_defaults(old_case)
@@ -157,7 +157,7 @@ class FRSCaseAllocationService:
         except:
             raise CaseAllocationException
 
-    def _create_new_entry_for_special_instructions(
+    def create_new_entry_for_special_instructions(
         self, case, questionnaire_name: str
     ) -> None:
 
