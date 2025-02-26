@@ -25,6 +25,13 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
         )
 
         fields_to_update = {}
+
+        # TODO: For instances where an Outcome Code triggers the removal of the case from a workload
+        #  (e.g. as it was marked as Completed) - it can also be removed from CMA as well as Blaise
+        # if totalmonile_request.outcome_code in (e.g completed):
+        # Remove from CMA
+        # check with Martyn, what happens with Blaise?
+
         if totalmobile_request.outcome_code in (
             FRSQuestionnaireOutcomeCodes.NO_CONTACT_WITH_ANYONE_AT_ADDRESS_310.value,
             FRSQuestionnaireOutcomeCodes.CONTACT_MADE_AT_ADDRESS_NO_CONTACT_WITH_SAMPLED_HOUSEHOLD_MULTI_320.value,
@@ -72,6 +79,8 @@ class FRSUpdateCaseService(UpdateCaseServiceBase[FRSBlaiseUpdateCase]):
             FRSQuestionnaireOutcomeCodes.REFUSAL_DURING_INTERVIEW_12_PLUS_DKS_OR_REFUSALS_IN_HHLD_SECTION_HRP_BU_442.value,
             FRSQuestionnaireOutcomeCodes.BROKEN_APPOINTMENT_NO_RE_CONTACT_450.value,
         ):
+            # TODO: Remove from CMA
+
             fields_to_update.update(
                 blaise_case.get_refusal_reason_fields(totalmobile_request)
             )
