@@ -1,8 +1,14 @@
 from appconfig import Config
 from client.messaging import MessagingClient
 from client.optimise import OptimiseClient
+from models.update.totalmobile_incoming_update_request_model import (
+    TotalMobileIncomingUpdateRequestModel,
+)
 from services.blaise_service import RealBlaiseService
 from services.cloud_task_service import CloudTaskService
+from services.cma_blaise_service import CMABlaiseService
+from services.cma_delete_case_service import CMAServiceFacade
+from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
 from services.create.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 from services.create.datastore_service import DatastoreService
 from services.create.mappers.totalmobile_create_job_mapper_service import (
@@ -45,6 +51,7 @@ from services.create.uac.uac_service import UacService
 from services.create.uac.uac_service_base import UacServiceBase
 from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
 from services.totalmobile_service import RealTotalmobileService
+from services.update.frs_case_orchestrator import FRSCaseOrchestrator
 from services.update.frs_update_case_service import FRSUpdateCaseService
 from services.update.lms_update_case_service import LMSUpdateCaseService
 from services.update.update_case_service_base import UpdateCaseServiceBase
@@ -85,12 +92,28 @@ class ServiceInstanceFactory:
 
     # TODO: Sort this mess out!
     def create_update_case_service(
-        survey_type: str, blaise_service: RealBlaiseService
-    ) -> UpdateCaseServiceBase:
+        self,
+        survey_type: str,
+        blaise_service: RealBlaiseService,
+        totalmobile_case: TotalMobileIncomingUpdateRequestModel,
+    ):
         if survey_type == "LMS":
-            return LMSUpdateCaseService(blaise_service=blaise_service)
+            return LMSUpdateCaseService(blaise_service=blaise_service).update_case(
+                totalmobile_case
+            )
         if survey_type == "FRS":
-            return FRSUpdateCaseService(blaise_service=blaise_service)
+            update_case_service = FRSUpdateCaseService(blaise_service=blaise_service)
+            cma_blaise_service = CMABlaiseService(self._config)
+            frs_case_allocation_service = FRSCaseAllocationService(cma_blaise_service)
+            cma_service_facade = CMAServiceFacade(
+                cma_blaise_service=cma_blaise_service,
+                frs_case_allocation_service=frs_case_allocation_service,
+            )
+            return FRSCaseOrchestrator(
+                update_case_service=update_case_service,
+                cma_service_facade=cma_service_facade,
+            )
+            # return FRSUpdateCaseService(blaise_service=blaise_service)
         raise Exception
 
     def create_questionnaire_service(

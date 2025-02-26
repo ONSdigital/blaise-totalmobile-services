@@ -26,8 +26,8 @@ def submit_form_result_request_handler(request, current_app):
     verify_survey_type(survey_type)
 
     ServiceInstanceFactory().create_update_case_service(
-        survey_type, current_app.blaise_service
-    ).update_case(totalmobile_case)
+        survey_type, current_app.blaise_service, totalmobile_case
+    )
 
 
 def create_visit_request_handler(request, current_app):
