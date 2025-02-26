@@ -1,14 +1,8 @@
 from appconfig import Config
 from client.messaging import MessagingClient
 from client.optimise import OptimiseClient
-from models.update.totalmobile_incoming_update_request_model import (
-    TotalMobileIncomingUpdateRequestModel,
-)
 from services.blaise_service import RealBlaiseService
 from services.cloud_task_service import CloudTaskService
-from services.cma_blaise_service import CMABlaiseService
-from services.cma_delete_case_service import CMAServiceFacade
-from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
 from services.create.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 from services.create.datastore_service import DatastoreService
 from services.create.mappers.totalmobile_create_job_mapper_service import (

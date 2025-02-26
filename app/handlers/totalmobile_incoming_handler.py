@@ -16,7 +16,7 @@ from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 from services.cma_blaise_service import CMABlaiseService
-from services.cma_delete_case_service import CMAServiceFacade
+from services.delete.delete_cma_case_service import DeleteCMACaseService
 from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
 
 
@@ -32,15 +32,16 @@ def submit_form_result_request_handler(request, current_app):
     ).update_case(totalmobile_case)
 
     if survey_type == "FRS":
-        cma_blaise_service = CMABlaiseService(current_app.app_config)
-        frs_case_allocation_service = FRSCaseAllocationService(cma_blaise_service)
-        cma_service_facade = CMAServiceFacade(
-            cma_blaise_service, frs_case_allocation_service
-        )
+        remove_case_from_cma(current_app, totalmobile_case)
 
-        cma_service_facade.remove_case_from_cma(
-            totalmobile_case.questionnaire_name, totalmobile_case.case_id
-        )
+
+def remove_case_from_cma(current_app, totalmobile_case):
+    cma_blaise_service = CMABlaiseService(current_app.app_config)
+    frs_case_allocation_service = FRSCaseAllocationService(cma_blaise_service)
+    cma_service_facade = DeleteCMACaseService(
+        cma_blaise_service, frs_case_allocation_service
+    )
+    cma_service_facade.remove_case_from_cma(totalmobile_case)
 
 
 def create_visit_request_handler(request, current_app):
