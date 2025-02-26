@@ -415,7 +415,7 @@ def test_lms_update_case_outcome_logs_outcome_code_and_call_history_updated(
     ) in caplog.messages
 
 
-def test_frs_update_case_implements_frs_blaise_update_case_type(
+def test_lms_update_case_implements_frs_blaise_update_case_type(
     mock_case_update_service,
     mock_blaise_case_object,
     mock_totalmobile_request,
@@ -436,7 +436,7 @@ def test_frs_update_case_implements_frs_blaise_update_case_type(
     )
 
 
-def test_frs_return_survey_type_update_case_model_returns_the_correct_model(
+def test_lms_return_survey_type_update_case_model_returns_the_correct_model(
     mock_case_update_service, mock_questionnaire_and_case_data
 ):
     # arrange
