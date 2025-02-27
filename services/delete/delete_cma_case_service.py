@@ -20,36 +20,42 @@ class DeleteCMACaseService:
     def remove_case_from_cma(
         self, totalmobile_request: TotalMobileIncomingUpdateRequestModel
     ) -> None:
-        if totalmobile_request.outcome_code not in (FRSQuestionnaireOutcomeCodes.remove_from_cma_set()):
-            logging.info(f"Totalmobile outcome code {totalmobile_request.outcome_code} not to be removed from CMA")
+        if totalmobile_request.outcome_code not in (
+            FRSQuestionnaireOutcomeCodes.remove_from_cma_set()
+        ):
+            logging.info(
+                f"Totalmobile case has an outcome code of {totalmobile_request.outcome_code} "
+                f"and should not to be removed from CMA."
+            )
             return
 
-        questionnaire = self.cma_blaise_service.questionnaire_exists(
+        questionnaire = self._get_questionnaire_and_validate(
             totalmobile_request.questionnaire_name
         )
-
-        if not questionnaire:
-            raise ValueError(
-                f"Questionnaire {totalmobile_request.questionnaire_name} does not exist in CMA."
-            )
-
-        cma_case = self.cma_blaise_service.case_exists(
-            questionnaire["id"], totalmobile_request.case_id
+        cma_case = self._get_cma_case_and_validate(
+            questionnaire, totalmobile_request.case_id
         )
 
-        # TODO: Test cma_case returns the following expected fields
-        # guid = case["fieldData"]["mainSurveyID"]
-        # questionnaire_name = questionnaire_name
-        # unique_case_id = case["fieldData"]["id"]
-        # prev_interviewer = case["fieldData"]["cmA_ForWhom"]
-        # current_timestamp = datetime.now()
-        # formatted_date_time = current_timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        logging.info(
+            f"Case {totalmobile_request.case_id} for questionnaire {questionnaire['name']} with an outcome code of "
+            f"{totalmobile_request.outcome_code} will be recalled from CMA."
+        )
+        self.frs_case_allocation_service.create_new_entry_for_special_instructions(
+            cma_case, totalmobile_request.questionnaire_name
+        )
 
-        if cma_case:
-            logging.info(f"Removing case from cma...")
-            self.frs_case_allocation_service.create_new_entry_for_special_instructions(
-                cma_case, totalmobile_request.questionnaire_name
+    def _get_questionnaire_and_validate(self, questionnaire_name):
+        questionnaire = self.cma_blaise_service.questionnaire_exists(questionnaire_name)
+        if not questionnaire:
+            raise ValueError(
+                f"Questionnaire {questionnaire_name} does not exist in CMA."
             )
+        return questionnaire
 
-        logging.info(f"No CMA case found")
-
+    def _get_cma_case_and_validate(self, questionnaire, case_id):
+        cma_case = self.cma_blaise_service.case_exists(questionnaire["id"], case_id)
+        if not cma_case:
+            raise ValueError(
+                f"Case {case_id} for questionnaire {questionnaire['name']} does not exist in CMA."
+            )
+        return cma_case
