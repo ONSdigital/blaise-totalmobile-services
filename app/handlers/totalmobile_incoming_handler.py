@@ -30,13 +30,9 @@ def submit_form_result_request_handler(request, current_app):
     ).update_case(totalmobile_case)
 
     if survey_type == "FRS":
-        remove_case_from_cma(current_app, totalmobile_case)
-
-
-def remove_case_from_cma(current_app, totalmobile_case):
-    # TODO: Build this in the service instance factory
-    cma_service_facade = ServiceInstanceFactory().create_delete_cma_case_service()
-    cma_service_facade.remove_case_from_cma(totalmobile_case)
+        ServiceInstanceFactory().create_delete_cma_case_service().remove_case_from_cma(
+            totalmobile_case
+        )
 
 
 def create_visit_request_handler(request, current_app):
