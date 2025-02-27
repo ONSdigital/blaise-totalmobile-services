@@ -29,6 +29,7 @@ def submit_form_result_request_handler(request, current_app):
         survey_type, current_app.blaise_service
     ).update_case(totalmobile_case)
 
+    # TODO: Remove from CMA IF successfully removed from Blaise
     if survey_type == "FRS":
         ServiceInstanceFactory().create_delete_cma_case_service().remove_case_from_cma(
             totalmobile_case
