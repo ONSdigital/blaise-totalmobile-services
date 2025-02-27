@@ -18,9 +18,16 @@ class DeleteCMACaseService:
     def remove_case_from_cma(
         self, totalmobile_request: TotalMobileIncomingUpdateRequestModel
     ) -> None:
-        if not self.cma_blaise_service.questionnaire_exists(
+        if totalmobile_request.outcome_code not in (FRSQuestionnaireOutcomeCodes.remove_from_cma_set()):
+            return
+
+        questionnaire = self.cma_blaise_service.questionnaire_exists(
             totalmobile_request.questionnaire_name
-        ):
+        )
+
+        # TODO: Check QUID is in questionnaire
+
+        if not questionnaire:
             raise ValueError(
                 f"Questionnaire {totalmobile_request.questionnaire_name} does not exist in CMA."
             )
@@ -38,10 +45,7 @@ class DeleteCMACaseService:
         # current_timestamp = datetime.now()
         # formatted_date_time = current_timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
-        if cma_case and (
-            totalmobile_request.outcome_code
-            in (FRSQuestionnaireOutcomeCodes.remove_from_cma_set())
-        ):
+        if cma_case:
             self.frs_case_allocation_service.create_new_entry_for_special_instructions(
                 cma_case, totalmobile_request.questionnaire_name
             )
