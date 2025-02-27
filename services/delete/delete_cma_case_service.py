@@ -1,3 +1,5 @@
+import logging
+
 from enums.questionnaire_case_outcome_codes import FRSQuestionnaireOutcomeCodes
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
@@ -19,6 +21,7 @@ class DeleteCMACaseService:
         self, totalmobile_request: TotalMobileIncomingUpdateRequestModel
     ) -> None:
         if totalmobile_request.outcome_code not in (FRSQuestionnaireOutcomeCodes.remove_from_cma_set()):
+            logging.info(f"Totalmobile outcome code {totalmobile_request.outcome_code} not to be removed from CMA")
             return
 
         questionnaire = self.cma_blaise_service.questionnaire_exists(
@@ -43,6 +46,10 @@ class DeleteCMACaseService:
         # formatted_date_time = current_timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
         if cma_case:
+            logging.info(f"Removing case from cma...")
             self.frs_case_allocation_service.create_new_entry_for_special_instructions(
                 cma_case, totalmobile_request.questionnaire_name
             )
+
+        logging.info(f"No CMA case found")
+
