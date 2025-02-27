@@ -25,16 +25,13 @@ class DeleteCMACaseService:
             totalmobile_request.questionnaire_name
         )
 
-        # TODO: Check QUID is in questionnaire
-
         if not questionnaire:
             raise ValueError(
                 f"Questionnaire {totalmobile_request.questionnaire_name} does not exist in CMA."
             )
 
-        cma_guid = "1234"  # TODO: This is the questionnaire guid, and we need to get it from somewhere!
         cma_case = self.cma_blaise_service.case_exists(
-            cma_guid, totalmobile_request.case_id
+            questionnaire["id"], totalmobile_request.case_id
         )
 
         # TODO: Test cma_case returns the following expected fields
