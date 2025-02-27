@@ -1,5 +1,7 @@
 import logging
 
+from requests import JSONDecodeError
+
 from enums.questionnaire_case_outcome_codes import FRSQuestionnaireOutcomeCodes
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
@@ -45,7 +47,14 @@ class DeleteCMACaseService:
         )
 
     def _get_questionnaire_and_validate(self, questionnaire_name):
-        questionnaire = self.cma_blaise_service.questionnaire_exists(questionnaire_name)
+        try:
+            questionnaire = self.cma_blaise_service.questionnaire_exists(
+                questionnaire_name
+            )
+        except JSONDecodeError:
+            raise ValueError(
+                f"Questionnaire {questionnaire_name} does not exist in CMA."
+            )
         if not questionnaire:
             raise ValueError(
                 f"Questionnaire {questionnaire_name} does not exist in CMA."
