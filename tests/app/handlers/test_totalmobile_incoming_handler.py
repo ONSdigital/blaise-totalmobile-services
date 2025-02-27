@@ -3,11 +3,17 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from app.exceptions.custom_exceptions import InvalidTotalmobileFRSRequestException
+from app.exceptions.custom_exceptions import (
+    BadReferenceError,
+    InvalidTotalmobileFRSRequestException,
+    MissingReferenceError,
+    SurveyDoesNotExistError,
+)
 from app.handlers.totalmobile_incoming_handler import (
     create_visit_request_handler,
     force_recall_visit_request_handler,
     submit_form_result_request_handler,
+    verify_survey_type,
 )
 from tests.helpers import (
     incoming_request_helper,
@@ -122,3 +128,51 @@ def test_force_recall_visit_request_handler_calls_unallocate_case_once(
 
     # assert
     mock_frs_instance.unallocate_case.assert_called_once()
+
+
+@pytest.mark.parametrize(
+    "valid_survey_type",
+    [
+        "LMS",
+        "FRS",
+    ],
+)
+def test_verify_survey_type_does_not_raise_an_error_with_a_valid_survey_type(
+    valid_survey_type,
+):
+    try:
+        verify_survey_type(valid_survey_type)
+    except Exception:
+        pytest.fail("verify_survey_type() raised an exception unexpectedly.")
+
+
+def test_verify_survey_type_raises_missing_reference_error():
+    with pytest.raises(
+        MissingReferenceError, match="Reference field is missing in association block"
+    ):
+        verify_survey_type(None)
+
+
+@pytest.mark.parametrize(
+    "invalid_survey_type",
+    [
+        123,
+        45.6,
+        [],
+        {},
+        True,
+        False,
+        "LM",
+    ],
+)
+def test_verify_survey_type_raises_bad_reference_error(invalid_survey_type):
+    with pytest.raises(
+        BadReferenceError, match="Reference field in association block is invalid"
+    ):
+        verify_survey_type(invalid_survey_type)
+
+
+def test_verify_survey_type_is_not_a_valid_survey_tla(caplog):
+    with pytest.raises(SurveyDoesNotExistError):
+        verify_survey_type("XYZ")
+    assert "survey_type of 'XYZ' is invalid" in caplog.messages
