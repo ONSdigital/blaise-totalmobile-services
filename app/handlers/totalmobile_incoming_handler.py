@@ -15,9 +15,7 @@ from models.update.cma.totalmobile_incoming_frs_unallocation_request_model impor
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
-from services.cma_blaise_service import CMABlaiseService
 from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
-from services.delete.delete_cma_case_service import DeleteCMACaseService
 
 
 def submit_form_result_request_handler(request, current_app):
@@ -36,11 +34,8 @@ def submit_form_result_request_handler(request, current_app):
 
 
 def remove_case_from_cma(current_app, totalmobile_case):
-    cma_blaise_service = CMABlaiseService(current_app.app_config)
-    frs_case_allocation_service = FRSCaseAllocationService(cma_blaise_service)
-    cma_service_facade = DeleteCMACaseService(
-        cma_blaise_service, frs_case_allocation_service
-    )
+    # TODO: Build this in the service instance factory
+    cma_service_facade = ServiceInstanceFactory().create_delete_cma_case_service()
     cma_service_facade.remove_case_from_cma(totalmobile_case)
 
 
