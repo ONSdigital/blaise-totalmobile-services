@@ -166,7 +166,4 @@ class ServiceInstanceFactory:
     def create_delete_cma_case_service(self) -> DeleteCMACaseService:
         cma_blaise_service = CMABlaiseService(self._config)
         frs_case_allocation_service = FRSCaseAllocationService(cma_blaise_service)
-        return DeleteCMACaseService(
-            cma_blaise_service, frs_case_allocation_service
-        )
-
+        return DeleteCMACaseService(cma_blaise_service, frs_case_allocation_service)
