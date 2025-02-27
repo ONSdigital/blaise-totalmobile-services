@@ -27,9 +27,14 @@ def test_submit_form_result_request_handler_calls_update_case_once(
     mock_service_factory,
 ):
     # arrange
-    mock_service = MagicMock()
+    mock_update_service = MagicMock()
     mock_service_factory.return_value.create_update_case_service.return_value = (
-        mock_service
+        mock_update_service
+    )
+
+    mock_delete_service = MagicMock()
+    mock_service_factory.return_value.create_delete_cma_case_service.return_value = (
+        mock_delete_service
     )
 
     mock_request = MagicMock()
@@ -44,7 +49,39 @@ def test_submit_form_result_request_handler_calls_update_case_once(
     submit_form_result_request_handler(mock_request, mock_app)
 
     # assert
-    mock_service.update_case.assert_called_once()
+    mock_update_service.update_case.assert_called_once()
+
+
+@patch("app.handlers.totalmobile_incoming_handler.ServiceInstanceFactory")
+def test_submit_form_result_request_handler_calls_remove_case_from_cma_once(
+    mock_service_factory,
+):
+    # arrange
+    mock_update_service = MagicMock()
+    mock_service_factory.return_value.create_update_case_service.return_value = (
+        mock_update_service
+    )
+
+    mock_delete_service = MagicMock()
+    mock_service_factory.return_value.create_delete_cma_case_service.return_value = (
+        mock_delete_service
+    )
+
+    mock_request = MagicMock()
+    mock_request.get_json.return_value = (
+        incoming_request_helper.get_populated_update_case_refusal_request(
+            reference="FRS2405A.90001"
+        )
+    )
+
+    mock_app = MagicMock()
+    mock_app.blaise_service = MagicMock()
+
+    # act
+    submit_form_result_request_handler(mock_request, mock_app)
+
+    # assert
+    mock_delete_service.remove_case_from_cma.assert_called_once()
 
 
 def test_submit_form_result_request_handler_raises_an_exception_when_a_malformed_request_is_received():
