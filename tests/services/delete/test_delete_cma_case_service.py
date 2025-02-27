@@ -29,7 +29,7 @@ def totalmobile_request():
     totalmobile_request = MagicMock()
     totalmobile_request.questionnaire_name = "FRS2504A"
     totalmobile_request.case_id = 1234
-    totalmobile_request.outcome_code = 110
+    totalmobile_request.outcome_code = 410
     return totalmobile_request
 
 
@@ -224,5 +224,5 @@ def test_remove_case_from_cma_calls_logs_information_when_outcome_code_is_in_rem
 
     # assert
     assert (
-        "Case 1234 for questionnaire FRS2504A with an outcome code of 110 will be recalled from CMA."
+        "Case 1234 for questionnaire FRS2504A with an outcome code of 410 will be recalled from CMA."
     ) in caplog.messages
