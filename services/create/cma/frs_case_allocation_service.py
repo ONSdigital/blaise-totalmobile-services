@@ -101,7 +101,7 @@ class FRSCaseAllocationService:
 
     def unallocate_case(
         self,
-        totalmobile_unallocation_request: TotalMobileIncomingFRSUnallocationRequestModel,  # TODO: Need to call dis with this ting
+        totalmobile_unallocation_request: TotalMobileIncomingFRSUnallocationRequestModel,
     ) -> None:
 
         try:
@@ -169,12 +169,12 @@ class FRSCaseAllocationService:
         formatted_date_time = current_timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
         frs_case = FRSCaseModel(
-            user=prev_interviewer,  # TODO: needs to be the current interviewer's
+            user=prev_interviewer,
             questionnaire_name=questionnaire_name,
-            guid="00000000-0000-0000-0000-000000000000",  # TODO: special instruction entry
+            guid="00000000-0000-0000-0000-000000000000",
             case_id=f"{questionnaire_name}-{unique_case_id}-{prev_interviewer}-{formatted_date_time}",
-            custom_use=f"{guid};{unique_case_id};",  # TODO: contains key value pairs to identify the case to fudge with
-            location="RELEASE_SOME",  # TODO: dis ting releases cases from devices
+            custom_use=f"{guid};{unique_case_id};",
+            location="RELEASE_SOME",
             inPosession="",
             prem1="",
             prem2="",

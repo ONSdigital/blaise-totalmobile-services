@@ -25,10 +25,18 @@ class DeleteCMACaseService:
                 f"Questionnaire {totalmobile_request.questionnaire_name} does not exist in CMA."
             )
 
-        cma_guid = "1234"  # TODO: This should be dynamically retrieved but I can't remember what it is or where we get it from, but I remember it's weird!
+        cma_guid = "1234"  # TODO: This is the questionnaire guid, and we need to get it from somewhere!
         cma_case = self.cma_blaise_service.case_exists(
             cma_guid, totalmobile_request.case_id
         )
+
+        # TODO: Test cma_case returns the following expected fields
+        # guid = case["fieldData"]["mainSurveyID"]
+        # questionnaire_name = questionnaire_name
+        # unique_case_id = case["fieldData"]["id"]
+        # prev_interviewer = case["fieldData"]["cmA_ForWhom"]
+        # current_timestamp = datetime.now()
+        # formatted_date_time = current_timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
         if cma_case and (
             totalmobile_request.outcome_code
