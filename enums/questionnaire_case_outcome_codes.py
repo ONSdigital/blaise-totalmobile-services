@@ -67,8 +67,6 @@ class FRSQuestionnaireOutcomeCodes(Enum):
     @classmethod
     def outcome_update_set(cls):
         return {
-            cls.COMPLETED_110.value,
-            cls.PARTIALLY_COMPLETED_210.value,
             cls.NO_CONTACT_WITH_ANYONE_AT_ADDRESS_310.value,
             cls.CONTACT_MADE_AT_ADDRESS_NO_CONTACT_WITH_SAMPLED_HOUSEHOLD_MULTI_320.value,
             cls.CONTACT_WITH_SAMPLED_HOUSEHOLD_NO_CONTACT_WITH_RESPONSIBLE_RESIDENT_330.value,
@@ -115,7 +113,6 @@ class FRSQuestionnaireOutcomeCodes(Enum):
     @classmethod
     def remove_from_cma_set(cls):
         return {
-            cls.COMPLETED_110.value,
             cls.HQ_OFFICE_REFUSAL_GENERAL_410.value,
             cls.MULTI_INFORMATION_REFUSED_NO_OF_HOUSEHOLDS_AT_ADDRESS_420.value,
             cls.REFUSAL_AT_INTRODUCTION_BEFORE_INTERVIEW_BY_ADULT_HOUSEHOLD_MEMBER_431.value,
