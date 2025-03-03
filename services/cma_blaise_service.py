@@ -31,13 +31,11 @@ class CMABlaiseService:
         self.restapi_client = blaise_restapi.Client(self._config.blaise_api_url)
 
     def questionnaire_exists(self, questionnaire_name: str) -> Dict[str, Any]:
-
         return self.restapi_client.get_questionnaire_for_server_park(
             self._config.blaise_server_park, questionnaire_name
         )
 
     def case_exists(self, guid: str, case_id: str) -> Union[Dict[str, Any], bool]:
-
         logging.info(f"Validating if case exists with id in cma launcher")
         try:
             case = self.restapi_client.get_multikey_case(
