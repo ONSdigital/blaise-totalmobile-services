@@ -4,6 +4,7 @@ import base64
 import json
 import logging
 from datetime import datetime
+from unittest.mock import patch
 
 from behave import given, then, when
 
@@ -132,11 +133,12 @@ def step_impl(context, reference):
         )
     )
 
-    response = context.test_client.post(
-        "/bts/submitformresultrequest",
-        headers={"Authorization": f"Basic {valid_credentials}"},
-        json=request,
-    )
+    with patch("app.handlers.totalmobile_incoming_handler.remove_from_cma"):
+        response = context.test_client.post(
+            "/bts/submitformresultrequest",
+            headers={"Authorization": f"Basic {valid_credentials}"},
+            json=request,
+        )
 
     context.response = response
 
@@ -153,11 +155,12 @@ def step_impl(context, reference):
         reference=reference, **fields
     )
 
-    response = context.test_client.post(
-        "/bts/submitformresultrequest",
-        headers={"Authorization": f"Basic {valid_credentials}"},
-        json=request,
-    )
+    with patch("app.handlers.totalmobile_incoming_handler.remove_from_cma"):
+        response = context.test_client.post(
+            "/bts/submitformresultrequest",
+            headers={"Authorization": f"Basic {valid_credentials}"},
+            json=request,
+        )
 
     context.response = response
 
