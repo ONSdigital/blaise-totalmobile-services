@@ -34,6 +34,7 @@ def setup_context(app, context):
 
 def setup_test_services(app, context):
     context.blaise_service = app.blaise_service
+    context.cma_service = app.cma_blaise_service
     context.uac_service = app.uac_service
     context.totalmobile_service = app.totalmobile_service
 

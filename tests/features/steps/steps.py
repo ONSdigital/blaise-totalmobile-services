@@ -74,6 +74,22 @@ def step_impl(context, questionnaire, case_id):
     context.case_id = case_id
 
 
+@given('there is a questionnaire "FRS2401" with case "12345" in CMA')
+def step_impl(context, questionnaire, case_id):
+    context.cma_service.add_questionnaire(questionnaire)
+    context.questionnaire_name = questionnaire
+
+    if not context.table:
+        context.cma_service.add_case_to_questionnaire(questionnaire, case_id)
+    else:
+        data_fields = {row["field_name"]: row["value"] for row in context.table}
+        outcome_code = data_fields["outcome_code"]
+        context.cma_service.add_case_to_questionnaire(
+            questionnaire, case_id, outcome_code
+        )
+    context.case_id = case_id
+
+
 @given('there is a questionnaire "{questionnaire}" in Blaise')
 def step_impl(context, questionnaire):
     context.blaise_service.add_questionnaire(questionnaire)
@@ -484,3 +500,10 @@ def step_impl(context, outcome_code):
     assert (
         400 <= outcome_code <= 500
     ), f"Outcome code {outcome_code} should be between 400 and 500"
+
+
+@then('the case "12345" for questionnaire "FRS2401" has been deleted from CMA')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then the case "12345" for questionnaire "FRS2401" has been deleted from CMA
+                              | field_name | value |
+                              | hOut | < outcome_code > | ')
