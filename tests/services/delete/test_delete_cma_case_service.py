@@ -164,6 +164,7 @@ def test_remove_case_from_cma_raises_value_error_when_case_does_not_exist_in_cma
 ):
     # arrange
     mock_cma_blaise_service.questionnaire_exists.return_value = {
+        # TODO: Is this the same as the questionnaire object?
         "name": "FRS2504A",
         "id": "8d02c802-962d-431a-9e8b-715839442480",
         "serverParkName": "gusty",

@@ -29,7 +29,7 @@ def submit_form_result_request_handler(request, current_app):
         update_case(current_app.blaise_service, survey_type, totalmobile_case)
         if (
             survey_type == "FRS"
-        ):  # Only remove from CMA IF update_case completed successfully # TODO: Test this.
+        ):  # Only remove from CMA IF update_case completed successfully
             remove_from_cma(totalmobile_case)
     except Exception as err:
         logging.error(
