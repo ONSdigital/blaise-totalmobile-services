@@ -3,6 +3,8 @@ from client.messaging import MessagingClient
 from client.optimise import OptimiseClient
 from services.blaise_service import RealBlaiseService
 from services.cloud_task_service import CloudTaskService
+from services.cma_blaise_service import CMABlaiseService
+from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
 from services.create.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 from services.create.datastore_service import DatastoreService
 from services.create.mappers.totalmobile_create_job_mapper_service import (
@@ -44,6 +46,7 @@ from services.create.questionnaires.questionnaire_service_base import (
 from services.create.uac.uac_service import UacService
 from services.create.uac.uac_service_base import UacServiceBase
 from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
+from services.delete.delete_cma_case_service import DeleteCMACaseService
 from services.totalmobile_service import RealTotalmobileService
 from services.update.frs_update_case_service import FRSUpdateCaseService
 from services.update.lms_update_case_service import LMSUpdateCaseService
@@ -159,3 +162,8 @@ class ServiceInstanceFactory:
 
     def create_blaise_outcome_service(self) -> BlaiseCaseOutcomeService:
         return BlaiseCaseOutcomeService(blaise_service=self.create_blaise_service())
+
+    def create_delete_cma_case_service(self) -> DeleteCMACaseService:
+        cma_blaise_service = CMABlaiseService(self._config)
+        frs_case_allocation_service = FRSCaseAllocationService(cma_blaise_service)
+        return DeleteCMACaseService(cma_blaise_service, frs_case_allocation_service)

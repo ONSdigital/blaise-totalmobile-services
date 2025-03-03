@@ -25,9 +25,17 @@ def submit_form_result_request_handler(request, current_app):
     survey_type = get_survey_type(data)
     verify_survey_type(survey_type)
 
-    ServiceInstanceFactory().create_update_case_service(
-        survey_type, current_app.blaise_service
-    ).update_case(totalmobile_case)
+    try:
+        update_case(current_app.blaise_service, survey_type, totalmobile_case)
+        if (
+            survey_type == "FRS"
+        ):  # Only remove from CMA IF update_case completed successfully # TODO: Test this.
+            remove_from_cma(totalmobile_case)
+    except Exception as err:
+        logging.error(
+            f"Failed to update case for {survey_type}: {err}"
+        )  # TODO: test and improve this.
+        raise
 
 
 def create_visit_request_handler(request, current_app):
@@ -67,3 +75,15 @@ def verify_survey_type(survey_type):
     if survey_type not in ("LMS", "FRS"):
         logging.error(f"survey_type of '{survey_type}' is invalid")
         raise SurveyDoesNotExistError
+
+
+def remove_from_cma(totalmobile_case):
+    ServiceInstanceFactory().create_delete_cma_case_service().remove_case_from_cma(
+        totalmobile_case
+    )
+
+
+def update_case(blaise_service, survey_type, totalmobile_case):
+    ServiceInstanceFactory().create_update_case_service(
+        survey_type, blaise_service
+    ).update_case(totalmobile_case)
