@@ -74,22 +74,6 @@ def step_impl(context, questionnaire, case_id):
     context.case_id = case_id
 
 
-@given('there is a questionnaire "FRS2401" with case "12345" in CMA')
-def step_impl(context, questionnaire, case_id):
-    context.cma_service.add_questionnaire(questionnaire)
-    context.questionnaire_name = questionnaire
-
-    if not context.table:
-        context.cma_service.add_case_to_questionnaire(questionnaire, case_id)
-    else:
-        data_fields = {row["field_name"]: row["value"] for row in context.table}
-        outcome_code = data_fields["outcome_code"]
-        context.cma_service.add_case_to_questionnaire(
-            questionnaire, case_id, outcome_code
-        )
-    context.case_id = case_id
-
-
 @given('there is a questionnaire "{questionnaire}" in Blaise')
 def step_impl(context, questionnaire):
     context.blaise_service.add_questionnaire(questionnaire)
@@ -267,31 +251,6 @@ def step_impl(context, questionnaire, case_id):
     assert not context.blaise_service.case_has_been_updated(
         questionnaire, case_id
     ), "Update case should not have been called"
-
-
-@then('"{message}" is logged as an {error_level} message')
-def step_impl(context, message, error_level):
-    messages = [
-        (record.levelno, record.getMessage()) for record in context.log_capture.buffer
-    ]
-    mappings = {"information": logging.INFO, "error": logging.ERROR}
-    assert (
-        mappings[error_level],
-        message,
-    ) in messages, f"Could not find {mappings[error_level]}, {message} in {messages}"
-
-
-@then('a "{response}" response is sent back to Totalmobile')
-def step_impl(context, response):
-    mappings = {
-        "200 OK": 200,
-        "400 Bad Request": 400,
-        "404 Not Found": 404,
-        "500 Internal Server Error": 500,
-    }
-    assert (
-        context.response.status_code == mappings[response]
-    ), f"Context response is {context.response.status_code}, response is {mappings[response]}"
 
 
 @given('case "{case_id}" for questionnaire "{questionnaire}" has been completed')
@@ -502,8 +461,83 @@ def step_impl(context, outcome_code):
     ), f"Outcome code {outcome_code} should be between 400 and 500"
 
 
-@then('the case "12345" for questionnaire "FRS2401" has been deleted from CMA')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then the case "12345" for questionnaire "FRS2401" has been deleted from CMA
-                              | field_name | value |
-                              | hOut | < outcome_code > | ')
+
+##########################################################################################################################################################
+# TODO: refactor. Split?
+
+
+@given('there is a questionnaire "{questionnaire}" with case "{case_id}" in CMA')
+def step_impl(context, questionnaire, case_id):
+    context.mock_cma_service.questionnaire_exists.return_value = {"case_id": case_id, "questionnaire_name": questionnaire}  # TODO: Make this more real
+    context.mock_cma_service.case_exists.return_value = {"case_id": case_id}
+    # TODO
+    print()
+
+
+@when('Totalmobile sends a FRS update for reference "{reference}"')
+def step_impl(context, reference):
+    valid_credentials = base64.b64encode(b"test_username:test_password").decode("utf-8")
+    fields = {}
+    if context.table:
+        fields = {row["field_name"]: row["value"] for row in context.table}
+        fields["outcome_code"] = int(fields["outcome_code"])
+
+    request = (
+        incoming_request_helper.get_populated_update_case_request_for_contact_made(
+            reference=reference, **fields
+        )
+    )
+
+    with patch("app.handlers.totalmobile_incoming_handler.update_case"):
+        response = context.test_client.post(
+            "/bts/submitformresultrequest",
+            headers={"Authorization": f"Basic {valid_credentials}"},
+            json=request,
+        )
+
+    questionnaire, case_id = reference.split(".")
+
+    context.response = response
+    context.questionnaire = questionnaire
+    context.case_id = case_id
+    context.outcome_code = fields["outcome_code"]
+    # TODO:
+    print()
+
+
+@then('the case "{case_id}" for questionnaire "{questionnaire}" has been deleted from CMA')
+def step_impl(context, case_id, questionnaire):
+    context.mock_frs_service.create_new_entry_for_special_instructions.assert_called_once_with(
+        {"case_id": case_id, "questionnaire": questionnaire}    # TODO: Correct this
+    )
+    # TODO
+    print()
+
+
+@then('"{message}" is logged as an {error_level} message')
+def step_impl(context, message, error_level):
+    messages = [
+        (record.levelno, record.getMessage()) for record in context.log_capture.buffer
+    ]
+    mappings = {"information": logging.INFO, "error": logging.ERROR}
+    assert (
+        mappings[error_level],
+        message,
+    ) in messages, f"Could not find {mappings[error_level]}, {message} in {messages}"
+    # TODO
+    print()
+
+
+@then('a "{response}" response is sent back to Totalmobile')
+def step_impl(context, response):
+    mappings = {
+        "200 OK": 200,
+        "400 Bad Request": 400,
+        "404 Not Found": 404,
+        "500 Internal Server Error": 500,
+    }
+    assert (
+        context.response.status_code == mappings[response]
+    ), f"Context response is {context.response.status_code}, response is {mappings[response]}"
+    # TODO:
+    print()

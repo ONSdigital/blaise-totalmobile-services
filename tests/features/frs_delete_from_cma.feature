@@ -1,20 +1,20 @@
-#Feature: update outcome code
-#  Background:
-#    Given the survey type is "FRS"
-#
-#  Scenario Outline: Case is removed from CMA after a case has successfully updated in Blaise to <outcome_code> from Totalmobile request
-#    Given there is a questionnaire "FRS2401" with case "12345" in CMA
-#    When Totalmobile sends an update for reference "FRS2401.12345"
-#      | field_name    | value          |
-#      | outcome_code  | <outcome_code> |
-#    Then the case "12345" for questionnaire "FRS2401" has been deleted from CMA
-#      | field_name | value          |
-#      | hOut       | <outcome_code> |
-#    And "Case 12345 for questionnaire FRS2401 with an outcome code of <outcome_code> will be recalled from CMA." is logged as an information message
-#    And a "200 OK" response is sent back to Totalmobile
-#    Examples:
-#      | outcome_code |
-#      | 410          |
+Feature: delete case from CMA
+  Background:
+    Given the survey type is "FRS"
+
+  Scenario Outline: Case is removed from CMA after a case has successfully updated in Blaise to <outcome_code> from Totalmobile request
+    Given there is a questionnaire "FRS2401" with case "12345" in CMA
+    When Totalmobile sends a FRS update for reference "FRS2401.12345"
+      | field_name    | value          |
+      | outcome_code  | <outcome_code> |
+    Then the case "12345" for questionnaire "FRS2401" has been deleted from CMA
+      | field_name | value          |
+      | hOut       | <outcome_code> |
+    And "Case 12345 for questionnaire FRS2401 with an outcome code of <outcome_code> will be recalled from CMA." is logged as an information message
+    And a "200 OK" response is sent back to Totalmobile
+    Examples:
+      | outcome_code |
+      | 410          |
 #      | 420          |
 #      | 431          |
 #      | 432          |
