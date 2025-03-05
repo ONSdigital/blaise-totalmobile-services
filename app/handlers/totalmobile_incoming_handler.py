@@ -29,12 +29,12 @@ def submit_form_result_request_handler(request, current_app):
         update_case(current_app.blaise_service, survey_type, totalmobile_case)
         if (
             survey_type == "FRS"
-        ):  # Only remove from CMA IF update_case completed successfully
+        ):  # Only remove case from CMA IF case successfully updated in Blaise
             remove_from_cma(totalmobile_case)
     except Exception as err:
         logging.error(
-            f"Failed to update case for {survey_type}: {err}"
-        )  # TODO: test and improve this.
+            f"Failed to update case {totalmobile_case.case_id} for questionnaire {totalmobile_case.questionnaire_name} in Blaise: {err}"
+        )
         raise
 
 

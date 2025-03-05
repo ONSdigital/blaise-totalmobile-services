@@ -74,7 +74,7 @@ Scenario Outline: Case is NOT removed from CMA after a case failed to update in 
     Then the case "12345" for questionnaire "FRS2401" has NOT been deleted from CMA
       | field_name | value          |
       | hOut       | <outcome_code> |
-    And "Failed to update case for FRS: Michael Scott is no longer welcome at Improv Club" is logged as an error message
+    And "Failed to update case 12345 for questionnaire FRS2401 in Blaise: Michael Scott is no longer welcome at Improv Club" is logged as an error message
     And a "500 Internal Server Error" response is sent back to Totalmobile
     Examples:
       | outcome_code |
