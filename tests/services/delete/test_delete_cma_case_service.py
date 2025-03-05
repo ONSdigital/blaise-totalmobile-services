@@ -160,23 +160,10 @@ def test_remove_case_from_cma_raises_value_error_when_questionnaire_does_not_exi
 
 
 def test_remove_case_from_cma_raises_value_error_when_case_does_not_exist_in_cma(
-    delete_service, totalmobile_request, mock_cma_blaise_service
+    delete_service, totalmobile_request, mock_cma_blaise_service, questionnaire_object
 ):
     # arrange
-    mock_cma_blaise_service.questionnaire_exists.return_value = {
-        # TODO: Is this the same as the questionnaire object?
-        "name": "FRS2504A",
-        "id": "8d02c802-962d-431a-9e8b-715839442480",
-        "serverParkName": "gusty",
-        "installDate": "2025-02-27T11:47:28.1314856+00:00",
-        "status": "Active",
-        "dataRecordCount": 0,
-        "hasData": False,
-        "blaiseVersion": "5.14.6.3686",
-        "fieldPeriod": "2025-02-01T00:00:00",
-        "surveyTla": "FRS",
-        "nodes": [{"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Active"}],
-    }
+    mock_cma_blaise_service.questionnaire_exists.return_value = questionnaire_object
     mock_cma_blaise_service.case_exists.return_value = None
 
     # act assert
