@@ -535,3 +535,8 @@ def step_impl(context, response):
     assert (
         context.response.status_code == mappings[response]
     ), f"Context response is {context.response.status_code}, response is {mappings[response]}"
+
+
+@then('the case "{case_id}" for questionnaire "{questionnaire}" has NOT been deleted from CMA')
+def step_impl(context, case_id, questionnaire):
+    context.mock_delete_service.frs_case_allocation_service.create_new_entry_for_special_instructions.assert_not_called()
