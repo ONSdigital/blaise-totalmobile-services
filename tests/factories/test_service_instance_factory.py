@@ -9,7 +9,7 @@ from services.create.questionnaires.lms_questionnaire_service import (
 )
 
 
-def test_create_questionnaire_service_returns_LMSQuestionnaireService_when_given_an_lms_survey_type():
+def test_create_questionnaire_service_returns_lms_questionnaire_service_when_given_an_lms_survey_type():
     # arrange
     service_instance_factory = ServiceInstanceFactory()
 
@@ -20,7 +20,7 @@ def test_create_questionnaire_service_returns_LMSQuestionnaireService_when_given
     assert type(result) is LMSQuestionnaireService
 
 
-def test_create_questionnaire_service_returns_FRSQuestionnaireService_when_given_an_frs_survey_type():
+def test_create_questionnaire_service_returns_frs_questionnaire_service_when_given_an_frs_survey_type():
     # arrange
     service_instance_factory = ServiceInstanceFactory()
 
