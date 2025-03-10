@@ -6,8 +6,6 @@ from typing import Any, Dict, List, Optional, Type, TypedDict, TypeVar
 from app.exceptions.custom_exceptions import BadReferenceError, MissingReferenceError
 from models.base_model import BaseModel
 
-T = TypeVar("T", bound="TotalmobileReferenceFRSModel")
-
 
 class IncomingRequestResult(TypedDict):
     identity: Dict[str, Any]
@@ -48,7 +46,7 @@ class TotalmobileReferenceFRSModel(BaseModel):
         self.interviewer_blaise_login = interviewer_blaise_login
 
     @classmethod
-    def from_request(cls: Type[T], request: IncomingRequest) -> T:
+    def from_request(cls, request: IncomingRequest) -> TotalmobileReferenceFRSModel:
         questionnaire_case_reference = (
             cls.get_questionnaire_case_reference_from_incoming_request(request)
         )
@@ -70,7 +68,7 @@ class TotalmobileReferenceFRSModel(BaseModel):
 
     @classmethod
     def from_questionnaire_and_case_and_interviewer_and_contact_data(
-        cls: Type[T],
+        cls,
         questionnaire_name: Optional[str],
         case_id: Optional[str],
         prem1: Optional[str],
@@ -79,7 +77,7 @@ class TotalmobileReferenceFRSModel(BaseModel):
         postcode: Optional[str],
         interviewer_name: Optional[str],
         interviewer_blaise_login: Optional[str],
-    ) -> T:
+    ) -> TotalmobileReferenceFRSModel:
         if (
             questionnaire_name is None
             or questionnaire_name == ""
