@@ -4,12 +4,14 @@ import base64
 import json
 import logging
 from datetime import datetime
+from unittest.mock import patch
 
 from behave import given, then, when
 
 import cloud_functions.delete_totalmobile_jobs_completed_in_blaise
 import cloud_functions.delete_totalmobile_jobs_past_field_period
 from enums.blaise_fields import BlaiseFields
+from factories.service_instance_factory import ServiceInstanceFactory
 from services.create.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 from services.create.questionnaires.eligibility.case_filters.case_filter_wave_1 import (
     CaseFilterWave1,
@@ -132,11 +134,12 @@ def step_impl(context, reference):
         )
     )
 
-    response = context.test_client.post(
-        "/bts/submitformresultrequest",
-        headers={"Authorization": f"Basic {valid_credentials}"},
-        json=request,
-    )
+    with patch("app.handlers.totalmobile_incoming_handler.remove_from_cma"):
+        response = context.test_client.post(
+            "/bts/submitformresultrequest",
+            headers={"Authorization": f"Basic {valid_credentials}"},
+            json=request,
+        )
 
     context.response = response
 
@@ -153,11 +156,12 @@ def step_impl(context, reference):
         reference=reference, **fields
     )
 
-    response = context.test_client.post(
-        "/bts/submitformresultrequest",
-        headers={"Authorization": f"Basic {valid_credentials}"},
-        json=request,
-    )
+    with patch("app.handlers.totalmobile_incoming_handler.remove_from_cma"):
+        response = context.test_client.post(
+            "/bts/submitformresultrequest",
+            headers={"Authorization": f"Basic {valid_credentials}"},
+            json=request,
+        )
 
     context.response = response
 
@@ -248,31 +252,6 @@ def step_impl(context, questionnaire, case_id):
     assert not context.blaise_service.case_has_been_updated(
         questionnaire, case_id
     ), "Update case should not have been called"
-
-
-@then('"{message}" is logged as an {error_level} message')
-def step_impl(context, message, error_level):
-    messages = [
-        (record.levelno, record.getMessage()) for record in context.log_capture.buffer
-    ]
-    mappings = {"information": logging.INFO, "error": logging.ERROR}
-    assert (
-        mappings[error_level],
-        message,
-    ) in messages, f"Could not find {mappings[error_level]}, {message} in {messages}"
-
-
-@then('a "{response}" response is sent back to Totalmobile')
-def step_impl(context, response):
-    mappings = {
-        "200 OK": 200,
-        "400 Bad Request": 400,
-        "404 Not Found": 404,
-        "500 Internal Server Error": 500,
-    }
-    assert (
-        context.response.status_code == mappings[response]
-    ), f"Context response is {context.response.status_code}, response is {mappings[response]}"
 
 
 @given('case "{case_id}" for questionnaire "{questionnaire}" has been completed')
@@ -481,3 +460,132 @@ def step_impl(context, outcome_code):
     assert (
         400 <= outcome_code <= 500
     ), f"Outcome code {outcome_code} should be between 400 and 500"
+
+
+@given('there is a questionnaire "{questionnaire}" with case "{case_id}" in CMA')
+def step_impl(context, questionnaire, case_id):
+    context.questionnaire_data["name"] = questionnaire
+    context.questionnaire_data["surveyTLA"] = questionnaire[:3]
+
+    context.cma_case["primaryKeyValues"]["id"] = case_id
+    context.cma_case["fieldData"]["surveyDisplayName"] = questionnaire
+    context.cma_case["fieldData"]["id"] = case_id
+
+    context.mock_cma_blaise_service.questionnaire_exists.return_value = (
+        context.questionnaire_data
+    )
+    context.mock_cma_blaise_service.case_exists.return_value = context.cma_case
+
+
+@when('Totalmobile sends a FRS update for reference "{reference}"')
+def step_impl(context, reference):
+    valid_credentials = base64.b64encode(b"test_username:test_password").decode("utf-8")
+    fields = {}
+    if context.table:
+        fields = {row["field_name"]: row["value"] for row in context.table}
+        fields["outcome_code"] = int(fields["outcome_code"])
+
+    request = (
+        incoming_request_helper.get_populated_update_case_request_for_contact_made(
+            reference=reference, **fields
+        )
+    )
+
+    with patch("app.handlers.totalmobile_incoming_handler.update_case"):
+        with patch.object(
+            ServiceInstanceFactory,
+            "create_delete_cma_case_service",
+            return_value=context.mock_delete_service,
+        ):
+            response = context.test_client.post(
+                "/bts/submitformresultrequest",
+                headers={"Authorization": f"Basic {valid_credentials}"},
+                json=request,
+            )
+
+    questionnaire, case_id = reference.split(".")
+
+    context.response = response
+    context.questionnaire = questionnaire
+    context.case_id = case_id
+    context.outcome_code = fields["outcome_code"]
+
+
+@then(
+    'the case "{case_id}" for questionnaire "{questionnaire}" has been deleted from CMA'
+)
+def step_impl(context, case_id, questionnaire):
+    context.mock_delete_service.frs_case_allocation_service.create_new_entry_for_special_instructions.assert_called_once_with(
+        context.cma_case, questionnaire
+    )
+
+
+@then('"{message}" is logged as an {error_level} message')
+def step_impl(context, message, error_level):
+    messages = [
+        (record.levelno, record.getMessage()) for record in context.log_capture.buffer
+    ]
+    mappings = {"information": logging.INFO, "error": logging.ERROR}
+    assert (
+        mappings[error_level],
+        message,
+    ) in messages, f"Could not find {mappings[error_level]}, {message} in {messages}"
+
+
+@then('a "{response}" response is sent back to Totalmobile')
+def step_impl(context, response):
+    mappings = {
+        "200 OK": 200,
+        "400 Bad Request": 400,
+        "404 Not Found": 404,
+        "500 Internal Server Error": 500,
+    }
+    assert (
+        context.response.status_code == mappings[response]
+    ), f"Context response is {context.response.status_code}, response is {mappings[response]}"
+
+
+@then(
+    'the case "{case_id}" for questionnaire "{questionnaire}" has NOT been deleted from CMA'
+)
+def step_impl(context, case_id, questionnaire):
+    context.mock_delete_service.frs_case_allocation_service.create_new_entry_for_special_instructions.assert_not_called()
+
+
+@when(
+    'Totalmobile sends a FRS update for reference "{reference}" which fails to update Blaise'
+)
+def step_impl(context, reference):
+    valid_credentials = base64.b64encode(b"test_username:test_password").decode("utf-8")
+    fields = {}
+    if context.table:
+        fields = {row["field_name"]: row["value"] for row in context.table}
+        fields["outcome_code"] = int(fields["outcome_code"])
+
+    request = (
+        incoming_request_helper.get_populated_update_case_request_for_contact_made(
+            reference=reference, **fields
+        )
+    )
+
+    with patch(
+        "app.handlers.totalmobile_incoming_handler.update_case",
+        side_effect=Exception("Michael Scott is no longer welcome at Improv Club"),
+    ):
+        with patch.object(
+            ServiceInstanceFactory,
+            "create_delete_cma_case_service",
+            return_value=context.mock_delete_service,
+        ):
+            response = context.test_client.post(
+                "/bts/submitformresultrequest",
+                headers={"Authorization": f"Basic {valid_credentials}"},
+                json=request,
+            )
+
+    questionnaire, case_id = reference.split(".")
+
+    context.response = response
+    context.questionnaire = questionnaire
+    context.case_id = case_id
+    context.outcome_code = fields["outcome_code"]
