@@ -23,7 +23,9 @@ class TotalMobileIncomingFRSRequestModel(BaseModel):
     interviewer_blaise_login: str
 
     @classmethod
-    def import_request(cls, incoming_request: IncomingRequest) -> TotalMobileIncomingFRSRequestModel:
+    def import_request(
+        cls, incoming_request: IncomingRequest
+    ) -> TotalMobileIncomingFRSRequestModel:
         if not (
             cls.dictionary_keys_exist(
                 incoming_request, "visit", "identity", "user", "name"
