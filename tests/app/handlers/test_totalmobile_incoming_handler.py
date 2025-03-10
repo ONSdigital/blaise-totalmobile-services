@@ -22,28 +22,54 @@ from tests.helpers import (
 )
 
 
-@patch("app.handlers.totalmobile_incoming_handler.ServiceInstanceFactory")
-def test_submit_form_result_request_handler_calls_update_case_once(
-    mock_service_factory,
+@pytest.fixture
+def mock_update_service():
+    return MagicMock()
+
+
+@pytest.fixture
+def mock_delete_service():
+    return MagicMock()
+
+
+@pytest.fixture
+def mock_request():
+    return MagicMock()
+
+
+@pytest.fixture
+def mock_app():
+    app = MagicMock()
+    app.blaise_service = MagicMock()
+    return app
+
+
+def setup_mock_service_instances(
+    mock_service_factory, mock_update_service, mock_delete_service
 ):
-    # arrange
-    mock_update_service = MagicMock()  # TODO: pytest.fixture these things
     mock_service_factory.return_value.create_update_case_service.return_value = (
         mock_update_service
     )
-
-    mock_delete_service = MagicMock()
     mock_service_factory.return_value.create_delete_cma_case_service.return_value = (
         mock_delete_service
     )
 
-    mock_request = MagicMock()
+
+@patch("app.handlers.totalmobile_incoming_handler.ServiceInstanceFactory")
+def test_submit_form_result_request_handler_calls_update_case_once(
+    mock_service_factory,
+    mock_update_service,
+    mock_delete_service,
+    mock_request,
+    mock_app,
+):
+    # arrange
+    setup_mock_service_instances(
+        mock_service_factory, mock_update_service, mock_delete_service
+    )
     mock_request.get_json.return_value = (
         incoming_request_helper.get_populated_update_case_refusal_request()
     )
-
-    mock_app = MagicMock()
-    mock_app.blaise_service = MagicMock()
 
     # act
     submit_form_result_request_handler(mock_request, mock_app)
@@ -55,27 +81,20 @@ def test_submit_form_result_request_handler_calls_update_case_once(
 @patch("app.handlers.totalmobile_incoming_handler.ServiceInstanceFactory")
 def test_submit_form_result_request_handler_calls_remove_case_from_cma_once(
     mock_service_factory,
+    mock_update_service,
+    mock_delete_service,
+    mock_request,
+    mock_app,
 ):
     # arrange
-    mock_update_service = MagicMock()
-    mock_service_factory.return_value.create_update_case_service.return_value = (
-        mock_update_service
+    setup_mock_service_instances(
+        mock_service_factory, mock_update_service, mock_delete_service
     )
-
-    mock_delete_service = MagicMock()
-    mock_service_factory.return_value.create_delete_cma_case_service.return_value = (
-        mock_delete_service
-    )
-
-    mock_request = MagicMock()
     mock_request.get_json.return_value = (
         incoming_request_helper.get_populated_update_case_refusal_request(
             reference="FRS2405A.90001"
         )
     )
-
-    mock_app = MagicMock()
-    mock_app.blaise_service = MagicMock()
 
     # act
     submit_form_result_request_handler(mock_request, mock_app)
@@ -93,19 +112,17 @@ def test_submit_form_result_request_handler_calls_remove_case_from_cma_once(
     side_effect=Exception("Update case failed"),
 )
 def test_submit_form_result_request_handler_does_not_call_remove_from_cma_if_update_case_fails(
-    mock_remove_from_cma, mock_update_case
+    mock_remove_from_cma, mock_update_case, mock_request, mock_app
 ):
     """
     If test is failing, be aware, CMA cases must NOT be removed if case fails to update in Blaise
     """
     # arrange
-    mock_request = MagicMock()
     mock_request.get_json.return_value = (
         incoming_request_helper.get_populated_update_case_refusal_request(
             reference="FRS2405A.90001"
         )
     )
-    mock_app = MagicMock()
     mock_app.cma_blaise_service = MagicMock()
 
     # act & assert
@@ -116,18 +133,18 @@ def test_submit_form_result_request_handler_does_not_call_remove_from_cma_if_upd
     mock_remove_from_cma.assert_not_called()  # remove_from_cma should NEVER be called
 
 
-def test_submit_form_result_request_handler_raises_an_exception_when_a_malformed_request_is_received():
+def test_submit_form_result_request_handler_raises_an_exception_when_a_malformed_request_is_received(
+    mock_request, mock_update_service
+):
     # arrange
-    mock_request = mock.Mock()
     mock_request.get_json.return_value = (
         incoming_request_helper.get_malformed_update_case_request()
     )
-    mock_update_case_service = mock.Mock()
-    mock_update_case_service.update_case()
+    mock_update_service.update_case()
 
     # act & assert
     with pytest.raises(Exception):
-        submit_form_result_request_handler(mock_request, mock_update_case_service)
+        submit_form_result_request_handler(mock_request, mock_update_service)
 
 
 @patch("app.handlers.totalmobile_incoming_handler.FRSCaseAllocationService")
@@ -135,7 +152,7 @@ def test_submit_form_result_request_handler_raises_an_exception_when_a_malformed
     "app.handlers.totalmobile_incoming_handler.TotalMobileIncomingFRSRequestModel.import_request"
 )
 def test_create_visit_request_handler_calls_create_case_once(
-    mock_import_request, mock_frs_service
+    mock_import_request, mock_frs_service, mock_request, mock_app
 ):
     # arrange
     mock_frs_instance = MagicMock()
@@ -144,12 +161,10 @@ def test_create_visit_request_handler_calls_create_case_once(
     mock_totalmobile_case = MagicMock()
     mock_import_request.return_value = mock_totalmobile_case
 
-    mock_request = MagicMock()
     mock_request.get_json.return_value = (
         incoming_request_helper_for_frs_allocation.get_frs_case_allocation_request()
     )
 
-    mock_app = MagicMock()
     mock_app.cma_blaise_service = MagicMock()
 
     # act
@@ -159,10 +174,10 @@ def test_create_visit_request_handler_calls_create_case_once(
     mock_frs_instance.create_case.assert_called_once_with(mock_totalmobile_case)
 
 
-def test_create_visit_request_handler_raises_invalid_totalmobile_frs_request_exception_if_reference_missing_from_payload():
+def test_create_visit_request_handler_raises_invalid_totalmobile_frs_request_exception_if_reference_missing_from_payload(
+    mock_request,
+):
     # arrange
-    mock_request = mock.Mock()
-
     mock_request.get_json.return_value = (
         incoming_request_helper_for_frs_allocation.get_frs_case_allocation_request_without_reference()
     )
@@ -178,18 +193,16 @@ def test_create_visit_request_handler_raises_invalid_totalmobile_frs_request_exc
 
 @patch("app.handlers.totalmobile_incoming_handler.FRSCaseAllocationService")
 def test_force_recall_visit_request_handler_calls_unallocate_case_once(
-    mock_frs_service,
+    mock_frs_service, mock_request, mock_app
 ):
     # arrange
     mock_frs_instance = MagicMock()
     mock_frs_service.return_value = mock_frs_instance
 
-    mock_request = MagicMock()
     mock_request.get_json.return_value = (
         incoming_request_helper_for_frs_unallocation.get_frs_case_unallocation_request()
     )
 
-    mock_app = MagicMock()
     mock_app.cma_blaise_service = MagicMock()
 
     # act
