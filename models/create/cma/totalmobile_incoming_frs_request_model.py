@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Type, TypeVar
 
 from app.exceptions.custom_exceptions import InvalidTotalmobileFRSRequestException
 from models.base_model import BaseModel
@@ -10,8 +9,6 @@ from models.common.totalmobile.totalmobile_reference_frs_model import (
     IncomingRequest,
     TotalmobileReferenceFRSModel,
 )
-
-T = TypeVar("T", bound="TotalMobileIncomingFRSRequestModel")
 
 
 @dataclass
@@ -26,7 +23,7 @@ class TotalMobileIncomingFRSRequestModel(BaseModel):
     interviewer_blaise_login: str
 
     @classmethod
-    def import_request(cls: Type[T], incoming_request: IncomingRequest) -> T:
+    def import_request(cls, incoming_request: IncomingRequest) -> TotalMobileIncomingFRSRequestModel:
         if not (
             cls.dictionary_keys_exist(
                 incoming_request, "visit", "identity", "user", "name"
