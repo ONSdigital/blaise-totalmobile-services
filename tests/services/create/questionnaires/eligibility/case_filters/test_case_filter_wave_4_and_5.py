@@ -130,7 +130,7 @@ class TestIneligibleCases:
         # assert
         assert result is False
 
-    @pytest.mark.parametrize("field_region", ["Region 0", "Region 9", "Default"])
+    @pytest.mark.parametrize("field_region", ["Region 0", "Region 13", "Default"])
     def test_case_is_eligible_returns_false_if_field_region_is_not_in_range(
         self,
         field_region,
@@ -148,7 +148,7 @@ class TestIneligibleCases:
         # assert
         assert result is False
 
-    @pytest.mark.parametrize("field_region", ["Region 0", "Region 9", "Default"])
+    @pytest.mark.parametrize("field_region", ["Region 0", "Region 13", "Default"])
     def test_case_is_eligible_logs_a_message_if_field_region_is_not_in_range(
         self,
         field_region,

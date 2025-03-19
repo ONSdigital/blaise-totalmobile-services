@@ -237,7 +237,7 @@ def test_case_is_eligible_logs_a_message_if_field_case_is_set_to_n(
     ) in caplog.record_tuples
 
 
-@pytest.mark.parametrize("test_input", ["Region 0", "Region 9", "Default"])
+@pytest.mark.parametrize("test_input", ["Region 0", "Region 13", "Default"])
 def test_case_is_eligible_returns_false_if_field_region_is_not_in_range(
     test_input,
     valid_wave_1_case_data,
@@ -254,7 +254,7 @@ def test_case_is_eligible_returns_false_if_field_region_is_not_in_range(
     assert result is False
 
 
-@pytest.mark.parametrize("test_input", ["Region 0", "Region 9", "Default"])
+@pytest.mark.parametrize("test_input", ["Region 0", "Region 13", "Default"])
 def test_case_is_eligible_logs_a_message_if_field_region_is_not_in_range(
     test_input, valid_wave_1_case_data, service: CaseFilterWave1, caplog
 ):

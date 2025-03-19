@@ -57,13 +57,28 @@ def test_import_worlds_returns_a_populated_model_for_known_regions():
             "identity": {"reference": "Region 9"},
             "type": "foo",
         },
+        {
+            "id": "8fa85f64-5717-4562-b3fc-2c963f66afa10",
+            "identity": {"reference": "Region 10"},
+            "type": "foo",
+        },
+        {
+            "id": "8fa85f64-5717-4562-b3fc-2c963f66afa11",
+            "identity": {"reference": "Region 11"},
+            "type": "foo",
+        },
+        {
+            "id": "8fa85f64-5717-4562-b3fc-2c963f66afa12",
+            "identity": {"reference": "Region 12"},
+            "type": "foo",
+        },
     ]
 
     # act
     result = TotalmobileWorldModel.import_worlds(worlds)
 
     # assert
-    assert len(result.worlds) == 8
+    assert len(result.worlds) == 12
     assert result.worlds[0].region == "Region 1"
     assert result.worlds[0].id == "8fa85f64-5717-4562-b3fc-2c963f66afa1"
 
@@ -88,6 +103,53 @@ def test_import_worlds_returns_a_populated_model_for_known_regions():
     assert result.worlds[7].region == "Region 8"
     assert result.worlds[7].id == "8fa85f64-5717-4562-b3fc-2c963f66afa8"
 
+    assert result.worlds[8].region == "Region 9"
+    assert result.worlds[8].id == "8fa85f64-5717-4562-b3fc-2c963f66afa9"
+
+    assert result.worlds[9].region == "Region 10"
+    assert result.worlds[9].id == "8fa85f64-5717-4562-b3fc-2c963f66afa10"
+
+    assert result.worlds[10].region == "Region 11"
+    assert result.worlds[10].id == "8fa85f64-5717-4562-b3fc-2c963f66afa11"
+
+    assert result.worlds[11].region == "Region 12"
+    assert result.worlds[11].id == "8fa85f64-5717-4562-b3fc-2c963f66afa12"
+
+def test_import_worlds_filters_unknown_regions_and_only_returns_known_regions():
+    # arrange
+    worlds = [
+        {
+            "id": "8fa85f64-5717-4562-b3fc-2c963f66afa11",
+            "identity": {"reference": "Mordor"},
+            "type": "foo",
+        },
+        {
+            "id": "8fa85f64-5717-4562-b3fc-2c963f66afa1",
+            "identity": {"reference": "Region 1"},
+            "type": "foo",
+        },
+        {
+            "id": "8fa85f64-5717-4562-b3fc-2c963f66afa22",
+            "identity": {"reference": "The Shire"},
+            "type": "foo",
+        },
+        {
+            "id": "8fa85f64-5717-4562-b3fc-2c963f66afa2",
+            "identity": {"reference": "Region 2"},
+            "type": "foo",
+        },
+    ]
+
+    # act
+    result = TotalmobileWorldModel.import_worlds(worlds)
+
+    # assert
+    assert len(result.worlds) == 2
+    assert result.worlds[0].region == "Region 1"
+    assert result.worlds[0].id == "8fa85f64-5717-4562-b3fc-2c963f66afa1"
+
+    assert result.worlds[1].region == "Region 2"
+    assert result.worlds[1].id == "8fa85f64-5717-4562-b3fc-2c963f66afa2"
 
 def test_get_available_regions_returns_a_list_of_available_regions():
 
@@ -104,6 +166,10 @@ def test_get_available_regions_returns_a_list_of_available_regions():
         "Region 6",
         "Region 7",
         "Region 8",
+        "Region 9",
+        "Region 10",
+        "Region 11",
+        "Region 12",
     ]
 
 
@@ -119,6 +185,10 @@ def test_get_available_ids_returns_a_list_of_available_ids():
             World(region="Region 6", id="8fa85f64-5717-4562-b3fc-2c963f66afa6"),
             World(region="Region 7", id="8fa85f64-5717-4562-b3fc-2c963f66afa7"),
             World(region="Region 8", id="8fa85f64-5717-4562-b3fc-2c963f66afa8"),
+            World(region="Region 9", id="8fa85f64-5717-4562-b3fc-2c963f66afa9"),
+            World(region="Region 10", id="8fa85f64-5717-4562-b3fc-2c963f66afa10"),
+            World(region="Region 11", id="8fa85f64-5717-4562-b3fc-2c963f66afa11"),
+            World(region="Region 12", id="8fa85f64-5717-4562-b3fc-2c963f66afa12"),
         ]
     )
 
@@ -135,6 +205,10 @@ def test_get_available_ids_returns_a_list_of_available_ids():
         "8fa85f64-5717-4562-b3fc-2c963f66afa6",
         "8fa85f64-5717-4562-b3fc-2c963f66afa7",
         "8fa85f64-5717-4562-b3fc-2c963f66afa8",
+        "8fa85f64-5717-4562-b3fc-2c963f66afa9",
+        "8fa85f64-5717-4562-b3fc-2c963f66afa10",
+        "8fa85f64-5717-4562-b3fc-2c963f66afa11",
+        "8fa85f64-5717-4562-b3fc-2c963f66afa12",
     ]
 
 
