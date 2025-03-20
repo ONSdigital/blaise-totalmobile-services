@@ -25,7 +25,7 @@ def test_get_eligible_cases_returns_expected_list_of_eligible_cases_for_frs():
         get_case(case_id="90007", field_region="Region 7"),
         get_case(case_id="90008", field_region="Region 8"),
         get_case(case_id="90009", field_region="Region 9"),
-        get_case(case_id="90009", field_region="Region 10"),
+        get_case(case_id="90010", field_region="Region 10"),
     ]
 
     # act
