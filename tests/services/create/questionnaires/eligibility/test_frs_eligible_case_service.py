@@ -44,7 +44,7 @@ def test_get_eligible_cases_returns_expected_list_of_eligible_cases_for_frs():
     assert result[7].case_id == "90008"
     assert result[8].case_id == "90009"
     assert result[9].case_id == "90010"
-    
+
 
 def test_get_eligible_cases_handles_unknown_regions():
     # arrange
@@ -52,7 +52,7 @@ def test_get_eligible_cases_handles_unknown_regions():
 
     cases = [
         get_case(case_id="90001", field_region="Region 1"),
-        get_case(case_id="90002", field_region="Eriador"), 
+        get_case(case_id="90002", field_region="Eriador"),
         get_case(case_id="90003", field_region="The Shire"),
         get_case(case_id="90004", field_region="Region 4"),
         get_case(case_id="90005", field_region="Mordor"),
