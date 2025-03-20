@@ -40,6 +40,7 @@ class FakeTotalmobileService:
         "Region 10": "world-id-10",
         "Region 11": "world-id-11",
         "Region 12": "world-id-12",
+        "Region 13": "world-id-13",
     }
 
     def __init__(self):

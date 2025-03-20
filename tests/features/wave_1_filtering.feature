@@ -29,6 +29,9 @@ Feature: Filter wave 1 cases
       | 54321   | LMS2210_AA1        | LMS2210-AA1.54321 | 0            | 1    | Y         |        |        |           | Region 6 |
       | 54321   | LMS2210_AA1        | LMS2210-AA1.54321 | 0            | 1    | Y         |        |        |           | Region 7 |
       | 54321   | LMS2210_AA1        | LMS2210-AA1.54321 | 0            | 1    | Y         |        |        |           | Region 8 |
+      | 54321   | LMS2210_AA1        | LMS2210-AA1.54321 | 0            | 1    | Y         |        |        |           | Region 9 |
+      | 54321   | LMS2210_AA1        | LMS2210-AA1.54321 | 0            | 1    | Y         |        |        |           | Region 10 |
+
 
   Scenario Outline: Ineligible LMS cases are not sent to Totalmobile
     Given there is a <questionnaire_name> with a totalmobile release date of today
@@ -51,4 +54,4 @@ Feature: Filter wave 1 cases
       | 12345   | LMS2210_AA1        | 0            | 1    | Y         | 072345678 |           |           | Region 1 |
       | 12345   | LMS2210_AA1        | 0            | 1    | Y         |           | 072345678 |           | Region 1 |
       | 12345   | LMS2210_AA1        | 0            | 1    | Y         |           |           | 072345678 | Region 1 |
-      | 12345   | LMS2210_AA1        | 0            | 1    | Y         |           |           |           | Region 9 |
+      | 12345   | LMS2210_AA1        | 0            | 1    | Y         |           |           |           | Region 0 |

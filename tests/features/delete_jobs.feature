@@ -94,6 +94,8 @@ Feature: Delete jobs
       |Region 6|
       |Region 7|
       |Region 8|
+      |Region 9|
+      |Region 10|
 
   Scenario Outline: Do not delete jobs from Totalmobile devices for cases in Blaise that require a K2N for all regions
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
@@ -112,6 +114,8 @@ Feature: Delete jobs
     |Region 6|
     |Region 7|
     |Region 8|
+    |Region 9|
+    |Region 10|
 
   Scenario Outline: Do not delete jobs from Totalmobile devices for cases in Blaise that require a K2N for other regions
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
@@ -123,7 +127,7 @@ Feature: Delete jobs
     Examples:
     |region  |
     |Region 0|
-    |Region 9|
+    |Region 13|
 
   Scenario: A case in Blaise has not been completed
     Given case "12345" for questionnaire "LMS2206_AA1" has not been completed
