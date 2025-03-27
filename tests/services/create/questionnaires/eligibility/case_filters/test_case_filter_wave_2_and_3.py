@@ -1154,7 +1154,7 @@ class TestIneligibleCasesWithATelephoneNumber:
             f"Case '90001' in questionnaire 'LMS2101_AA1' was not eligible to be sent to Totalmobile as it has a field case value of '{field_case}', not 'Y'",
         ) in caplog.record_tuples
 
-    @pytest.mark.parametrize("field_region", ["Region 0", "Region 9", "Default"])
+    @pytest.mark.parametrize("field_region", ["Region 0", "Region 13", "Default"])
     def test_case_is_eligible_returns_false_if_field_region_is_not_in_range_when_telephone_numbers_is_set(
         self,
         field_region,
@@ -1181,7 +1181,7 @@ class TestIneligibleCasesWithATelephoneNumber:
         # assert
         assert result is False
 
-    @pytest.mark.parametrize("field_region", ["Region 0", "Region 9", "Default"])
+    @pytest.mark.parametrize("field_region", ["Region 0", "Region 13", "Default"])
     def test_case_is_eligible_logs_a_message_if_field_region_is_not_in_range_when_a_telephone_number_is_set(
         self,
         field_region,

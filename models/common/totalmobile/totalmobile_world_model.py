@@ -25,6 +25,10 @@ class TotalmobileWorldModel:
         "Region 6",
         "Region 7",
         "Region 8",
+        "Region 9",
+        "Region 10",
+        "Region 11",
+        "Region 12",
     ]
 
     def get_world_id(self, region: Optional[str]):

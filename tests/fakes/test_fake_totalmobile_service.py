@@ -187,6 +187,10 @@ def test_get_world_model(service: FakeTotalmobileService):
         World(region="Region 6", id="world-id-6"),
         World(region="Region 7", id="world-id-7"),
         World(region="Region 8", id="world-id-8"),
+        World(region="Region 9", id="world-id-9"),
+        World(region="Region 10", id="world-id-10"),
+        World(region="Region 11", id="world-id-11"),
+        World(region="Region 12", id="world-id-12"),
     ]
 
 
