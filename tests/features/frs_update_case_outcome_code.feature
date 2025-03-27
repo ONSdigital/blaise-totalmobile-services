@@ -10,8 +10,9 @@ Feature: update outcome code
       | outcome_code  | <outcome_code> |
     And <outcome_code> is NOT between 400 and 500
     Then the case "12345" for questionnaire "FRS2401" has been updated with
-      | field_name | value          |
-      | hOut       | <outcome_code> |
+      | field_name         | value          |
+      | hOut               | <outcome_code> |
+      | qhAdmin.HOut       | <outcome_code> |
     And "Outcome code updated (Questionnaire=FRS2401, Case Id=12345, Blaise hOut=<blaise_outcome_code>, TM hOut=<outcome_code>)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
     Examples: Blaise outcome code is 0
@@ -52,8 +53,9 @@ Feature: update outcome code
       | outcome_code  | <outcome_code> |
     And <outcome_code> is NOT between 400 and 500
     Then the case "12345" for questionnaire "FRS2401" has not been updated
-      | field_name | value          |
-      | hOut       | <outcome_code> |
+      | field_name         | value          |
+      | hOut               | <outcome_code> |
+      | qhAdmin.HOut       | <outcome_code> |
     And "Case 12345 for questionnaire FRS2401 has not been updated in Blaise (Blaise hOut=<blaise_outcome_code>, TM hOut=<outcome_code>)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
     Examples: Blaise outcome code is 0
@@ -113,29 +115,27 @@ Feature: update outcome code
       | 210                   | 320          |
       | 210                   | 330          |
 
-  Scenario Outline: Outcome code and refusal reason are updated when Totalmobile sends a request with an outcome code of <outcome_code>, <refusal_reason_code>, and Blaise case has outcome code of <blaise_outcome_code>
+  Scenario Outline: Outcome code and refusal reason are updated when Totalmobile sends a request with an outcome code of <outcome_code>, <refusal_reason_text>, and Blaise case has outcome code of <blaise_outcome_code>
     Given there is a questionnaire "FRS2401" with case "12345" in Blaise
     And the case has an outcome code of <blaise_outcome_code>
     When Totalmobile sends an update for reference "FRS2401.12345" with a refusal
       | field_name      | value                  |
       | outcome_code    | <outcome_code>         |
-      | refusal_reason  | <refusal_reason_code>  |
+      | refusal_reason  | <refusal_reason_text>  |
     And <outcome_code> is between 400 and 500
     Then the case "12345" for questionnaire "FRS2401" has been updated with
       | field_name         | value                 |
       | hOut               | <outcome_code>        |
-      | qhAdmin.RefReas    | <refusal_reason_code> |
-    And "Outcome code and refusal reason updated (Questionnaire=FRS2401, Case Id=12345, Blaise hOut=<blaise_outcome_code>, TM RefReas=<refusal_reason_code>, TM hOut=<outcome_code>)" is logged as an information message
+      | qhAdmin.HOut       | <outcome_code>        |
+      | qhAdmin.RefReas    | <refusal_reason_text> |
+    And "Outcome code and refusal reason updated (Questionnaire=FRS2401, Case Id=12345, Blaise hOut=<blaise_outcome_code>, TM RefReas=<refusal_reason_text>, TM hOut=<outcome_code>)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
     Examples: Blaise outcome code is 0
-      | blaise_outcome_code | outcome_code | refusal_reason_code  |
-      | 0                   | 410          | 431                  |
-      | 0                   | 410          | 432                  |
-      | 0                   | 410          | 441                  |
-      | 0                   | 410          | 442                  |
-      | 0                   | 410          | 450                  |
-      | 0                   | 420          | 431                  |
-      | 0                   | 420          | 432                  |
-      | 0                   | 420          | 441                  |
-      | 0                   | 420          | 442                  |
-      | 0                   | 420          | 450                  |
+      | blaise_outcome_code | outcome_code | refusal_reason_text          |
+      | 0                   | 410          | HQ/Office refusal            |
+      | 0                   | 420          | (Multi) Information refused  |
+      | 0                   | 431          | Refusal at introduction      |
+      | 0                   | 432          | Refusal at introduction      |
+      | 0                   | 441          | Refusal during appointment   |
+      | 0                   | 442          | Refusal during appointment   |
+      | 0                   | 450          | Broken appointment           |

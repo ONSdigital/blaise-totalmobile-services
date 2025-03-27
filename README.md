@@ -4,7 +4,7 @@ We integrate with Totalmobile for field workforce management. We send case detai
 
 This project contains several services for sending data to and receiving data from Totalmobile.
 
-### Services 
+## Services 
 
 - Cloud Function (create_totalmobile_jobs_trigger) to check if a Totalmobile release date has been set for a questionnaire in [DQS](https://github.com/ONSdigital/blaise-deploy-questionnaire-service). If a questionnaire has a Totalmobile release date of today, it will get all cases for that questionnaire, apply business logic to filter out cases, then send the remaining case details to a Cloud Tasks queue.
 
@@ -14,7 +14,7 @@ This project contains several services for sending data to and receiving data fr
 
 - Flask application with several endpoints for receiving data updates from Totalmobile. More details can be found in the [app readme](app/README.md).
 
-### Local Setup
+## Local Setup
 
 Clone the project locally:
 ```shell
@@ -96,12 +96,15 @@ TOTALMOBILE_INCOMING_PASSWORD_HASH=pbkdf2:sha256:260000$Y1Pew7gJMYbRhfNR$9b97ee1
 CLOUD_FUNCTION_SA=totalmobile-sa@ons-blaise-v2-dev-sandbox123.iam.gserviceaccount.com
 ```
 
+## Flask App 
 Run the Flask application:
 ```shell
 poetry run python main.py
 ```
 
 You should now be able to call the Flask application endpoints via localhost:5011. See the [app readme](app/README.md) for more details.
+
+## Cloud Functions
 
 Run the "create_totalmobile_jobs_trigger" Cloud Function:
 ```shell
@@ -118,6 +121,8 @@ Run the "delete_totalmobile_jobs_completed_in_blaise" Cloud Function:
 poetry run python -c "from main import delete_totalmobile_jobs_completed_in_blaise; delete_totalmobile_jobs_completed_in_blaise(None, None)"
 ```
 
+## Tests 
+
 Run unit tests:
 ```shell
 poetry run python -m pytest
@@ -127,6 +132,24 @@ Run behave tests:
 ```shell
 poetry run python -m behave tests/features
 ```
+
+### Feature test reports
+
+You can export the results of feature tests as HTML reports, which can then be shared with users for validation and sign-off.
+
+Export <i>all</i> feature tests to a single html report:
+```shell
+poetry run behave tests/features --format behave_html_formatter:HTMLFormatter --outfile=all_tests_report.html
+```
+
+Export <i>specific</i> feature tests to a single html report.  The following example exports the frs_update_case_outcome_code.feature test to a file called update_case_outcome_code_report.html
+```shell
+ poetry run behave tests/features/frs_update_case_outcome_code.feature --format behave_html_formatter:HTMLFormatter --outfile=update_case_outcome_code_report.html
+```
+
+The above commands will save the HTML in the root of this folder and should not be commited to git (gitignore has been updated but please be aware).  To view and validate the report, open the file with your preferred web browser. It can then be emailed as an attachment to the users.
+
+## Linting
 
 Run check-types tests:
 ```shell
@@ -143,7 +166,7 @@ Run isort refactoring:
 poetry run isort .
 ```
 
-### Poetry Problems
+## Poetry Problems
 
 #### Dependencies (like the blaise-restapi) not updating properly after running ```poetry update blaise-restapi``` ???
 
