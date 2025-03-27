@@ -19,6 +19,7 @@ class FRSBlaiseUpdateCase(BlaiseUpdateCaseBase, FRSBlaiseCaseModel):
     ):
         return {
             BlaiseFields.outcome_code: f"{totalmobile_request.outcome_code}",
+            BlaiseFields.admin_outcome_code: f"{totalmobile_request.outcome_code}",
             BlaiseFields.refusal_reason: f"{totalmobile_request.refusal_reason}",
         }
 

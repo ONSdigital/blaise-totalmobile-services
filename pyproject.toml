@@ -24,6 +24,7 @@ dataclasses-json = "^0.5.7"
 dataclass-wizard = "^0.22.1"
 typing-extensions = "^4.12.2"
 setuptools = "^68.0.0"
+pytest-mock = "^3.14.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
