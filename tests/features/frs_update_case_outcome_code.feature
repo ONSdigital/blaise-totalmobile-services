@@ -122,9 +122,9 @@ Feature: update outcome code
       | refusal_reason  | <refusal_reason_code>  |
     And <outcome_code> is between 400 and 500
     Then the case "12345" for questionnaire "FRS2401" has been updated with
-      | field_name          | value                 |
-      | hOut                | <outcome_code>        |
-      | qDataBag.RefReas    | <refusal_reason_code> |
+      | field_name         | value                 |
+      | hOut               | <outcome_code>        |
+      | qhAdmin.RefReas    | <refusal_reason_code> |
     And "Outcome code and refusal reason updated (Questionnaire=FRS2401, Case Id=12345, Blaise hOut=<blaise_outcome_code>, TM RefReas=<refusal_reason_code>, TM hOut=<outcome_code>)" is logged as an information message
     And a "200 OK" response is sent back to Totalmobile
     Examples: Blaise outcome code is 0

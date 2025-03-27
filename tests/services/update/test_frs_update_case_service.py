@@ -220,12 +220,20 @@ def test_frs_update_case_calls_blaise_service_update_case_once_with_correct_para
         (
             410,
             432,
-            {BlaiseFields.outcome_code: "410", BlaiseFields.refusal_reason: "432"},
+            {
+                BlaiseFields.outcome_code: "410",
+                BlaiseFields.admin_outcome_code: "410",
+                BlaiseFields.refusal_reason: "432",
+            },
         ),
         (
             420,
             450,
-            {BlaiseFields.outcome_code: "420", BlaiseFields.refusal_reason: "450"},
+            {
+                BlaiseFields.outcome_code: "420",
+                BlaiseFields.admin_outcome_code: "420",
+                BlaiseFields.refusal_reason: "450",
+            },
         ),
     ],
 )
