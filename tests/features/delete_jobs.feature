@@ -85,17 +85,19 @@ Feature: Delete jobs
       And "Successfully removed job LMS2206-AA1.12345 from Totalmobile" is logged as an information message
 
       Examples:
-      |region  |
-      |Region 1|
-      |Region 2|
-      |Region 3|
-      |Region 4|
-      |Region 5|
-      |Region 6|
-      |Region 7|
-      |Region 8|
-      |Region 9|
-      |Region 10|
+      | region    |
+      | Region 1  |
+      | Region 2  |
+      | Region 3  |
+      | Region 4  |
+      | Region 5  |
+      | Region 6  |
+      | Region 7  |
+      | Region 8  |
+      | Region 9  |
+      | Region 10 |
+      | Region 11 |
+      | Region 12 |
 
   Scenario Outline: Do not delete jobs from Totalmobile devices for cases in Blaise that require a K2N for all regions
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
@@ -105,17 +107,19 @@ Feature: Delete jobs
     Then the Totalmobile job with reference "LMS2206-AA1.12345" is not deleted
 
     Examples:
-    |region  |
-    |Region 1|
-    |Region 2|
-    |Region 3|
-    |Region 4|
-    |Region 5|
-    |Region 6|
-    |Region 7|
-    |Region 8|
-    |Region 9|
-    |Region 10|
+    | region    |
+    | Region 1  |
+    | Region 2  |
+    | Region 3  |
+    | Region 4  |
+    | Region 5  |
+    | Region 6  |
+    | Region 7  |
+    | Region 8  |
+    | Region 9  |
+    | Region 10 |
+    | Region 11 |
+    | Region 12 |
 
   Scenario Outline: Do not delete jobs from Totalmobile devices for cases in Blaise that require a K2N for other regions
     Given there is a questionnaire "LMS2206_AA1" with case "12345" in Blaise
@@ -125,9 +129,9 @@ Feature: Delete jobs
     Then the Totalmobile job with reference "LMS2206-AA1.12345" is not deleted
 
     Examples:
-    |region  |
-    |Region 0|
-    |Region 13|
+    | region    |
+    | Region 0  |
+    | Region 13 |
 
   Scenario: A case in Blaise has not been completed
     Given case "12345" for questionnaire "LMS2206_AA1" has not been completed
