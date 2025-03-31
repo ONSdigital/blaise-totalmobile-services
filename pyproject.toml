@@ -27,7 +27,7 @@ setuptools = "70"
 pytest-mock = "^3.14.0"
 behave-html-formatter = "^0.9.10"
 urllib3 = "1.26.17"
-werkzeug = "3.0.3"
+werkzeug = "3.0.6"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
