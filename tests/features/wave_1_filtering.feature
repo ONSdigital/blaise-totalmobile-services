@@ -152,3 +152,4 @@ Feature: Filter wave 1 cases
       | 12345   | LMS2210_AA1        | 0            | 1    | Y         |           | 072345678 |           | Region 12 |
       | 12345   | LMS2210_AA1        | 0            | 1    | Y         |           |           | 072345678 | Region 12 |
       | 12345   | LMS2210_AA1        | 0            | 1    | Y         |           |           |           | Region 0  |
+      | 12345   | LMS2210_AA1        | 0            | 1    | Y         |           |           |           | Region 13 |
