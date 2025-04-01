@@ -7,7 +7,7 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.9"
-requests = "^2.27.1"
+requests = "2.32"
 blaise-restapi = {git = "https://github.com/ONSdigital/blaise-api-python-client.git", rev = "d374445f9f837b5e34f0c3d540572247ac388190"}
 google-auth = "^2.6.0"
 google-cloud-pubsub = "^2.11.0"
@@ -23,9 +23,11 @@ google-cloud-logging = "^3.1.2"
 dataclasses-json = "^0.5.7"
 dataclass-wizard = "^0.22.1"
 typing-extensions = "^4.12.2"
-setuptools = "^68.0.0"
+setuptools = "70"
 pytest-mock = "^3.14.0"
 behave-html-formatter = "^0.9.10"
+urllib3 = "1.26.19"
+werkzeug = "3.0.6"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
