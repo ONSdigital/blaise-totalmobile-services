@@ -134,13 +134,13 @@ poetry run python -m behave tests/features
 ```
 
 ### Feature test documentation
-Some examples are tagged with @documentation to serve as comprehensive documentation of business rules and edge cases. These tagged examples demonstrate multiple permutations of input data (regions, outcome codes, etc.) that are valuable for documentation but would significantly increase test execution time if run regularly.
+Some examples are tagged with @other_regions to serve as comprehensive documentation of business rules and edge cases. These tagged examples demonstrate multiple permutations of input data (regions, outcome codes, etc.) that are valuable for documentation but would significantly increase test execution time if run regularly.
 
-The Makefile has been updated to exclude @documentation tagged examples during standard test runs. 
+The Makefile has been updated to exclude @other_regions tagged examples during standard test runs. 
 
 To specifically run these documentation examples:
 ```shell
-poetry run python -m behave tests/features --tags "@documentation"
+poetry run python -m behave tests/features --tags "@other_regions"
 ```
 
 To run all tests regardless of tags, run:

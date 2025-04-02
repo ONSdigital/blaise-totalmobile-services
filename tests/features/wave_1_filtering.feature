@@ -30,7 +30,7 @@ Feature: Filter wave 1 cases
       | 54321   | LMS2210_AA1        | LMS2210-AA1.54321 | 0            | 1    | Y         |        |        |           | Region 7  |
       | 54321   | LMS2210_AA1        | LMS2210-AA1.54321 | 0            | 1    | Y         |        |        |           | Region 8  |
 
-    @documentation
+    @other_regions
     Examples: Region 1-12 with outcome code permutations
       | case_id | questionnaire_name | tm_job_ref        | outcome_code | wave | fieldcase | telno1 | telno2 | telNoAppt | region    |
       | 12345   | LMS2210_AA1        | LMS2210-AA1.12345 | 0            | 1    | Y         |        |        |           | Region 1  |
@@ -92,7 +92,7 @@ Feature: Filter wave 1 cases
       | 12345   | LMS2210_AA1        | 0            | 1    | Y         |           | 072345678 |           | Region 1  |
       | 12345   | LMS2210_AA1        | 0            | 1    | Y         |           |           | 072345678 | Region 1  |
 
-    @documentation
+    @other_regions
     Examples: Region 2-12 with all all eligibility criteria permutations, as well as Regions 0 & 13 for admin and testing
       | case_id | questionnaire_name | outcome_code | wave | fieldcase | telno1    | telno2    | telNoAppt | region    |
       | 12345   | LMS2210_AA1        | 0            | 8    | Y         |           |           |           | Region 2  |
