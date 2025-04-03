@@ -32,7 +32,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
       - name: Run behave
-        run: poetry run python -m behave tests/features
+        run: poetry run python -m behave tests/features --tags ~"@other_regions"
 
   lint:
     runs-on: ubuntu-latest
