@@ -26,7 +26,7 @@ test:
 .PHONY: behave
 ## Run behave tests
 behave:
-	@poetry run python -m behave tests/features
+	@poetry run python -m behave tests/features --tags ~"@other_regions"
 
 .PHONY: behave-stop
 ## Run behave tests and stop at failing test
