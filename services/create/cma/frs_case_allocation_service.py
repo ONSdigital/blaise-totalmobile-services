@@ -87,9 +87,7 @@ class FRSCaseAllocationService:
         cma_location = str(case["fieldData"]["cmA_Location"])
 
         if self._reallocation_required(cma_for_whom, cma_in_possession, cma_location):
-            self._reallocate_existing_case_to_new_interviewer(
-                case, totalmobile_request
-            )
+            self._reallocate_existing_case_to_new_interviewer(case, totalmobile_request)
         else:
             self._fail_reallocation(case_id, cma_for_whom)
 
@@ -103,9 +101,7 @@ class FRSCaseAllocationService:
     @staticmethod
     def _reallocation_required(cma_for_whom, cma_in_possession, cma_location):
         return (
-                cma_for_whom == ""
-                and cma_in_possession == ""
-                and cma_location == "SERVER"
+            cma_for_whom == "" and cma_in_possession == "" and cma_location == "SERVER"
         )
 
     def unallocate_case(
@@ -115,7 +111,9 @@ class FRSCaseAllocationService:
         try:
             questionnaire = self._get_questionnaire(totalmobile_unallocation_request)
         except:
-            self._handle_questionnaire_not_found_in_blaise(totalmobile_unallocation_request)
+            self._handle_questionnaire_not_found_in_blaise(
+                totalmobile_unallocation_request
+            )
 
         old_case = self._cma_blaise_service.case_exists(
             questionnaire["id"], totalmobile_unallocation_request.case_id
