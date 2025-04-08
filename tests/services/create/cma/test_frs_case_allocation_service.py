@@ -240,7 +240,7 @@ class TestFRSCaseAllocationService:
         # act
         with caplog.at_level(logging.ERROR) and pytest.raises(
             QuestionnaireDoesNotExistError
-        ) as exceptionInfo:
+        ):
             service.unallocate_case(totalmobile_unallocate_request)
 
         # assert
