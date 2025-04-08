@@ -13,7 +13,7 @@ class FRSCaseModel:
         case_id: str,
         custom_use: str,
         location: str,
-        inPosession: str,
+        in_posession: str,
         prem1: str,
         prem2: str,
         town: str,
@@ -25,7 +25,7 @@ class FRSCaseModel:
         self.case_id = case_id
         self.custom_use = custom_use
         self.location = location
-        self.inPossession = inPosession
+        self.inPossession = in_posession
         self.prem1 = prem1
         self.prem2 = prem2
         self.town = town

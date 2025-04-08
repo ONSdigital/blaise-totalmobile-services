@@ -9,7 +9,7 @@ def test_format_data_fields_returns_a_correctly_formatted_data_fields_for_frs_ca
     case_id = "100100"
     custom_use = ""
     location = ""
-    inPosession = ""
+    in_posession = ""
     prem1 = "prem1"
     prem2 = "prem2"
     town = "town"
@@ -22,7 +22,7 @@ def test_format_data_fields_returns_a_correctly_formatted_data_fields_for_frs_ca
         case_id,
         custom_use,
         location,
-        inPosession,
+        in_posession,
         prem1,
         prem2,
         town,
