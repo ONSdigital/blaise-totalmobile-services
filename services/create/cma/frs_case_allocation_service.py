@@ -38,101 +38,115 @@ class FRSCaseAllocationService:
         )
 
         match = pattern.search(contact_data_string)
-        if match:
-            return match.groupdict()
-        else:
+        if not match:
             return {}
+        return match.groupdict()
 
     def create_case(
         self, totalmobile_request: TotalMobileIncomingFRSRequestModel
     ) -> None:
-
         try:
-            questionnaire = self._cma_blaise_service.questionnaire_exists(
-                totalmobile_request.questionnaire_name
-            )
-            logging.info(
-                f"Successfully found questionnaire {totalmobile_request.questionnaire_name} in Blaise"
-            )
+            questionnaire = self._get_questionnaire(totalmobile_request)
         except:
-            logging.error(
-                f"Could not find Questionnaire {totalmobile_request.questionnaire_name} in Blaise"
-            )
-            raise QuestionnaireDoesNotExistError()
+            self._handle_questionnaire_not_found_in_blaise(totalmobile_request)
 
         case = self._cma_blaise_service.case_exists(
             questionnaire["id"], totalmobile_request.case_id
         )
 
         if case and isinstance(case, Dict):
-            logging.info(
-                f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
-                f"already exists in CMA Launcher database"
+            self._handle_existing_case(case, totalmobile_request)
+        else:
+            self._handle_new_case(questionnaire, totalmobile_request)
+
+    def _get_questionnaire(self, totalmobile_request):
+        questionnaire = self._cma_blaise_service.questionnaire_exists(
+            totalmobile_request.questionnaire_name
+        )
+        logging.info(
+            f"Successfully found questionnaire {totalmobile_request.questionnaire_name} in Blaise"
+        )
+        return questionnaire
+
+    def _handle_new_case(self, questionnaire, totalmobile_request):
+        self._create_new_frs_case(totalmobile_request, questionnaire["id"])
+        logging.info(
+            f"Case {totalmobile_request.case_id} for Questionnaire {totalmobile_request.questionnaire_name} "
+            f"has been created in CMA Launcher database and allocated to {totalmobile_request.interviewer_name}, "
+            f"with Blaise Logins = {totalmobile_request.interviewer_blaise_login})"
+        )
+
+    def _handle_existing_case(self, case, totalmobile_request):
+        logging.info(
+            f"Case {totalmobile_request.case_id} for questionnaire {totalmobile_request.questionnaire_name} "
+            f"already exists in CMA Launcher database"
+        )
+        case_id = str(case["fieldData"]["id"])
+        cma_for_whom = str(case["fieldData"]["cmA_ForWhom"])
+        cma_in_possession = str(case["fieldData"]["cmA_InPossession"])
+        cma_location = str(case["fieldData"]["cmA_Location"])
+
+        if self._reallocation_required(cma_for_whom, cma_in_possession, cma_location):
+            self._reallocate_existing_case_to_new_interviewer(
+                case, totalmobile_request
             )
+        else:
+            self._fail_reallocation(case_id, cma_for_whom)
 
-            case_id = str(case["fieldData"]["id"])
-            cma_for_whom = str(case["fieldData"]["cmA_ForWhom"])
-            cma_in_possession = str(case["fieldData"]["cmA_InPossession"])
-            cma_location = str(case["fieldData"]["cmA_Location"])
+    @staticmethod
+    def _fail_reallocation(case_id, cma_for_whom):
+        logging.error(
+            f"Reallocation Scenario Found. Case with case_id {case_id} is already in Possession of {cma_for_whom}! Reallocation Failed."
+        )
+        raise CaseReAllocationException()
 
-            # Scenario 1: Assumption: Special Instructions entry exists as a result of Unallocation
-            if (
+    @staticmethod
+    def _reallocation_required(cma_for_whom, cma_in_possession, cma_location):
+        return (
                 cma_for_whom == ""
                 and cma_in_possession == ""
                 and cma_location == "SERVER"
-            ):
-                self._reallocate_existing_case_to_new_interviewer(
-                    case, totalmobile_request
-                )
-            # Scenario 2: Fail the allocation because Special Instructions entry does not exist as suggested by cmA_ForWhom, cma_InPossession and cma_Location
-            else:
-                logging.error(
-                    f"Reallocation Scenario Found. Case with case_id {case_id} is already in Possession of {cma_for_whom}! Reallocation Failed."
-                )
-                raise CaseReAllocationException()
-
-        else:
-            self._create_new_frs_case(totalmobile_request, questionnaire["id"])
-            logging.info(
-                f"Case {totalmobile_request.case_id} for Questionnaire {totalmobile_request.questionnaire_name} "
-                f"has been created in CMA Launcher database and allocated to {totalmobile_request.interviewer_name}, "
-                f"with Blaise Logins = {totalmobile_request.interviewer_blaise_login})"
-            )
+        )
 
     def unallocate_case(
         self,
         totalmobile_unallocation_request: TotalMobileIncomingFRSUnallocationRequestModel,
     ) -> None:
-
         try:
-            questionnaire = self._cma_blaise_service.questionnaire_exists(
-                totalmobile_unallocation_request.questionnaire_name
-            )
-            logging.info(
-                f"Successfully found questionnaire {totalmobile_unallocation_request.questionnaire_name} in Blaise"
-            )
+            questionnaire = self._get_questionnaire(totalmobile_unallocation_request)
         except:
-            logging.error(
-                f"Could not find Questionnaire {totalmobile_unallocation_request.questionnaire_name} in Blaise"
-            )
-            raise QuestionnaireDoesNotExistError()
+            self._handle_questionnaire_not_found_in_blaise(totalmobile_unallocation_request)
 
         old_case = self._cma_blaise_service.case_exists(
             questionnaire["id"], totalmobile_unallocation_request.case_id
         )
 
         if old_case:
-            self.create_new_entry_for_special_instructions(
-                old_case, totalmobile_unallocation_request.questionnaire_name
-            )
-            self._reset_existing_case_to_defaults(old_case)
+            self._handle_reallocation(old_case, totalmobile_unallocation_request)
         else:
-            logging.info(
-                f"Case {totalmobile_unallocation_request.case_id} within Questionnaire "
-                f"{totalmobile_unallocation_request.questionnaire_name} does not exist in CMA_Launcher. "
-                f"Unallocation failed."
-            )
-            raise CaseNotFoundException()
+            self._handle_case_not_found_in_cma(totalmobile_unallocation_request)
+
+    @staticmethod
+    def _handle_questionnaire_not_found_in_blaise(totalmobile_unallocation_request):
+        logging.error(
+            f"Could not find Questionnaire {totalmobile_unallocation_request.questionnaire_name} in Blaise"
+        )
+        raise QuestionnaireDoesNotExistError()
+
+    @staticmethod
+    def _handle_case_not_found_in_cma(totalmobile_unallocation_request):
+        logging.info(
+            f"Case {totalmobile_unallocation_request.case_id} within Questionnaire "
+            f"{totalmobile_unallocation_request.questionnaire_name} does not exist in CMA_Launcher. "
+            f"Unallocation failed."
+        )
+        raise CaseNotFoundException()
+
+    def _handle_reallocation(self, old_case, totalmobile_unallocation_request):
+        self.create_new_entry_for_special_instructions(
+            old_case, totalmobile_unallocation_request.questionnaire_name
+        )
+        self._reset_existing_case_to_defaults(old_case)
 
     def _create_new_frs_case(
         self,
