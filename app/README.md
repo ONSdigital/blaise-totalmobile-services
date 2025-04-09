@@ -1,3 +1,5 @@
+# Blaise Totalmobile Services - Flask App
+
 Totalmobile provide a "dynamic HTTP adapter", essentially this allows us to setup predefined endpoints for receiving data updates from Totalmobile. We can then use these data updates to update the Blaise data. The endpoints have basic authenication, the username and password (hashed) are set as environment variables. The dynamic HTTP adapter can be configured from the Totalmobile UI.
 
 ## Endpoints 
@@ -47,57 +49,18 @@ Before starting, make sure you have:
 
 ---
 
-## Setup
+## App Local Setup
 
-1. **Set your GCP project**  
-   Use the following command to set your GCP project to the relevant sandbox.  
-   Example: `ons-blaise-v2-dev-sandbox123`
+After following the Local Setup instructions in the [README](../README.md), continue the following to run the app locally.
 
-2. **Open a tunnel to the Blaise REST API**  
-   Start an IAP tunnel to the REST API on your GCP project.  
-   Use port 90 and ensure the zone is set to `europe-west2-a`.
-
-3. Create an .env file in the root of the project and add the following environment variables:
-
-| Variable | Description | Example                                                                                                |
-| --- | --- |--------------------------------------------------------------------------------------------------------|
-| GCLOUD_PROJECT | The GCP project the application will use. | ons-blaise-v2-dev-sandbox123                                                                           |
-| REGION | The GCP region the application will be deployed to. | europe-west2                                                                                           |
-| BLAISE_API_URL | The RESTful API URL the application will use to get and update questionnaire data. | http://localhost:90                                                                                    |
-| BLAISE_SERVER_PARK | The Blaise Server Park name we will be getting the Blaise data from. | gusty                                                                                                  |
-| CMA_SERVER_PARK | The CMA Server Park name we will be getting the CMA Launcher data from. | cma                                                                                                  |
-| CREATE_TOTALMOBILE_JOBS_TASK_QUEUE_ID | The Cloud Tasks queue ID for creating jobs to Totalmobile. | projects/ons-blaise-v2-dev-sandbox123/locations/europe-west2/queues/totalmobile-jobs                   |
-| TOTALMOBILE_URL | The Totalmobile instance URL. | https://ons-dev.totalmobile-cloud.com                                                                  |
-| TOTALMOBILE_INSTANCE | The Totalmobile instance type. | test                                                                                                   |
-| TOTALMOBILE_CLIENT_ID | The client ID to authenicate with Totalmobile. | test                                                                                                   |
-| TOTALMOBILE_CLIENT_SECRET | The client secret to authenicate with Totalmobile. | test                                                                                                   |
-| TOTALMOBILE_INCOMING_USER | The username for Totalmobile to authenicate with us. | test                                                                                                   |
-| TOTALMOBILE_INCOMING_PASSWORD_HASH | The hashed password for Totalmobile to authenicate with us. | pbkdf2:sha256:260000$Y1Pew7gJMYbRhfNR$9b97ee1d4a735047051c83bff275532d4d1322f1fc186739189b00fa7cc9a51b |
-| CLOUD_FUNCTION_SA | The GCP service account the cloud functions will use. | totalmobile-sa@ons-blaise-v2-dev-sandbox123.iam.gserviceaccount.com                                    |
-
-```
-GCLOUD_PROJECT=ons-blaise-v2-dev-sandbox123
-REGION=europe-west2
-BLAISE_API_URL=http://localhost:90
-BLAISE_SERVER_PARK=gusty
-CMA_SERVER_PARK=cma
-CREATE_TOTALMOBILE_JOBS_TASK_QUEUE_ID=projects/ons-blaise-v2-dev-sandbox123/locations/europe-west2/queues/totalmobile-jobs
-TOTALMOBILE_URL=https://ons-dev.totalmobile-cloud.com
-TOTALMOBILE_INSTANCE=Test
-TOTALMOBILE_CLIENT_ID=blah
-TOTALMOBILE_CLIENT_SECRET=blah
-TOTALMOBILE_INCOMING_USER=blah
-TOTALMOBILE_INCOMING_PASSWORD_HASH=pbkdf2:sha256:260000$Y1Pew7gJMYbRhfNR$9b97ee1d4a735047051c83bff275532d4d1322f1fc186739189b00fa7cc9a51b
-CLOUD_FUNCTION_SA=totalmobile-sa@ons-blaise-v2-dev-sandbox123.iam.gserviceaccount.com
-```
-5. **Enable debug mode locally**  
+1. **Enable debug mode locally**  
    In `main.py`, replace ```app.run_tasks(host="0.0.0.0", port=5011)``` with ```app.run(debug=True, host="0.0.0.0", port=5011)```
-6. **Disable authentication for local testing**  
+2. **Disable authentication for local testing**  
 In `app/endpoints.py`, comment out any `@auth.login_required` lines where necessary.  
 
 > **Note:** Do not commit these changes.
 
-7. **Run the application**  
+3. **Run the application**  
 Run `main.py` and note the address shown next to "Running on".  
 You will use this to send test requests from Postman.
 
@@ -130,6 +93,4 @@ You will use this to send test requests from Postman.
 
 1. Jump on the REST API box in your GCP project.
 2. Open a browser on the instance and navigate to ```http://localhost/swagger``` 
-3. Use the ```GET /api/v2/serverparks/{serverParkName}/questionnaires/{questionnaireName}/cases/ids``` endpoint to fetch a list of valid case IDs for your questionnaire. 
-
-
+3. Use the ```GET /api/v2/serverparks/{serverParkName}/questionnaires/{questionnaireName}/cases/ids``` endpoint to fetch a list of valid case IDs for your questionnaire.
