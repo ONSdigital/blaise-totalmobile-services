@@ -240,7 +240,7 @@ class TestFRSCaseAllocationService:
         # act
         with caplog.at_level(logging.ERROR) and pytest.raises(
             QuestionnaireDoesNotExistError
-        ) as exceptionInfo:
+        ):
             service.unallocate_case(totalmobile_unallocate_request)
 
         # assert
@@ -266,9 +266,10 @@ class TestFRSCaseAllocationService:
         )
         mock_cma_blaise_service.questionnaire_exists.return_value = questionnaire
         mock_cma_blaise_service.case_exists.return_value = False
+        caplog.set_level(logging.INFO)
 
         # act
-        with caplog.at_level(logging.INFO) and pytest.raises(CaseNotFoundException):
+        with pytest.raises(CaseNotFoundException):
             service.unallocate_case(totalmobile_unallocate_request)
 
         # assert
