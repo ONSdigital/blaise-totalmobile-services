@@ -11,8 +11,9 @@ This project contains several services for sending data to and receiving data fr
 - Cloud Function (create_totalmobile_jobs_processor) to receive case details and create these as "jobs" in Totalmobile.
 
 - Cloud Function (delete_totalmobile_jobs_completed_in_blaise) to delete jobs from Totalmobile if the corresponding case has been completed in Blaise.
+  - More details on Cloud Functions can be found in [Cloud Functions README](cloud_functions/README.md).
 
-- Flask application with several endpoints for receiving data updates from Totalmobile. More details can be found in the [app readme](app/README.md).
+- Flask application with several endpoints for receiving data updates from Totalmobile. More details can be found in the [app README](app/README.md).
 
 ## Local Setup
 
@@ -97,29 +98,12 @@ CLOUD_FUNCTION_SA=totalmobile-sa@ons-blaise-v2-dev-sandbox123.iam.gserviceaccoun
 ```
 
 ## Flask App 
-Run the Flask application:
-```shell
-poetry run python main.py
-```
 
-You should now be able to call the Flask application endpoints via localhost:5011. See the [app readme](app/README.md) for more details.
+To continue setting up the Flask App locally, see the [app README](app/README.md) for more details.
 
 ## Cloud Functions
 
-Run the "create_totalmobile_jobs_trigger" Cloud Function:
-```shell
-poetry run python -c "from main import create_totalmobile_jobs_trigger; create_totalmobile_jobs_trigger(None, None)"
-```
-
-Run the "create_totalmobile_jobs_processor" Cloud Function:
-```shell
-poetry run python -c "import flask; from main import create_totalmobile_jobs_processor; create_totalmobile_jobs_processor(flask.Request.from_values(json={'questionnaire': 'DST2101_AA1', 'world_id': '7e4beb99-ed79-4179-ab39-ab6600ebd65e', 'case': {'qiD.Serial_Number': '100100', 'dataModelName': 'DST2101_AA1', 'qDataBag.TLA': 'DST', 'qDataBag.Wave': '1', 'qDataBag.Prem1': 'Ye Olde Fighting Cocks', 'qDataBag.Prem2': '16 Abbey Mill Lane', 'qDataBag.Prem3': '', 'qDataBag.District': '', 'qDataBag.PostTown': 'St Albans', 'qDataBag.PostCode': 'AL3 4HE', 'qDataBag.TelNo': '', 'qDataBag.TelNo2': '', 'telNoAppt': '', 'hOut': '', 'qDataBag.UPRN_Latitude': '51.748930', 'qDataBag.UPRN_Longitude': '-0.346820', 'qDataBag.Priority': '1', 'qDataBag.FieldRegion': '', 'qDataBag.FieldTeam': 'The A Team', 'qDataBag.WaveComDTE': '2020-11-17'}}))"
-```
-
-Run the "delete_totalmobile_jobs_completed_in_blaise" Cloud Function:
-```shell
-poetry run python -c "from main import delete_totalmobile_jobs_completed_in_blaise; delete_totalmobile_jobs_completed_in_blaise(None, None)"
-```
+To continue setting up the Cloud Functions locally, see the [Cloud Functions README](cloud_functions/README.md) for more details.
 
 ## Tests 
 
