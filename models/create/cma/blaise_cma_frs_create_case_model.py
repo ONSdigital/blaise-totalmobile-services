@@ -13,7 +13,7 @@ class FRSCaseModel:
         case_id: str,
         custom_use: str,
         location: str,
-        inPosession: str,
+        in_posession: str,
         prem1: str,
         prem2: str,
         town: str,
@@ -25,7 +25,7 @@ class FRSCaseModel:
         self.case_id = case_id
         self.custom_use = custom_use
         self.location = location
-        self.inPossession = inPosession
+        self.inPossession = in_posession
         self.prem1 = prem1
         self.prem2 = prem2
         self.town = town
@@ -51,7 +51,7 @@ class FRSCaseModel:
             "cmA_CustomUse": f"{self.custom_use}",
             "cmA_Location": f"{self.location}",
             "cmA_InPossession": f"{self.inPossession}",
-            "cmA_ContactData": f"PII.TLA\tFRS\tPII.Month\t{self.get_month_name()}\tPII.Year\t{self.get_year()}\tPII.Prem1\t{self.prem1}\tPII.Prem2\t{self.prem2}\tPII.Town\t{self.town}\tPII.Postcode\t{self.postcode}",
+            "cmA_ContactData": f"PII.TLA\tFRS\tPII.Month\t{self.get_month_name()}\tPII.Year\t{self.get_year()}\tPII.Prem1\t{self.prem1}\tPII.Prem2\t{self.prem2}\tPII.Town\t{self.town}\tPII.Postcode\t{self.postcode}\tCaseNote\t",
         }
 
     def format_key_values(self) -> list[str]:
