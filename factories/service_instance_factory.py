@@ -4,7 +4,7 @@ from client.optimise import OptimiseClient
 from services.blaise_service import RealBlaiseService
 from services.cloud_task_service import CloudTaskService
 from services.cma_blaise_service import CMABlaiseService
-from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
+from services.create.cma.allocate_cma_case_service import AllocateCMACaseService
 from services.create.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 from services.create.datastore_service import DatastoreService
 from services.create.mappers.totalmobile_create_job_mapper_service import (
@@ -165,5 +165,5 @@ class ServiceInstanceFactory:
 
     def create_delete_cma_case_service(self) -> DeleteCMACaseService:
         cma_blaise_service = CMABlaiseService(self._config)
-        frs_case_allocation_service = FRSCaseAllocationService(cma_blaise_service)
-        return DeleteCMACaseService(cma_blaise_service, frs_case_allocation_service)
+        allocate_cma_case_service = AllocateCMACaseService(cma_blaise_service)
+        return DeleteCMACaseService(cma_blaise_service, allocate_cma_case_service)

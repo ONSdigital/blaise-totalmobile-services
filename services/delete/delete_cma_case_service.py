@@ -7,17 +7,17 @@ from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
 from services.cma_blaise_service import CMABlaiseService
-from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
+from services.create.cma.allocate_cma_case_service import AllocateCMACaseService
 
 
 class DeleteCMACaseService:
     def __init__(
         self,
         cma_blaise_service: CMABlaiseService,
-        frs_case_allocation_service: FRSCaseAllocationService,
+        allocate_cma_case_service: AllocateCMACaseService,
     ):
         self.cma_blaise_service = cma_blaise_service
-        self.frs_case_allocation_service = frs_case_allocation_service
+        self.allocate_cma_case_service = allocate_cma_case_service
 
     def remove_case_from_cma(
         self, totalmobile_request: TotalMobileIncomingUpdateRequestModel
@@ -42,7 +42,7 @@ class DeleteCMACaseService:
             f"Case {totalmobile_request.case_id} for questionnaire {questionnaire['name']} with an outcome code of "
             f"{totalmobile_request.outcome_code} will be recalled from CMA."
         )
-        self.frs_case_allocation_service.create_new_entry_for_special_instructions(
+        self.allocate_cma_case_service.create_new_entry_for_special_instructions(
             cma_case, totalmobile_request.questionnaire_name
         )
 

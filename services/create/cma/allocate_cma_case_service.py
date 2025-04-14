@@ -21,7 +21,7 @@ from models.update.cma.totalmobile_incoming_frs_unallocation_request_model impor
 from services.cma_blaise_service import CMABlaiseService
 
 
-class FRSCaseAllocationService:
+class AllocateCMACaseService:
     def __init__(self, cma_blaise_service: CMABlaiseService):
         self._cma_blaise_service = cma_blaise_service
 

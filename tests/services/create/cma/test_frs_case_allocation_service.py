@@ -16,22 +16,22 @@ from models.create.cma.totalmobile_incoming_frs_request_model import (
 from models.update.cma.totalmobile_incoming_frs_unallocation_request_model import (
     TotalMobileIncomingFRSUnallocationRequestModel,
 )
-from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
+from services.create.cma.allocate_cma_case_service import AllocateCMACaseService
 
 
-class TestFRSCaseAllocationService:
+class TestAllocateCMACaseService:
     @pytest.fixture()
     def mock_cma_blaise_service(self):
         return Mock()
 
     @pytest.fixture()
-    def service(self, mock_cma_blaise_service) -> FRSCaseAllocationService:
-        return FRSCaseAllocationService(cma_blaise_service=mock_cma_blaise_service)
+    def service(self, mock_cma_blaise_service) -> AllocateCMACaseService:
+        return AllocateCMACaseService(cma_blaise_service=mock_cma_blaise_service)
 
     def test_create_case_creates_new_case_if_case_doesnot_exist_and_returns_successfully_with_right_parameters(
         self,
         mock_cma_blaise_service,
-        service: FRSCaseAllocationService,
+        service: AllocateCMACaseService,
         caplog,
         mock_frs_questionnaire_from_blaise,
     ):
@@ -64,7 +64,7 @@ class TestFRSCaseAllocationService:
         ) in caplog.record_tuples
 
     def test_create_case_raises_questionnaire_doesnot_exist_exception_if_questionnaire_doesnot_exist(
-        self, mock_cma_blaise_service, service: FRSCaseAllocationService, caplog
+        self, mock_cma_blaise_service, service: AllocateCMACaseService, caplog
     ):
         # arrange
         totalmobile_request = TotalMobileIncomingFRSRequestModel(
@@ -97,7 +97,7 @@ class TestFRSCaseAllocationService:
     def test_create_case_raises_case_allocation_exception_if_rest_api_fails_creating_new_case(
         self,
         mock_cma_blaise_service,
-        service: FRSCaseAllocationService,
+        service: AllocateCMACaseService,
         caplog,
         mock_frs_questionnaire_from_blaise,
     ):
@@ -126,7 +126,7 @@ class TestFRSCaseAllocationService:
         mock_cma_blaise_service,
         mock_frs_questionnaire_from_blaise,
         mock_frs_allocated_case_from_cma_launcher,
-        service: FRSCaseAllocationService,
+        service: AllocateCMACaseService,
         caplog,
     ):
         # arrange
@@ -166,7 +166,7 @@ class TestFRSCaseAllocationService:
         mock_cma_blaise_service,
         mock_frs_questionnaire_from_blaise,
         mock_frs_unallocated_case_reset_to_defaults_from_cma_launcher,
-        service: FRSCaseAllocationService,
+        service: AllocateCMACaseService,
         caplog,
     ):
         # arrange
@@ -201,7 +201,7 @@ class TestFRSCaseAllocationService:
         mock_cma_blaise_service,
         mock_frs_questionnaire_from_blaise,
         mock_frs_allocated_case_from_cma_launcher,
-        service: FRSCaseAllocationService,
+        service: AllocateCMACaseService,
         caplog,
     ):
         # arrange
@@ -227,7 +227,7 @@ class TestFRSCaseAllocationService:
         ) in caplog.record_tuples
 
     def test_unallocate_case_raises_questionnaire_doesnot_exist_exception_if_questionnaire_doesnot_exist(
-        self, mock_cma_blaise_service, service: FRSCaseAllocationService, caplog
+        self, mock_cma_blaise_service, service: AllocateCMACaseService, caplog
     ):
         # arrange
         totalmobile_unallocate_request = TotalMobileIncomingFRSUnallocationRequestModel(
@@ -254,7 +254,7 @@ class TestFRSCaseAllocationService:
         self,
         mock_cma_blaise_service,
         mock_frs_questionnaire_from_blaise,
-        service: FRSCaseAllocationService,
+        service: AllocateCMACaseService,
         caplog,
     ):
         # arrange
@@ -286,7 +286,7 @@ class TestFRSCaseAllocationService:
         mock_cma_blaise_service,
         mock_frs_questionnaire_from_blaise,
         mock_frs_allocated_case_from_cma_launcher,
-        service: FRSCaseAllocationService,
+        service: AllocateCMACaseService,
         caplog,
     ):
         # arrange

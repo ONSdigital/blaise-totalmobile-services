@@ -9,7 +9,7 @@ from app.exceptions.custom_exceptions import (
     CaseResetFailedException,
     QuestionnaireDoesNotExistError,
 )
-from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
+from services.create.cma.allocate_cma_case_service import AllocateCMACaseService
 
 
 def assert_security_headers_are_present(response):
@@ -282,7 +282,7 @@ def test_force_recall_visit_request_returns_404_if_questionnaire_is_not_found(
 @mock.patch.object(blaise_restapi.Client, "get_multikey_case")
 @mock.patch.object(blaise_restapi.Client, "patch_multikey_case_data")
 @mock.patch.object(
-    FRSCaseAllocationService, "create_new_entry_for_special_instructions"
+    AllocateCMACaseService, "create_new_entry_for_special_instructions"
 )
 def test_force_recall_visit_request_returns_500_if_resetting_existing_case_to_defaults_fail(
     mock_rest_api_update_case,
