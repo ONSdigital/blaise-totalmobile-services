@@ -55,7 +55,8 @@ def force_recall_visit_request_handler(request, current_app):
         TotalMobileIncomingFRSUnallocationRequestModel.import_request(data)
     )
     allocate_cma_case_service = AllocateCMACaseService(
-        cma_blaise_service=current_app.cma_blaise_service
+        cma_blaise_service=current_app.cma_blaise_service,
+        case_instruction_service=current_app.case_instruction_service,
     )
     allocate_cma_case_service.unallocate_case(totalmobile_unallocation_frs_case)
     return
