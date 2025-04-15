@@ -13,14 +13,14 @@ def mock_cma_blaise_service():
 
 
 @pytest.fixture()
-def mock_frs_case_allocation_service():
+def mock_case_instruction_service():
     return MagicMock()
 
 
 @pytest.fixture()
-def delete_service(mock_cma_blaise_service, mock_frs_case_allocation_service):
+def delete_service(mock_cma_blaise_service, mock_case_instruction_service):
     return DeleteCMACaseService(
-        mock_cma_blaise_service, mock_frs_case_allocation_service
+        mock_cma_blaise_service, mock_case_instruction_service
     )
 
 
@@ -129,7 +129,7 @@ def questionnaire_object():
 
 
 def test_remove_case_from_cma_does_not_remove_case_from_cma_when_outcome_code_is_not_in_remove_from_cma_set_and_logs_information(
-    delete_service, totalmobile_request, mock_frs_case_allocation_service, caplog
+    delete_service, totalmobile_request, mock_case_instruction_service, caplog
 ):
     # arrange
     totalmobile_request.outcome_code = 310
@@ -142,7 +142,7 @@ def test_remove_case_from_cma_does_not_remove_case_from_cma_when_outcome_code_is
     assert (
         "Totalmobile case has an outcome code of 310 and should not to be removed from CMA."
     ) in caplog.messages
-    mock_frs_case_allocation_service.create_new_entry_for_special_instructions.assert_not_called()
+    mock_case_instruction_service.create_new_entry_for_special_instructions.assert_not_called()
 
 
 def test_remove_case_from_cma_raises_value_error_when_questionnaire_does_not_exist_in_cma(
@@ -176,7 +176,7 @@ def test_remove_case_from_cma_raises_value_error_when_case_does_not_exist_in_cma
 def test_remove_case_from_cma_calls_create_new_entry_for_special_instructions_when_outcome_code_is_in_remove_from_cma_set(
     delete_service,
     totalmobile_request,
-    mock_frs_case_allocation_service,
+    mock_case_instruction_service,
     mock_cma_blaise_service,
     cma_case,
     questionnaire_object,
@@ -189,7 +189,7 @@ def test_remove_case_from_cma_calls_create_new_entry_for_special_instructions_wh
     delete_service.remove_case_from_cma(totalmobile_request)
 
     # assert
-    mock_frs_case_allocation_service.create_new_entry_for_special_instructions.assert_called_once_with(
+    mock_case_instruction_service.create_new_entry_for_special_instructions.assert_called_once_with(
         cma_case, totalmobile_request.questionnaire_name
     )
 

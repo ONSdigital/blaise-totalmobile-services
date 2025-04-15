@@ -19,11 +19,22 @@ from models.update.cma.totalmobile_incoming_frs_unallocation_request_model impor
     TotalMobileIncomingFRSUnallocationRequestModel,
 )
 from services.cma_blaise_service import CMABlaiseService
+from services.case_instruction_service import CaseInstructionService
 
 
 class AllocateCMACaseService:
-    def __init__(self, cma_blaise_service: CMABlaiseService):
-        self._cma_blaise_service = cma_blaise_service
+
+    cma_blaise_service: CMABlaiseService
+    case_instruction_service: CaseInstructionService
+
+    def __init__(
+        self, 
+        cma_blaise_service: CMABlaiseService,
+        case_instruction_service: CaseInstructionService
+    ):
+        self.cma_blaise_service = cma_blaise_service
+        self.case_instruction_service = case_instruction_service
+
 
     @staticmethod
     def parse_contact_data_pii_values(contact_data_string: str) -> dict:
@@ -47,10 +58,11 @@ class AllocateCMACaseService:
     ) -> None:
         try:
             questionnaire = self._get_questionnaire(totalmobile_request)
-        except:
+        except Exception as e:
+            print(str(e))
             self._handle_questionnaire_not_found_in_blaise(totalmobile_request)
 
-        case = self._cma_blaise_service.case_exists(
+        case = self.cma_blaise_service.case_exists(
             questionnaire["id"], totalmobile_request.case_id
         )
 
@@ -60,9 +72,7 @@ class AllocateCMACaseService:
             self._handle_new_case(questionnaire, totalmobile_request)
 
     def _get_questionnaire(self, totalmobile_request):
-        questionnaire = self._cma_blaise_service.questionnaire_exists(
-            totalmobile_request.questionnaire_name
-        )
+        questionnaire = self.cma_blaise_service.questionnaire_exists(totalmobile_request.questionnaire_name)
         logging.info(
             f"Successfully found questionnaire {totalmobile_request.questionnaire_name} in Blaise"
         )
@@ -115,7 +125,7 @@ class AllocateCMACaseService:
                 totalmobile_unallocation_request
             )
 
-        old_case = self._cma_blaise_service.case_exists(
+        old_case = self.cma_blaise_service.case_exists(
             questionnaire["id"], totalmobile_unallocation_request.case_id
         )
 
@@ -141,7 +151,7 @@ class AllocateCMACaseService:
         raise CaseNotFoundException()
 
     def _handle_reallocation(self, old_case, totalmobile_unallocation_request):
-        self.create_new_entry_for_special_instructions(
+        self.case_instruction_service.create_new_entry_for_special_instructions(
             old_case, totalmobile_unallocation_request.questionnaire_name
         )
         self._reset_existing_case_to_defaults(old_case)
@@ -165,44 +175,10 @@ class AllocateCMACaseService:
             postcode=frs_case_from_totalmobile_request.postcode,
         )
         try:
-            self._cma_blaise_service.create_frs_case(frs_case)
+            self.cma_blaise_service.create_frs_case(frs_case)
         except:
             raise CaseAllocationException
 
-    def create_new_entry_for_special_instructions(
-        self, case, questionnaire_name: str
-    ) -> None:
-
-        guid = case["fieldData"]["mainSurveyID"]
-        questionnaire_name = questionnaire_name
-        unique_case_id = case["fieldData"]["id"]
-        prev_interviewer = case["fieldData"]["cmA_ForWhom"]
-        current_timestamp = datetime.now()
-        formatted_date_time = current_timestamp.strftime("%Y-%m-%d %H:%M:%S")
-
-        frs_case = FRSCaseModel(
-            user=prev_interviewer,
-            questionnaire_name=questionnaire_name,
-            guid="00000000-0000-0000-0000-000000000000",
-            case_id=f"{questionnaire_name}-{unique_case_id}-{prev_interviewer}-{formatted_date_time}",
-            custom_use=f"{guid};{unique_case_id};",
-            location="RELEASE_SOME",
-            in_posession="",
-            prem1="",
-            prem2="",
-            town="",
-            postcode="",
-        )
-        try:
-            self._cma_blaise_service.create_frs_case(frs_case)
-            logging.info(
-                f"Special Instructions entry created for Case {unique_case_id} for Questionnaire {questionnaire_name}"
-            )
-        except:
-            logging.error(
-                f"Special Instructions entry creation for Case {unique_case_id} for Questionnaire {questionnaire_name} failed"
-            )
-            raise SpecialInstructionCreationFailedException()
 
     def _reallocate_existing_case_to_new_interviewer(
         self,
@@ -227,7 +203,7 @@ class AllocateCMACaseService:
             postcode=new_totalmobile_allocation_request.postcode,
         )
         try:
-            self._cma_blaise_service.update_frs_case(frs_case)
+            self.cma_blaise_service.update_frs_case(frs_case)
             logging.info(
                 f"Successfull reallocation of Case {frs_case.case_id} to User: '{frs_case.user}' in Questionnaire {frs_case.questionnaire_name}"
             )
@@ -255,7 +231,7 @@ class AllocateCMACaseService:
             postcode=contact_data.get("Postcode"),
         )
         try:
-            self._cma_blaise_service.update_frs_case(frs_case)
+            self.cma_blaise_service.update_frs_case(frs_case)
             logging.info(
                 f"Reset successful for Case: {case_id} within Questionnaire {questionnaire_name} in CMA_Launcher"
             )

@@ -3,12 +3,12 @@ import logging
 from datetime import datetime
 from services.cma_blaise_service import CMABlaiseService
 from app.exceptions.custom_exceptions import SpecialInstructionCreationFailedException
-from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel # TODO: BL - Should be generic?
+from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel # TODO: BL - Should this be generic?
 
 
 class CaseInstructionService:
     def __init__(self, cma_blaise_service: CMABlaiseService):
-        self._cma_blaise_service = cma_blaise_service
+        self.cma_blaise_service = cma_blaise_service
 
     def create_new_entry_for_special_instructions(self, case, questionnaire_name: str) -> None:
 
@@ -33,7 +33,7 @@ class CaseInstructionService:
             postcode="",
         )
         try:
-            self._cma_blaise_service.create_frs_case(frs_case)
+            self.cma_blaise_service.create_frs_case(frs_case)
             logging.info(
                 f"Special Instructions entry created for Case {unique_case_id} for Questionnaire {questionnaire_name}"
             )

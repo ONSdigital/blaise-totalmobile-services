@@ -1,6 +1,7 @@
 from appconfig import Config
 from client.messaging import MessagingClient
 from client.optimise import OptimiseClient
+from services.case_instruction_service import CaseInstructionService
 from services.blaise_service import RealBlaiseService
 from services.cloud_task_service import CloudTaskService
 from services.cma_blaise_service import CMABlaiseService
@@ -165,5 +166,5 @@ class ServiceInstanceFactory:
 
     def create_delete_cma_case_service(self) -> DeleteCMACaseService:
         cma_blaise_service = CMABlaiseService(self._config)
-        allocate_cma_case_service = AllocateCMACaseService(cma_blaise_service)
-        return DeleteCMACaseService(cma_blaise_service, allocate_cma_case_service)
+        case_instruction_service = CaseInstructionService(cma_blaise_service)
+        return DeleteCMACaseService(cma_blaise_service, case_instruction_service)
