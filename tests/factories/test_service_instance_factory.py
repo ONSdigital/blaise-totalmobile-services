@@ -45,6 +45,7 @@ from services.update.frs_update_case_service import FRSUpdateCaseService
 from services.update.lms_update_case_service import LMSUpdateCaseService
 from tests.fakes.fake_blaise_service import FakeBlaiseService
 from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
+from services.case_instruction_service import CaseInstructionService
 
 
 @pytest.fixture
@@ -488,4 +489,11 @@ def test_create_delete_cma_case_service_returns_delete_cma_case_service(
 ):
     assert isinstance(
         service_instance_factory.create_delete_cma_case_service(), DeleteCMACaseService
+    )
+
+def test_create_case_instruction_service_returns_case_instruction_service(
+    service_instance_factory,
+):
+    assert isinstance(
+        service_instance_factory.create_delete_cma_case_service().case_instruction_service, CaseInstructionService
     )
