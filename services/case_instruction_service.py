@@ -1,16 +1,20 @@
 import logging
-
 from datetime import datetime
-from services.cma_blaise_service import CMABlaiseService
+
 from app.exceptions.custom_exceptions import SpecialInstructionCreationFailedException
-from models.create.cma.blaise_cma_frs_create_case_model import FRSCaseModel # TODO: BL - Should this be generic?
+from models.create.cma.blaise_cma_frs_create_case_model import (  # TODO: BL - Should this be generic?
+    FRSCaseModel,
+)
+from services.cma_blaise_service import CMABlaiseService
 
 
 class CaseInstructionService:
     def __init__(self, cma_blaise_service: CMABlaiseService):
         self.cma_blaise_service = cma_blaise_service
 
-    def create_new_entry_for_special_instructions(self, case, questionnaire_name: str) -> None:
+    def create_new_entry_for_special_instructions(
+        self, case, questionnaire_name: str
+    ) -> None:
 
         guid = case["fieldData"]["mainSurveyID"]
         questionnaire_name = questionnaire_name

@@ -19,9 +19,7 @@ def mock_case_instruction_service():
 
 @pytest.fixture()
 def delete_service(mock_cma_blaise_service, mock_case_instruction_service):
-    return DeleteCMACaseService(
-        mock_cma_blaise_service, mock_case_instruction_service
-    )
+    return DeleteCMACaseService(mock_cma_blaise_service, mock_case_instruction_service)
 
 
 @pytest.fixture()

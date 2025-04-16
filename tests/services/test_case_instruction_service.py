@@ -4,11 +4,9 @@ from unittest.mock import MagicMock
 import pytest
 from requests import JSONDecodeError
 
-from services.delete.delete_cma_case_service import DeleteCMACaseService
-from services.case_instruction_service import CaseInstructionService
-
-
 from app.exceptions.custom_exceptions import SpecialInstructionCreationFailedException
+from services.case_instruction_service import CaseInstructionService
+from services.delete.delete_cma_case_service import DeleteCMACaseService
 
 
 @pytest.fixture()
@@ -18,9 +16,7 @@ def mock_cma_blaise_service():
 
 @pytest.fixture()
 def case_instruction_service(mock_cma_blaise_service):
-    return CaseInstructionService(
-        mock_cma_blaise_service
-    )
+    return CaseInstructionService(mock_cma_blaise_service)
 
 
 @pytest.fixture()
@@ -30,9 +26,7 @@ def mock_case_instruction_service():
 
 @pytest.fixture()
 def delete_service(mock_cma_blaise_service, mock_case_instruction_service):
-    return DeleteCMACaseService(
-        mock_cma_blaise_service, mock_case_instruction_service
-    )
+    return DeleteCMACaseService(mock_cma_blaise_service, mock_case_instruction_service)
 
 
 @pytest.fixture()
@@ -182,7 +176,7 @@ def test_create_new_entry_for_special_instructions_is_run_successfully(
     mock_cma_blaise_service,
     cma_case,
     questionnaire_object,
-    caplog
+    caplog,
 ):
     # arrange
     mock_cma_blaise_service.questionnaire_exists.return_value = questionnaire_object
@@ -192,7 +186,9 @@ def test_create_new_entry_for_special_instructions_is_run_successfully(
 
     # act
     with caplog.at_level(logging.INFO):
-        case_instruction_service.create_new_entry_for_special_instructions(cma_case, questionnaire_name)
+        case_instruction_service.create_new_entry_for_special_instructions(
+            cma_case, questionnaire_name
+        )
 
     # assert
     mock_cma_blaise_service.create_frs_case.assert_called_once()
@@ -200,12 +196,13 @@ def test_create_new_entry_for_special_instructions_is_run_successfully(
         f"Special Instructions entry created for Case {unique_case_id} for Questionnaire {questionnaire_name}"
     ) in caplog.messages
 
+
 def test_create_new_entry_for_special_instructions_throws_exception(
     case_instruction_service,
     mock_cma_blaise_service,
     cma_case,
     questionnaire_object,
-    caplog
+    caplog,
 ):
     # arrange
     mock_cma_blaise_service.questionnaire_exists.return_value = questionnaire_object
@@ -216,7 +213,9 @@ def test_create_new_entry_for_special_instructions_throws_exception(
 
     # act
     with pytest.raises(SpecialInstructionCreationFailedException):
-        case_instruction_service.create_new_entry_for_special_instructions(cma_case, questionnaire_name)
+        case_instruction_service.create_new_entry_for_special_instructions(
+            cma_case, questionnaire_name
+        )
 
     # assert
     mock_cma_blaise_service.create_frs_case.assert_called_once()

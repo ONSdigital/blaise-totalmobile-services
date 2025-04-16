@@ -1,38 +1,51 @@
 import logging
+from unittest.mock import Mock
+
 import pytest
 
-from unittest.mock import Mock
-from models.create.cma.totalmobile_incoming_frs_request_model import TotalMobileIncomingFRSRequestModel
-from models.update.cma.totalmobile_incoming_frs_unallocation_request_model import TotalMobileIncomingFRSUnallocationRequestModel
-from services.create.cma.allocate_cma_case_service import AllocateCMACaseService
 from app.exceptions.custom_exceptions import (
     CaseAllocationException,
     CaseNotFoundException,
     CaseReAllocationException,
     CaseResetFailedException,
-    QuestionnaireDoesNotExistError)
-from services.cma_blaise_service import CMABlaiseService
+    QuestionnaireDoesNotExistError,
+)
+from models.create.cma.totalmobile_incoming_frs_request_model import (
+    TotalMobileIncomingFRSRequestModel,
+)
+from models.update.cma.totalmobile_incoming_frs_unallocation_request_model import (
+    TotalMobileIncomingFRSUnallocationRequestModel,
+)
 from services.case_instruction_service import CaseInstructionService
+from services.cma_blaise_service import CMABlaiseService
+from services.create.cma.allocate_cma_case_service import AllocateCMACaseService
 
 
 @pytest.fixture()
 def mock_cma_blaise_service() -> CMABlaiseService:
     return Mock()
 
+
 @pytest.fixture()
 def mock_case_instruction_service() -> CaseInstructionService:
     return Mock()
 
+
 @pytest.fixture()
-def allocate_service(mock_cma_blaise_service, mock_case_instruction_service) -> AllocateCMACaseService:
-    service = AllocateCMACaseService(cma_blaise_service=mock_cma_blaise_service, case_instruction_service=mock_case_instruction_service)
+def allocate_service(
+    mock_cma_blaise_service, mock_case_instruction_service
+) -> AllocateCMACaseService:
+    service = AllocateCMACaseService(
+        cma_blaise_service=mock_cma_blaise_service,
+        case_instruction_service=mock_case_instruction_service,
+    )
     return service
 
 
 def test_create_case_creates_new_case_if_case_doesnot_exist_and_returns_successfully_with_right_parameters(
-    allocate_service: AllocateCMACaseService, 
+    allocate_service: AllocateCMACaseService,
     mock_cma_blaise_service,
-    caplog, 
+    caplog,
     mock_frs_questionnaire_from_blaise,
 ):
     # arrange
@@ -62,6 +75,7 @@ def test_create_case_creates_new_case_if_case_doesnot_exist_and_returns_successf
         f"has been created in CMA Launcher database and allocated to {totalmobile_request.interviewer_name}, "
         f"with Blaise Logins = {totalmobile_request.interviewer_blaise_login})",
     ) in caplog.record_tuples
+
 
 def test_create_case_raises_questionnaire_doesnot_exist_exception_if_questionnaire_doesnot_exist(
     allocate_service, mock_cma_blaise_service, caplog
@@ -94,8 +108,11 @@ def test_create_case_raises_questionnaire_doesnot_exist_exception_if_questionnai
         f"Could not find Questionnaire FRS2405A in Blaise",
     ) in caplog.record_tuples
 
+
 def test_create_case_raises_case_allocation_exception_if_rest_api_fails_creating_new_case(
-    allocate_service, mock_cma_blaise_service, mock_frs_questionnaire_from_blaise,
+    allocate_service,
+    mock_cma_blaise_service,
+    mock_frs_questionnaire_from_blaise,
 ):
     # arrange
     questionnaire = mock_frs_questionnaire_from_blaise
@@ -117,8 +134,13 @@ def test_create_case_raises_case_allocation_exception_if_rest_api_fails_creating
     with pytest.raises(CaseAllocationException):
         allocate_service.create_case(totalmobile_request)
 
+
 def test_create_case_fails_if_case_exists_and_already_allocated_to_some_interviewer(
-    allocate_service, mock_cma_blaise_service, mock_frs_questionnaire_from_blaise, mock_frs_allocated_case_from_cma_launcher, caplog,
+    allocate_service,
+    mock_cma_blaise_service,
+    mock_frs_questionnaire_from_blaise,
+    mock_frs_allocated_case_from_cma_launcher,
+    caplog,
 ):
     # arrange
     case = mock_frs_allocated_case_from_cma_launcher
@@ -140,9 +162,7 @@ def test_create_case_fails_if_case_exists_and_already_allocated_to_some_intervie
     cmA_ForWhom = str(case["fieldData"]["cmA_ForWhom"])
 
     # act
-    with caplog.at_level(logging.ERROR) and pytest.raises(
-        CaseReAllocationException
-    ):
+    with caplog.at_level(logging.ERROR) and pytest.raises(CaseReAllocationException):
         allocate_service.create_case(totalmobile_request)
 
     # assert
@@ -152,8 +172,13 @@ def test_create_case_fails_if_case_exists_and_already_allocated_to_some_intervie
         f"Reallocation Scenario Found. Case with case_id {case_id} is already in Possession of {cmA_ForWhom}! Reallocation Failed.",
     ) in caplog.record_tuples
 
+
 def test_create_case_successfully_reallocates_case_if_case_exists_and_already_reset_to_defaults(
-    allocate_service, mock_cma_blaise_service, mock_frs_questionnaire_from_blaise, mock_frs_unallocated_case_reset_to_defaults_from_cma_launcher, caplog,
+    allocate_service,
+    mock_cma_blaise_service,
+    mock_frs_questionnaire_from_blaise,
+    mock_frs_unallocated_case_reset_to_defaults_from_cma_launcher,
+    caplog,
 ):
     # arrange
     case = mock_frs_unallocated_case_reset_to_defaults_from_cma_launcher
@@ -182,8 +207,13 @@ def test_create_case_successfully_reallocates_case_if_case_exists_and_already_re
         f"Successfull reallocation of Case {totalmobile_request.case_id} to User: '{totalmobile_request.interviewer_blaise_login}' in Questionnaire {totalmobile_request.questionnaire_name}",
     ) in caplog.record_tuples
 
+
 def test_unallocate_case_creates_special_instruction_entry_and_resets_case_and_returns_successfully_with_right_parameters(
-    allocate_service, mock_cma_blaise_service, mock_frs_questionnaire_from_blaise, mock_frs_allocated_case_from_cma_launcher, caplog,
+    allocate_service,
+    mock_cma_blaise_service,
+    mock_frs_questionnaire_from_blaise,
+    mock_frs_allocated_case_from_cma_launcher,
+    caplog,
 ):
     # arrange
     questionnaire = mock_frs_questionnaire_from_blaise
@@ -206,6 +236,7 @@ def test_unallocate_case_creates_special_instruction_entry_and_resets_case_and_r
         logging.INFO,
         f"Reset successful for Case: {totalmobile_unallocate_request.case_id} within Questionnaire {totalmobile_unallocate_request.questionnaire_name} in CMA_Launcher",
     ) in caplog.record_tuples
+
 
 def test_unallocate_case_raises_questionnaire_doesnot_exist_exception_if_questionnaire_doesnot_exist(
     allocate_service, mock_cma_blaise_service, caplog
@@ -231,8 +262,12 @@ def test_unallocate_case_raises_questionnaire_doesnot_exist_exception_if_questio
         f"Could not find Questionnaire FRS2410A in Blaise",
     ) in caplog.record_tuples
 
+
 def test_unallocate_case_fails_and_raise_exception_if_case_doesnot_exist(
-    allocate_service, mock_cma_blaise_service, mock_frs_questionnaire_from_blaise, caplog,
+    allocate_service,
+    mock_cma_blaise_service,
+    mock_frs_questionnaire_from_blaise,
+    caplog,
 ):
     # arrange
     questionnaire = mock_frs_questionnaire_from_blaise
@@ -258,8 +293,13 @@ def test_unallocate_case_fails_and_raise_exception_if_case_doesnot_exist(
         f"Unallocation failed.",
     ) in caplog.record_tuples
 
+
 def test_unallocate_case_raises_reset_fail_exception_if_case_reset_fails(
-    allocate_service, mock_cma_blaise_service, mock_frs_questionnaire_from_blaise, mock_frs_allocated_case_from_cma_launcher, caplog,
+    allocate_service,
+    mock_cma_blaise_service,
+    mock_frs_questionnaire_from_blaise,
+    mock_frs_allocated_case_from_cma_launcher,
+    caplog,
 ):
     # arrange
     questionnaire = mock_frs_questionnaire_from_blaise

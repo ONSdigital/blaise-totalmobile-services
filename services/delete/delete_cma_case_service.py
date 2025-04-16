@@ -6,8 +6,8 @@ from enums.questionnaire_case_outcome_codes import FRSQuestionnaireOutcomeCodes
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
-from services.cma_blaise_service import CMABlaiseService
 from services.case_instruction_service import CaseInstructionService
+from services.cma_blaise_service import CMABlaiseService
 
 
 class DeleteCMACaseService:

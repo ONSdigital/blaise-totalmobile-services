@@ -18,8 +18,8 @@ from models.create.cma.totalmobile_incoming_frs_request_model import (
 from models.update.cma.totalmobile_incoming_frs_unallocation_request_model import (
     TotalMobileIncomingFRSUnallocationRequestModel,
 )
-from services.cma_blaise_service import CMABlaiseService
 from services.case_instruction_service import CaseInstructionService
+from services.cma_blaise_service import CMABlaiseService
 
 
 class AllocateCMACaseService:
@@ -28,13 +28,12 @@ class AllocateCMACaseService:
     case_instruction_service: CaseInstructionService
 
     def __init__(
-        self, 
+        self,
         cma_blaise_service: CMABlaiseService,
-        case_instruction_service: CaseInstructionService
+        case_instruction_service: CaseInstructionService,
     ):
         self.cma_blaise_service = cma_blaise_service
         self.case_instruction_service = case_instruction_service
-
 
     @staticmethod
     def parse_contact_data_pii_values(contact_data_string: str) -> dict:
@@ -72,7 +71,9 @@ class AllocateCMACaseService:
             self._handle_new_case(questionnaire, totalmobile_request)
 
     def _get_questionnaire(self, totalmobile_request):
-        questionnaire = self.cma_blaise_service.questionnaire_exists(totalmobile_request.questionnaire_name)
+        questionnaire = self.cma_blaise_service.questionnaire_exists(
+            totalmobile_request.questionnaire_name
+        )
         logging.info(
             f"Successfully found questionnaire {totalmobile_request.questionnaire_name} in Blaise"
         )
@@ -178,7 +179,6 @@ class AllocateCMACaseService:
             self.cma_blaise_service.create_frs_case(frs_case)
         except:
             raise CaseAllocationException
-
 
     def _reallocate_existing_case_to_new_interviewer(
         self,
