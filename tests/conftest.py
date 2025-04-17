@@ -303,86 +303,86 @@ def submit_form_result_request_sample():
     return json.loads(
         """
     {
-      "Result": {
-        "User": {
+      "result": {
+        "user": {
           "ID": 1234,
-          "Name": "blah",
-          "UserAttributes": [
+          "name": "blah",
+          "userattributes": [
             {
-              "Name": "AuthNo",
-              "Value": "1234"
+              "name": "AuthNo",
+              "value": "1234"
             }
           ]
         },
-        "Date": "2022-01-01T10:00:10.00",
-        "Form": {
-          "Reference": "Interview - Full"
+        "date": "2022-01-01T10:00:10.00",
+        "form": {
+          "reference": "Interview - Full"
         },
-        "Association": {
-          "WorkType": "SS",
-          "Reference": "DST2111Z-AA1.1001011",
-          "PropertyReference": "1001011",
-          "ClientReference": ""
+        "association": {
+          "worktype": "SS",
+          "reference": "FRS2504A.1001",
+          "propertyreference": "1001",
+          "clientreference": ""
         },
-        "Responses": [
+        "responses": [
           {
-            "Instance": 0,
-            "Responses": [
+            "instance": 0,
+            "responses": [
               {
-                "Value": "",
-                "Description": null,
-                "Element": {
-                  "Reference": "BLAH",
-                  "Text": "blah",
-                  "EnrichContentSpecified": false
+                "value": "",
+                "description": null,
+                "element": {
+                  "reference": "BLAH",
+                  "text": "blah",
+                  "enrichContentspecified": false
                 }
               }
             ],
-            "Element": {
-              "Reference": "Warning",
-              "Text": "Warning",
-              "EnrichContentSpecified": false
+            "element": {
+              "reference": "Warning",
+              "text": "Warning",
+              "enrichContentSpecified": false
             }
           },
           {
-            "Instance": 0,
-            "Responses": [
+            "instance": 0,
+            "responses": [
               {
-                "Value": "2022-01-01T10:10:00.000+00:00",
-                "Description": null,
-                "Element": {
-                  "Reference": "InterviewDateTime",
-                  "Text": "Date and Time Interviewed:",
-                  "EnrichContentSpecified": false
+                "value": "2022-01-01T10:10:00.000+00:00",
+                "description": null,
+                "element": {
+                  "reference": "InterviewDateTime",
+                  "text": "Date and Time Interviewed:",
+                  "enrichcontentspecified": false
                 }
               },
               {
-                "Value": "07000000000",
-                "Description": null,
-                "Element": {
-                  "Reference": "TelNo",
-                  "Text": "What is your telephone number?",
-                  "EnrichContentSpecified": false
+                "value": "410",
+                "description": null,
+                "element": {
+                  "reference": "Primary_Outcome",
+                  "text": "410",
+                  "enrichcontentspecified": false
                 }
               },
               {
-                "Value": "DST",
-                "Description": null,
-                "Element": {
-                  "Reference": "SurveyType",
-                  "Text": "Survey Type:",
-                  "EnrichContentSpecified": false
+                "value": "DST",
+                "description": null,
+                "element": {
+                  "reference": "SurveyType",
+                  "text": "Survey Type:",
+                  "enrichcontentspecified": false
                 }
               }
             ],
-            "Element": {
-              "Reference": "SA",
-              "Text": "Interview Full",
-              "EnrichContentSpecified": false
+            "element": {
+              "reference": "SA",
+              "text": "Interview Full",
+              "enrichContentspecified": false
             }
           }
         ],
-        "ResultGuid": "1234-1234-1234-1234"
+        "resultguid": "1234-1234-1234-1234"
       }
     }
     """
