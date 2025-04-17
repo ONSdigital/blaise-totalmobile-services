@@ -57,8 +57,7 @@ class AllocateCMACaseService:
     ) -> None:
         try:
             questionnaire = self._get_questionnaire(totalmobile_request)
-        except Exception as e:
-            print(str(e))
+        except:
             self._handle_questionnaire_not_found_in_blaise(totalmobile_request)
 
         case = self.cma_blaise_service.case_exists(
