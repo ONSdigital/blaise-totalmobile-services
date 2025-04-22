@@ -4,7 +4,7 @@ import pytest
 
 from factories.service_instance_factory import ServiceInstanceFactory
 from services.blaise_service import RealBlaiseService
-from services.case_instruction_service import CaseInstructionService
+from services.case_instruction_service import CMACaseInstructionService
 from services.cloud_task_service import CloudTaskService
 from services.create.create_totalmobile_jobs_service import CreateTotalmobileJobsService
 from services.create.datastore_service import DatastoreService
@@ -497,5 +497,5 @@ def test_create_case_instruction_service_returns_case_instruction_service(
 ):
     assert isinstance(
         service_instance_factory.create_delete_cma_case_service().case_instruction_service,
-        CaseInstructionService,
+        CMACaseInstructionService,
     )

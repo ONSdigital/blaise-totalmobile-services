@@ -16,7 +16,7 @@ from models.create.cma.totalmobile_incoming_frs_request_model import (
 from models.update.cma.totalmobile_incoming_frs_unallocation_request_model import (
     TotalMobileIncomingFRSUnallocationRequestModel,
 )
-from services.case_instruction_service import CaseInstructionService
+from services.case_instruction_service import CMACaseInstructionService
 from services.cma_blaise_service import CMABlaiseService
 from services.create.cma.allocate_cma_case_service import AllocateCMACaseService
 
@@ -27,7 +27,7 @@ def mock_cma_blaise_service() -> CMABlaiseService:
 
 
 @pytest.fixture()
-def mock_case_instruction_service() -> CaseInstructionService:
+def mock_case_instruction_service() -> CMACaseInstructionService:
     return Mock()
 
 

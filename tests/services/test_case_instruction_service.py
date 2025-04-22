@@ -5,7 +5,7 @@ import pytest
 from requests import JSONDecodeError
 
 from app.exceptions.custom_exceptions import SpecialInstructionCreationFailedException
-from services.case_instruction_service import CaseInstructionService
+from services.case_instruction_service import CMACaseInstructionService
 from services.delete.delete_cma_case_service import DeleteCMACaseService
 
 
@@ -16,7 +16,7 @@ def mock_cma_blaise_service():
 
 @pytest.fixture()
 def case_instruction_service(mock_cma_blaise_service):
-    return CaseInstructionService(mock_cma_blaise_service)
+    return CMACaseInstructionService(mock_cma_blaise_service)
 
 
 @pytest.fixture()

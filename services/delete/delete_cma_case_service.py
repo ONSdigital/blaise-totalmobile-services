@@ -6,7 +6,7 @@ from enums.questionnaire_case_outcome_codes import FRSQuestionnaireOutcomeCodes
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
-from services.case_instruction_service import CaseInstructionService
+from services.case_instruction_service import CMACaseInstructionService
 from services.cma_blaise_service import CMABlaiseService
 
 
@@ -14,7 +14,7 @@ class DeleteCMACaseService:
     def __init__(
         self,
         cma_blaise_service: CMABlaiseService,
-        case_instruction_service: CaseInstructionService,
+        case_instruction_service: CMACaseInstructionService,
     ):
         self.cma_blaise_service = cma_blaise_service
         self.case_instruction_service = case_instruction_service

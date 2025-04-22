@@ -8,7 +8,7 @@ from models.create.cma.blaise_cma_frs_create_case_model import (  # TODO: BL - S
 from services.cma_blaise_service import CMABlaiseService
 
 
-class CaseInstructionService:
+class CMACaseInstructionService:
     def __init__(self, cma_blaise_service: CMABlaiseService):
         self.cma_blaise_service = cma_blaise_service
 

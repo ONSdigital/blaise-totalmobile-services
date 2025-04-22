@@ -9,7 +9,7 @@ from app.exceptions.custom_exceptions import (
     CaseResetFailedException,
     QuestionnaireDoesNotExistError,
 )
-from services.case_instruction_service import CaseInstructionService
+from services.case_instruction_service import CMACaseInstructionService
 
 
 def assert_security_headers_are_present(response):
@@ -281,7 +281,9 @@ def test_force_recall_visit_request_returns_404_if_questionnaire_is_not_found(
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
 @mock.patch.object(blaise_restapi.Client, "get_multikey_case")
 @mock.patch.object(blaise_restapi.Client, "patch_multikey_case_data")
-@mock.patch.object(CaseInstructionService, "create_new_entry_for_special_instructions")
+@mock.patch.object(
+    CMACaseInstructionService, "create_new_entry_for_special_instructions"
+)
 def test_force_recall_visit_request_returns_500_if_resetting_existing_case_to_defaults_fail(
     mock_rest_api_update_case,
     mock_rest_api_get_case,
