@@ -15,7 +15,7 @@ from models.update.cma.totalmobile_incoming_frs_unallocation_request_model impor
 from models.update.totalmobile_incoming_update_request_model import (
     TotalMobileIncomingUpdateRequestModel,
 )
-from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
+from services.create.cma.allocate_cma_case_service import AllocateCMACaseService
 
 
 def submit_form_result_request_handler(request, current_app):
@@ -42,10 +42,11 @@ def create_visit_request_handler(request, current_app):
     data = request.get_json()
     totalmobile_frs_case = TotalMobileIncomingFRSRequestModel.import_request(data)
 
-    frs_case_allocation_service = FRSCaseAllocationService(
-        cma_blaise_service=current_app.cma_blaise_service
+    allocate_cma_case_service = AllocateCMACaseService(
+        cma_blaise_service=current_app.cma_blaise_service,
+        case_instruction_service=current_app.case_instruction_service,
     )
-    frs_case_allocation_service.create_case(totalmobile_frs_case)
+    allocate_cma_case_service.create_case(totalmobile_frs_case)
 
 
 def force_recall_visit_request_handler(request, current_app):
@@ -53,10 +54,11 @@ def force_recall_visit_request_handler(request, current_app):
     totalmobile_unallocation_frs_case = (
         TotalMobileIncomingFRSUnallocationRequestModel.import_request(data)
     )
-    frs_case_allocation_service = FRSCaseAllocationService(
-        cma_blaise_service=current_app.cma_blaise_service
+    allocate_cma_case_service = AllocateCMACaseService(
+        cma_blaise_service=current_app.cma_blaise_service,
+        case_instruction_service=current_app.case_instruction_service,
     )
-    frs_case_allocation_service.unallocate_case(totalmobile_unallocation_frs_case)
+    allocate_cma_case_service.unallocate_case(totalmobile_unallocation_frs_case)
     return
 
 

@@ -3,8 +3,8 @@ from unittest.mock import MagicMock
 from werkzeug.security import generate_password_hash
 
 from app.app import setup_app
+from services.case_instruction_service import CMACaseInstructionService
 from services.cma_blaise_service import CMABlaiseService
-from services.create.cma.frs_case_allocation_service import FRSCaseAllocationService
 from services.delete.blaise_case_outcome_service import BlaiseCaseOutcomeService
 from services.delete.delete_cma_case_service import DeleteCMACaseService
 from tests.fakes.fake_blaise_service import FakeBlaiseService
@@ -59,7 +59,7 @@ def assign_additional_services_to_context(context):
     context.mock_cma_blaise_service = MagicMock(spec=CMABlaiseService)
     context.mock_delete_service = DeleteCMACaseService(
         cma_blaise_service=context.mock_cma_blaise_service,
-        frs_case_allocation_service=MagicMock(spec=FRSCaseAllocationService),
+        case_instruction_service=MagicMock(spec=CMACaseInstructionService),
     )
 
 
