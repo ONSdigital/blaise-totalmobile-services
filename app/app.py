@@ -5,6 +5,7 @@ from app.config import Config
 from app.endpoints import incoming
 from appconfig.config import Config as AppConfig
 from services.blaise_service import RealBlaiseService
+from services.case_instruction_service import CMACaseInstructionService
 from services.cma_blaise_service import CMABlaiseService
 from services.create.uac.uac_service import UacService
 
@@ -23,5 +24,8 @@ def setup_app():
     application.app_config = app_config
     application.blaise_service = RealBlaiseService(app_config)
     application.cma_blaise_service = CMABlaiseService(app_config)
+    application.case_instruction_service = CMACaseInstructionService(
+        application.cma_blaise_service
+    )
     application.uac_service = UacService(app_config)
     return application
