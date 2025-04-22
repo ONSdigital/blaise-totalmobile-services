@@ -515,7 +515,7 @@ def step_impl(context, reference):
     'the case "{case_id}" for questionnaire "{questionnaire}" has been deleted from CMA'
 )
 def step_impl(context, case_id, questionnaire):
-    context.mock_delete_service.frs_case_allocation_service.create_new_entry_for_special_instructions.assert_called_once_with(
+    context.mock_delete_service.case_instruction_service.create_new_entry_for_special_instructions.assert_called_once_with(
         context.cma_case, questionnaire
     )
 
@@ -549,7 +549,7 @@ def step_impl(context, response):
     'the case "{case_id}" for questionnaire "{questionnaire}" has NOT been deleted from CMA'
 )
 def step_impl(context, case_id, questionnaire):
-    context.mock_delete_service.frs_case_allocation_service.create_new_entry_for_special_instructions.assert_not_called()
+    context.mock_delete_service.case_instruction_service.create_new_entry_for_special_instructions.assert_not_called()
 
 
 @when(

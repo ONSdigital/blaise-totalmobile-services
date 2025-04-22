@@ -147,7 +147,7 @@ def test_submit_form_result_request_handler_raises_an_exception_when_a_malformed
         submit_form_result_request_handler(mock_request, mock_update_service)
 
 
-@patch("app.handlers.totalmobile_incoming_handler.FRSCaseAllocationService")
+@patch("app.handlers.totalmobile_incoming_handler.AllocateCMACaseService")
 @patch(
     "app.handlers.totalmobile_incoming_handler.TotalMobileIncomingFRSRequestModel.import_request"
 )
@@ -181,17 +181,17 @@ def test_create_visit_request_handler_raises_invalid_totalmobile_frs_request_exc
     mock_request.get_json.return_value = (
         incoming_request_helper_for_frs_allocation.get_frs_case_allocation_request_without_reference()
     )
-    mock_update_frs_case_allocation_service = mock.Mock()
-    mock_update_frs_case_allocation_service.create_case()
+    mock_update_allocate_cma_case_service = mock.Mock()
+    mock_update_allocate_cma_case_service.create_case()
 
     # act & assert
     with pytest.raises(InvalidTotalmobileFRSRequestException):
         create_visit_request_handler(
-            mock_request, mock_update_frs_case_allocation_service
+            mock_request, mock_update_allocate_cma_case_service
         )
 
 
-@patch("app.handlers.totalmobile_incoming_handler.FRSCaseAllocationService")
+@patch("app.handlers.totalmobile_incoming_handler.AllocateCMACaseService")
 def test_force_recall_visit_request_handler_calls_unallocate_case_once(
     mock_frs_service, mock_request, mock_app
 ):

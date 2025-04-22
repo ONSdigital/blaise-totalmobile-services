@@ -4,12 +4,19 @@ from unittest.mock import MagicMock
 import pytest
 from requests import JSONDecodeError
 
+from app.exceptions.custom_exceptions import SpecialInstructionCreationFailedException
+from services.case_instruction_service import CMACaseInstructionService
 from services.delete.delete_cma_case_service import DeleteCMACaseService
 
 
 @pytest.fixture()
 def mock_cma_blaise_service():
     return MagicMock()
+
+
+@pytest.fixture()
+def case_instruction_service(mock_cma_blaise_service):
+    return CMACaseInstructionService(mock_cma_blaise_service)
 
 
 @pytest.fixture()
@@ -143,34 +150,6 @@ def test_remove_case_from_cma_does_not_remove_case_from_cma_when_outcome_code_is
     mock_case_instruction_service.create_new_entry_for_special_instructions.assert_not_called()
 
 
-def test_remove_case_from_cma_raises_value_error_when_questionnaire_does_not_exist_in_cma(
-    delete_service, totalmobile_request, mock_cma_blaise_service
-):
-    # arrange
-    totalmobile_request.questionnaire_name = "R2D2"
-    mock_cma_blaise_service.questionnaire_exists.side_effect = JSONDecodeError(
-        "Expecting value", "", 0
-    )
-
-    # act & assert
-    with pytest.raises(ValueError, match="Questionnaire R2D2 does not exist in CMA."):
-        delete_service.remove_case_from_cma(totalmobile_request)
-
-
-def test_remove_case_from_cma_raises_value_error_when_case_does_not_exist_in_cma(
-    delete_service, totalmobile_request, mock_cma_blaise_service, questionnaire_object
-):
-    # arrange
-    mock_cma_blaise_service.questionnaire_exists.return_value = questionnaire_object
-    mock_cma_blaise_service.case_exists.return_value = None
-
-    # act assert
-    with pytest.raises(
-        ValueError, match="Case 1234 for questionnaire FRS2504A does not exist in CMA."
-    ):
-        delete_service.remove_case_from_cma(totalmobile_request)
-
-
 def test_remove_case_from_cma_calls_create_new_entry_for_special_instructions_when_outcome_code_is_in_remove_from_cma_set(
     delete_service,
     totalmobile_request,
@@ -192,9 +171,8 @@ def test_remove_case_from_cma_calls_create_new_entry_for_special_instructions_wh
     )
 
 
-def test_remove_case_from_cma_calls_logs_information_when_outcome_code_is_in_remove_from_cma_set(
-    delete_service,
-    totalmobile_request,
+def test_create_new_entry_for_special_instructions_is_run_successfully(
+    case_instruction_service,
     mock_cma_blaise_service,
     cma_case,
     questionnaire_object,
@@ -203,12 +181,44 @@ def test_remove_case_from_cma_calls_logs_information_when_outcome_code_is_in_rem
     # arrange
     mock_cma_blaise_service.questionnaire_exists.return_value = questionnaire_object
     mock_cma_blaise_service.case_exists.return_value = cma_case
+    questionnaire_name = "FRS2405A"
+    unique_case_id = 100100
 
     # act
     with caplog.at_level(logging.INFO):
-        delete_service.remove_case_from_cma(totalmobile_request)
+        case_instruction_service.create_new_entry_for_special_instructions(
+            cma_case, questionnaire_name
+        )
 
     # assert
+    mock_cma_blaise_service.create_frs_case.assert_called_once()
     assert (
-        "Case 1234 for questionnaire FRS2504A with an outcome code of 410 will be recalled from CMA."
+        f"Special Instructions entry created for Case {unique_case_id} for Questionnaire {questionnaire_name}"
+    ) in caplog.messages
+
+
+def test_create_new_entry_for_special_instructions_throws_exception(
+    case_instruction_service,
+    mock_cma_blaise_service,
+    cma_case,
+    questionnaire_object,
+    caplog,
+):
+    # arrange
+    mock_cma_blaise_service.questionnaire_exists.return_value = questionnaire_object
+    mock_cma_blaise_service.case_exists.return_value = cma_case
+    mock_cma_blaise_service.create_frs_case.side_effect = Exception("Boom!")
+    questionnaire_name = "FRS2405A"
+    unique_case_id = 100100
+
+    # act
+    with pytest.raises(SpecialInstructionCreationFailedException):
+        case_instruction_service.create_new_entry_for_special_instructions(
+            cma_case, questionnaire_name
+        )
+
+    # assert
+    mock_cma_blaise_service.create_frs_case.assert_called_once()
+    assert (
+        f"Special Instructions entry creation for Case {unique_case_id} for Questionnaire {questionnaire_name} failed"
     ) in caplog.messages
