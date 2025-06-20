@@ -32,8 +32,8 @@ class TotalmobilePayloadMapperService:
             description=self.get_job_description(questionnaire_case),
             origin="ONS",
             duration=15,
-            workType=questionnaire_name[0:3],
-            skills=[Skill(identity=Reference(reference=questionnaire_name[0:3]))],
+            workType=questionnaire_case.tla,
+            skills=[Skill(identity=Reference(reference=questionnaire_case.tla))],
             dueDate=DueDate(end=questionnaire_case.wave_com_dte),
             location=AddressDetails(
                 reference=self.set_location_reference(questionnaire_case),
@@ -84,6 +84,10 @@ class TotalmobilePayloadMapperService:
                     AdditionalProperty(
                         name="uac3", value=questionnaire_case.uac_chunks.uac3
                     ),
+                    AdditionalProperty(
+                        name="Wave2_Case", 
+                        value=questionnaire_case.due_second_wave
+                    )
                 ]
             )
 

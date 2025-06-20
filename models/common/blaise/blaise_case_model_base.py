@@ -25,7 +25,7 @@ class BlaiseCaseModelBase:
 
     @property
     def tla(self) -> str:
-        return self.questionnaire_name[0:3]
+        return self._case_data.get(BlaiseFields.tla)
 
     @property
     def case_id(self) -> Optional[str]:
