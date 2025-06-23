@@ -72,6 +72,12 @@ class TotalmobilePayloadMapperService:
         questionnaire_case: BlaiseCreateCaseModelBase,
         payload_model: TotalMobileOutgoingCreateJobPayloadModel,
     ) -> TotalMobileOutgoingCreateJobPayloadModel:
+        payload_model.additionalProperties.extend([
+            AdditionalProperty(
+                name="Wave2_Case", value=questionnaire_case.due_second_wave
+                )]
+        )
+        
         if questionnaire_case.uac_chunks is not None:
             payload_model.additionalProperties.extend(
                 [
@@ -83,10 +89,6 @@ class TotalmobilePayloadMapperService:
                     ),
                     AdditionalProperty(
                         name="uac3", value=questionnaire_case.uac_chunks.uac3
-                    ),
-                    AdditionalProperty(
-                        name="Wave2_Case", 
-                        value=questionnaire_case.due_second_wave
                     )
                 ]
             )
