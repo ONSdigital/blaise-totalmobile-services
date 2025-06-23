@@ -116,6 +116,7 @@ def test_create_case_overview_for_interviewer_returns_the_expected_additional_pr
     questionnaire_case = BlaiseFRSCreateCaseModel(
         questionnaire_name,
         {
+            BlaiseFields.tla: "FRS",
             BlaiseFields.rand: "30",
             BlaiseFields.field_region: "Region 2",
             BlaiseFields.field_team: "A Team",
