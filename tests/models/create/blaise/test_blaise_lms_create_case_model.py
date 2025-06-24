@@ -79,24 +79,11 @@ def test_create_case_description_for_interviewer_raises_an_error_when_due_second
         },
         uac_chunks,
     )
-    # questionnaire_name = "LMS2201_AA1"
-    # questionnaire_case = BlaiseCaseModelHelper.get_populated_lms_create_case_model(
-    #     questionnaire_name=questionnaire_name,
-    #     case_id="1234",
-    #     data_model_name="",
-    #     wave_com_dte="",
-    #     wave="",
-    #     uac_chunks=None,
-    #     due_second_wave=None,
-    # )
 
     # Act
     description = questionnaire_case.create_case_description_for_interviewer()
 
     # Assert
-    # assert description == (
-    #     "UAC: \n" "Due Date: \n" "Study: LMS2201_AA1\n" "Case ID: 1234\n" "Wave: \n"
-    # )
     assert description == (
         "UAC: 3456 3453 4546 0987\n"
         "Due Date: 31/01/2022\n"
