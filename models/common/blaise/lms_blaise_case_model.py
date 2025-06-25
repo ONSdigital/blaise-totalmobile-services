@@ -34,7 +34,7 @@ class LMSBlaiseCaseModel(BlaiseCaseModelBase):
             logging.warning(
                 f"Case {self.case_id} for questionnaire {self.questionnaire_name} has no DueSecondWave. Totalmobile job description will not include 'Will rotate to W2+'."
             )
-        return self._case_data.get(BlaiseFields.due_second_wave)
+        return self._case_data.get(BlaiseFields.due_second_wave, "")
 
     @property
     def telephone_number_1(self) -> Optional[str]:
