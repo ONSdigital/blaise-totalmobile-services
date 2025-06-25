@@ -60,7 +60,7 @@ class TotalmobilePayloadMapperService:
             additionalProperties=self.get_job_additional_properties(questionnaire_case),
         )
 
-        if questionnaire_name.startswith("LMS"):
+        if questionnaire_name.startswith("LM"):
             return self.map_additional_lms_properties(questionnaire_case, payload_model)
         elif questionnaire_name.startswith("FRS"):
             return payload_model
@@ -77,7 +77,7 @@ class TotalmobilePayloadMapperService:
                 name="Wave2_Case", value=questionnaire_case.due_second_wave
                 )]
         )
-        
+
         if questionnaire_case.uac_chunks is not None:
             payload_model.additionalProperties.extend(
                 [
