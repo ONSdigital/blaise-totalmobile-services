@@ -60,7 +60,7 @@ class TotalmobilePayloadMapperService:
             additionalProperties=self.get_job_additional_properties(questionnaire_case),
         )
 
-        if questionnaire_name.startswith("LM"):
+        if questionnaire_name.startswith("LMS"):
             return self.map_additional_lms_properties(questionnaire_case, payload_model)
         elif questionnaire_name.startswith("FRS"):
             return payload_model
