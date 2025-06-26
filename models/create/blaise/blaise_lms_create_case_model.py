@@ -34,7 +34,7 @@ class BlaiseLMSCreateCaseModel(BlaiseCreateCaseModelBase):
             "" if self.wave_com_dte is None else self.wave_com_dte.strftime("%d/%m/%Y")
         )
         due_second_wave_string = (
-            "Will rotate to W2+" if self.due_second_wave in ("1", "Yes", 1) else ""
+            "Will rotate to W2+" if self.due_second_wave == "1" else ""
         )
         return (
             f"UAC: {uac_string}\n"
