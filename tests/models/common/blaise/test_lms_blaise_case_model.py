@@ -111,7 +111,7 @@ class TestLMSBlaiseCaseModel:
         assert (
             "Case 10010 for questionnaire LMS2101_AA1 has no UPRN. Users will not be able to dispatch this case in Totalmobile."
         ) in caplog.messages
-    
+
     @pytest.mark.parametrize(
         "field_value",
         [

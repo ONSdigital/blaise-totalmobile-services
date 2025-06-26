@@ -92,6 +92,7 @@ def test_create_case_description_for_interviewer_raises_an_error_when_due_second
         "Wave: 4\n"
     )
 
+
 def test_create_case_description_for_interviewer_returns_a_correctly_formatted_description_when_all_values_are_empty():
     # Arrange
     questionnaire_name = "LMS2201_AA1"

@@ -27,7 +27,7 @@ class LMSBlaiseCaseModel(BlaiseCaseModelBase):
     def wave(self) -> Optional[int]:
         wave = str(self._case_data.get(BlaiseFields.wave))
         return int(wave) if wave != "" else None
-    
+
     @property
     def due_second_wave(self) -> Optional[str]:
         if not self._case_data.get(BlaiseFields.due_second_wave):
