@@ -30,16 +30,16 @@ class LMSBlaiseCaseModel(BlaiseCaseModelBase):
     
     @property
     def due_second_wave(self) -> Optional[str]:
-        if not self._case_data.get(BlaiseFields.due_second_wave):
-            logging.warning(
-                f"Case {self.case_id} for questionnaire {self.questionnaire_name} has no DueSecondWave. Totalmobile job description will not include 'Will rotate to W2+'."
-            )
         logging.info(
             f"Case data dictionary: {self._case_data}"
         )
         logging.info(
             f"Case {self.case_id} for questionnaire {self.questionnaire_name} has DueSecondWave: {self._case_data.get(BlaiseFields.due_second_wave)}"
         )
+        if not self._case_data.get(BlaiseFields.due_second_wave):
+            logging.warning(
+                f"Case {self.case_id} for questionnaire {self.questionnaire_name} has no DueSecondWave. Totalmobile job description will not include 'Will rotate to W2+'."
+            )
         return self._case_data.get(BlaiseFields.due_second_wave, "")
 
     @property
