@@ -128,7 +128,7 @@ class TestLMSBlaiseCaseModel:
         model = self.MockLMSBlaiseCaseModelBase("LMS2101_AA1", sample_lms_case_data)
 
         # act
-        with caplog.at_level(logging.WARNING):
+        with caplog.at_level(logging.INFO):
             _ = model.due_second_wave
 
         # assert
