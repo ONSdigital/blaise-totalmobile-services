@@ -35,7 +35,10 @@ class LMSBlaiseCaseModel(BlaiseCaseModelBase):
                 f"Case {self.case_id} for questionnaire {self.questionnaire_name} has no DueSecondWave. Totalmobile job description will not include 'Will rotate to W2+'."
             )
         logging.info(
-            f"Case {self.case_id} for questionnaire {self.questionnaire_name} has DueSecondWave: {self._case_data.get(BlaiseFields.due_second_wave)}"
+            f"Case data dictionary: {self._case_data}"
+        )
+        logging.info(
+            f"Case {self.case_id} for questionnaire {self.questionnaire_name} has DueSecondWave: {self._case_data.get(BlaiseFields.due_second_wave, "NOT FOUND")}"
         )
         return self._case_data.get(BlaiseFields.due_second_wave, "")
 
