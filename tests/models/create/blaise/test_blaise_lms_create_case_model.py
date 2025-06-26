@@ -126,7 +126,7 @@ def test_required_fields_returns_the_expected_fields():
         "dataModelName",
         "qDataBag.TLA",
         "qDataBag.Wave",
-        "DueSecondWave",
+        "dueSecondWave",
         "qDataBag.Prem1",
         "qDataBag.Prem2",
         "qDataBag.Prem3",
