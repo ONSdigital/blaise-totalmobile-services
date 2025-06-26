@@ -24,8 +24,8 @@ class BlaiseCaseModelBase:
         self._questionnaire_name = value
 
     @property
-    def tla(self) -> str:
-        return self.questionnaire_name[0:3]
+    def tla(self) -> Optional[str]:
+        return self._case_data.get(BlaiseFields.tla)
 
     @property
     def case_id(self) -> Optional[str]:
@@ -74,7 +74,7 @@ class BlaiseCaseModelBase:
     def reference(self) -> Optional[str]:
         if not self._case_data.get(BlaiseFields.reference):
             logging.warning(
-                f"Case {self.case_id} for questionnaire {self.questionnaire_name} has no UPRN.  Users will not be able to dispatch this case in Totalmobile."
+                f"Case {self.case_id} for questionnaire {self.questionnaire_name} has no UPRN. Users will not be able to dispatch this case in Totalmobile."
             )
         return self._case_data.get(BlaiseFields.reference, "")
 

@@ -1,3 +1,4 @@
+import logging
 from typing import Dict, Optional
 
 from enums.blaise_fields import BlaiseFields
@@ -26,6 +27,14 @@ class LMSBlaiseCaseModel(BlaiseCaseModelBase):
     def wave(self) -> Optional[int]:
         wave = str(self._case_data.get(BlaiseFields.wave))
         return int(wave) if wave != "" else None
+
+    @property
+    def due_second_wave(self) -> Optional[str]:
+        if not self._case_data.get(BlaiseFields.due_second_wave):
+            logging.info(
+                f"Case {self.case_id} for questionnaire {self.questionnaire_name} has no DueSecondWave. Totalmobile job description will not include 'Will rotate to W2+'."
+            )
+        return self._case_data.get(BlaiseFields.due_second_wave, "")
 
     @property
     def telephone_number_1(self) -> Optional[str]:
