@@ -38,7 +38,8 @@ class TestTotalmobileLMSPayloadMapping:
             "Due Date: 31/01/2023\n"
             "Study: LMS2101_AA1\n"
             "Case ID: 90001\n"
-            "Wave: 1"
+            "Wave: 1\n"
+            "Will rotate to W2+"
         )
         assert result.origin == "ONS"
         assert result.duration == 15
@@ -65,7 +66,7 @@ class TestTotalmobileLMSPayloadMapping:
         assert result.attributes[1].name == "Team"
         assert result.attributes[1].value == "B-Team"
 
-        assert len(result.additionalProperties) == 11
+        assert len(result.additionalProperties) == 12
 
         assert result.additionalProperties[0].name == "surveyName"
         assert result.additionalProperties[0].value == "LM2007"
@@ -91,14 +92,17 @@ class TestTotalmobileLMSPayloadMapping:
         assert result.additionalProperties[7].name == "localAuth"
         assert result.additionalProperties[7].value == "Loco"
 
-        assert result.additionalProperties[8].name == "uac1"
-        assert result.additionalProperties[8].value == "3456"
+        assert result.additionalProperties[8].name == "Wave2_Case"
+        assert result.additionalProperties[8].value == "1"
 
-        assert result.additionalProperties[9].name == "uac2"
-        assert result.additionalProperties[9].value == "3453"
+        assert result.additionalProperties[9].name == "uac1"
+        assert result.additionalProperties[9].value == "3456"
 
-        assert result.additionalProperties[10].name == "uac3"
-        assert result.additionalProperties[10].value == "4546"
+        assert result.additionalProperties[10].name == "uac2"
+        assert result.additionalProperties[10].value == "3453"
+
+        assert result.additionalProperties[11].name == "uac3"
+        assert result.additionalProperties[11].value == "4546"
 
     def test_map_totalmobile_payload_model_returns_a_model_with_no_uac_additional_properties_if_no_uacs_are_set_for_an_lms_case(
         self, service: TotalmobilePayloadMapperService

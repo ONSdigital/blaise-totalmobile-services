@@ -73,6 +73,7 @@ class TestTotalmobileLMSCreateJobMapping:
             field_region="region1",
             outcome_code="110",
             postcode="AB12 3CD",
+            due_second_wave="1",
             uac_chunks=questionnaire_uac_model.get_uac_chunks("10010"),
         )
         case2 = BlaiseCaseModelHelper.get_populated_lms_create_case_model(
@@ -81,6 +82,7 @@ class TestTotalmobileLMSCreateJobMapping:
             field_region="region2",
             outcome_code="120",
             postcode="EF45 6GH",
+            due_second_wave="1",
             uac_chunks=questionnaire_uac_model.get_uac_chunks("10020"),
         )
         case3 = BlaiseCaseModelHelper.get_populated_lms_create_case_model(
@@ -89,6 +91,7 @@ class TestTotalmobileLMSCreateJobMapping:
             field_region="region3",
             outcome_code="130",
             postcode="IJ78 9KL",
+            due_second_wave="1",
             uac_chunks=questionnaire_uac_model.get_uac_chunks("10030"),
         )
         cases = [case1, case2, case3]

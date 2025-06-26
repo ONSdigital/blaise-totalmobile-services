@@ -11,6 +11,7 @@ from models.create.totalmobile.totalmobile_outgoing_create_job_payload_model imp
     AddressDetails,
     ContactDetails,
     DueDate,
+    OptionalReference,
     Reference,
     Skill,
     TotalMobileOutgoingCreateJobPayloadModel,
@@ -32,8 +33,10 @@ class TotalmobilePayloadMapperService:
             description=self.get_job_description(questionnaire_case),
             origin="ONS",
             duration=15,
-            workType=questionnaire_name[0:3],
-            skills=[Skill(identity=Reference(reference=questionnaire_name[0:3]))],
+            workType=questionnaire_case.tla,
+            skills=[
+                Skill(identity=OptionalReference(reference=questionnaire_case.tla))
+            ],
             dueDate=DueDate(end=questionnaire_case.wave_com_dte),
             location=AddressDetails(
                 reference=self.set_location_reference(questionnaire_case),
@@ -72,6 +75,14 @@ class TotalmobilePayloadMapperService:
         questionnaire_case: BlaiseCreateCaseModelBase,
         payload_model: TotalMobileOutgoingCreateJobPayloadModel,
     ) -> TotalMobileOutgoingCreateJobPayloadModel:
+        payload_model.additionalProperties.extend(
+            [
+                AdditionalProperty(
+                    name="Wave2_Case", value=questionnaire_case.due_second_wave
+                )
+            ]
+        )
+
         if questionnaire_case.uac_chunks is not None:
             payload_model.additionalProperties.extend(
                 [
