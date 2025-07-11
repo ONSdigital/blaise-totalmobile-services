@@ -33,12 +33,16 @@ class BlaiseLMSCreateCaseModel(BlaiseCreateCaseModelBase):
         due_date_string = (
             "" if self.wave_com_dte is None else self.wave_com_dte.strftime("%d/%m/%Y")
         )
+        due_second_wave_string = (
+            "Will rotate to W2+" if self.due_second_wave == "1" else ""
+        )
         return (
             f"UAC: {uac_string}\n"
             f"Due Date: {due_date_string}\n"
             f"Study: {self.questionnaire_name}\n"
             f"Case ID: {self.case_id}\n"
-            f"Wave: {self.wave if self.wave is not None else ''}"
+            f"Wave: {self.wave if self.wave is not None else ''}\n"
+            f"{due_second_wave_string}"
         )
 
     @staticmethod
@@ -48,6 +52,7 @@ class BlaiseLMSCreateCaseModel(BlaiseCreateCaseModelBase):
             BlaiseFields.data_model_name,
             BlaiseFields.tla,
             BlaiseFields.wave,
+            BlaiseFields.due_second_wave,
             BlaiseFields.address_line_1,
             BlaiseFields.address_line_2,
             BlaiseFields.address_line_3,

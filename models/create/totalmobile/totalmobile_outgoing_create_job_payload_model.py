@@ -9,8 +9,13 @@ class Reference:
 
 
 @dataclass
+class OptionalReference:
+    reference: Optional[str]
+
+
+@dataclass
 class Skill:
-    identity: Reference
+    identity: OptionalReference
 
 
 @dataclass
@@ -58,7 +63,7 @@ class TotalMobileOutgoingCreateJobPayloadModel:
     description: str
     origin: str
     duration: int
-    workType: str
+    workType: Optional[str]
     skills: List[Skill]
     dueDate: DueDate
     location: AddressDetails

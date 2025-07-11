@@ -21,6 +21,7 @@ def lms_totalmobile_payload_helper(
             {"name": "fieldTeam", "value": case.field_team},
             {"name": "postCode", "value": case.postcode},
             {"name": "localAuth", "value": case.local_auth},
+            {"name": "Wave2_Case", "value": case.due_second_wave},
         ],
         "attributes": [
             {"name": "Region", "value": case.field_region},
@@ -31,7 +32,8 @@ def lms_totalmobile_payload_helper(
         f'Due Date: {case.wave_com_dte.strftime("%d/%m/%Y") if case.wave_com_dte is not None else ""}\n'
         f"Study: {questionnaire_name}\n"
         f"Case ID: {case.case_id}\n"
-        f"Wave: {case.wave}",
+        f"Wave: {case.wave}\n"
+        "Will rotate to W2+",
         "dueDate": {
             "end": (
                 case.wave_com_dte.strftime("%Y-%m-%d")

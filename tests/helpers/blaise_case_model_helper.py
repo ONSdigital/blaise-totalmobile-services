@@ -23,6 +23,7 @@ class BlaiseCaseModelHelper:
         start_date: str = "01-01-2024",
         divided_address: str = "",
         wave_com_dte: str = "31-01-2024",
+        tla: str = "FRS",
     ) -> BlaiseFRSCreateCaseModel:
         return BlaiseFRSCreateCaseModel(
             questionnaire_name,
@@ -47,6 +48,7 @@ class BlaiseCaseModelHelper:
                 BlaiseFields.divided_address_indicator: divided_address,
                 BlaiseFields.wave_com_dte: wave_com_dte,
                 BlaiseFields.local_auth: "Loco",
+                BlaiseFields.tla: tla,
             },
         )
 
@@ -68,6 +70,8 @@ class BlaiseCaseModelHelper:
         data_model_name: str = "LM2007",
         wave_com_dte: str = "31-01-2023",
         wave="1",
+        tla: Optional[str] = "LMS",
+        due_second_wave: Optional[str] = "1",
         uac_chunks: Optional[UacChunks] = UacChunks(
             uac1="3456", uac2="3453", uac3="4546"
         ),
@@ -96,6 +100,8 @@ class BlaiseCaseModelHelper:
                 BlaiseFields.longitude: longitude,
                 BlaiseFields.priority: "1",
                 BlaiseFields.wave_com_dte: wave_com_dte,
+                BlaiseFields.tla: tla or questionnaire_name[:3],
+                BlaiseFields.due_second_wave: due_second_wave or "",
             },
             uac_chunks=uac_chunks,
         )

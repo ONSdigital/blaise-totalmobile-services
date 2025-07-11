@@ -15,6 +15,7 @@ def test_create_case_description_for_interviewer_returns_a_correctly_formatted_d
             BlaiseFields.data_model_name: "LMS2201_AA1",
             BlaiseFields.wave_com_dte: "31-01-2022",
             BlaiseFields.wave: "4",
+            BlaiseFields.due_second_wave: "1",
         },
         uac_chunks,
     )
@@ -28,7 +29,8 @@ def test_create_case_description_for_interviewer_returns_a_correctly_formatted_d
         "Due Date: 31/01/2022\n"
         "Study: LMS2201_AA1\n"
         "Case ID: 12345\n"
-        "Wave: 4"
+        "Wave: 4\n"
+        "Will rotate to W2+"
     )
 
 
@@ -43,6 +45,7 @@ def test_create_case_description_for_interviewer_returns_a_correctly_formatted_d
             BlaiseFields.data_model_name: "LMS2201_AA1",
             BlaiseFields.wave_com_dte: "31-01-2022",
             BlaiseFields.wave: "4",
+            BlaiseFields.due_second_wave: "1",
         },
         uac_chunks,
     )
@@ -56,11 +59,41 @@ def test_create_case_description_for_interviewer_returns_a_correctly_formatted_d
         "Due Date: 31/01/2022\n"
         "Study: LMS2201_AA1\n"
         "Case ID: 12345\n"
-        "Wave: 4"
+        "Wave: 4\n"
+        "Will rotate to W2+"
     )
 
 
-def test_ccreate_case_description_for_interviewer_returns_a_correctly_formatted_description_when_all_values_are_empty():
+def test_create_case_description_for_interviewer_raises_an_error_when_due_second_wave_is_invalid():
+    # Arrange
+    questionnaire_name = "LMS2201_AA1"
+    uac_chunks = UacChunks(uac1="3456", uac2="3453", uac3="4546", uac4="0987")
+    questionnaire_case = BlaiseLMSCreateCaseModel(
+        questionnaire_name,
+        {
+            BlaiseFields.case_id: "12345",
+            BlaiseFields.data_model_name: "LMS2201_AA1",
+            BlaiseFields.wave_com_dte: "31-01-2022",
+            BlaiseFields.wave: "4",
+            BlaiseFields.due_second_wave: 2,
+        },
+        uac_chunks,
+    )
+
+    # Act
+    description = questionnaire_case.create_case_description_for_interviewer()
+
+    # Assert
+    assert description == (
+        "UAC: 3456 3453 4546 0987\n"
+        "Due Date: 31/01/2022\n"
+        "Study: LMS2201_AA1\n"
+        "Case ID: 12345\n"
+        "Wave: 4\n"
+    )
+
+
+def test_create_case_description_for_interviewer_returns_a_correctly_formatted_description_when_all_values_are_empty():
     # Arrange
     questionnaire_name = "LMS2201_AA1"
     questionnaire_case = BlaiseCaseModelHelper.get_populated_lms_create_case_model(
@@ -70,6 +103,7 @@ def test_ccreate_case_description_for_interviewer_returns_a_correctly_formatted_
         wave_com_dte="",
         wave="",
         uac_chunks=None,
+        due_second_wave=None,
     )
 
     # Act
@@ -77,7 +111,7 @@ def test_ccreate_case_description_for_interviewer_returns_a_correctly_formatted_
 
     # Assert
     assert description == (
-        "UAC: \n" "Due Date: \n" "Study: LMS2201_AA1\n" "Case ID: 1234\n" "Wave: "
+        "UAC: \n" "Due Date: \n" "Study: LMS2201_AA1\n" "Case ID: 1234\n" "Wave: \n"
     )
 
 
@@ -93,6 +127,7 @@ def test_required_fields_returns_the_expected_fields():
         "dataModelName",
         "qDataBag.TLA",
         "qDataBag.Wave",
+        "dueSecondWave",
         "qDataBag.Prem1",
         "qDataBag.Prem2",
         "qDataBag.Prem3",
