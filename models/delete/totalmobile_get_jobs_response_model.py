@@ -15,6 +15,7 @@ T = TypeVar("T", bound="TotalmobileGetJobsResponseModel")
 DUE_DATE_OFFSETS: Dict[str, int] = {
     "DEFAULT": 0,
     "LMS": -3,
+    "LMB": -3,
 }
 
 
