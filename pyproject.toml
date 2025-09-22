@@ -25,10 +25,10 @@ google-cloud-logging = "^3.12.0"
 dataclasses-json = "^0.5.7"
 dataclass-wizard = "^0.22.1"
 typing-extensions = "^4.12.2"
-setuptools = "^78.1.1"
+setuptools = "78.1.1"
 pytest-mock = "^3.14.0"
 behave-html-formatter = "^0.9.10"
-urllib3 = "1.26.19"
+urllib3 = "2.5.0"
 werkzeug = "3.0.6"
 
 [tool.poetry.group.dev.dependencies]
