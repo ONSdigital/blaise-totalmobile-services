@@ -9,7 +9,7 @@ python = "^3.13"
 grpcio = "^1.70.0"
 greenlet = "^3.0.0"
 protobuf = "^4.25.8"
-requests = "^2.32.3"
+requests = "^2.32.4"
 blaise-restapi = {git = "https://github.com/ONSdigital/blaise-api-python-client.git", rev = "d374445f9f837b5e34f0c3d540572247ac388190"}
 google-auth = "^2.40.0"
 google-cloud-pubsub = "^2.31.0"
