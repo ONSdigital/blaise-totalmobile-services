@@ -15,4 +15,4 @@ temp.db
 .app.yaml
 .vscode
 .python-version
-.html
+*_report.html

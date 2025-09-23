@@ -18,6 +18,11 @@ lint:
 	@poetry run isort --check .
 	@poetry run mypy .
 
+.PHONY: check-types
+## Run mypy type checking
+check-types:
+	@poetry run mypy .
+
 .PHONY: test
 ## Run unit tests
 test:
