@@ -1,4 +1,4 @@
-# type: ignore[no-redef]
+# mypy: disable-error-code="no-redef"
 
 import base64
 import json
@@ -6,7 +6,7 @@ import logging
 from datetime import datetime
 from unittest.mock import patch
 
-from behave import given, then, when
+from behave import given, then, when  # type: ignore[import-untyped]
 
 import cloud_functions.delete_totalmobile_jobs_completed_in_blaise
 import cloud_functions.delete_totalmobile_jobs_past_field_period
