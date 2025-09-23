@@ -36,9 +36,9 @@ class LMSQuestionnaireService(QuestionnaireServiceBase):
         self, questionnaire_name: str
     ) -> Sequence[BlaiseLMSCreateCaseModel]:
         questionnaire_cases = self.get_cases(questionnaire_name, True)
-        eligible_cases: Sequence[
-            BlaiseLMSCreateCaseModel
-        ] = self._eligible_case_service.get_eligible_cases(questionnaire_cases)
+        eligible_cases: Sequence[BlaiseLMSCreateCaseModel] = (
+            self._eligible_case_service.get_eligible_cases(questionnaire_cases)
+        )
         return eligible_cases
 
     def get_cases(
