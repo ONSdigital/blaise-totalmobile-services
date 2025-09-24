@@ -31,9 +31,9 @@ class FRSQuestionnaireService(QuestionnaireServiceBase):
         self, questionnaire_name: str
     ) -> Sequence[BlaiseFRSCreateCaseModel]:
         questionnaire_cases = self.get_cases(questionnaire_name)
-        eligible_cases: Sequence[
-            BlaiseFRSCreateCaseModel
-        ] = self._eligible_case_service.get_eligible_cases(questionnaire_cases)
+        eligible_cases: Sequence[BlaiseFRSCreateCaseModel] = (
+            self._eligible_case_service.get_eligible_cases(questionnaire_cases)
+        )
         return eligible_cases
 
     def get_cases(self, questionnaire_name: str) -> List[BlaiseFRSCreateCaseModel]:

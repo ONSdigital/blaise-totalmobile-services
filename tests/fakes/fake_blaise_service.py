@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from app.exceptions.custom_exceptions import (
     QuestionnaireCaseDoesNotExistError,
@@ -30,13 +30,13 @@ class FakeBlaiseService:
         questionnaire: str,
         case_id: str,
         outcome_code: int = 0,
-        wave: int = None,
-        field_case: str = None,
-        telephone_number_1: str = None,
-        telephone_number_2: str = None,
-        appointment_telephone_number: str = None,
-        field_region: str = None,
-        rotational_knock_to_nudge_indicator: str = None,
+        wave: Optional[int] = None,
+        field_case: Optional[str] = None,
+        telephone_number_1: Optional[str] = None,
+        telephone_number_2: Optional[str] = None,
+        appointment_telephone_number: Optional[str] = None,
+        field_region: Optional[str] = None,
+        rotational_knock_to_nudge_indicator: Optional[str] = None,
         rotational_outcome_code: int = 0,
     ) -> None:
         self._assert_questionnaire_exists(questionnaire)
@@ -60,9 +60,9 @@ class FakeBlaiseService:
         self, questionnaire_name: str, case_id: str, outcome_code: str
     ) -> None:
         self._assert_case_exists(questionnaire_name, case_id)
-        self._questionnaires[questionnaire_name][case_id][
-            BlaiseFields.outcome_code
-        ] = int(outcome_code)
+        self._questionnaires[questionnaire_name][case_id][BlaiseFields.outcome_code] = (
+            int(outcome_code)
+        )
 
     def set_case_has_call_history(
         self, has_case_history: bool, questionnaire: str, case_id: str

@@ -195,9 +195,9 @@ class TestEligibleCasesWithATelephoneNumber:
         valid_case_data_without_telephone_numbers[
             BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.telephone_number_2
-        ] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.telephone_number_2] = (
+            "07656775679"
+        )
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -222,9 +222,9 @@ class TestEligibleCasesWithATelephoneNumber:
         valid_case_data_without_telephone_numbers[
             BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.telephone_number_2
-        ] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.telephone_number_2] = (
+            "07656775679"
+        )
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -293,9 +293,9 @@ class TestEligibleCasesWithATelephoneNumber:
         valid_case_data_without_telephone_numbers[
             BlaiseFields.rotational_outcome_code
         ] = str(rotational_outcome_code)
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.telephone_number_1
-        ] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.telephone_number_1] = (
+            "07656775679"
+        )
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -337,9 +337,9 @@ class TestEligibleCasesWithATelephoneNumber:
         valid_case_data_without_telephone_numbers[
             BlaiseFields.rotational_outcome_code
         ] = str(rotational_outcome_code)
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.telephone_number_2
-        ] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.telephone_number_2] = (
+            "07656775679"
+        )
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -730,9 +730,9 @@ class TestIneligibleCasesWithATelephoneNumber:
         valid_case_data_without_telephone_numbers[
             BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.telephone_number_1
-        ] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.telephone_number_1] = (
+            "07656775679"
+        )
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -758,9 +758,9 @@ class TestIneligibleCasesWithATelephoneNumber:
         valid_case_data_without_telephone_numbers[
             BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.telephone_number_1
-        ] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.telephone_number_1] = (
+            "07656775679"
+        )
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -788,9 +788,9 @@ class TestIneligibleCasesWithATelephoneNumber:
         valid_case_data_without_telephone_numbers[
             BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.telephone_number_2
-        ] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.telephone_number_2] = (
+            "07656775679"
+        )
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -816,9 +816,9 @@ class TestIneligibleCasesWithATelephoneNumber:
         valid_case_data_without_telephone_numbers[
             BlaiseFields.rotational_knock_to_nudge_indicator
         ] = knock_to_nudge_indicator
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.telephone_number_2
-        ] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.telephone_number_2] = (
+            "07656775679"
+        )
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -911,9 +911,9 @@ class TestIneligibleCasesWithATelephoneNumber:
         valid_case_data_without_telephone_numbers[
             BlaiseFields.rotational_outcome_code
         ] = str(rotational_outcome_code)
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.telephone_number_1
-        ] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.telephone_number_1] = (
+            "07656775679"
+        )
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -942,9 +942,9 @@ class TestIneligibleCasesWithATelephoneNumber:
         valid_case_data_without_telephone_numbers[BlaiseFields.outcome_code] = str(
             outcome_code
         )
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.telephone_number_1
-        ] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.telephone_number_1] = (
+            "07656775679"
+        )
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -976,9 +976,9 @@ class TestIneligibleCasesWithATelephoneNumber:
         valid_case_data_without_telephone_numbers[
             BlaiseFields.rotational_outcome_code
         ] = str(rotational_outcome_code)
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.telephone_number_1
-        ] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.telephone_number_1] = (
+            "07656775679"
+        )
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -1004,9 +1004,9 @@ class TestIneligibleCasesWithATelephoneNumber:
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[BlaiseFields.field_case] = field_case
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.telephone_number_1
-        ] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.telephone_number_1] = (
+            "07656775679"
+        )
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -1030,9 +1030,9 @@ class TestIneligibleCasesWithATelephoneNumber:
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[BlaiseFields.field_case] = field_case
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.telephone_number_1
-        ] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.telephone_number_1] = (
+            "07656775679"
+        )
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -1058,9 +1058,9 @@ class TestIneligibleCasesWithATelephoneNumber:
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[BlaiseFields.field_case] = field_case
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.telephone_number_2
-        ] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.telephone_number_2] = (
+            "07656775679"
+        )
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -1084,9 +1084,9 @@ class TestIneligibleCasesWithATelephoneNumber:
             service.wave_number
         )
         valid_case_data_without_telephone_numbers[BlaiseFields.field_case] = field_case
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.telephone_number_2
-        ] = "07656775679"
+        valid_case_data_without_telephone_numbers[BlaiseFields.telephone_number_2] = (
+            "07656775679"
+        )
         case = BlaiseLMSCreateCaseModel(
             "LMS2101_AA1", valid_case_data_without_telephone_numbers, None
         )
@@ -1165,9 +1165,9 @@ class TestIneligibleCasesWithATelephoneNumber:
         valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.field_region
-        ] = field_region
+        valid_case_data_without_telephone_numbers[BlaiseFields.field_region] = (
+            field_region
+        )
         valid_case_data_without_telephone_numbers[
             BlaiseFields.appointment_telephone_number
         ] = "07656775679"
@@ -1193,9 +1193,9 @@ class TestIneligibleCasesWithATelephoneNumber:
         valid_case_data_without_telephone_numbers[BlaiseFields.wave] = str(
             service.wave_number
         )
-        valid_case_data_without_telephone_numbers[
-            BlaiseFields.field_region
-        ] = field_region
+        valid_case_data_without_telephone_numbers[BlaiseFields.field_region] = (
+            field_region
+        )
         valid_case_data_without_telephone_numbers[
             BlaiseFields.appointment_telephone_number
         ] = "07656775679"
