@@ -18,9 +18,9 @@ class BlaiseCaseOutcomeService:
     ) -> Dict[Optional[str], int]:
         if questionnaire_name not in self._questionnaire_case_outcomes:
             try:
-                self._questionnaire_case_outcomes[
-                    questionnaire_name
-                ] = self._get_case_outcomes(questionnaire_name)
+                self._questionnaire_case_outcomes[questionnaire_name] = (
+                    self._get_case_outcomes(questionnaire_name)
+                )
             except Exception as error:
                 logging.error(
                     f"Unable to retrieve cases from Blaise for questionnaire {questionnaire_name}",

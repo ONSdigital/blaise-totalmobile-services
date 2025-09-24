@@ -1,40 +1,44 @@
 [tool.poetry]
 name = "blaise_totalmobile_services"
-version = "0.1.0"
+version = "1.0.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["Blaise Team"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
-requests = "2.32"
-blaise-restapi = {git = "https://github.com/ONSdigital/blaise-api-python-client.git", rev = "d374445f9f837b5e34f0c3d540572247ac388190"}
-google-auth = "^2.6.0"
-google-cloud-pubsub = "^2.11.0"
-google-cloud-tasks = "^2.8.1"
+python = "^3.13"
+grpcio = "^1.70.0"
+greenlet = "^3.0.0"
+protobuf = "^4.25.8"
+requests = "^2.32.4"
+blaise-restapi = {git = "https://github.com/ONSdigital/blaise-api-python-client.git", rev = "v1.0.2"}
+google-auth = "^2.40.0"
+google-cloud-pubsub = "^2.31.0"
+google-cloud-tasks = "^2.19.0"
 Flask = "^2.2.5"
 config = "^0.5.1"
 python-dotenv = "^0.19.2"
 pytest = "^7.1.1"
 Flask-HTTPAuth = "^4.5.0"
 phonenumbers = "^8.12.46"
-google-cloud-datastore = "^2.7.1"
-google-cloud-logging = "^3.1.2"
+google-cloud-datastore = "^2.21.0"
+google-cloud-logging = "^3.12.0"
 dataclasses-json = "^0.5.7"
 dataclass-wizard = "^0.22.1"
 typing-extensions = "^4.12.2"
-setuptools = "70"
+setuptools = "78.1.1"
 pytest-mock = "^3.14.0"
 behave-html-formatter = "^0.9.10"
-urllib3 = "1.26.19"
+urllib3 = "2.5.0"
 werkzeug = "3.0.6"
 
-[tool.poetry.dev-dependencies]
-black = "^22.1.0"
+[tool.poetry.group.dev.dependencies]
+types-setuptools = "^75.8.0.20250210"
+black = "^24.3.0"
 pytest = "^7.0.1"
 python-dotenv = "^0.19.2"
 isort = "^5.10.1"
 flake8 = "^4.0.1"
-mypy = "^0.931"
+mypy = "^1.17.1"
 types-requests = "^2.27.11"
 types-Flask = "^1.1.6"
 pytest-cov = "^3.0.0"
@@ -52,9 +56,6 @@ google-cloud-datastore = "^2.7.1"
 behave = "^1.2.6"
 types-protobuf = "^3.19.22"
 types-pytest-lazy-fixture = "^0.6.3"
-
-[tool.poetry.group.dev.dependencies]
-types-setuptools = "^75.8.0.20250210"
 
 [tool.isort]
 multi_line_output = "3"

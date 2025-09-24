@@ -23,25 +23,25 @@ class LMSBlaiseUpdateCase(BlaiseUpdateCaseBase, LMSBlaiseCaseModel):
             totalmobile_request.contact_name != ""
             and totalmobile_request.contact_name is not None
         ):
-            fields[
-                BlaiseFields.knock_to_nudge_contact_name
-            ] = totalmobile_request.contact_name
+            fields[BlaiseFields.knock_to_nudge_contact_name] = (
+                totalmobile_request.contact_name
+            )
 
         if (
             totalmobile_request.home_phone_number != ""
             and totalmobile_request.home_phone_number is not None
         ):
-            fields[
-                BlaiseFields.telephone_number_1
-            ] = totalmobile_request.home_phone_number
+            fields[BlaiseFields.telephone_number_1] = (
+                totalmobile_request.home_phone_number
+            )
 
         if (
             totalmobile_request.mobile_phone_number != ""
             and totalmobile_request.mobile_phone_number is not None
         ):
-            fields[
-                BlaiseFields.telephone_number_2
-            ] = totalmobile_request.mobile_phone_number
+            fields[BlaiseFields.telephone_number_2] = (
+                totalmobile_request.mobile_phone_number
+            )
 
         if len(fields) == 0:
             return (
