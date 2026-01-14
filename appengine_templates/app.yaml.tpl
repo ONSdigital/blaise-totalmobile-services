@@ -2,7 +2,7 @@ service: bts
 runtime: python313
 
 vpc_access_connector:
-  name: projects/_PROJECT_ID/locations/europe-west2/connectors/vpcconnect
+  name: _VPC_CONNECTOR
 
 env_variables:
   BLAISE_API_URL: http://_BLAISE_API_URL
