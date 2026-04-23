@@ -14,7 +14,7 @@ Feature: Filter wave 2 and 3 cases
       | telNoAppt            | <telNoAppt>    |
       | qDataBag.FieldRegion | <region>       |
       | qRotate.RDMktnIND    | <rdmktnind>    |
-      | qhhRotate.RHout        | <rhout>        |
+      | qhhRotate.RHOut        | <rhout>        |
     When create_totalmobile_jobs is run
     Then a cloud task is created for case 12345 in questionnaire LMS2210_AA1 with the reference LMS2210-AA1.12345
 
@@ -1848,7 +1848,7 @@ Feature: Filter wave 2 and 3 cases
       | telNoAppt            | <telNoAppt>    |
       | qDataBag.FieldRegion | <region>       |
       | qRotate.RDMktnIND    | <rdmktnind>    |
-      | qhhRotate.RHout        | <rhout>        |
+      | qhhRotate.RHOut        | <rhout>        |
     When create_totalmobile_jobs is run
     Then no cloud tasks are created
 
