@@ -5,7 +5,7 @@ class BlaiseFields(str, Enum):
     case_id = "qiD.Serial_Number"
     outcome_code = "hOut"
     admin_outcome_code = "qhAdmin.HOut"
-    rotational_outcome_code = "qhhRotate.RHout"
+    rotational_outcome_code = "qhhRotate.RHOut"
     call_history = "catiMana.CatiCall.RegsCalls[1].DialResult"
     knock_to_nudge_indicator = "DMktnIND"
     rotational_knock_to_nudge_indicator = "qRotate.RDMktnIND"
