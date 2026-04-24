@@ -147,7 +147,7 @@ def test_required_fields_returns_the_expected_fields():
         "qDataBag.FieldTeam",
         "qDataBag.WaveComDTE",
         "catiMana.CatiCall.RegsCalls[1].DialResult",
-        "qRotate.RDMktnIND",
+        "qhhRotate.RDMktnIND",
         "qhhRotate.RHOut",
         "qDataBag.LAUA",
     ]
