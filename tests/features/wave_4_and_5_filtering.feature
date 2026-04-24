@@ -13,7 +13,7 @@ Feature: Filter wave 4 and 5 cases
       | qDataBag.TelNo2      | <telno2>       |
       | telNoAppt            | <telNoAppt>    |
       | qDataBag.FieldRegion | <region>       |
-      | qRotate.RDMktnIND    | <rdmktnind>    |
+      | qhhRotate.RDMktnIND    | <rdmktnind>    |
       | qhhRotate.RHOut        | <rhout>        |
     When create_totalmobile_jobs is run
     Then a cloud task is created for case <case_id> in questionnaire <questionnaire_name> with the reference <tm_job_ref>
@@ -179,7 +179,7 @@ Feature: Filter wave 4 and 5 cases
       | qDataBag.TelNo2      | <telno2>       |
       | telNoAppt            | <telNoAppt>    |
       | qDataBag.FieldRegion | <region>       |
-      | qRotate.RDMktnIND    | <rdmktnind>    |
+      | qhhRotate.RDMktnIND    | <rdmktnind>    |
       | qhhRotate.RHOut        | <rhout>        |
     When create_totalmobile_jobs is run
     Then no cloud tasks are created
