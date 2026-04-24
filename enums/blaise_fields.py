@@ -8,7 +8,7 @@ class BlaiseFields(str, Enum):
     rotational_outcome_code = "qhhRotate.RHOut"
     call_history = "catiMana.CatiCall.RegsCalls[1].DialResult"
     knock_to_nudge_indicator = "DMktnIND"
-    rotational_knock_to_nudge_indicator = "qRotate.RDMktnIND"
+    rotational_knock_to_nudge_indicator = "qhhRotate.RDMktnIND"
     knock_to_nudge_contact_name = "dMktnName"
     priority = "qDataBag.priority"
     wave = "qDataBag.Wave"
