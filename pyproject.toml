@@ -9,7 +9,7 @@ python = "^3.13"
 grpcio = "^1.70.0"
 greenlet = "^3.0.0"
 protobuf = ">=4.25.8,<6.0.0"
-requests = "^2.32.4"
+requests = "^2.33.1"
 blaise-restapi = {git = "https://github.com/ONSdigital/blaise-api-python-client.git", rev = "v1.0.2"}
 google-auth = "^2.40.0"
 google-cloud-pubsub = "^2.37.0"
@@ -30,6 +30,7 @@ pytest-mock = "^3.14.0"
 behave-html-formatter = "^0.9.10"
 urllib3 = "2.6.3"
 werkzeug = "3.0.6"
+pyasn1 = "0.6.3"
 
 [tool.poetry.group.dev.dependencies]
 types-setuptools = "^75.8.0.20250210"
