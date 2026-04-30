@@ -243,8 +243,7 @@ def test_auth_header(test_username, test_password):
 
 @pytest.fixture
 def upload_visit_status_request_sample():
-    return json.loads(
-        """
+    return json.loads("""
     {
         "Lines": [
             -1,
@@ -294,14 +293,12 @@ def upload_visit_status_request_sample():
 
         ]
     }
-    """
-    )
+    """)
 
 
 @pytest.fixture
 def submit_form_result_request_sample():
-    return json.loads(
-        """
+    return json.loads("""
     {
       "result": {
         "user": {
@@ -385,14 +382,12 @@ def submit_form_result_request_sample():
         "resultguid": "1234-1234-1234-1234"
       }
     }
-    """
-    )
+    """)
 
 
 @pytest.fixture
 def create_visit_request_sample():
-    return json.loads(
-        """
+    return json.loads("""
     {
     "visit": {
         "identity": {
@@ -529,14 +524,12 @@ def create_visit_request_sample():
         "DurationSpecified": true
       }
     }  
-    """
-    )
+    """)
 
 
 @pytest.fixture
 def create_visit_request_sample_without_user_blaise_logins():
-    return json.loads(
-        """
+    return json.loads("""
     {
     "visit": {
         "identity": {
@@ -655,14 +648,12 @@ def create_visit_request_sample_without_user_blaise_logins():
         "DurationSpecified": true
       }
     }  
-    """
-    )
+    """)
 
 
 @pytest.fixture
 def create_visit_request_sample_without_reference():
-    return json.loads(
-        """
+    return json.loads("""
     {
     "visit": {
         "identity": {
@@ -780,8 +771,7 @@ def create_visit_request_sample_without_reference():
         "DurationSpecified": true
       }
     }  
-    """
-    )
+    """)
 
 
 @pytest.fixture
@@ -1136,8 +1126,7 @@ def mock_frs_unallocated_case_reset_to_defaults_from_cma_launcher():
 
 @pytest.fixture
 def force_recall_visit_request_payload():
-    return json.loads(
-        """
+    return json.loads("""
     {
     "reason": null,
     "identity": {
@@ -1156,14 +1145,12 @@ def force_recall_visit_request_payload():
     "lines": ["prem1", "prem2", "prem3", "district", "posttown"],
     "UseSilentPushSpecified": false
     }
-    """
-    )
+    """)
 
 
 @pytest.fixture
 def force_recall_visit_request_payload_with_null_reference():
-    return json.loads(
-        """
+    return json.loads("""
     {
     "reason": null,
     "identity": {
@@ -1182,14 +1169,12 @@ def force_recall_visit_request_payload_with_null_reference():
     "Lines": [],
     "UseSilentPushSpecified": false
     }
-    """
-    )
+    """)
 
 
 @pytest.fixture
 def force_recall_visit_request_payload_without_reference():
-    return json.loads(
-        """
+    return json.loads("""
     {
     "reason": null,
     "identity": {
@@ -1207,5 +1192,4 @@ def force_recall_visit_request_payload_without_reference():
     "Lines": [],
     "UseSilentPushSpecified": false
     }
-    """
-    )
+    """)
