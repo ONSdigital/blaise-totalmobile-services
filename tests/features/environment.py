@@ -1,3 +1,5 @@
+import logging
+from logging.handlers import BufferingHandler
 from unittest.mock import MagicMock
 
 from werkzeug.security import generate_password_hash
@@ -13,10 +15,39 @@ from tests.fakes.fake_totalmobile_service import FakeTotalmobileService
 from tests.fakes.fake_uac_service import FakeUacService
 
 
+class ScenarioLogCapture(BufferingHandler):
+    def __init__(self):
+        super().__init__(capacity=1000)
+
+    def shouldFlush(self, _record):
+        return False
+
+
 def before_scenario(context, _scenario):
     """Entrypoint"""
+    assign_log_capture_to_context(context)
     context.app = setup_test_app()
     setup_context(context)
+
+
+def after_scenario(context, _scenario):
+    remove_log_capture_from_context(context)
+
+
+def assign_log_capture_to_context(context):
+    root_logger = logging.getLogger()
+    context.log_capture = ScenarioLogCapture()
+    context.root_logger_level = root_logger.level
+    root_logger.addHandler(context.log_capture)
+    root_logger.setLevel(logging.NOTSET)
+
+
+def remove_log_capture_from_context(context):
+    root_logger = logging.getLogger()
+    if getattr(context, "log_capture", None) is not None:
+        root_logger.removeHandler(context.log_capture)
+    if hasattr(context, "root_logger_level"):
+        root_logger.setLevel(context.root_logger_level)
 
 
 def setup_test_app():
